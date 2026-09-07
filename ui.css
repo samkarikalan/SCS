@@ -34191,3 +34191,27 @@ body.app-light .scs-home-quick-panel .scs-home-quick-club {
 .scs-home-quick-panel #scsQuickSlotClub { gap:7px; }
 .scs-home-quick-panel .scs-quick-slot-club-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .scs-home-quick-panel .scs-quick-slot-logout-icon { width:18px; height:18px; flex:0 0 18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* Build 1056: Post a Slot uses a second row for the Slot Manager club. */
+.scs-home-quick-panel .scs-home-quick-action-row.scs-home-quick-slot-row {
+  flex-direction:column;
+  align-items:stretch;
+  gap:10px;
+}
+.scs-home-quick-panel .scs-home-quick-slot-title {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+}
+.scs-home-quick-panel .scs-home-quick-slot-title > strong { flex:1; min-width:0; text-align:left; }
+.scs-home-quick-panel .scs-home-quick-slot-row #scsQuickSlotClub {
+  align-self:flex-start;
+  max-width:100%;
+  margin-left:42px;
+}
+.scs-home-quick-panel .scs-home-quick-slot-row .scs-quick-slot-club-name {
+  overflow:visible;
+  text-overflow:clip;
+  max-width:none;
+}
