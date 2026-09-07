@@ -5894,6 +5894,26 @@ function scsHomeQuickAction(action) {
     });
     return;
   }
+  if (action === 'register') {
+    // Reuse the existing Register Players page and bind it to the currently
+    // selected Round Manager club. No duplicate registration form.
+    var orgClubId = '';
+    var orgClubName = '';
+    try {
+      orgClubId = localStorage.getItem('kbrr_org_club_id') || '';
+      orgClubName = localStorage.getItem('kbrr_org_club_name') || '';
+    } catch (e) {}
+    if (orgClubId && typeof setMyClub === 'function') {
+      setMyClub(orgClubId, orgClubName);
+    }
+    window._regNavSource = 'organiserHome';
+    if (typeof homeGo === 'function') {
+      homeGo('vaultRegisterPage', null);
+    } else if (typeof showPage === 'function') {
+      showPage('vaultRegisterPage', null);
+    }
+    return;
+  }
   if (action === 'club') {
     welcomeSelectedWorkspace = 'viewer';
     switchMode('viewer');

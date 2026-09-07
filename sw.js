@@ -1,6 +1,6 @@
 // SCS_BUILD_40_SLOT_NAV
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1056-round-active-nav';
+const CACHE_NAME = 'scs-app-build-1057-register-players-quick-action';
 const APP_SHELL = './index.html?v=1056';
 
 const ASSETS = [
