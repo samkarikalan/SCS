@@ -5676,7 +5676,42 @@ function scsToggleHomeQuickMenu(event) {
   var menu = document.getElementById('scsHomeQuickMenu');
   if (!menu) return;
   menu.hidden = !menu.hidden;
-  if (!menu.hidden) scsRefreshHomeQuickClubControls();
+  if (!menu.hidden) {
+    scsRefreshHomeQuickClubControls();
+    scsRefreshHomeQuickApprovalAction();
+  }
+}
+
+async function scsRefreshHomeQuickApprovalAction() {
+  var row = document.getElementById('scsQuickApprovePlayers');
+  var label = document.getElementById('scsQuickApprovePlayersLabel');
+  var clubLine = document.getElementById('scsQuickApproveClubName');
+  if (!row) return;
+
+  var clubId = '';
+  var clubName = '';
+  try {
+    clubId = localStorage.getItem('kbrr_org_club_id') || '';
+    clubName = localStorage.getItem('kbrr_org_club_name') || '';
+  } catch (_) {}
+
+  row.hidden = true;
+  row.style.display = 'none';
+  if (label) label.textContent = 'Approve Players';
+  if (clubLine) clubLine.textContent = clubName || '';
+  if (!clubId || typeof sbGet !== 'function') return;
+
+  try {
+    var requests = await sbGet('club_join_requests', 'club_id=eq.' + encodeURIComponent(clubId) + '&status=eq.pending&select=id');
+    var count = Array.isArray(requests) ? requests.length : 0;
+    // The quick action is deliberately absent when there is nothing to approve.
+    if (count <= 0) return;
+    if (label) label.textContent = 'Approve Players (' + count + ')';
+    row.hidden = false;
+    row.style.display = '';
+  } catch (_) {
+    // On a temporary network/read failure keep the conditional action hidden.
+  }
 }
 
 function scsRefreshHomeQuickClubControls() {
@@ -5715,6 +5750,7 @@ async function scsQuickRoundClubMenu(event) {
   if (event) { event.preventDefault(); event.stopPropagation(); }
   if (typeof welcomeOpenOrganiserClubMenu === 'function') await welcomeOpenOrganiserClubMenu(event);
   scsRefreshHomeQuickClubControls();
+  scsRefreshHomeQuickApprovalAction();
 }
 
 async function scsQuickSlotClubAction(event) {
@@ -5896,6 +5932,25 @@ function scsHomeQuickAction(action) {
       console.error('Could not open Slot Manager for Post a Slot:', error);
       if (typeof showToast === 'function') showToast(error && error.message ? error.message : 'Could not open Slot Manager');
     });
+    return;
+  }
+  if (action === 'approve') {
+    // Reuse the existing Approve Players page for the currently selected
+    // Round Manager club. This action is only rendered when requests exist.
+    var approveClubId = '';
+    var approveClubName = '';
+    try {
+      approveClubId = localStorage.getItem('kbrr_org_club_id') || '';
+      approveClubName = localStorage.getItem('kbrr_org_club_name') || '';
+    } catch (e) {}
+    if (approveClubId && typeof setMyClub === 'function') {
+      setMyClub(approveClubId, approveClubName);
+    }
+    if (typeof homeGo === 'function') {
+      homeGo('vaultRequestsPage', null);
+    } else if (typeof showPage === 'function') {
+      showPage('vaultRequestsPage', null);
+    }
     return;
   }
   if (action === 'register') {
