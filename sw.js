@@ -1,10 +1,10 @@
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1047-myhub-home-immediate';
-const APP_SHELL = './index.html?v=1047';
+const CACHE_NAME = 'scs-app-build-1048-imode-player-shortcuts';
+const APP_SHELL = './index.html?v=1048';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1047', './rounds.css?v=1004',
+  './ui.css?v=1048', './rounds.css?v=1004',
   './offline-db.js?v=917', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=936', './auth.js?v=856',
   './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1047',
   './engjap.js?v=864', './qrcode-generator.js?v=856', './main.js?v=1047', './games.js?v=1019',
