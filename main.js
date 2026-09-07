@@ -5754,8 +5754,41 @@ function scsPrimaryNavigate(target) {
     if (typeof homeGo === 'function') homeGo('settingsPage', 'tabBtnSettings');
     return;
   }
+
+  // Bottom-bar Round is a Continue shortcut while an organiser session is live.
+  // With no live session it keeps the existing behaviour and opens Round Manager.
+  if (target === 'organiser') {
+    welcomeSelectedWorkspace = 'organiser';
+    var existingSessionId = typeof getMySessionId === 'function' ? getMySessionId() : null;
+    var hasExistingRounds = typeof allRounds !== 'undefined' && Array.isArray(allRounds) && allRounds.length > 0;
+    var liveSessionAvailable = (existingSessionId || hasExistingRounds) &&
+      (typeof sessionFinished === 'undefined' || !sessionFinished);
+
+    if (liveSessionAvailable) {
+      appMode = 'organiser';
+      try { sessionStorage.setItem('appMode', 'organiser'); } catch (_) {}
+      try { localStorage.setItem('kbrr_app_mode', 'organiser'); } catch (_) {}
+      if (typeof applyMode === 'function') applyMode('organiser');
+      if (typeof updateModePill === 'function') updateModePill('organiser');
+      scsSyncPrimaryBottomNav('organiser');
+      var modeOverlay = document.getElementById('modeSelectOverlay');
+      if (modeOverlay) modeOverlay.style.display = 'none';
+      if (typeof homeHideScreen === 'function') homeHideScreen();
+      if (typeof showPage === 'function') {
+        showPage('roundsPage', document.getElementById('tabBtnRounds'));
+      } else {
+        var roundsPage = document.getElementById('roundsPage');
+        if (roundsPage) roundsPage.style.display = 'block';
+      }
+      if (hasExistingRounds && typeof showRound === 'function') {
+        var roundIndex = typeof currentRoundIndex === 'number' ? currentRoundIndex : allRounds.length - 1;
+        showRound(Math.max(0, Math.min(roundIndex, allRounds.length - 1)));
+      }
+      return;
+    }
+  }
+
   if (target === 'viewer') welcomeSelectedWorkspace = 'viewer';
-  if (target === 'organiser') welcomeSelectedWorkspace = 'organiser';
   if (target === 'vault') { welcomeSelectedWorkspace = 'vault'; window._scsVaultAddSlotMode = false; }
   switchMode(target);
 }
