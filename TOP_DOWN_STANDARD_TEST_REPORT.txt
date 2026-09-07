@@ -1,0 +1,19 @@
+SCS BUILD 546 — TOP-DOWN STANDARD ALGORITHM TEST REPORT
+
+Implemented requirements
+1. Equal total participation and interlinked rest fairness are selected first by DFS.
+2. The app sends explicit required game counts derived from court inputs: MD, WD, XD, free doubles, men/women/free singles.
+3. Typed and singles generators use the same fixed participation-first playing group in Standard mode.
+4. Game-type history is sent separately from rest count. Actual rest count is never modified for type balancing.
+5. Returning rested players and all-new/mostly-new/last-round-fresh court scoring remain active for free doubles Standard rounds.
+6. Unique mode and Competitive mode routing are unchanged.
+
+Executed tests
+- 12 players, 2 free-doubles courts, 20 rounds: played spread 1; rest spread 1.
+- 14 players, 3 free-doubles courts, 20 rounds: played spread 1; rest spread 1.
+- One mixed requested round with 16 players: 1 MD + 1 WD + 1 XD + 1 singles.
+  Result: 3 valid doubles games + 1 valid singles game; 14 unique playing players; 2 resting; no duplicate player.
+- JavaScript syntax validation passed for worker.js and rounds.js.
+
+Design boundary
+Participation is a hard outer decision. Typed-game balancing and freshness arrange only the selected playing group.

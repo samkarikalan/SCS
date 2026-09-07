@@ -1,0 +1,562 @@
+/* ============================================================
+   SCS Player Page V3 — scoped redesign
+   Build 345
+   Large surfaces use soft colour; compact controls use solid accents.
+   This file intentionally affects only #homeViewerGrid and its fixed nav.
+   ============================================================ */
+
+#homeViewerGrid {
+  --player-blue: #2f80ed;
+  --player-purple: #7546d9;
+  --player-green: #20b66f;
+  --player-orange: #f59e0b;
+  --player-pink: #e9497b;
+  --player-ink: #17233d;
+  --player-muted: #7180a2;
+  --player-line: rgba(34, 61, 110, .10);
+  --player-soft-blue: #eef4ff;
+  --player-soft-purple: #f3efff;
+  --player-card: #ffffff;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 8px 0 calc(118px + env(safe-area-inset-bottom)) !important;
+}
+
+body.app-light #homeViewerGrid {
+  background:
+    radial-gradient(circle at 92% 2%, rgba(47,128,237,.08), transparent 26%),
+    radial-gradient(circle at 2% 34%, rgba(117,70,217,.06), transparent 25%);
+}
+
+body:not(.app-light) #homeViewerGrid {
+  --player-ink: #f7f8ff;
+  --player-muted: #aeb8d0;
+  --player-line: rgba(255,255,255,.09);
+  --player-soft-blue: rgba(47,128,237,.13);
+  --player-soft-purple: rgba(117,70,217,.16);
+  --player-card: #171b27;
+}
+
+/* Profile identity becomes a light, compact hero instead of separate fragments. */
+#homeViewerGrid #myCardContent {
+  margin: 10px 16px 0;
+  border: 1px solid var(--player-line);
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--player-soft-blue), var(--player-card) 72%);
+  box-shadow: 0 10px 28px rgba(35, 57, 100, .09);
+  overflow: hidden;
+}
+
+#homeViewerGrid .mycard-identity {
+  margin: 0;
+  padding: 15px 16px 11px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+#homeViewerGrid .mycard-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: rgba(47,128,237,.12);
+  padding: 5px;
+}
+
+#homeViewerGrid .mycard-name {
+  color: var(--player-ink);
+  font-size: 1.12rem;
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+
+#homeViewerGrid .profile-tier {
+  color: var(--player-muted);
+  font-size: .75rem;
+  margin-top: 2px;
+}
+
+#homeViewerGrid .mycard-ratings {
+  margin: 0 12px 12px;
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.62);
+  border: 1px solid rgba(47,128,237,.10);
+  box-shadow: none;
+}
+body:not(.app-light) #homeViewerGrid .mycard-ratings { background: rgba(255,255,255,.035); }
+
+#homeViewerGrid .mycard-rating-value { font-size: 1.15rem; }
+#homeViewerGrid .mycard-rating-label { font-size: .66rem; color: var(--player-muted); }
+#homeViewerGrid .mc-details-arrow {
+  width: 30px;
+  height: 30px;
+  background: rgba(117,70,217,.10);
+  color: var(--player-purple);
+}
+
+/* Main upcoming-slots surface: a soft blue container. */
+#homeViewerGrid .mc-slots-card {
+  margin: 12px 16px 10px;
+  padding: 14px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, #f1f5ff 0%, #edf3ff 58%, #f8f9ff 100%);
+  border: 1px solid rgba(74, 112, 190, .11);
+  box-shadow: 0 14px 34px rgba(45, 69, 118, .10);
+}
+body:not(.app-light) #homeViewerGrid .mc-slots-card {
+  background: linear-gradient(160deg, rgba(45,58,91,.80), rgba(25,31,49,.96));
+  border-color: rgba(145,166,222,.12);
+}
+
+#homeViewerGrid .mc-slots-head { margin: 1px 1px 12px; }
+#homeViewerGrid .mc-slots-title {
+  color: var(--player-ink);
+  font-size: 1.18rem;
+  letter-spacing: -.025em;
+}
+#homeViewerGrid .mc-slots-sub { color: var(--player-muted); font-size: .78rem; }
+
+#homeViewerGrid .mc-slots-refresh-btn,
+#homeViewerGrid .mc-slots-count {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border: 0;
+  border-radius: 50%;
+}
+#homeViewerGrid .mc-slots-refresh-btn {
+  background: rgba(47,128,237,.11);
+  color: var(--player-blue);
+  box-shadow: inset 0 0 0 1px rgba(47,128,237,.15);
+}
+#homeViewerGrid .mc-slots-count {
+  background: #dce7ff;
+  color: #3858b7;
+}
+body:not(.app-light) #homeViewerGrid .mc-slots-count { background: rgba(95,124,222,.20); color: #aebeff; }
+
+/* Calendar: colourful feature card, but restrained and readable. */
+#homeViewerGrid .mc-slots-calendar-panel {
+  padding: 12px 12px 14px;
+  border-radius: 21px;
+  background: linear-gradient(145deg, #8050df, #6938c6);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(96, 55, 184, .22), inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+#homeViewerGrid .mc-slots-cal-nav { padding: 0 0 8px; }
+#homeViewerGrid .mc-slots-month-label { color: #fff; font-size: 1.06rem; font-weight: 850; }
+#homeViewerGrid .mc-slots-nav-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,.26);
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border-radius: 50%;
+}
+#homeViewerGrid .mc-slots-weekdays { color: rgba(255,255,255,.88); font-size: .72rem; }
+#homeViewerGrid .mc-slots-cal-grid { gap: 3px; }
+#homeViewerGrid .mc-slots-day {
+  min-height: 35px;
+  color: rgba(255,255,255,.92);
+  border-radius: 50%;
+  font-size: .80rem;
+  font-weight: 700;
+}
+#homeViewerGrid .mc-slots-day.mc-slots-next-month { background: transparent; opacity: .35; }
+#homeViewerGrid .mc-slots-day.mc-slots-selected {
+  background: #2688f5;
+  color: #fff;
+  border: 3px solid rgba(255,255,255,.90);
+  box-shadow: 0 0 0 2px rgba(75,143,255,.55);
+}
+
+#homeViewerGrid .mc-slots-selected-title {
+  margin: 15px 4px 8px;
+  color: #314160;
+  font-size: .78rem;
+  letter-spacing: .06em;
+}
+body:not(.app-light) #homeViewerGrid .mc-slots-selected-title { color: #d9e0f2; }
+
+/* Slot card: solid coloured header + white neutral information body. */
+#homeViewerGrid .mc-slot-card {
+  position: relative;
+  padding: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--player-card);
+  border: 1px solid rgba(38, 72, 128, .11);
+  box-shadow: 0 8px 22px rgba(33, 55, 95, .09);
+}
+
+#homeViewerGrid .mc-slot-card-head { padding: 13px 14px 12px; }
+#homeViewerGrid .mc-slot-time-row {
+  margin: -13px -14px 12px;
+  padding: 10px 13px;
+  background: linear-gradient(100deg, #2f80ed, #4a92f2);
+}
+#homeViewerGrid .mc-slot-time-row .mc-slot-time {
+  color: #fff;
+  margin: 0;
+  font-size: .77rem;
+  letter-spacing: .02em;
+}
+#homeViewerGrid .mc-slot-chevron {
+  background: rgba(255,255,255,.18);
+  color: #fff;
+}
+#homeViewerGrid .mc-slot-title { color: var(--player-ink); font-size: 1.06rem; }
+#homeViewerGrid .mc-slot-venue { color: var(--player-muted); font-size: .79rem; }
+#homeViewerGrid .mc-slot-meta-row { margin-top: 8px; gap: 5px; }
+#homeViewerGrid .mc-slot-meta-row span {
+  min-height: 22px;
+  padding: 3px 8px;
+  background: #f1f4fa;
+  color: #596884;
+  font-size: .70rem;
+}
+body:not(.app-light) #homeViewerGrid .mc-slot-meta-row span { background: rgba(255,255,255,.06); color: #c0c9dc; }
+#homeViewerGrid .mc-slot-count-pill { background: #e7f8ef; color: #15985b; font-size: .76rem; }
+#homeViewerGrid .mc-slot-footer { margin-top: 9px; font-size: .75rem; }
+#homeViewerGrid .mc-slot-footer > span:first-child {
+  min-height: 25px;
+  padding: 4px 9px;
+  background: rgba(117,70,217,.08);
+  color: #6642bc;
+  border-color: rgba(117,70,217,.14);
+}
+#homeViewerGrid .mc-slot-action-btn { font-size: .75rem; padding: 7px 11px; }
+
+#homeViewerGrid .mc-slot-card.is-player-joined {
+  background: var(--player-card);
+  border: 1px solid rgba(32,182,111,.32);
+  box-shadow: inset 4px 0 0 #20b66f, 0 8px 22px rgba(33,55,95,.09);
+}
+#homeViewerGrid .mc-slot-card.is-player-waitlist {
+  background: var(--player-card);
+  border: 1px solid rgba(245,158,11,.30);
+  box-shadow: inset 4px 0 0 #f59e0b, 0 8px 22px rgba(33,55,95,.09);
+}
+
+#homeViewerGrid .mc-slot-details { margin: 0 12px 12px; padding-top: 10px; }
+#homeViewerGrid .mc-slot-player-row { border-radius: 10px; }
+
+/* Bright, compact bottom navigation. */
+#homeMoreSectionV.viewer-fixed-action-section {
+  padding: 7px 0 calc(7px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(244,247,252,.98) 72%, transparent);
+}
+body:not(.app-light) #homeMoreSectionV.viewer-fixed-action-section {
+  background: linear-gradient(to top, rgba(10,12,18,.98) 72%, transparent);
+}
+#homeMoreSectionV.viewer-fixed-action-section .viewer-action-bar {
+  width: calc(100% - 28px);
+  max-width: 792px;
+  min-height: 76px;
+  padding: 6px;
+  border: 0;
+  border-radius: 24px;
+  background: linear-gradient(105deg, #d82f60, #bd2455);
+  box-shadow: 0 13px 28px rgba(166,31,76,.28), inset 0 1px 0 rgba(255,255,255,.18);
+}
+#homeMoreSectionV .viewer-action-btn { min-height: 62px; color: #fff; }
+#homeMoreSectionV .viewer-action-btn::before { background: rgba(255,255,255,.13) !important; }
+#homeMoreSectionV .viewer-action-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: rgba(255,255,255,.16) !important;
+  border: 1px solid rgba(255,255,255,.18);
+}
+#homeMoreSectionV .viewer-action-label,
+body.app-light #homeMoreSectionV .viewer-action-label { color: #fff; font-size: .68rem; }
+
+@media (max-width: 380px) {
+  #homeViewerGrid .mc-slots-card { margin-left: 10px; margin-right: 10px; padding: 11px; }
+  #homeViewerGrid #myCardContent { margin-left: 10px; margin-right: 10px; }
+  #homeViewerGrid .mc-slots-calendar-panel { padding-left: 8px; padding-right: 8px; }
+  #homeViewerGrid .mc-slots-day { min-height: 33px; font-size: .76rem; }
+  #homeMoreSectionV.viewer-fixed-action-section .viewer-action-bar { width: calc(100% - 18px); }
+}
+
+/* ============================================================
+   Player page concept-match refinement — Build 345
+   Rebuilds the slot card hierarchy to match the approved mockup.
+   ============================================================ */
+
+#homeViewerGrid .mc-slots-card {
+  padding: 12px;
+}
+
+#homeViewerGrid .mc-slot-card,
+body.tile-style-color #homeViewerGrid .mc-slot-card,
+body.tile-style-glow #homeViewerGrid .mc-slot-card {
+  border-radius: 19px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid rgba(38,72,128,.11) !important;
+  box-shadow: 0 8px 22px rgba(33,55,95,.10) !important;
+}
+
+body:not(.app-light) #homeViewerGrid .mc-slot-card,
+body:not(.app-light).tile-style-color #homeViewerGrid .mc-slot-card,
+body:not(.app-light).tile-style-glow #homeViewerGrid .mc-slot-card {
+  background: #1b1e29 !important;
+  border-color: rgba(255,255,255,.10) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.28) !important;
+}
+
+#homeViewerGrid .mc-slot-titlebar,
+body.tile-style-color #homeViewerGrid .mc-slot-titlebar,
+body.tile-style-glow #homeViewerGrid .mc-slot-titlebar {
+  min-height: 48px;
+  padding: 10px 13px !important;
+  border: 0 !important;
+  background: linear-gradient(100deg,#2f80ed,#4a92f2) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#homeViewerGrid .mc-slot-titlebar span {
+  color: #fff !important;
+  font-size: 1rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -.02em;
+}
+
+#homeViewerGrid .mc-slot-titlebar strong {
+  color: #fff !important;
+  font-size: .72rem !important;
+  font-weight: 800 !important;
+  padding: 5px 11px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.16) !important;
+  border: 1px solid rgba(255,255,255,.28) !important;
+}
+
+#homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar,
+body.tile-style-color #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar,
+body.tile-style-glow #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar {
+  background: linear-gradient(100deg,#ed477a,#f26793) !important;
+}
+
+#homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar,
+body.tile-style-color #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar,
+body.tile-style-glow #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar {
+  background: linear-gradient(100deg,#6d45d8,#875ae5) !important;
+}
+
+#homeViewerGrid .mc-slot-probability-distribution {
+  margin: 10px 13px 0 !important;
+  height: 7px !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+  background: #edf0f5 !important;
+  box-shadow: none !important;
+}
+body:not(.app-light) #homeViewerGrid .mc-slot-probability-distribution {
+  background: #2b2f3c !important;
+}
+
+#homeViewerGrid .mc-slot-card-head,
+body.tile-style-color #homeViewerGrid .mc-slot-card-head,
+body.tile-style-glow #homeViewerGrid .mc-slot-card-head {
+  padding: 10px 13px 12px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#homeViewerGrid .mc-slot-time-row,
+body.tile-style-color #homeViewerGrid .mc-slot-time-row,
+body.tile-style-glow #homeViewerGrid .mc-slot-time-row {
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+  min-height: 34px;
+  background: transparent !important;
+  border: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#homeViewerGrid .mc-slot-title {
+  color: var(--player-ink) !important;
+  font-size: 1.03rem !important;
+  line-height: 1.2;
+  font-weight: 850 !important;
+}
+
+#homeViewerGrid .mc-slot-chevron {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  border-radius: 50% !important;
+  display: grid;
+  place-items: center;
+  color: #7650da !important;
+  background: rgba(117,70,217,.10) !important;
+  font-size: .72rem !important;
+  border: 0 !important;
+}
+
+#homeViewerGrid .mc-slot-main > div {
+  width: 100%;
+}
+
+#homeViewerGrid .mc-slot-time {
+  margin: 0 0 4px !important;
+  color: #e89b20 !important;
+  font-size: .92rem !important;
+  font-weight: 850 !important;
+  line-height: 1.25;
+}
+
+#homeViewerGrid .mc-slot-venue-block {
+  margin: 0 !important;
+}
+
+#homeViewerGrid .mc-slot-venue {
+  margin: 0 !important;
+  color: var(--player-ink) !important;
+  font-size: .82rem !important;
+  font-weight: 760 !important;
+  line-height: 1.35;
+}
+
+#homeViewerGrid .mc-slot-venue-detail {
+  margin-top: 6px !important;
+  min-height: 24px;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#homeViewerGrid .mc-slot-venue-detail > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--player-muted) !important;
+  font-size: .70rem !important;
+}
+
+#homeViewerGrid .mc-slot-map-btn {
+  flex: 0 0 auto;
+  min-height: 25px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: #f1f3f8 !important;
+  color: #65708a !important;
+  border: 0 !important;
+  font-size: .68rem !important;
+  font-weight: 800 !important;
+}
+body:not(.app-light) #homeViewerGrid .mc-slot-map-btn {
+  background: rgba(255,255,255,.07) !important;
+  color: #c6cede !important;
+}
+
+#homeViewerGrid .mc-slot-info-row {
+  margin-top: 8px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#homeViewerGrid .mc-slot-meta-row {
+  margin: 0 !important;
+}
+
+#homeViewerGrid .mc-slot-meta-row span {
+  min-height: 24px !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  font-size: .68rem !important;
+  font-weight: 760 !important;
+}
+
+#homeViewerGrid .mc-slot-count-row {
+  margin: 0 !important;
+}
+
+#homeViewerGrid .mc-slot-count-pill {
+  min-height: 27px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  font-size: .73rem !important;
+  font-weight: 850 !important;
+  border: 1px solid rgba(32,182,111,.22) !important;
+  background: #eaf8f1 !important;
+  color: #15985b !important;
+}
+body:not(.app-light) #homeViewerGrid .mc-slot-count-pill {
+  background: rgba(32,182,111,.12) !important;
+  color: #49d693 !important;
+}
+
+#homeViewerGrid .mc-slot-footer {
+  margin-top: 9px !important;
+  padding-top: 9px !important;
+  border-top: 1px solid var(--player-line) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#homeViewerGrid .mc-slot-footer > span:first-child {
+  min-height: 27px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  font-size: .69rem !important;
+  line-height: 1 !important;
+  background: #f2effc !important;
+  color: #6844bd !important;
+  border: 1px solid rgba(117,70,217,.12) !important;
+}
+body:not(.app-light) #homeViewerGrid .mc-slot-footer > span:first-child {
+  background: rgba(117,70,217,.14) !important;
+  color: #bca8f5 !important;
+}
+
+#homeViewerGrid .mc-slot-action-btn {
+  min-height: 34px !important;
+  padding: 7px 14px !important;
+  border-radius: 11px !important;
+  border: 0 !important;
+  background: linear-gradient(100deg,#6d4cf2,#7b5cff) !important;
+  color: #fff !important;
+  font-size: .73rem !important;
+  font-weight: 850 !important;
+  box-shadow: 0 7px 15px rgba(109,76,242,.22) !important;
+}
+
+#homeViewerGrid .mc-slot-payment-meta,
+#homeViewerGrid .mc-slot-probability-picker {
+  margin-top: 8px !important;
+}
+
+#homeViewerGrid .mc-slot-card.is-player-joined,
+body.tile-style-color #homeViewerGrid .mc-slot-card.is-player-joined,
+body.tile-style-glow #homeViewerGrid .mc-slot-card.is-player-joined {
+  box-shadow: inset 4px 0 0 #20b66f, 0 8px 22px rgba(33,55,95,.10) !important;
+}
+
+#homeViewerGrid .mc-slot-card.is-player-waitlist,
+body.tile-style-color #homeViewerGrid .mc-slot-card.is-player-waitlist,
+body.tile-style-glow #homeViewerGrid .mc-slot-card.is-player-waitlist {
+  box-shadow: inset 4px 0 0 #f59e0b, 0 8px 22px rgba(33,55,95,.10) !important;
+}
+
+@media (max-width: 420px) {
+  #homeViewerGrid .mc-slot-titlebar { min-height: 46px; }
+  #homeViewerGrid .mc-slot-card-head { padding: 9px 11px 11px !important; }
+  #homeViewerGrid .mc-slot-probability-distribution { margin-left: 11px !important; margin-right: 11px !important; }
+  #homeViewerGrid .mc-slot-time { font-size: .88rem !important; }
+  #homeViewerGrid .mc-slot-venue { font-size: .79rem !important; }
+}

@@ -1,0 +1,37 @@
+SCS BUILD 548 - BALANCED MODE TEST REPORT
+
+Architecture
+- Balanced mode reuses Standard participation-first selection.
+- Selected players are sorted by rating and frozen into Top/Bottom groups for the round.
+- Rating values are not consulted again after the split.
+- Balance is a hard candidate filter before Standard uniqueness/freshness scoring.
+
+Rules
+- Singles: Top vs Top or Bottom vs Bottom.
+- Doubles: Top+Bottom vs Top+Bottom.
+- Same-level doubles fallback: all four Top or all four Bottom, with equal team structure.
+- XD additionally requires one man and one woman per team.
+- MD/WD gender requirements are enforced.
+- Exact previous-round game is penalized first among balanced candidates.
+- Historical unique pairs/games remain preferred when balanced candidates exist.
+
+Tests
+1. 12 players / 2 free doubles courts / 8 rounds
+   PASS: played spread <= 1
+   PASS: rest spread <= 1
+   PASS: no duplicate players
+   PASS: all generated doubles courts structurally balanced
+   PASS: new games selected while balanced options remained
+
+2. Fixed-pair balanced case
+   PASS: valid complete round
+   PASS: fixed-pair constraints preserved when selected
+
+3. Mixed typed request (MD/WD/XD/Singles)
+   PASS: valid requested court formats and genders
+   NOTE: if the frozen Top/Bottom split makes the complete typed request mathematically impossible, the worker uses the existing valid typed fallback rather than returning an incomplete round.
+
+Syntax
+- worker.js: PASS
+- rounds.js: PASS
+- games.js: PASS

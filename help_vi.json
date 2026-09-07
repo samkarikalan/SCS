@@ -1,0 +1,486 @@
+{
+  "getting_started": {
+    "welcome": {
+      "title": "🏸 Chào mừng đến với CLUB Scheduler",
+      "content": "CLUB Scheduler giúp các câu lạc bộ cầu lông tổ chức buổi tập công bằng. Theo dõi điểm xếp hạng, lịch sử trận đấu và quản lý nhiều câu lạc bộ.",
+      "tip": "Bắt đầu bằng cách thiết lập hồ sơ — nhấn vào biểu tượng người ở góc trên phải."
+    },
+    "set_profile": {
+      "title": "👤 Thiết lập hồ sơ",
+      "list": [
+        "Nhấn biểu tượng hồ sơ (góc trên phải)",
+        "Tìm tên bạn trong danh sách người chơi",
+        "Lần đầu: đặt PIN 4 chữ số và từ khóa khôi phục",
+        "Lần sau: chỉ cần nhập PIN"
+      ],
+      "note": "Hồ sơ là bắt buộc để sử dụng ứng dụng."
+    },
+    "join_club": {
+      "title": "🏟️ Tham gia hoặc tạo câu lạc bộ",
+      "list": [
+        "Mở tab Cài đặt",
+        "Nhấn Tham gia CLB và nhập mật khẩu",
+        "Hoặc nhấn Tạo CLB để bắt đầu mới",
+        "Bạn có thể thuộc nhiều câu lạc bộ"
+      ],
+      "tip": "Quản trị viên có thêm tính năng quản lý buổi tập và người chơi."
+    },
+    "first_session": {
+      "title": "🚀 Bắt đầu buổi tập đầu tiên",
+      "steps": [
+        "Tab Người chơi: kích hoạt người chơi tham gia hôm nay",
+        "Tab Vòng đấu: nhấn Vòng mới để tạo sân",
+        "Sau mỗi trận, nhấn W hoặc L để ghi kết quả",
+        "Nhấn Vòng mới lần nữa cho vòng tiếp theo",
+        "Khi xong, nhấn Kết thúc buổi từ hồ sơ",
+        "6. Sau mỗi trận đấu, ghi lại W hoặc L",
+        "7. Lặp lại cho đến khi phiên làm việc kết thúc, sau đó nhấn Kết thúc phiên làm việc"
+      ]
+    },
+    "rating_explained": {
+      "title": "⭐ Hệ thống xếp hạng",
+      "content": "Mọi người chơi bắt đầu với điểm 1.0. Thắng thì tăng, thua thì giảm.",
+      "list": [
+        "1.0-1.9 → Người mới",
+        "2.0-2.9 → Đang phát triển",
+        "3.0-3.9 → Trung cấp",
+        "4.0-4.4 → Nâng cao",
+        "4.5 trở lên → Ưu tú"
+      ],
+      "tip": "Bạn có Xếp hạng toàn cầu (tất cả CLB) và Xếp hạng CLB (riêng CLB này)."
+    },
+    "sign_in": {
+      "title": "🔑 Đăng nhập",
+      "list": [
+        "Nhấn 'Bắt đầu' trên màn hình chào mừng",
+        "Nhập địa chỉ email của bạn",
+        "Kiểm tra email của bạn để tìm mã 6 chữ số",
+        "Nhập mã để đăng nhập",
+        "Bạn giữ được vị trí đăng nhập — không cần đăng nhập lại mỗi lần"
+      ],
+      "tip": "Hãy sử dụng cùng một email mỗi lần — hồ sơ, câu lạc bộ và xếp hạng của bạn đều được liên kết với nó."
+    },
+    "modes": {
+      "title": "🎛️ Ba chế độ — Người chơi, Tổ chức, Quản lý câu lạc bộ",
+      "content": "Sau khi đăng nhập, bạn chọn một chế độ từ màn hình chọn chế độ. Mỗi chế độ sẽ có một màn hình chính khác nhau.",
+      "list": [
+        "🏸 Người chơi — xem các máy đánh bạc, phiên chơi trực tiếp, thẻ bài và đánh giá của bạn",
+        "🏸 Người tổ chức — điều hành các phiên, quản lý người chơi, tạo vòng chơi",
+        "🔒 Vault — quản lý câu lạc bộ của bạn: đăng ký người chơi, xử lý các yêu cầu tham gia"
+      ],
+      "tip": "Nhấn vào tiêu đề chế độ ở phía trên hoặc nút ✕ để đổi chế độ bất cứ lúc nào."
+    }
+  },
+  "players": {
+    "player_rows": {
+      "title": "👥 Danh sách người chơi",
+      "content": "Mỗi hàng là một người chơi. Nền xanh=Nam, Nền hồng=Nữ.",
+      "list": [
+        "Checkbox tích → đang hoạt động (được lên lịch)",
+        "Checkbox không tích → đang nghỉ",
+        "Nhấn biểu tượng thùng rác → xóa người chơi",
+        "Nhấn vào biểu tượng thùng rác để loại bỏ khỏi phiên làm việc này"
+      ]
+    },
+    "courts_rule": {
+      "title": "🎾 Sân và số người chơi",
+      "list": [
+        "4 người hoạt động = 1 sân",
+        "8 người hoạt động = 2 sân",
+        "12 người hoạt động = 3 sân",
+        "Cứ 4 người thêm 1 sân"
+      ],
+      "note": "Giới tính không ảnh hưởng đến số sân."
+    },
+    "import_players": {
+      "title": "📥 Nhập người chơi",
+      "content": "Nhấn nút nhập để thêm người chơi từ cơ sở dữ liệu câu lạc bộ.",
+      "list": [
+        "Tìm kiếm theo tên",
+        "Chọn nhiều người cùng lúc",
+        "Người chơi được thêm với điểm hiện tại"
+      ],
+      "tip": "Chỉ nhập những người chơi tham gia hôm nay."
+    },
+    "adding_players": {
+      "title": "➕ Thêm người chơi mới",
+      "content": "Có thể thêm người chơi mới trực tiếp từ tab Người chơi. Bắt đầu từ điểm 1.0.",
+      "tip": "Nhập đúng giới tính — ảnh hưởng đến ghép đôi đôi nam nữ."
+    },
+    "troubleshooting": {
+      "title": "🔧 Vấn đề thường gặp",
+      "list": [
+        "Không thêm được sân → cần ít nhất 4 người hoạt động",
+        "Người chơi không được lên lịch → kiểm tra checkbox",
+        "Giới tính hiển thị sai → chỉnh sửa người chơi"
+      ]
+    },
+    "add_players_tabs": {
+      "title": "➕ Thêm Người chơi — Duyệt, Yêu thích, Loại",
+      "content": "Bảng Thêm Người chơi có ba tab:",
+      "list": [
+        "🔍 Duyệt — tìm kiếm câu lạc bộ của bạn hoặc tất cả người chơi và nhấn để chọn",
+        "⭐ Yêu thích — các bộ cầu thủ đã lưu để tái sử dụng nhanh chóng",
+        "✏️ Loại — nhập trực tiếp tên cầu thủ mới"
+      ],
+      "tip": "Sử dụng Duyệt để nhập thành viên câu lạc bộ hiện tại, Gõ để thêm cầu thủ mới."
+    }
+  },
+  "rounds": {
+    "generating_rounds": {
+      "title": "🔄 Tạo vòng đấu",
+      "content": "Nhấn Vòng mới để tự động tạo phân công sân công bằng.",
+      "tip": "Hệ thống theo dõi ai đã đánh với ai để giữ trận đấu luôn mới mẻ."
+    },
+    "courts_layout": {
+      "title": "🏸 Bố cục sân",
+      "list": [
+        "Mỗi hàng = 1 sân",
+        "Mỗi sân có 2 đội (mỗi đội 2 người)",
+        "Đội trái vs Đội phải",
+        "Người không trên sân đang nghỉ vòng này"
+      ]
+    },
+    "recording_results": {
+      "title": "✅ Ghi kết quả",
+      "content": "Sau mỗi trận nhấn W (Thắng) hoặc L (Thua). Điểm xếp hạng cập nhật ngay.",
+      "list": [
+        "W = đội bên trái thắng",
+        "L = đội bên phải thắng",
+        "Kết quả đồng bộ thời gian thực"
+      ],
+      "tip": "Ghi kết quả trước khi tạo vòng tiếp theo."
+    },
+    "lock_unlock": {
+      "title": "🔒 Khóa / Mở khóa",
+      "list": [
+        "Khóa — không cho đổi người thủ công",
+        "Mở khóa — có thể đổi người giữa các sân",
+        "Xoay vòng tự động vẫn hoạt động khi khóa"
+      ],
+      "note": "Khóa vòng khi bạn hài lòng với phân công sân."
+    },
+    "swapping_players": {
+      "title": "🔄 Đổi người chơi",
+      "steps": [
+        "Mở khóa vòng trước",
+        "Nhấn người chơi muốn di chuyển",
+        "Nhấn người chơi để đổi (sân khác hoặc đang nghỉ)",
+        "Đổi ngay lập tức"
+      ],
+      "tip": "Dùng để cân bằng sân không đều.",
+      "list": [
+        "1. Mở khóa vòng chơi trước",
+        "2. Nhấn vào trình phát bạn muốn di chuyển",
+        "3. Chạm vào người chơi để đổi (sân khác hoặc từ lúc nghỉ)",
+        "4. Hoán đổi diễn ra ngay lập tức"
+      ]
+    },
+    "resting_players": {
+      "title": "💤 Người chơi nghỉ",
+      "content": "Người không trên sân vòng này đang nghỉ. Số bên cạnh tên cho biết đã nghỉ bao nhiêu vòng.",
+      "tip": "Hệ thống ưu tiên người đang nghỉ ở vòng tiếp theo."
+    }
+  },
+  "profile": {
+    "your_profile": {
+      "title": "👤 Thẻ hồ sơ",
+      "content": "Hồ sơ hiển thị điểm xếp hạng hiện tại, tổng thắng/thua và lịch sử buổi tập gần đây.",
+      "list": [
+        "Xếp hạng toàn cầu — điểm ở tất cả CLB",
+        "Xếp hạng CLB — điểm riêng CLB này",
+        "Tổng thắng/thua — kỷ lục toàn nghiệp",
+        "Buổi gần đây — 3 buổi gần nhất với chi tiết trận"
+      ]
+    },
+    "pin_setup": {
+      "title": "🔐 PIN và từ khóa khôi phục",
+      "list": [
+        "Lần đầu — đặt PIN 4 chữ số và từ khóa bí mật",
+        "Lần sau — chỉ nhập PIN để đăng nhập",
+        "Quên PIN — nhập từ khóa khôi phục để đặt PIN mới",
+        "PIN bảo vệ hồ sơ của bạn"
+      ]
+    },
+    "switching_profiles": {
+      "title": "🔁 Chuyển đổi hồ sơ",
+      "content": "Nhấn Chuyển đổi trong thẻ hồ sơ để chọn người chơi khác. Cần PIN của người đó.",
+      "tip": "Hữu ích khi chia sẻ thiết bị với thành viên CLB khác."
+    },
+    "end_session": {
+      "title": "🏁 Kết thúc buổi tập",
+      "content": "Khi buổi tập kết thúc, nhấn Kết thúc buổi từ hồ sơ. Tất cả dữ liệu được lưu và điểm cập nhật.",
+      "list": [
+        "Người bắt đầu buổi có thể kết thúc",
+        "Quản trị viên CLB luôn có thể kết thúc",
+        "Dữ liệu lưu vào lịch sử hồ sơ"
+      ],
+      "note": "Nếu không hoạt động 1 tiếng, buổi tập tự động kết thúc."
+    },
+    "session_history": {
+      "title": "📅 Lịch sử buổi tập",
+      "content": "Hồ sơ hiển thị 3 buổi gần nhất. Nhấn để xem chi tiết từng trận.",
+      "tip": "Buổi tập trực tiếp hôm nay luôn hiển thị trên cùng với nhãn LIVE."
+    }
+  },
+  "clubs": {
+    "creating_club": {
+      "title": "🏟️ Tạo câu lạc bộ",
+      "list": [
+        "Tab Cài đặt → nhấn Tạo CLB",
+        "Đặt tên CLB, mật khẩu chọn và mật khẩu quản trị",
+        "Chia sẻ mật khẩu chọn để thành viên tham gia",
+        "Giữ bí mật mật khẩu quản trị",
+        "Giữ mật khẩu quản trị viên riêng tư"
+      ],
+      "note": "Mật khẩu quản trị không thể khôi phục nếu mất. Hãy bảo quản cẩn thận."
+    },
+    "joining_club": {
+      "title": "🤝 Tham gia câu lạc bộ",
+      "list": [
+        "Tab Cài đặt → nhấn Tham gia CLB",
+        "Nhập tên CLB và mật khẩu chọn",
+        "Bạn đã là thành viên CLB đó",
+        "Yêu cầu của bạn sẽ được gửi đến quản trị viên Vault để phê duyệt",
+        "Khi được phê duyệt, bạn sẽ là thành viên chính thức"
+      ],
+      "tip": "Có thể tham gia nhiều CLB và chuyển đổi trong Cài đặt."
+    },
+    "admin_controls": {
+      "title": "🛡️ Tính năng quản trị",
+      "content": "Quản trị viên CLB có thêm quyền:",
+      "list": [
+        "Kết thúc buổi cho tất cả mọi người",
+        "Xem hồ sơ tất cả người chơi",
+        "Quản lý thành viên CLB",
+        "Truy cập kho quản trị trong Cài đặt"
+      ]
+    },
+    "multiple_clubs": {
+      "title": "🌐 Nhiều câu lạc bộ",
+      "content": "Bạn có thể thuộc bất kỳ số lượng CLB nào. Mỗi CLB có Xếp hạng CLB riêng.",
+      "tip": "Xếp hạng toàn cầu dùng chung cho tất cả CLB. Xếp hạng CLB riêng cho từng CLB."
+    },
+    "switching_clubs": {
+      "title": "🔁 Chuyển đổi câu lạc bộ",
+      "content": "Nếu bạn thuộc nhiều câu lạc bộ, bạn có thể chuyển câu lạc bộ đang hoạt động từ ô Câu lạc bộ của tôi trên màn hình chính.",
+      "tip": "Mỗi câu lạc bộ có Đánh giá Câu lạc bộ riêng — Đánh giá Toàn cầu của bạn được chia sẻ cho tất cả các câu lạc bộ."
+    },
+    "club_management": {
+      "title": "🏢 Ban quản lý câu lạc bộ",
+      "content": "Từ chế độ Tổ chức, chạm vào ô Câu lạc bộ để truy cập:",
+      "list": [
+        "Kết nối — tham gia câu lạc bộ hiện có",
+        "Tạo — bắt đầu một câu lạc bộ mới",
+        "Xóa — xóa một câu lạc bộ bạn quản trị"
+      ]
+    }
+  },
+  "summary": {
+    "rankings_table": {
+      "title": "📊 Xếp hạng người chơi",
+      "content": "Tab Tóm tắt hiển thị bảng xếp hạng công bằng của buổi tập hiện tại.",
+      "list": [
+        "Hạng — thứ tự ưu tiên vòng tiếp theo",
+        "Đã chơi — số vòng đã chơi buổi này",
+        "Nghỉ — số vòng đã nghỉ",
+        "Hạng càng cao = chơi càng nhiều = ưu tiên thấp hơn"
+      ],
+      "tip": "Dùng để kiểm tra nhanh buổi tập có công bằng không."
+    },
+    "using_summary": {
+      "title": "💡 Cách dùng Tóm tắt",
+      "list": [
+        "Kiểm tra trước mỗi vòng mới để phát hiện bất công",
+        "Người nghỉ quá nhiều sẽ được ưu tiên vòng sau",
+        "Dùng để giải quyết tranh cãi về ai chơi bao nhiêu"
+      ],
+      "note": "Tóm tắt chỉ đọc. Thay đổi phải thực hiện ở tab Vòng đấu."
+    }
+  },
+  "faq": {
+    "forgot_pin": {
+      "title": "🔑 Quên PIN",
+      "list": [
+        "Ở màn hình PIN, nhập từ khóa khôi phục",
+        "Xác nhận từ khóa rồi đặt PIN mới",
+        "Đăng nhập ngay"
+      ],
+      "note": "Nếu cũng quên từ khóa khôi phục, hãy liên hệ quản trị viên CLB."
+    },
+    "offline": {
+      "title": "📶 Dùng được offline không",
+      "content": "Hỗ trợ offline một phần. Cần internet để đồng bộ điểm và lưu lịch sử buổi tập.",
+      "tip": "Luôn đảm bảo có kết nối trước khi kết thúc buổi tập."
+    },
+    "session_lost": {
+      "title": "😟 Vô tình đóng app giữa buổi",
+      "content": "Đừng lo — dữ liệu buổi tập được lưu cloud sau mỗi vòng. Khi mở lại và kết thúc buổi, dữ liệu tự động khôi phục.",
+      "tip": "Đây là lý do cần thiết lập hồ sơ trước khi chơi."
+    },
+    "auto_end": {
+      "title": "⏱️ Buổi tập tự kết thúc",
+      "content": "Nếu 1 tiếng không ghi vòng nào, buổi tập tự động kết thúc. Tất cả dữ liệu được lưu trước khi đóng.",
+      "note": "Tránh để buổi tập vô tình mở qua đêm."
+    },
+    "multiple_devices": {
+      "title": "📱 Dùng nhiều thiết bị",
+      "content": "Ứng dụng hoạt động trên nhiều thiết bị trong cùng CLB.",
+      "list": [
+        "Buổi tập trực tiếp hiển thị trên mọi thiết bị",
+        "Chỉ người bắt đầu buổi hoặc quản trị viên mới kết thúc được",
+        "Điểm đồng bộ tự động sau mỗi vòng"
+      ]
+    },
+    "ratings_not_updating": {
+      "title": "⭐ Đánh giá của tôi không cập nhật",
+      "list": [
+        "Đảm bảo bạn đã ghi âm W hoặc L cho vòng đấu",
+        "Kiểm tra kết nối internet của bạn",
+        "Xếp hạng được cập nhật sau mỗi vòng được chấm điểm",
+        "Mở lại ứng dụng để ép làm mới"
+      ]
+    },
+    "cache_old_version": {
+      "title": "🔄 Ứng dụng hiển thị phiên bản cũ",
+      "content": "Ứng dụng luôn lấy file mới khi online. Nếu bạn vẫn thấy phiên bản cũ:",
+      "list": [
+        "Đảm bảo bạn có kết nối internet",
+        "Đóng và mở lại ứng dụng",
+        "Trên Safari: Cài đặt → Safari → xóa lịch sử và dữ liệu trang web",
+        "Trên Chrome: DevTools → Ứng dụng → Xóa dữ liệu trang web"
+      ],
+      "tip": "Việc này chỉ cần một lần duy nhất — sau đó cập nhật sẽ tự động diễn ra."
+    }
+  },
+  "vault": {
+    "what_is_vault": {
+      "title": "🔒 Vault là gì?",
+      "content": "Vault là chế độ quản lý câu lạc bộ. Nó cung cấp cho bạn ba công cụ:",
+      "list": [
+        "📋 Đăng ký — xem tất cả cầu thủ đã đăng ký câu lạc bộ của bạn",
+        "✏️ Sửa đổi — chỉnh sửa chi tiết cầu thủ như tên, giới tính và xếp hạng",
+        "🔔 Yêu cầu — phê duyệt hoặc từ chối yêu cầu gia nhập từ thành viên mới"
+      ],
+      "tip": "Vault yêu cầu đăng ký Pro hoặc quyền quản trị."
+    },
+    "register": {
+      "title": "📋 Tab Đăng ký",
+      "content": "Hiển thị tất cả các cầu thủ hiện đang đăng ký trong câu lạc bộ của bạn.",
+      "list": [
+        "Tìm kiếm theo tên để tìm một cầu thủ cụ thể",
+        "Nhấn vào một người chơi để xem hồ sơ của họ",
+        "Số lượng cầu thủ được hiển thị ở đầu trang"
+      ]
+    },
+    "modify": {
+      "title": "✏️ Tab Sửa đổi",
+      "content": "Chỉnh sửa thông tin của bất kỳ cầu thủ nào trong câu lạc bộ của bạn.",
+      "list": [
+        "Nhấn vào một trình phát để mở bảng chỉnh sửa",
+        "Thay đổi tên, giới tính hoặc đánh giá câu lạc bộ",
+        "Đồng bộ thay đổi ngay lập tức đến tất cả thiết bị"
+      ],
+      "note": "Chỉ người dùng Vault mới có thể chỉnh sửa chi tiết người chơi."
+    },
+    "requests": {
+      "title": "🔔 Yêu cầu tham gia",
+      "content": "Khi một người dùng mới gia nhập câu lạc bộ của bạn, họ sẽ xuất hiện ở đây để được duyệt.",
+      "list": [
+        "Phê duyệt → người chơi đã liên kết với tài khoản của họ",
+        "Yêu cầu từ chối → đã bị xóa",
+        "Huy hiệu MỚI hiển thị khi có yêu cầu đang chờ xử lý"
+      ],
+      "tip": "Kiểm tra Yêu cầu thường xuyên để thành viên mới không phải chờ đợi."
+    }
+  },
+  "viewer": {
+    "what_is_viewer": {
+      "title": "🏸 Chế độ Người chơi",
+      "content": "Chế độ người chơi dành cho thành viên muốn xem và tham gia slot, kiểm tra thẻ và theo dõi các phiên chơi trực tiếp.",
+      "list": [
+        "My Card — xem hồ sơ, đánh giá và lịch sử ghép đôi của bạn",
+        "Bảng điều khiển — xem trực tiếp các sân và tỷ số theo thời gian thực",
+        "Câu lạc bộ của tôi — đổi câu lạc bộ hoặc tham gia câu lạc bộ mới",
+        "Báo cáo — xem thống kê hàng tháng cho câu lạc bộ của bạn"
+      ],
+      "tip": "Chế độ Người chơi có sẵn cho tất cả thành viên. Không cần đăng ký."
+    },
+    "my_card": {
+      "title": "👤 Thẻ của tôi",
+      "content": "Hồ sơ cá nhân của bạn hiển thị xếp hạng hiện tại và lịch sử trận đấu.",
+      "list": [
+        "Xếp hạng Toàn cầu — xếp hạng của bạn trên tất cả các câu lạc bộ",
+        "Đánh giá câu lạc bộ — đánh giá của bạn trong câu lạc bộ cụ thể này",
+        "Thành tích thắng / thua của câu lạc bộ này",
+        "Lịch sử phiên họp gần đây"
+      ]
+    },
+    "dashboard_viewer": {
+      "title": "📡 Bảng điều khiển",
+      "content": "Bảng điều khiển hiển thị tất cả các phiên họp trực tiếp và gần đây của câu lạc bộ bạn.",
+      "list": [
+        "Huy hiệu LIVE — phiên làm việc hiện đang hoạt động",
+        "Nhấn vào phiên làm việc để xem chi tiết tòa án",
+        "Điểm số cập nhật theo thời gian thực"
+      ],
+      "tip": "Bạn có thể xem bất kỳ buổi chơi trực tiếp nào ngay cả khi không chơi."
+    }
+  },
+  "subscription": {
+    "trial": {
+      "title": "⏳ Dùng thử miễn phí",
+      "content": "Tài khoản mới được dùng thử miễn phí 60 ngày với quyền truy cập đầy đủ vào tất cả các tính năng bao gồm chế độ Tổ chức và Vault.",
+      "tip": "Biểu ngữ dùng thử sẽ hiển thị trong Cài đặt để bạn có thể theo dõi số ngày còn lại."
+    },
+    "plans": {
+      "title": "⚡ Các gói đăng ký",
+      "content": "Sau khi thử nghiệm kết thúc, bạn cần có kế hoạch tiếp tục sử dụng chế độ Tổ chức và Quản lý Câu lạc bộ. Chế độ người chơi vẫn miễn phí.",
+      "list": [
+        "1 tháng — 30 ngày",
+        "6 tháng — 180 ngày",
+        "1 năm — 365 ngày",
+        "Thời hạn sử dụng — không có thời hạn"
+      ],
+      "tip": "Liên hệ với quản trị viên câu lạc bộ hoặc truy cập cổng cấp phép để đăng ký."
+    },
+    "restore": {
+      "title": "♻️ Khôi phục gói của bạn",
+      "content": "Nếu bạn cài đặt lại ứng dụng hoặc đăng nhập trên thiết bị mới, gói của bạn sẽ tự động được khôi phục khi bạn đăng nhập bằng cùng một email.",
+      "note": "Hãy chắc chắn sử dụng cùng địa chỉ email mà bạn đã đăng ký."
+    }
+  },
+  "settings": {
+    "tile_style": {
+      "title": "🎨 kiểu gạch",
+      "content": "Thay đổi cách các ô màn hình chính hiển thị. Có ba kiểu dáng có sẵn:",
+      "list": [
+        "Flat — phong cách sạch sẽ, tối giản sử dụng màu sắc chủ đề hiện tại của bạn",
+        "Phát sáng — các viên gạch bề mặt tối với viền trên phát sáng màu sắc",
+        "Màu sắc — mỗi viên gạch có một màu nhấn đặc trưng"
+      ],
+      "tip": "Kiểu ô hoạt động ở cả chế độ Tối và Sáng."
+    },
+    "theme": {
+      "title": "🌙 Chủ đề Tối / Sáng",
+      "content": "Chuyển đổi giữa chủ đề Tối và Sáng từ Cài đặt. Tất cả các màn hình và ô vuông đều tự động thích ứng.",
+      "tip": "Chế độ tối dễ chịu hơn cho mắt trong phòng gym ánh sáng yếu."
+    },
+    "language": {
+      "title": "🌐 Ngôn ngữ",
+      "content": "Ứng dụng hỗ trợ nhiều ngôn ngữ. Thay đổi ngôn ngữ của bạn từ Cài đặt.",
+      "list": [
+        "Tiếng Anh",
+        "Tiếng Nhật (日本語)",
+        "Tiếng Hàn (한국어)",
+        "Tiếng Trung (中文)",
+        "Tiếng Việt (Tiếng Việt)"
+      ]
+    },
+    "logout": {
+      "title": "🚪 Đăng xuất ra",
+      "content": "Bạn có thể đăng xuất từ trang Cài đặt. Dữ liệu của bạn được lưu lên đám mây — đăng nhập lại sẽ khôi phục mọi thứ.",
+      "note": "Đăng xuất sẽ xóa phiên họp cục bộ của bạn. Bạn sẽ cần đăng nhập lại bằng email của mình."
+    }
+  }
+}

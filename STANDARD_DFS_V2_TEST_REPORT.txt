@@ -1,0 +1,44 @@
+SCS Standard DFS V2 test report
+Build 544
+
+Scope
+- Replaced Standard free-doubles route only.
+- Unique, Balanced placeholder, typed courts, singles and competitive routes remain unchanged.
+- Participation selection is completed before pair/game optimisation.
+
+Results
+12 players, 2 courts, 10 rounds
+- Played: 6-7 (spread 1)
+- Rested: 3-4 (spread 1)
+- Consecutive rests: 0
+- Invalid courts: 0
+- Duplicate players: 0
+- Repeated pairs: 0
+
+12 players, 2 courts, 30 rounds
+- Played: 20 each (spread 0)
+- Rested: 10 each (spread 0)
+- Consecutive rests: 0
+- Invalid courts: 0
+- Duplicate players: 0
+
+10 players, 2 courts, 20 rounds
+- Played: 16 each (spread 0)
+- Rested: 4 each (spread 0)
+- Consecutive rests: 0
+- Invalid courts: 0
+- Duplicate players: 0
+
+14 players, 3 courts, 20 rounds
+- Played: 17-18 (spread 1)
+- Rested: 2-3 (spread 1)
+- Consecutive rests: 0
+- Invalid courts: 0
+- Duplicate players: 0
+
+12 players, 2 courts, 20 rounds, two fixed pairs
+- Played: 13-14 (spread 1)
+- Rested: 6-7 (spread 1)
+- Consecutive rests: 0
+- Invalid courts: 0
+- Duplicate players: 0

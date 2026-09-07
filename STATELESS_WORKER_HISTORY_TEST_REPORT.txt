@@ -1,0 +1,35 @@
+SCS BUILD 547 - STATELESS WORKER HISTORY CONTRACT
+
+Architecture
+- Main app owns scheduling memory.
+- Every generation request contains a complete history snapshot.
+- Worker reconstructs state only from the request.
+- Worker generates one round and returns nextHistory + validation.
+- Main app applies nextHistory only after round acceptance.
+
+History fields
+- playedCount
+- restCount
+- restQueue
+- MD / LD / XD / singles counts
+- pairPlayedSet
+- gamesMap
+- opponentMap
+- previousRound
+
+Validation
+- duplicate players
+- playing/resting overlap
+- incomplete games
+- played spread
+- rest spread
+
+Compatibility
+- Legacy top-level history fields remain accepted by worker.
+- Unique and competitive route selection unchanged.
+- Existing UI rendering and rating updates unchanged.
+
+Static checks
+- rounds.js syntax: PASS
+- worker.js syntax: PASS
+- sw.js syntax: PASS

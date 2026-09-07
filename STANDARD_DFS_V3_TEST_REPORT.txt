@@ -1,0 +1,57 @@
+STANDARD DFS V3 – FRESH COURT TEST REPORT
+
+Algorithm order
+1. Equal participation / uniform rests
+2. Return last-round rested players to play based on participation priority
+3. Spread returning rested players across courts whenever mathematically possible
+4. Prefer never-used four-player court groups
+5. Prefer new pairs and fewer repeated opponents
+6. Avoid the previous round's court group, partner and opponents
+7. Use least-repeated fallback only when necessary
+
+Automated tests
+
+12 players / 2 courts / 10 rounds
+Played spread: 1
+Rest spread: 1
+Consecutive rests: 0
+Returning-player court spread failures: 0
+Previous-round court repeats: 0
+Repeated exact games: 0
+Invalid games: 0
+
+12 players / 2 courts / 30 rounds
+Played spread: 0
+Rest spread: 0
+Consecutive rests: 0
+Returning-player court spread failures: 0
+Previous-round court repeats: 0
+Repeated exact games: 0
+Invalid games: 0
+
+10 players / 2 courts / 20 rounds
+Played spread: 0
+Rest spread: 0
+Consecutive rests: 0
+Returning-player court spread failures: 0
+Previous-round court repeats: 0
+Repeated exact games: 0
+Invalid games: 0
+
+14 players / 3 courts / 20 rounds
+Played spread: 1
+Rest spread: 1
+Consecutive rests: 0
+Returning-player court spread failures: 0
+Previous-round court repeats: 0
+Repeated exact games: 0
+Invalid games: 0
+
+12 players / 2 courts / 10 rounds / two fixed pairs
+Played spread: 1
+Rest spread: 1
+Consecutive rests: 0
+Returning-player court spread failures: 0
+Previous-round court repeats: 0
+Repeated exact games: 0
+Invalid games: 0

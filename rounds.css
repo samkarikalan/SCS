@@ -1,0 +1,5177 @@
+/* =============================================
+   CLUB SCHEDULER PRO — Rounds & Courts
+   rounds.css
+   Consolidates: BRRStyle2.css + rounds sections of BRRStyle3.css
+   ============================================= */
+
+/* =============================================
+CLUB SCHEDULER PRO — Dark Theme
+BRRStyle2.css (Rounds / Court / Action)
+============================================= */
+
+/* ── Page 2 modes ── */
+#page2 { transition: background-color 0.3s ease; background: var(--bg); }
+#page2.random-mode      { background: var(--bg); }
+#page2.idle-mode        { background: var(--bg); }
+#page2.competitive-mode { background: #14100a; }
+#page2.active-mode      { background: #0d1209; }
+
+/* ── Title Card (Round header) ── */
+
+
+
+
+.title-card {
+  
+display: flex; justify-content: center; align-items: center;
+gap: 10px; width: 98%; margin: 6px auto 4px; text-align: center;
+}
+#roundTitle {
+display: flex; width: fit-content; margin: 4px;
+padding: 2px 12px; font-family: var(--font-display);
+font-size: 0.85rem; font-weight: 700; height: 1.6rem;
+border-radius: var(--r-sm); background: transparent;
+justify-content: center; align-items: center;
+color: var(--text); letter-spacing: 1px; text-transform: uppercase;
+}
+.lock-icon {
+width: 1.5rem; height: 1.5rem; border-radius: 50%;
+cursor: pointer; transition: transform 0.2s, filter 0.2s; opacity: 0.85;
+background: rgba(255,255,255,0.15);
+padding: 3px;
+}
+.lock-icon:hover { transform: scale(1.1); opacity: 1; }
+body.locked .lock-icon   { filter: none; opacity: 1; background: rgba(255,255,255,0.2); }
+body:not(.locked) .lock-icon { filter: grayscale(0.6); opacity: 0.6; }
+body.app-light .lock-icon { background: rgba(0,0,0,0.08); }
+
+/* ── Court Card ── */
+
+
+
+
+/* ── Teams ── */
+.teams {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0;
+  box-sizing: border-box;
+  gap: 0;
+}
+
+.teams::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 0.1rem;
+  background: none;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Left side — Green team */
+.team[data-team-side="L"] {
+  flex: 1;
+  background-color: #eef6f0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 3px 8px 3px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+  position: relative;
+  transition: 0.2s ease;
+  cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* Right side — Blue team */
+.team[data-team-side="R"] {
+  flex: 1;
+  background-color: #eaf3fb;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 3px 8px 3px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+  position: relative;
+  transition: 0.2s ease;
+  cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* Dark mode overrides */
+body.app-dark .team[data-team-side="L"] {
+  background-color: rgba(45,206,137,0.12);
+  border-color: rgba(45,206,137,0.25);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+body.app-dark .team[data-team-side="R"] {
+  background-color: rgba(0,153,204,0.12);
+  border-color: rgba(0,153,204,0.25);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+
+.team[data-team-side="L"]:hover,
+.team[data-team-side="R"]:hover { filter: brightness(0.95); }
+
+.team button { background: none; color: var(--text); font-weight: 600; border: none; }
+
+/* ── Player Buttons ── */
+.Lplayer-btn, .Rplayer-btn {
+border: none; border-radius: var(--r-sm);
+font-size: var(--player-font-size);
+padding: 2px 4px; margin: 0;
+color: var(--text); cursor: grab;
+display: flex; justify-content: flex-start; align-items: center;
+text-align: left; width: fit-content; max-width: 100%; box-sizing: border-box;
+-webkit-user-select: none; user-select: none;
+white-space: normal; overflow-wrap: break-word; word-break: break-word;
+font-weight: 500; gap: 5px;
+touch-action: manipulation; transition: transform 0.15s;
+background: none; border: none;
+}
+.Lplayer-btn { background: none; }
+.Rplayer-btn { background: none; }
+.Lplayer-btn:hover { background: rgba(108,99,255,0.25); transform: scale(1.02); }
+.Rplayer-btn:hover { background: rgba(255,101,132,0.25); transform: scale(1.02); }
+
+/* Gender overrides */
+.Lplayer-btn.male, .Rplayer-btn.male { background: rgba(96,165,250,0.12); border-color: rgba(96,165,250,0.2); }
+.Lplayer-btn.female, .Rplayer-btn.female { background: rgba(255,101,132,0.12); border-color: rgba(255,101,132,0.2); }
+
+.Lplayer-btn.selected, .Rplayer-btn.selected, .rest-btn.selected {
+outline: 2px solid var(--amber);
+background: rgba(245,158,11,0.2) !important;
+color: var(--amber);
+box-shadow: 0 0 10px rgba(245,158,11,0.4);
+transform: scale(1.02);
+animation: borderPulse 2s ease-in-out infinite;
+}
+@keyframes borderPulse {
+0%,100% { box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+50%      { box-shadow: 0 0 14px rgba(245,158,11,0.7); }
+}
+
+/* ── Rest Box ── */
+.rest-box {
+display: none; flex-wrap: wrap; justify-content: flex-start;
+align-items: flex-start; gap: 4px;
+padding: 6px; margin: 4px; color: var(--text);
+box-sizing: border-box; border-radius: var(--r-sm);
+min-height: 2rem; border: none !important; outline: none !important; background: transparent;
+}
+.rest-box:not(:empty):not(.rest-collapsed) {
+display: flex;
+background: rgba(255,255,255,0.03) !important;
+border: 1px solid var(--border) !important;
+}
+
+.rest-btn {
+border: 1px solid var(--border2); border-radius: var(--r-xl);
+font-size: var(--player-font-size); padding: 4px 10px; margin: 2px;
+color: var(--text-dim); text-align: center;
+transition: transform 0.2s, background 0.2s; cursor: grab;
+background: var(--surface3); display: inline-flex; align-items: center; gap: 6px;
+}
+.rest-btn:hover { transform: scale(1.05); background: var(--surface2); color: var(--text); }
+
+/* ── Match Card ── */
+.match-card {
+background: var(--surface2); border-radius: var(--r-md);
+padding: 4px; margin: 3px auto;
+box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+position: relative; transition: transform 0.2s, box-shadow 0.2s;
+}
+.match-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+
+/* ── Swap / Win ── */
+.swap-icon {
+position: absolute; top: -1px; right: -1px; z-index: 10;
+background: var(--surface3); color: var(--text-dim);
+border-radius: 50%; padding: 4px; font-size: 0.85rem;
+box-shadow: 0 2px 8px rgba(0,0,0,0.4); cursor: pointer;
+transition: all 0.2s; border: 1px solid var(--border2);
+}
+.swap-icon:hover { transform: scale(1.15); background: var(--amber); color: #000; }
+
+.win-cup {
+position: absolute; left: 90%; transform: translateX(-50%);
+width: 28px; height: 28px; padding: 2px; border-radius: 50%;
+background: none; cursor: pointer; z-index: 15;
+opacity: 0.9; filter: grayscale(30%);
+transition: opacity 0.2s, filter 0.2s, transform 0.2s;
+}
+.win-cup.blinking { animation: winCupBlink 2s infinite; }
+.win-cup.active   { animation: none; opacity: 1; filter: none; transform: translateX(-50%) scale(1.3); }
+@keyframes winCupBlink {
+0%   { opacity: 0.3; transform: translateX(-50%) scale(0.5); }
+50%  { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+100% { opacity: 0.3; transform: translateX(-50%) scale(0.5); }
+}
+
+/* ── Played Round ── */
+.played-round .match-card, .played-round .rest-btn,
+.played-round .Lplayer-btn, .played-round .Rplayer-btn,
+.played-round .teams, .played-round .team {
+filter: grayscale(30%) opacity(0.7); border: 1px solid var(--border);
+}
+
+/* ── Row Field (courts / minRounds row) ── */
+.row-field {
+display: grid; grid-template-columns: 1fr auto;
+align-items: center; gap: 12px;
+padding: 8px 10px; border-radius: var(--r-xl);
+border: 1px solid var(--border); margin: 4px 4px;
+background: var(--surface); transition: 0.25s ease;
+}
+
+/* ── Court Card (stepper) ── */
+.court-card {
+display: flex; align-items: center; justify-content: center;
+gap: 8px; padding: 4px 8px;
+background: var(--surface2); border: 1px solid var(--border2);
+border-radius: var(--r-xl); font-family: var(--font-body);
+}
+.row-label { font-size: 1rem; padding: 4px; color: var(--text-dim); font-weight: 600; }
+
+#num-courts { font-size: 1.2rem; font-weight: 700; color: var(--text); min-width: 1.5rem; text-align: center; }
+#minRoundsDisplay { font-size: 1.2rem; font-weight: 700; color: var(--text); min-width: 1.5rem; text-align: center; }
+
+.circle-btn {
+width: 28px; height: 28px; border-radius: 50%;
+border: 1px solid rgba(108,99,255,0.4);
+background: rgba(108,99,255,0.12); color: var(--accent);
+font-size: 1rem; font-weight: 700; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.15s;
+}
+.circle-btn:hover { background: rgba(108,99,255,0.25); transform: scale(1.1); }
+
+/* ── Mode Card (trophy toggle) ── */
+.mode-card {
+display: flex; align-items: center; gap: 10px;
+padding: 6px 12px; border-radius: var(--r-xl);
+background: var(--surface2); border: 1px solid var(--border2);
+font-size: 1.3rem; font-weight: bold;
+}
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+position: absolute; cursor: pointer; inset: 0;
+background: var(--surface3); border: 1px solid var(--border2);
+transition: 0.3s; border-radius: 24px;
+}
+.slider:before {
+content: ""; position: absolute;
+height: 16px; width: 16px; left: 3px; bottom: 3px;
+background: var(--text-dim); transition: 0.3s; border-radius: 50%;
+}
+input:checked + .slider { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(45,206,137,0.4); }
+input:checked + .slider:before { transform: translateX(20px); background: #fff; }
+
+/* ── Min rounds hint ── */
+.min-rounds-hint { font-size: 0.75rem; color: var(--muted); align-self: center; padding-right: 8px; text-align: right; flex: 1; }
+.competitive-settings { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease; pointer-events: none; }
+.competitive-settings.visible { max-height: 80px; opacity: 1; pointer-events: auto; }
+
+/* ── Action Card (Play button bar) ── */
+.action-card {
+display: flex; width: 98%; margin: 6px auto;
+border-radius: var(--r-lg); overflow: hidden;
+box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.action {
+padding: 12px 0; border: none;
+font-size: 1.05rem; font-weight: 700; color: #fff;
+cursor: pointer; transition: transform 0.1s, opacity 0.15s;
+}
+.action:active { transform: scale(0.97); opacity: 0.9; }
+.action.mid  { flex: 0.5; font-size: 1.5rem; background: var(--surface3); }
+.action.right.primary { flex: 2; background: linear-gradient(135deg, var(--accent) 0%, #9b60ff 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
+.action.right.primary:hover { filter: brightness(1.1); }
+.action.right.primary.end { background: linear-gradient(135deg, var(--red), #b91c1c); }
+
+/* ── Gender icon ── */
+.gender-icon { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+/* ── Rating Ring ── */
+.rating-ring-wrap {
+  position: relative;
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rating-ring-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px !important; height: 16px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  opacity: 0.95 !important;
+}
+.gender-btn { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; pointer-events: none; flex-shrink: 0; }
+.gender-btn.male   { background: rgba(96,165,250,0.2); color: #60a5fa; }
+.gender-btn.female { background: rgba(255,101,132,0.2); color: var(--accent2); }
+
+/* Player name in button */
+.player-name { flex: 1; min-width: 0; white-space: normal; overflow-wrap: break-word; word-break: break-word; line-height: 1.2; font-weight: 400; color: var(--text); }
+
+/* ── Lock ── */
+body.locked .swap-icon { display: none; }
+body.locked .Lplayer-btn, body.locked .Rplayer-btn, body.locked .rest-btn, body.locked .swap-icon { pointer-events: none; }
+/* Disable team swap tap when locked or LIVE — win-cup stays interactive via its own pointer-events */
+body.locked .team { pointer-events: none; }
+#roundsPage.active-mode .team { pointer-events: none; }
+#roundsPage.active-mode .team .win-cup { pointer-events: auto; }
+
+/* ── VS divider ── */
+.vs { display: none; }
+.vs-badge { display: none; }
+.vs-divider {
+  display: flex; align-items: center;
+  background: #f7f7f7;
+  border-top: 1px solid #e4e4e4;
+  border-bottom: 1px solid #e4e4e4;
+  padding: 0 12px; gap: 8px;
+  height: 14px;
+}
+.vs-divider .vs-line { flex: 1; height: 1px; background: #ddd; }
+.vs-divider span {
+  font-size: 0.58rem; font-weight: 700;
+  color: #bbb; letter-spacing: 1.5px;
+}
+
+/* ── Confirm overlay (also here for isolation) ── */
+.confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.confirm-overlay.hidden { display: none; }
+.confirm-box { background: var(--surface); border: 1px solid var(--border2); padding: 20px; border-radius: var(--r-lg); width: 90%; max-width: 320px; text-align: center; box-shadow: var(--shadow); }
+.confirm-title { font-size: 1rem; margin-bottom: 16px; color: var(--text); font-weight: 600; }
+.confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+/* body disabled blinking */
+body.disabled { pointer-events: none; opacity: 0.9; animation: blinkBorder 1s infinite; border: 3px solid var(--amber); box-sizing: border-box; }
+@keyframes blinkBorder { 0%,100% { border-color: var(--amber); } 50% { border-color: transparent; } }
+#nextBtn { pointer-events: auto; opacity: 1; }
+
+/* primary / end overrides */
+.primary   { background: var(--green); color: white; }
+.primary.end { background: var(--red); }
+
+/* ── Dark theme overrides for appended classes ── */
+.round-navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); }
+.round-navigation .center { justify-self: center; width: fit-content; white-space: nowrap; }
+.round-navigation button { font-size: 1rem; background: var(--accent); display: flex; align-items: center; gap: 6px; padding: 5px 20px; color: white; cursor: pointer; border-radius: var(--r-sm); border: none; transition: transform 0.15s; }
+.round-navigation button:hover { background: var(--accent); transform: scale(1.05); }
+.round-navigation button:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.round-navigation button.danger { background: var(--red) !important; }
+.finish-card { width: 98%; margin: 2px auto; border-radius: var(--r-lg); box-shadow: 0 4px 16px rgba(0,0,0,0.3); overflow: hidden; }
+.finish-btn { width: 100%; padding: 10px 0; border: none; font-size: 1.05rem; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(135deg, var(--red), #b91c1c); transition: transform 0.1s; }
+.finish-btn:active { transform: scale(0.97); }
+.player-btn { color: var(--text); font-weight: 600; border-radius: var(--r-sm); padding: 4px 10px; margin: 3px auto; text-align: center; white-space: normal; overflow-wrap: break-word; background: var(--surface3); border: 1px solid var(--border2); }
+.player-btn.male { background: rgba(96,165,250,0.12); border-color: rgba(96,165,250,0.2); }
+.player-btn.female { background: rgba(255,101,132,0.12); border-color: rgba(255,101,132,0.2); }
+.timer-card { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--r-xl); padding: 5px 10px; width: fit-content; }
+.timer-icon { cursor: pointer; background: var(--surface2); border: 1px solid var(--border2); color: var(--text-dim); padding: 6px 8px; border-radius: 20px; font-size: 1.2rem; user-select: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s; }
+.timer-icon.running { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: var(--red); }
+.timer-toggle-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 0; color: var(--text-dim); }
+.timer-slider { width: 90%; margin: 0 auto; }
+.timer-slider input[type="range"] { width: 100%; }
+.disabled-btn { opacity: 0.35; pointer-events: none; }
+.minus { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: var(--red); }
+.plus  { background: rgba(45,206,137,0.15); border-color: rgba(45,206,137,0.3); color: var(--green); }
+.sec { font-size: 0.85rem; text-align: center; padding: 3px; color: var(--text-dim); }
+.danger { background: var(--red) !important; color: white !important; }
+.action.left { flex: 1.5; background: var(--surface3); border-right: 1px solid var(--border); }
+
+/* ── Additional preserved classes ── */
+.finish-btn .icon {
+margin-left: 6px;
+}
+.card {
+position: relative; /* Keep this */
+}
+/* card class dark override for page2 */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px; margin: 6px 2px; width: calc(100% - 4px); box-sizing: border-box; position: relative; }
+.icon { margin-left: 6px; }
+
+/* ============================================
+PRO DARK THEME PATCH — JS-injected classes
+All originally-missing classes, dark-themed
+============================================= */
+
+/* Swap icon */
+.swap-icon {
+position: absolute; top: -1px; right: -1px; z-index: 10;
+background: var(--surface3); color: var(--text-dim);
+border: 1px solid var(--border2);
+border-radius: 50%; padding: 4px; font-size: 0.85rem;
+box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+transition: all 0.2s;
+}
+.swap-icon:hover { transform: scale(1.15); background: var(--amber); color: #000; border-color: transparent; }
+body.locked .swap-icon { display: none; }
+
+/* Selected / swapping states — canonical definition is in SELECTED / SWAPPING STATES section below */
+
+.selected {
+  border: 1px solid var(--amber) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: var(--amber) !important;
+}
+
+.selected-no {
+  border-left: none !important;
+  background: revert !important;
+}
+/* Teams & Court cards */
+.courtcard {
+display: flex; flex-direction: column;
+background: transparent; border: none;
+position: relative; border-radius: 10px;
+box-shadow: none;
+margin: 3px auto; padding: 0;
+overflow: hidden; width: 100%;
+}
+.courtname {
+text-align: left; margin: 0;
+font-size: 0.6rem; letter-spacing: 1.5px;
+text-transform: uppercase; color: #6aab88; font-weight: 700;
+background: #eef6f0; padding: 2px 8px;
+}
+.court-number {
+font-size: 0.7rem; letter-spacing: 1px;
+text-transform: uppercase; color: var(--muted);
+}
+.teams {
+display: flex; flex-direction: column; background: none; position: relative;
+width: 100%; border-radius: 10px; overflow: hidden;
+padding: 0; box-sizing: border-box; gap: 0;
+}
+.team {
+background: var(--surface2); border-radius: 0;
+padding: 6px 10px; box-shadow: none;
+display: grid; grid-template-columns: 1fr 1fr;
+align-items: center; gap: 2px; flex: 1; position: relative;
+}
+.team-btn {
+background: none; border: none; color: var(--text);
+font-weight: 600; cursor: pointer; padding: 4px 8px;
+border-radius: var(--r-sm); transition: background 0.15s;
+width: 100%;
+}
+.team-btn:hover { background: rgba(255,255,255,0.05); }
+.vs { display: none; }
+
+/* Rest box */
+.rest-box {
+display: none; flex-wrap: wrap; justify-content: flex-start;
+align-items: flex-start; gap: 4px;
+padding: 6px; margin: 4px; color: var(--text);
+box-sizing: border-box; border-radius: var(--r-sm);
+min-height: 2rem; background: transparent;
+border: none !important; outline: none !important;
+}
+.rest-box:not(:empty):not(.rest-collapsed) {
+display: flex;
+background: rgba(255,255,255,0.03) !important;
+border: 1px solid var(--border) !important;
+}
+.rest-btn {
+border: 1px solid var(--border2); border-radius: var(--r-xl);
+font-size: var(--player-font-size); padding: 4px 10px; margin: 2px;
+color: var(--text-dim); text-align: center; cursor: grab;
+background: var(--surface3); display: inline-flex; align-items: center; gap: 5px;
+transition: transform 0.15s, background 0.15s;
+}
+.rest-btn:hover { transform: scale(1.04); background: var(--surface2); color: var(--text); }
+
+/* Player name */
+.player-name {
+flex: 1; min-width: 0; white-space: normal;
+overflow-wrap: break-word; word-break: break-word;
+line-height: 1.2; font-weight: 400; color: var(--text);
+}
+
+/* Round wrapper / header */
+.round-wrapper { margin-bottom: 6px; }
+.round-header {
+margin: 12px 4px 4px;
+font-family: var(--font-display);
+font-size: 0.75rem; font-weight: 700;
+letter-spacing: 1.5px; text-transform: uppercase;
+color: var(--muted);
+}
+.latest-round .round-header { color: var(--accent); }
+.played-round .courtcard,
+.played-round .rest-btn,
+.played-round .Lplayer-btn,
+.played-round .Rplayer-btn,
+.played-round .teams,
+.played-round .team {
+filter: grayscale(30%) opacity(0.65);
+border-color: var(--border) !important;
+}
+
+/* Repeated warnings */
+.repeated-game,
+.mbm-court-card.repeated-game {
+  background: rgba(239,68,68,0.08) !important;
+  border: 1.5px solid rgba(239,68,68,0.55) !important;
+  border-left: 4px solid rgba(239,68,68,0.9) !important;
+  box-shadow: 0 0 12px rgba(239,68,68,0.18) !important;
+}
+body.app-dark .repeated-game,
+body.app-dark .mbm-court-card.repeated-game {
+  background: rgba(239,68,68,0.10) !important;
+  border: 1.5px solid rgba(239,68,68,0.55) !important;
+  border-left: 4px solid rgba(239,68,68,0.9) !important;
+  box-shadow: 0 0 12px rgba(239,68,68,0.18) !important;
+}
+.repeated-game .courtname { color: rgba(239,68,68,0.9) !important; background: rgba(239,68,68,0.15) !important; }
+
+/* Win cup */
+.win-cup {
+position: absolute; left: 90%; transform: translateX(-50%);
+width: 28px; height: 28px; background: none; cursor: pointer;
+z-index: 15; opacity: 0.7; filter: grayscale(30%);
+transition: opacity 0.2s, filter 0.2s, transform 0.2s;
+}
+.win-cup.blinking { animation: winCupBlink 2s infinite; }
+.win-cup.active   { animation: none; opacity: 1; filter: none; transform: translateX(-50%) scale(1.3); }
+@keyframes winCupBlink {
+0%   { opacity: 0.3; transform: translateX(-50%) scale(0.5); }
+50%  { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+100% { opacity: 0.3; transform: translateX(-50%) scale(0.5); }
+}
+.winner { background: rgba(245,158,11,0.15) !important; border-color: var(--amber) !important; }
+
+/* Dragging */
+.dragging { opacity: 0.5; transform: scale(1.02); cursor: grabbing !important; }
+
+/* Mode backgrounds */
+#page2.random-mode      { background: var(--bg); }
+#page2.competitive-mode { background: #130f0a; }
+#page2.active-mode      { background: #0a100d; }
+.active-mode { background: var(--bg); }
+
+/* Running / disabled */
+.running { background: rgba(239,68,68,0.15) !important; border-color: rgba(239,68,68,0.3) !important; color: var(--red) !important; }
+.disabled-btn { opacity: 0.35; pointer-events: none; }
+.inactive-row { opacity: 0.4; filter: grayscale(0.6); }
+
+/* plcourt-card (player-court card variant) */
+.plcourt-card {
+background: var(--surface); border: 1px solid var(--border2);
+border-radius: var(--r-lg); padding: 10px;
+margin: 8px auto; width: 95%;
+box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+/* Player card */
+/* ── Leaderboard player card ── */
+.player-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 6px 44px 1fr 40px 40px 40px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 8px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.player-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+
+/* Colored left strip — spans both rows */
+.player-card .rating-strip {
+  grid-column: 1; grid-row: 1 / 3;
+  align-self: stretch;
+  background: var(--strip-color, #9e9e9e);
+}
+
+/* Rank — spans both rows */
+.player-card .rank {
+  grid-column: 2; grid-row: 1 / 3;
+  font-weight: 800; font-size: 1.0rem;
+  text-align: center;
+  padding: 8px 0;
+  color: var(--text);
+}
+
+/* Row 1 — name + stats */
+.player-card .name {
+  grid-column: 3; grid-row: 1;
+  font-size: 0.9rem; font-weight: 600;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
+  padding-top: 7px;
+}
+.player-card .stat {
+  font-size: 0.95rem; color: var(--text);
+  text-align: center; font-weight: 700;
+  line-height: 1.1;
+  padding-top: 7px;
+}
+.player-card .stat.wins   { grid-column: 4; grid-row: 1; }
+.player-card .stat.played { grid-column: 5; grid-row: 1; }
+.player-card .stat.rest   { grid-column: 6; grid-row: 1; }
+
+/* Row 2 — rating badge + labels */
+.player-card .rating-badge {
+  grid-column: 3; grid-row: 2;
+  font-size: 0.68rem; padding: 1px 7px;
+  margin-bottom: 7px;
+  width: fit-content;
+  min-width: unset;
+}
+.player-card .stat-label {
+  grid-row: 2; font-size: 0.65rem;
+  color: var(--muted); text-align: center;
+  margin-bottom: 6px; font-weight: 500;
+  line-height: 1;
+}
+.player-card .stat-label.lbl-wins   { grid-column: 4; }
+.player-card .stat-label.lbl-played { grid-column: 5; }
+.player-card .stat-label.lbl-rest   { grid-column: 6; }
+
+/* Top 3 subtle background tint */
+.player-card.top-1 { background: linear-gradient(to right, rgba(245,166,35,0.06), var(--surface)); }
+.player-card.top-2 { background: linear-gradient(to right, rgba(155,155,155,0.06), var(--surface)); }
+.player-card.top-3 { background: linear-gradient(to right, rgba(205,127,50,0.06), var(--surface)); }
+
+/* ── Leaderboard header ── */
+.report-header {
+  display: grid;
+  grid-template-columns: 6px 44px 1fr 40px 40px 40px;
+  align-items: center; gap: 0 8px;
+  padding: 6px 0 6px 0; margin-bottom: 6px;
+  background: var(--accent);
+  border-radius: 12px;
+  font-size: 0.72rem; font-weight: 700; color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.report-header .header-strip { background: rgba(0,0,0,0.15); align-self: stretch; }
+.report-header > div { text-align: center; }
+.report-header .header-name { text-align: left; }
+.report-header .header-rating { display: none; }
+
+/* Fixed pair item */
+.fixed-pair-item {
+background: var(--surface2); border: 1px solid var(--border2);
+border-radius: var(--r-xl); padding: 8px 14px;
+display: flex; align-items: center; justify-content: space-between;
+margin: 4px 0; color: var(--text);
+}
+
+
+
+/* Export classes */
+.export-round       { margin-bottom: 16px; }
+.export-round-title { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+.export-match       { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 8px; margin: 4px 0; }
+.export-team        { display: inline-block; padding: 4px 10px; border-radius: var(--r-sm); font-weight: 600; }
+.export-vs          { display: inline-block; padding: 0 8px; color: var(--muted); font-weight: 700; }
+.export-rest-title  { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+.export-rest-box    { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0; }
+
+
+.round-settings-panel {
+  background: var(--surface3);
+  border: 2px solid var(--amber);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin: 8px 12px;
+}
+
+.round-settings-body {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  padding: 0;
+}
+
+.round-settings-body.open {
+  max-height: none;
+  opacity: 1;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 16px;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.setting-divider {
+  height: 1px;
+  background: var(--border2);
+  margin: 0;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+/* =============================================================
+   GITHUB ADMIN — Settings section
+   Added: step82
+============================================================= */
+
+/* =============================================================
+   CLUB CARD — Professional redesign
+============================================================= */
+
+.card-club-admin {
+  padding: 18px 16px 14px;
+}
+
+/* Status bar at top */
+.club-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  min-height: 32px;
+}
+
+#sbClubStatus {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+#sbModeBadge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Change button */
+.btn-clear {
+  margin-left: auto;
+  padding: 6px 16px;
+  background: #e63757;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.btn-clear:hover { opacity: 0.85; }
+
+/* Input fields */
+.club-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  background: var(--surface);
+  color: var(--text);
+  min-width: 0;
+  transition: border-color 0.15s;
+}
+.club-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Action buttons (Join, Create) */
+.btn-save {
+  padding: 10px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+  letter-spacing: 0.02em;
+}
+.btn-save:hover { opacity: 0.85; }
+
+/* Row layout for input + button */
+.club-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Club select dropdown */
+.club-select {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  background: var(--surface);
+  color: var(--text);
+  min-width: 0;
+  cursor: pointer;
+}
+.club-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Sync button */
+#clubTabJoin .btn-save[onclick*="sync"],
+#clubTabJoin button[onclick*="sync"] {
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+
+/* Divider label inside tabs */
+.club-tab-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 14px 0 8px;
+}
+
+/* Feedback text */
+#sbClubFeedback {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+/* Sync status text */
+#sbSyncStatus {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Tab content spacing */
+.club-tab-content {
+  padding-top: 12px;
+}
+.club-tab-content .club-row {
+  margin-bottom: 10px;
+}
+.club-tab-content .club-row:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Sync button style override */
+.sb-sync-btn {
+  padding: 7px 16px !important;
+  font-size: 0.8rem !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+  color: var(--accent) !important;
+  border: 1.5px solid var(--accent) !important;
+  font-weight: 700 !important;
+}
+.sb-sync-btn:hover { opacity: 0.8; }
+
+/* Unused legacy */
+.club-token-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.club-my-club-label { display: none; }
+
+/* =============================================================
+   REGISTER TAB — Browse Players modal
+   Added: step82
+============================================================= */
+
+.register-form {
+  padding: 12px 4px;
+  width: 100%;
+}
+
+.register-club-label {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 14px;
+  padding: 8px 10px;
+  background: var(--surface-alt, var(--surface));
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.register-field {
+  margin-bottom: 14px;
+}
+
+.register-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.register-hint {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.register-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  background: var(--surface);
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.register-rating-input {
+  width: 100px;
+}
+
+.register-gender-row {
+  display: flex;
+  gap: 8px;
+}
+
+.register-gender-btn {
+  flex: 1;
+  padding: 8px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.register-gender-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.register-save-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: filter 0.15s, opacity 0.2s;
+  letter-spacing: 0.01em;
+}
+.register-save-btn:hover    { filter: brightness(1.1); }
+.register-save-btn:active   { filter: brightness(0.9); }
+.register-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.register-feedback {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-height: 20px;
+  text-align: center;
+}
+
+.register-feedback.success { color: #2dce89; }
+.register-feedback.error   { color: #e63757; }
+
+/* =============================================================
+   REGISTER STAGING CARDS
+   Added: step83
+============================================================= */
+
+.register-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.86rem;
+  background: var(--surface);
+  color: var(--text);
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.register-add-btn {
+  width: 100%;
+  padding: 9px;
+  background: var(--surface);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background 0.15s;
+}
+
+.register-add-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.reg-staging-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.reg-staging-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-sizing: border-box;
+}
+
+.reg-staging-card.reg-card-success   { border-color: #2dce89; background: rgba(45,206,137,0.06); }
+.reg-staging-card.reg-card-duplicate { border-color: #f5a623; background: rgba(245,166,35,0.06); }
+.reg-staging-card.reg-card-error     { border-color: #e63757; background: rgba(230,55,87,0.06); }
+
+.reg-gender-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+.reg-name-input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 2px 4px;
+  min-width: 0;
+}
+
+.reg-name-input:disabled {
+  color: var(--muted);
+  border-bottom-color: transparent;
+}
+
+.reg-rating-input {
+  width: 52px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.82rem;
+  padding: 3px 5px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.reg-rating-input:disabled {
+  opacity: 0.5;
+}
+
+.reg-status-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+.reg-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+  flex-shrink: 0;
+  color: #e63757;
+}
+
+/* =============================================================
+   REGISTER STAGING — player card overrides
+   Added: step84
+============================================================= */
+
+/* Inline name edit inside card */
+.reg-name-inline {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 1px 2px;
+  width: 100%;
+  min-width: 0;
+  outline: none;
+}
+
+/* Rating input replacing rating-badge */
+.reg-rating-badge-input {
+  width: 46px;
+  padding: 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+}
+
+.reg-rating-badge-input:disabled {
+  opacity: 0.6;
+  border-color: transparent;
+}
+
+/* Status badges inside card actions */
+.reg-status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.reg-status-badge.reg-ok  { color: #2dce89; }
+.reg-status-badge.reg-dup { color: #f5a623; }
+.reg-status-badge.reg-err { color: #e63757; }
+
+/* Completed card — subtle green tint */
+.newImport-player-card.reg-card-done {
+  border-color: #2dce89;
+  background: rgba(45,206,137,0.05);
+  opacity: 0.85;
+}
+
+/* Register — gender image buttons */
+.register-gender-img-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.register-gender-img-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.reg-gender-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* === PLAYER STATS MODAL === */
+.stats-modal-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.stats-modal {
+  background: var(--surface); border-radius: var(--r-lg);
+  padding: 20px; width: 100%; max-width: 360px;
+  position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.stats-close-btn {
+  position: absolute; top: 10px; right: 12px;
+  background: none; border: none; font-size: 1.1rem;
+  color: var(--text-dim); cursor: pointer; padding: 4px;
+}
+.stats-loading { text-align: center; color: var(--muted); padding: 20px; }
+.stats-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.stats-avatar { width: 44px; height: 44px; border-radius: 50%; }
+.stats-name { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.stats-gender { font-size: 0.8rem; color: var(--muted); }
+.stats-row {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.stats-box {
+  flex: 1; background: var(--surface2); border-radius: var(--r-md);
+  padding: 10px 4px; text-align: center;
+}
+.stats-box-value { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+.stats-box-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.stats-section-title {
+  font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.stats-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+}
+.stats-table th {
+  text-align: left; padding: 6px 8px;
+  border-bottom: 1px solid var(--border); color: var(--muted);
+  font-weight: 600; font-size: 0.75rem;
+}
+.stats-table td {
+  padding: 6px 8px; border-bottom: 1px solid var(--border2);
+  color: var(--text);
+}
+.player-mgmt-name-link { cursor: pointer; }
+.player-mgmt-name-link:hover { color: var(--accent); text-decoration: underline; }
+
+/* === MANAGE TAB SECTION TITLES === */
+.manage-section-title {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 6px;
+  padding-bottom: 4px; border-bottom: 1px solid var(--border);
+}
+.manage-section-danger { color: #e63757; border-color: #e63757; }
+
+/* === SETTINGS TABS === */
+.settings-tab-content { padding: 12px; }
+
+/* === FIXED PAIR AVATAR === */
+.fixed-pair-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  vertical-align: middle; margin-right: 2px;
+}
+
+/* === FIXED PAIR CUSTOM PICKER === */
+.fp-picker-row { display: flex; gap: 8px; margin: 8px 0 0; }
+.fp-picker-field {
+  flex: 1; background: var(--surface2); border: 1.5px solid var(--border2);
+  border-radius: var(--r-md); padding: 9px 10px;
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer; transition: border-color 0.2s; min-height: 46px;
+}
+.fp-picker-field:hover { border-color: var(--accent); }
+.fp-picker-field.fp-open { border-color: var(--accent); background: var(--surface3); }
+.fp-picker-field.fp-selected { border-color: var(--accent); }
+.fp-avatar-placeholder {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: var(--surface3); border: 1.5px dashed var(--muted);
+}
+.fp-avatar-img { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; }
+.fp-label { font-size: 0.82rem; color: var(--text-dim); flex: 1; }
+.fp-label-chosen { color: var(--text); font-weight: 600; }
+.fp-chevron {
+  font-size: 0.65rem; color: var(--muted);
+  transition: transform 0.2s; pointer-events: none;
+}
+.fp-picker-field.fp-open .fp-chevron { transform: rotate(180deg); }
+
+.fp-dropdown { margin-bottom: 6px; }
+.fp-dropdown-inner {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--r-md); box-shadow: var(--shadow); overflow: hidden;
+  animation: fpSlideDown 0.15s ease;
+  max-height: 200px; overflow-y: auto;
+}
+@keyframes fpSlideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fp-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; cursor: pointer; transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.fp-option:last-child { border-bottom: none; }
+.fp-option:hover { background: var(--surface3); }
+.fp-option.fp-highlighted { background: var(--accent-dim); }
+.fp-option-avatar { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; }
+.fp-option-name { font-size: 0.88rem; color: var(--text); flex: 1; }
+.fp-option-rating {
+  font-size: 0.72rem; color: var(--muted);
+  background: var(--surface3); padding: 2px 6px; border-radius: 20px;
+}
+.fp-option-empty { padding: 10px 12px; font-size: 0.82rem; color: var(--muted); text-align: center; }
+
+
+/* =============================================
+   KariBRRApp — Redesign v3 (Court & Action Bar)
+   Matches iOS-native clean card style
+   Overrides BRRStyle2.css for rounds page
+   ============================================= */
+
+/* ── Imports for cleaner typography ── */
+
+/* ── Override font vars ── */
+:root {
+  --brr-court-green:   #3aaa76;
+  --brr-court-green-bg: #dff5eb;
+  --brr-court-blue-bg:  #d8edfb;
+  --brr-court-border:   #e2e8ee;
+  --brr-card-shadow:    0 3px 14px rgba(0,0,0,0.09);
+  --brr-card-radius:    16px;
+  --brr-play-green:     #2ec97a;
+  --brr-next-purple:    #7c5cfc;
+  --brr-end-red:        #e53e3e;
+  --brr-text-dark:      #1a1e2e;
+  --brr-text-muted:     #8898aa;
+  --brr-text-court:     #3aaa76;
+}
+
+/* ─────────────────────────────────────────────
+   GAME-RESULTS CONTAINER
+───────────────────────────────────────────── */
+#game-results {
+  padding: 0 10px;
+}
+
+/* ─────────────────────────────────────────────
+   COURT CARD — Main container
+───────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────
+   TOP BAR — theme polish
+───────────────────────────────────────────── */
+body.app-light .top-bar {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+body.app-dark .top-bar {
+  background: linear-gradient(180deg, #16161e 0%, #0f0f13 100%);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+body.app-light .top-tabs {
+  background: linear-gradient(180deg, #f8f9fc 0%, #f2f4f8 100%);
+}
+body.app-dark .top-tabs {
+  background: linear-gradient(180deg, #0f0f13 0%, #0c0c10 100%);
+}
+
+/* ─────────────────────────────────────────────
+   COURT CARD (moved comment back)
+───────────────────────────────────────────── */
+.courtcard {
+  background: #ffffff !important;
+  border: 1px solid var(--brr-court-border) !important;
+  border-radius: var(--brr-card-radius) !important;
+  box-shadow: var(--brr-card-shadow) !important;
+  margin: 3px 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+body.app-dark .courtcard {
+  background: #1e2130 !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.35) !important;
+}
+
+/* ─────────────────────────────────────────────
+   COURT NAME HEADER
+───────────────────────────────────────────── */
+.courtname {
+  font-family: var(--font-display) !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: var(--brr-court-green) !important;
+  background: transparent !important;
+  padding: 2px 10px !important;
+  margin: 0 !important;
+}
+
+body.app-dark .courtname {
+  color: #5dbb92 !important;
+  background: transparent !important;
+}
+
+/* ─────────────────────────────────────────────
+   TEAMS WRAPPER
+───────────────────────────────────────────── */
+.teams {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 0 var(--brr-card-radius) var(--brr-card-radius) !important;
+  overflow: hidden !important;
+}
+
+/* ─────────────────────────────────────────────
+   TEAM HALVES (green top / blue bottom)
+───────────────────────────────────────────── */
+.team[data-team-side="L"] {
+  background: var(--brr-court-green-bg) !important;
+  border-radius: 0 !important;
+  padding: 2px 8px 2px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0px !important;
+  box-shadow: none !important;
+  position: relative !important;
+  min-height: 28px !important;
+}
+
+.team[data-team-side="R"] {
+  background: var(--brr-court-blue-bg) !important;
+  border-radius: 0 !important;
+  padding: 2px 8px 2px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0px !important;
+  box-shadow: none !important;
+  position: relative !important;
+  min-height: 28px !important;
+}
+
+body.app-dark .team[data-team-side="L"] {
+  background: rgba(45,206,137,0.14) !important;
+}
+body.app-dark .team[data-team-side="R"] {
+  background: rgba(74,158,255,0.14) !important;
+}
+
+/* ── State overrides — must come after exact [data-team-side="L/R"] rules ── */
+.team[data-team-side="L"].selected-team,
+.team[data-team-side="R"].selected-team,
+body.app-dark .team[data-team-side="L"].selected-team,
+body.app-dark .team[data-team-side="R"].selected-team,
+body.app-light .team[data-team-side="L"].selected-team,
+body.app-light .team[data-team-side="R"].selected-team {
+  background: rgba(108,99,255,0.45) !important;
+  outline: 2px solid rgba(108,99,255,0.8) !important;
+}
+.team[data-team-side="L"].swapping,
+.team[data-team-side="R"].swapping,
+body.app-dark .team[data-team-side="L"].swapping,
+body.app-dark .team[data-team-side="R"].swapping,
+body.app-light .team[data-team-side="L"].swapping,
+body.app-light .team[data-team-side="R"].swapping {
+  background: rgba(245,158,11,0.45) !important;
+  outline: 2px solid rgba(245,158,11,0.8) !important;
+  transform: scale(1.02) !important;
+}
+.team[data-team-side="L"].repeated-pair,
+.team[data-team-side="R"].repeated-pair,
+body.app-dark .team[data-team-side="L"].repeated-pair,
+body.app-dark .team[data-team-side="R"].repeated-pair,
+body.app-light .team[data-team-side="L"].repeated-pair,
+body.app-light .team[data-team-side="R"].repeated-pair {
+  background: rgba(239,68,68,0.28) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.team[data-team-side="L"].fixed-pair,
+.team[data-team-side="R"].fixed-pair {
+  background: rgba(74,158,255,0.12) !important;
+  border: 1.5px dashed rgba(74,158,255,0.55) !important;
+  box-shadow: none !important;
+}
+.team[data-team-side="L"].fixed-pair::before,
+.team[data-team-side="R"].fixed-pair::before {
+  content: "🔗";
+  font-size: 0.75rem;
+  margin-right: 4px;
+  opacity: 0.85;
+}
+/* ─────────────────────────────────────────────
+   PLAYER BUTTONS
+───────────────────────────────────────────── */
+.Lplayer-btn, .Rplayer-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 2px 4px !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  border: none !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.84rem !important;
+  font-weight: 600 !important;
+  color: var(--brr-text-dark) !important;
+  cursor: pointer !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  -webkit-user-select: none !important; user-select: none !important;
+  transition: background 0.15s, transform 0.12s !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+body.app-dark .Lplayer-btn,
+body.app-dark .Rplayer-btn {
+  background: transparent !important;
+  color: #e8eaf6 !important;
+}
+
+.Lplayer-btn:hover { background: rgba(58,170,118,0.18) !important; transform: scale(1.02) !important; }
+.Rplayer-btn:hover { background: rgba(74,158,255,0.18) !important; transform: scale(1.02) !important; }
+
+.Lplayer-btn.selected, .Rplayer-btn.selected {
+  outline: 2px solid var(--amber) !important;
+  background: rgba(245,158,11,0.18) !important;
+  color: var(--amber) !important;
+}
+
+/* ─────────────────────────────────────────────
+   PLAYER NAME
+───────────────────────────────────────────── */
+.player-name {
+  font-family: var(--font-body) !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: inherit !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 1.25 !important;
+}
+
+/* ─────────────────────────────────────────────
+   GENDER ICON
+───────────────────────────────────────────── */
+.gender-icon {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  opacity: 0.85 !important;
+}
+
+/* ─────────────────────────────────────────────
+   VS DIVIDER
+───────────────────────────────────────────── */
+.vs-divider {
+  display: flex !important;
+  align-items: center !important;
+  background: #f4f6f8 !important;
+  border-top: 1px solid #e8ecf0 !important;
+  border-bottom: 1px solid #e8ecf0 !important;
+  padding: 0 14px !important;
+  gap: 8px !important;
+  height: 14px !important;
+}
+
+body.app-dark .vs-divider {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+.vs-divider .vs-line {
+  flex: 1 !important;
+  height: 1px !important;
+  background: #dde3ea !important;
+}
+
+body.app-dark .vs-divider .vs-line {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+.vs-divider span {
+  font-family: var(--font-body) !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  color: #b0bac6 !important;
+  letter-spacing: 2px !important;
+}
+
+/* ─────────────────────────────────────────────
+   SWAP ICON
+───────────────────────────────────────────── */
+.swap-icon {
+  position: absolute !important;
+  top: 4px !important;
+  right: 6px !important;
+  z-index: 10 !important;
+  background: rgba(0,0,0,0.06) !important;
+  color: #8898aa !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  border-radius: 5px !important;
+  padding: 0 !important;
+  font-size: 0.8rem !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background 0.15s, color 0.15s !important;
+  width: 24px !important;
+  height: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.app-dark .swap-icon {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  color: #a0a8c0 !important;
+}
+
+.swap-icon:hover {
+  background: var(--amber) !important;
+  color: #fff !important;
+  border-color: var(--amber) !important;
+}
+
+body.locked .swap-icon { display: none !important; }
+
+/* ─────────────────────────────────────────────
+   WIN CUP
+───────────────────────────────────────────── */
+.win-cup {
+  position: absolute !important;
+  right: 6px !important;
+  bottom: 6px !important;
+  left: auto !important;
+  transform: none !important;
+  width: 26px !important;
+  height: 26px !important;
+  cursor: pointer !important;
+  z-index: 15 !important;
+  opacity: 0.6 !important;
+  filter: grayscale(20%) !important;
+  transition: opacity 0.2s, filter 0.2s, transform 0.2s !important;
+}
+
+.win-cup.blinking { animation: winCupBlink2 1.8s infinite !important; }
+.win-cup.active   {
+  animation: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: scale(1.25) !important;
+}
+
+@keyframes winCupBlink2 {
+  0%,100% { opacity: 0.3; transform: scale(0.85); }
+  50%     { opacity: 1;   transform: scale(1.05); }
+}
+
+/* ─────────────────────────────────────────────
+   RESTING PLAYERS
+───────────────────────────────────────────── */
+.round-header {
+  font-family: var(--font-body) !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: var(--brr-text-muted) !important;
+  margin: 14px 4px 5px !important;
+  padding-left: 4px !important;
+}
+
+.rest-box {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding: 2px 0 8px !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.rest-box:not(:empty):not(.rest-collapsed) {
+  display: flex !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.rest-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 12px !important;
+  border-radius: 20px !important;
+  background: rgba(255,255,255,0.75) !important;
+  border: 1px solid #d8e0ea !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: #5a6577 !important;
+  cursor: pointer !important;
+  transition: transform 0.15s, background 0.15s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+}
+
+body.app-dark .rest-btn {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  color: #a8b0c8 !important;
+}
+
+.rest-btn:hover { transform: scale(1.05) !important; background: #fff !important; }
+.rest-btn.selected {
+  outline: 2px solid var(--amber) !important;
+  background: rgba(245,158,11,0.15) !important;
+  color: var(--amber) !important;
+}
+
+/* ─────────────────────────────────────────────
+   ROUND TITLE
+───────────────────────────────────────────── */
+.title-card {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 12px 2px !important;
+  margin: 0 !important;
+}
+
+#roundTitle {
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  padding: 0 !important;
+  height: auto !important;
+  border-radius: 0 !important;
+}
+
+/* ─────────────────────────────────────────────
+   ACTION CARD — Play / Next Round / End Session
+───────────────────────────────────────────── */
+.action-card {
+  display: flex !important;
+  align-items: stretch !important;
+  width: calc(100% - 20px) !important;
+  margin: 6px 10px !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12) !important;
+  gap: 0 !important;
+}
+
+/* Dice and gear side buttons */
+.action.mid.small {
+  flex: 0 0 42px !important;
+  background: #f0f2f5 !important;
+  font-size: 1.15rem !important;
+  border: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+  color: #6b7a8d !important;
+  border-radius: 0 !important;
+}
+
+body.app-dark .action.mid.small {
+  background: #252836 !important;
+  color: #8890a8 !important;
+}
+
+.action.mid.small:hover {
+  background: #e4e7ec !important;
+}
+body.app-dark .action.mid.small:hover {
+  background: #2e3245 !important;
+}
+
+/* Main centre button */
+.action.right.primary {
+  flex: 1 !important;
+  background: linear-gradient(135deg, #2dce89 0%, #23b576 100%) !important;
+  color: #ffffff !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  border: none !important;
+  padding: 10px 0 !important;
+  cursor: pointer !important;
+  transition: filter 0.15s, transform 0.1s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  letter-spacing: 0.3px !important;
+  border-radius: 0 !important;
+}
+
+.action.right.primary:hover { filter: brightness(1.08) !important; }
+.action.right.primary:active { transform: scale(0.98) !important; }
+
+/* State — active (Next Round → purple) */
+.action.right.primary.next-round-state,
+.action.right.primary.round-active {
+  background: linear-gradient(135deg, #7c5cfc 0%, #6440e8 100%) !important;
+}
+
+/* State — done (End Session → red) */
+.action.right.primary.end {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%) !important;
+}
+
+/* End Session button — shares same styling as primary.end, flex: 1 */
+#endBtn {
+  flex: 1 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+/* Icon inside button */
+.action.right.primary .icon {
+  font-size: 1rem !important;
+  opacity: 0.9 !important;
+}
+
+/* ─────────────────────────────────────────────
+   ROUND SETTINGS PANEL
+───────────────────────────────────────────── */
+.round-settings-panel {
+  background: #ffffff !important;
+  border: 1px solid #e4e8f0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  margin: 0 10px 10px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+}
+
+body.app-dark .round-settings-panel {
+  background: #1e2130 !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+}
+
+.round-settings-body {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  transition: max-height 0.35s ease, opacity 0.25s ease !important;
+  padding: 0 !important;
+}
+
+.round-settings-body.open {
+  max-height: none !important;
+  opacity: 1 !important;
+}
+
+.setting-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+}
+
+.setting-label {
+  font-family: var(--font-body) !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  color: var(--text) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.setting-divider {
+  height: 1px !important;
+  background: #f0f2f5 !important;
+  margin: 0 16px !important;
+}
+
+body.app-dark .setting-divider {
+  background: rgba(255,255,255,0.07) !important;
+}
+
+/* Stepper counter */
+.counter {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-family: var(--font-body) !important;
+  font-size: 1.0rem !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+}
+
+.circle-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #d0d8e4 !important;
+  background: #f4f6fa !important;
+  color: #4a5568 !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.15s, transform 0.1s !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+
+body.app-dark .circle-btn {
+  background: #2a2e42 !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #c0c8e8 !important;
+}
+
+.circle-btn:hover {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  transform: scale(1.08) !important;
+}
+
+.circle-btn:disabled, .circle-btn.disabled-btn {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+}
+
+/* Toggle switch */
+.switch {
+  position: relative !important;
+  display: inline-block !important;
+  width: 46px !important;
+  height: 26px !important;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute !important;
+  cursor: pointer !important;
+  inset: 0 !important;
+  background: #cbd5e0 !important;
+  border-radius: 26px !important;
+  transition: background 0.3s !important;
+  border: none !important;
+}
+.slider:before {
+  content: '' !important;
+  position: absolute !important;
+  width: 20px !important;
+  height: 20px !important;
+  left: 3px !important;
+  bottom: 3px !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  transition: transform 0.3s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important;
+}
+
+input:checked + .slider {
+  background: #7c5cfc !important;
+  box-shadow: 0 0 10px rgba(124,92,252,0.35) !important;
+}
+input:checked + .slider:before { transform: translateX(20px) !important; }
+
+/* ─────────────────────────────────────────────
+   SELECTED / SWAPPING STATES
+   (canonical overrides are in the team block above)
+───────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────
+   PLAYED ROUND — dim older rounds
+───────────────────────────────────────────── */
+.played-round .courtcard,
+.played-round .rest-btn,
+.played-round .Lplayer-btn,
+.played-round .Rplayer-btn {
+  filter: grayscale(30%) opacity(0.6) !important;
+}
+
+/* ─────────────────────────────────────────────
+   WINNER HIGHLIGHT
+───────────────────────────────────────────── */
+.winner {
+  background: rgba(245,158,11,0.12) !important;
+  border-color: var(--amber) !important;
+}
+
+/* ─────────────────────────────────────────────
+   ACTIVE MODE (playing) — subtle bg shift
+───────────────────────────────────────────── */
+#roundsPage.active-mode {
+  background: var(--bg) !important;
+}
+
+/* ─────────────────────────────────────────────
+   COURT IDENTITY — tile-style aware
+───────────────────────────────────────────── */
+.courtname {
+  padding: 3px 10px !important;
+  font-size: 0.58rem !important;
+}
+.team {
+  padding: 7px 12px !important;
+}
+
+/* Court colors */
+:root {
+  --c1: #2dce89; --c2: #4a9eff; --c3: #f5a623;
+  --c4: #ff6584; --c5: #a856f7; --c6: #64748b;
+}
+
+/* ── FLAT — per-court colored boundary + left accent + subtle header tint ── */
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard {
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+}
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-1 { border-color: rgba(45,206,137,0.5) !important; border-left: 4px solid #2dce89 !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-1 .courtname { color: #2dce89 !important; background: rgba(45,206,137,0.07) !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-2 { border-color: rgba(74,158,255,0.5) !important; border-left: 4px solid #4a9eff !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-2 .courtname { color: #4a9eff !important; background: rgba(74,158,255,0.07) !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-3 { border-color: rgba(245,166,35,0.5) !important; border-left: 4px solid #f5a623 !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-3 .courtname { color: #f5a623 !important; background: rgba(245,166,35,0.07) !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-4 { border-color: rgba(255,101,132,0.5) !important; border-left: 4px solid #ff6584 !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-4 .courtname { color: #ff6584 !important; background: rgba(255,101,132,0.07) !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-5 { border-color: rgba(168,85,247,0.5) !important; border-left: 4px solid #a856f7 !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-5 .courtname { color: #a856f7 !important; background: rgba(168,85,247,0.07) !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-6 { border-color: rgba(100,116,139,0.5) !important; border-left: 4px solid #64748b !important; }
+body:not(.tile-style-glow):not(.tile-style-color) .courtcard.court-6 .courtname { color: #64748b !important; background: rgba(100,116,139,0.07) !important; }
+
+/* ── GLOW — colored border + glow shadow (current look) ── */
+body.tile-style-glow .courtcard.court-1 { border: 1.5px solid #2dce89 !important; border-left: 4px solid #2dce89 !important; box-shadow: 0 0 12px rgba(45,206,137,0.2) !important; }
+body.tile-style-glow .courtcard.court-1 .courtname { color: #2dce89 !important; background: rgba(45,206,137,0.07) !important; }
+body.tile-style-glow .courtcard.court-2 { border: 1.5px solid #4a9eff !important; border-left: 4px solid #4a9eff !important; box-shadow: 0 0 12px rgba(74,158,255,0.2) !important; }
+body.tile-style-glow .courtcard.court-2 .courtname { color: #4a9eff !important; background: rgba(74,158,255,0.07) !important; }
+body.tile-style-glow .courtcard.court-3 { border: 1.5px solid #f5a623 !important; border-left: 4px solid #f5a623 !important; box-shadow: 0 0 12px rgba(245,166,35,0.2) !important; }
+body.tile-style-glow .courtcard.court-3 .courtname { color: #f5a623 !important; background: rgba(245,166,35,0.07) !important; }
+body.tile-style-glow .courtcard.court-4 { border: 1.5px solid #ff6584 !important; border-left: 4px solid #ff6584 !important; box-shadow: 0 0 12px rgba(255,101,132,0.2) !important; }
+body.tile-style-glow .courtcard.court-4 .courtname { color: #ff6584 !important; background: rgba(255,101,132,0.07) !important; }
+body.tile-style-glow .courtcard.court-5 { border: 1.5px solid #a856f7 !important; border-left: 4px solid #a856f7 !important; box-shadow: 0 0 12px rgba(168,85,247,0.2) !important; }
+body.tile-style-glow .courtcard.court-5 .courtname { color: #a856f7 !important; background: rgba(168,85,247,0.07) !important; }
+body.tile-style-glow .courtcard.court-6 { border: 1.5px solid #64748b !important; border-left: 4px solid #64748b !important; }
+body.tile-style-glow .courtcard.court-6 .courtname { color: #64748b !important; background: rgba(100,116,139,0.07) !important; }
+
+/* ── COLOR — solid colored header strip + matching colored boundary ── */
+body.tile-style-color .courtcard { border: 1.5px solid rgba(255,255,255,0.1) !important; overflow: hidden !important; }
+body.tile-style-color .courtcard.court-1 { border-color: rgba(45,206,137,0.5) !important; }
+body.tile-style-color .courtcard.court-1 .courtname { background: #2dce89 !important; color: #fff !important; }
+body.tile-style-color .courtcard.court-2 { border-color: rgba(74,158,255,0.5) !important; }
+body.tile-style-color .courtcard.court-2 .courtname { background: #4a9eff !important; color: #fff !important; }
+body.tile-style-color .courtcard.court-3 { border-color: rgba(245,166,35,0.5) !important; }
+body.tile-style-color .courtcard.court-3 .courtname { background: #f5a623 !important; color: #fff !important; }
+body.tile-style-color .courtcard.court-4 { border-color: rgba(255,101,132,0.5) !important; }
+body.tile-style-color .courtcard.court-4 .courtname { background: #ff6584 !important; color: #fff !important; }
+body.tile-style-color .courtcard.court-5 { border-color: rgba(168,85,247,0.5) !important; }
+body.tile-style-color .courtcard.court-5 .courtname { background: #a856f7 !important; color: #fff !important; }
+body.tile-style-color .courtcard.court-6 { border-color: rgba(100,116,139,0.5) !important; }
+body.tile-style-color .courtcard.court-6 .courtname { background: #64748b !important; color: #fff !important; }
+
+/* Build 616 — Dark Color courts use the Welcome screen's deep-tint language. */
+body.tile-style-color:not(.app-light) .courtcard {
+  background: linear-gradient(145deg, rgba(29,31,45,.98), rgba(16,18,29,.99)) !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 18px !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04) !important;
+}
+body.tile-style-color:not(.app-light) .courtcard .courtname { color: #f7f9ff !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-1 { border-color: rgba(27,209,180,.48) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-1 .courtname { background: linear-gradient(135deg,rgba(12,63,70,.96),rgba(8,35,43,.99)) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-2 { border-color: rgba(52,120,255,.54) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-2 .courtname { background: linear-gradient(135deg,rgba(19,45,94,.96),rgba(10,24,55,.99)) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-3 { border-color: rgba(245,166,35,.50) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-3 .courtname { background: linear-gradient(135deg,rgba(88,55,12,.96),rgba(45,29,8,.99)) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-4 { border-color: rgba(239,77,123,.50) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-4 .courtname { background: linear-gradient(135deg,rgba(96,22,49,.96),rgba(49,12,30,.99)) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-5 { border-color: rgba(154,96,255,.52) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-5 .courtname { background: linear-gradient(135deg,rgba(62,31,108,.96),rgba(31,16,64,.99)) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-6 { border-color: rgba(148,163,184,.36) !important; }
+body.tile-style-color:not(.app-light) .courtcard.court-6 .courtname { background: linear-gradient(135deg,rgba(49,57,72,.96),rgba(25,30,41,.99)) !important; }
+
+/* ── ALL STYLES — subtle per-court body tint ── */
+.courtcard.court-1 .teams { background: rgba(45,206,137,0.03) !important; }
+.courtcard.court-2 .teams { background: rgba(74,158,255,0.03) !important; }
+.courtcard.court-3 .teams { background: rgba(245,166,35,0.03) !important; }
+.courtcard.court-4 .teams { background: rgba(255,101,132,0.03) !important; }
+.courtcard.court-5 .teams { background: rgba(168,85,247,0.03) !important; }
+.courtcard.court-6 .teams { background: rgba(100,116,139,0.03) !important; }
+
+/* ── PAST ROUNDS — per-round color accent ── */
+:root {
+  --r1: #2dce89; --r2: #4a9eff; --r3: #f5a623;
+  --r4: #ff6584; --r5: #a856f7; --r6: #20c9e8;
+  --r7: #64748b; --r8: #e2be5a; --r9: #f97316; --r10: #84cc16;
+}
+.round-n-1  .roundTitle, .round-n-1  .round-header { color: var(--r1)  !important; border-left: 3px solid var(--r1);  padding-left: 8px; }
+.round-n-2  .roundTitle, .round-n-2  .round-header { color: var(--r2)  !important; border-left: 3px solid var(--r2);  padding-left: 8px; }
+.round-n-3  .roundTitle, .round-n-3  .round-header { color: var(--r3)  !important; border-left: 3px solid var(--r3);  padding-left: 8px; }
+.round-n-4  .roundTitle, .round-n-4  .round-header { color: var(--r4)  !important; border-left: 3px solid var(--r4);  padding-left: 8px; }
+.round-n-5  .roundTitle, .round-n-5  .round-header { color: var(--r5)  !important; border-left: 3px solid var(--r5);  padding-left: 8px; }
+.round-n-6  .roundTitle, .round-n-6  .round-header { color: var(--r6)  !important; border-left: 3px solid var(--r6);  padding-left: 8px; }
+.round-n-7  .roundTitle, .round-n-7  .round-header { color: var(--r7)  !important; border-left: 3px solid var(--r7);  padding-left: 8px; }
+.round-n-8  .roundTitle, .round-n-8  .round-header { color: var(--r8)  !important; border-left: 3px solid var(--r8);  padding-left: 8px; }
+.round-n-9  .roundTitle, .round-n-9  .round-header { color: var(--r9)  !important; border-left: 3px solid var(--r9);  padding-left: 8px; }
+.round-n-10 .roundTitle, .round-n-10 .round-header { color: var(--r10) !important; border-left: 3px solid var(--r10); padding-left: 8px; }
+
+/* ── Round block background tints ── */
+.round-n-1  { background: rgba(45,206,137,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-2  { background: rgba(74,158,255,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-3  { background: rgba(245,166,35,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-4  { background: rgba(255,101,132,0.06) !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-5  { background: rgba(168,85,247,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-6  { background: rgba(32,201,232,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-7  { background: rgba(100,116,139,0.06) !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-8  { background: rgba(226,190,90,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-9  { background: rgba(249,115,22,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+.round-n-10 { background: rgba(132,204,22,0.06)  !important; border-radius: 12px; padding: 8px; margin-bottom: 10px !important; }
+
+/* Round wrapper spacing */
+.round-wrapper { margin-bottom: 0 !important; }
+
+
+/* ── Rating Ring ── */
+.rating-ring-wrap {
+  position: relative;
+  width: 30px; height: 30px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rating-ring-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px !important; height: 16px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  opacity: 0.95 !important;
+}
+
+/* ── Court Type Pill (single cycle) ── */
+.courtname {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.court-label {
+  flex-shrink: 0;
+}
+.court-type-pills {
+  flex-shrink: 0;
+  padding-right: 8px;
+}
+.ctp {
+  border: none;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.ctp:active { transform: scale(0.95); opacity: 0.8; }
+.ctp.ctp-fixed { cursor: default; pointer-events: none; }
+.ctp.ctp-fixed:active { transform: none; opacity: 1; }
+
+.ctp-free   { background: #6b7280; }
+.ctp-md     { background: #3b82f6; }
+.ctp-ld     { background: #ec4899; }
+.ctp-xd     { background: linear-gradient(90deg, #3b82f6, #ec4899); }
+.ctp-single { background: #f97316; }
+
+/* ── Court Format Toggle (Doubles | Singles) ── */
+.court-header-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding-right: 8px;
+}
+.ctp-format-toggle {
+  display: flex;
+  background: rgba(0,0,0,0.25);
+  border-radius: 20px;
+  padding: 2px;
+  gap: 0;
+}
+.ctp-fmt {
+  border: none;
+  border-radius: 18px;
+  padding: 2px 8px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  background: transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ctp-fmt.ctp-fmt-active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-weight: 700;
+}
+.ctp-fmt:active { opacity: 0.7; }
+
+/* ── Format cycle button (Doubles/Singles) ── */
+.ctp-fmt-doubles { background: #6366f1; }
+.ctp-fmt-singles { background: #f59e0b; }
+
+/* ── Shuffle button next to round title ── */
+.rtb-shuffle {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  opacity: 0.35;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+.rtb-shuffle:not([disabled]) { opacity: 1; }
+.rtb-shuffle:not([disabled]):active { opacity: 0.6; }
+
+/* ── Resting collapsible toggle ── */
+.rest-box.rest-collapsed {
+  display: none !important;
+  visibility: hidden !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  min-height: 0 !important;
+}
+.resting-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px 8px 0;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.resting-toggle-btn:active { opacity: 0.6; }
+.resting-toggle-count { font-weight: 400; }
+.resting-toggle-arrow {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ── Stop round pill ── */
+.stop-round-btn {
+  flex-shrink: 0;
+  background: rgba(230, 55, 87, 0.15);
+  border: 1.5px solid rgba(230, 55, 87, 0.4);
+  color: #e63757;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.15s;
+  align-items: center;
+  justify-content: center;
+}
+.stop-round-btn:active { background: rgba(230, 55, 87, 0.3); }
+
+/* ── Round History — card boundary per round ── */
+#roundHistoryContainer .round-wrapper {
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-bottom: 12px !important;
+  background: var(--surface);
+}
+#roundHistoryContainer .round-header.roundTitle {
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  background: var(--surface2);
+}
+
+/* ── Round History — title bigger + centered, hide resting ── */
+#roundHistoryContainer .round-header.roundTitle {
+  font-size: 0.85rem !important;
+  text-align: center;
+  letter-spacing: 1.5px;
+  border-left: none !important;
+  padding-left: 12px !important;
+}
+
+/* ── Viewer past rounds — title bigger + centered, resting no strip ── */
+#viewerResults .roundTitle {
+  font-size: 0.9rem !important;
+  text-align: center !important;
+  border-left: none !important;
+  padding-left: 0 !important;
+  display: block;
+}
+#viewerResults .viewer-resting-row,
+#viewerResults .round-wrapper .viewer-resting-row {
+  border-left: none !important;
+  padding-left: 10px !important;
+  box-shadow: none !important;
+}
+
+/* ── Per-court dice button ── */
+.ctp-court-dice {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  font-size: 0.85rem !important;
+  padding: 1px 6px !important;
+  opacity: 0.75;
+}
+.ctp-court-dice:active { opacity: 1; transform: scale(0.92); }
+#roundsPage.active-mode .ctp-court-dice { pointer-events: none; opacity: 0.3; }
+
+/* Build 526: game-generation radio group */
+.round-settings-game-generation { margin: .25rem 0 .7rem; padding: .7rem 0 .2rem; border-top: 1px solid rgba(148,163,184,.24); }
+.round-settings-game-generation .game-generation-title { margin:0 0 .35rem; font-size:.78rem; font-weight:700; color:var(--text-muted,#94a3b8); }
+.round-settings-game-generation .game-mode-radio-row { display:flex; align-items:center; gap:.65rem; min-height:2.5rem; cursor:pointer; font-weight:600; }
+.round-settings-game-generation input[type="radio"] { width:1.15rem; height:1.15rem; margin:0; accent-color:#7c3aed; }
+
+
+/* Build 527: game generation options — one full-width tappable row each */
+.game-generation-block {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+.game-generation-block .game-generation-title {
+  display: block !important;
+  width: 100% !important;
+}
+.game-generation-block .game-mode-radio-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent;
+}
+.game-generation-block .game-mode-radio-row input[type="radio"] {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  flex: 0 0 auto !important;
+}
+.game-generation-block .game-mode-radio-row span {
+  display: block !important;
+  flex: 1 1 auto !important;
+  pointer-events: none !important;
+}
+
+
+/* Build 528: iOS-style Game Generation selector */
+.game-generation-block {
+  margin-top: .75rem !important;
+  padding-top: .85rem !important;
+  border-top: 1px solid rgba(148, 163, 184, .20) !important;
+  gap: .5rem !important;
+}
+
+.game-generation-block .game-generation-title {
+  margin: 0 0 .15rem !important;
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+  font-weight: 650 !important;
+  letter-spacing: -.01em !important;
+  color: var(--text, #f8fafc) !important;
+}
+
+.game-generation-block .game-mode-radio-row {
+  min-height: 3.15rem !important;
+  padding: .55rem .75rem !important;
+  gap: .75rem !important;
+  border: 1px solid rgba(148, 163, 184, .18) !important;
+  border-radius: .85rem !important;
+  background: rgba(148, 163, 184, .07) !important;
+  transition: background-color .18s ease, border-color .18s ease,
+              box-shadow .18s ease, transform .12s ease !important;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.game-generation-block .game-mode-radio-row:active {
+  transform: scale(.985);
+  background: rgba(148, 163, 184, .12) !important;
+}
+
+.game-generation-block .game-mode-radio-row:has(input:checked) {
+  border-color: rgba(124, 92, 255, .72) !important;
+  background: linear-gradient(135deg,
+    rgba(124, 92, 255, .20),
+    rgba(91, 71, 214, .10)) !important;
+  box-shadow: 0 0 0 1px rgba(124, 92, 255, .12),
+              inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+}
+
+.game-generation-block .game-mode-radio-row input[type="radio"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  margin: 0 !important;
+  border: .13rem solid rgba(148, 163, 184, .68) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: grid !important;
+  place-content: center !important;
+}
+
+.game-generation-block .game-mode-radio-row input[type="radio"]::before {
+  content: "";
+  width: .65rem;
+  height: .65rem;
+  border-radius: 50%;
+  background: #fff;
+  transform: scale(0);
+  transition: transform .15s ease;
+}
+
+.game-generation-block .game-mode-radio-row input[type="radio"]:checked {
+  border-color: #7657ff !important;
+  background: #7657ff !important;
+  box-shadow: 0 0 0 .2rem rgba(118, 87, 255, .16) !important;
+}
+
+.game-generation-block .game-mode-radio-row input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.game-generation-block .game-mode-radio-row span {
+  font-size: 1rem !important;
+  line-height: 1.25 !important;
+  font-weight: 560 !important;
+  letter-spacing: -.01em !important;
+  color: var(--text, #f8fafc) !important;
+}
+
+html.app-light .game-generation-block .game-generation-title,
+html.app-light .game-generation-block .game-mode-radio-row span {
+  color: #111827 !important;
+}
+
+html.app-light .game-generation-block .game-mode-radio-row {
+  border-color: rgba(15, 23, 42, .10) !important;
+  background: rgba(255, 255, 255, .76) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+html.app-light .game-generation-block .game-mode-radio-row:has(input:checked) {
+  border-color: rgba(103, 80, 230, .55) !important;
+  background: linear-gradient(135deg,
+    rgba(118, 87, 255, .15),
+    rgba(118, 87, 255, .07)) !important;
+}
+
+@supports not selector(:has(*)) {
+  .game-generation-block .game-mode-radio-row {
+    background: rgba(148, 163, 184, .08) !important;
+  }
+}
+
+/* Build 583: responsive Round Manager shell. */
+#roundsPage {
+  width: min(100%, 48rem) !important;
+  min-height: 100svh;
+  margin-inline: auto !important;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+#roundsPage .rounds-top-bar {
+  min-height: var(--scs-touch-size, 44px);
+  padding:
+    max(4px, env(safe-area-inset-top, 0px))
+    clamp(6px, 2.5vw, 12px)
+    4px !important;
+  gap: clamp(4px, 1.8vw, 8px);
+  box-sizing: border-box;
+}
+
+#roundsPage .rtb-back,
+#roundsPage .rtb-settings,
+#roundsPage .rtb-shuffle,
+#roundsPage .mbm-court-adj {
+  min-width: 38px;
+  min-height: 38px;
+  touch-action: manipulation;
+}
+
+#roundsPage .rtb-back {
+  max-width: 34vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#roundsPage .title-card,
+#roundsPage #game-results,
+#roundsPage .action-card,
+#roundsPage #resting-panel {
+  width: auto !important;
+  margin-left: var(--scs-phone-gutter, clamp(10px, 3.8vw, 18px)) !important;
+  margin-right: var(--scs-phone-gutter, clamp(10px, 3.8vw, 18px)) !important;
+  box-sizing: border-box;
+}
+
+#roundsPage .title-card {
+  min-height: 44px;
+  margin-top: 4px !important;
+  margin-bottom: 6px !important;
+}
+
+#roundsPage #roundTitle {
+  min-height: 32px;
+  height: auto;
+  margin: 0;
+  padding-inline: clamp(8px, 3vw, 14px);
+  font-size: clamp(.78rem, 3.5vw, .95rem);
+}
+
+#roundsPage .round-court-counter {
+  min-height: 38px;
+}
+
+#roundsPage .court-card,
+#roundsPage .match-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#roundsPage .court-header {
+  min-height: 34px;
+  gap: clamp(4px, 2vw, 10px);
+}
+
+#roundsPage .Lplayer-btn,
+#roundsPage .Rplayer-btn,
+#roundsPage .rest-btn {
+  font-size: var(--player-font-size, .88rem) !important;
+  min-height: 28px;
+}
+
+#roundsPage .player-name {
+  font-size: inherit !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#roundsPage .action-card {
+  display: flex;
+  gap: 8px;
+}
+
+#roundsPage #nextBtn {
+  min-height: 48px;
+  border-radius: clamp(10px, 3vw, 14px);
+  font-size: clamp(.9rem, 4vw, 1.05rem);
+}
+
+#roundsPage .bottom-sheet-panel {
+  width: min(100%, 32rem) !important;
+  max-height: min(88svh, 46rem);
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  border-radius: 22px 22px 0 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 350px) {
+  #roundsPage .rounds-top-bar { padding-inline: 4px !important; gap: 3px; }
+  #roundsPage .rtb-back,
+  #roundsPage .rtb-settings,
+  #roundsPage .rtb-shuffle,
+  #roundsPage .mbm-court-adj { min-width: 36px; min-height: 36px; }
+  #roundsPage .rtb-live-txt { display: none; }
+  #roundsPage .title-card,
+  #roundsPage #game-results,
+  #roundsPage .action-card,
+  #roundsPage #resting-panel {
+    margin-left: 6px !important;
+    margin-right: 6px !important;
+  }
+}
+
+/* Build 587: Round Manager court cards always use the Color tile identity.
+   The global tile style still applies everywhere else in the app. */
+#roundsPage:not(.viewer-page) .courtcard {
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  border-left-width: 1.5px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+#roundsPage:not(.viewer-page) .courtcard.court-1 { border-color: rgba(45,206,137,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-1 .courtname { background: #2dce89 !important; color: #fff !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-2 { border-color: rgba(74,158,255,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-2 .courtname { background: #4a9eff !important; color: #fff !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-3 { border-color: rgba(245,166,35,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-3 .courtname { background: #f5a623 !important; color: #fff !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-4 { border-color: rgba(255,101,132,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-4 .courtname { background: #ff6584 !important; color: #fff !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-5 { border-color: rgba(168,85,247,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-5 .courtname { background: #a856f7 !important; color: #fff !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-6 { border-color: rgba(100,116,139,0.5) !important; }
+#roundsPage:not(.viewer-page) .courtcard.court-6 .courtname { background: #64748b !important; color: #fff !important; }
+
+/* Build 587: use more of the phone width on Round Manager.
+   Remove the old nested 10px game-results padding and keep one responsive edge gutter. */
+#roundsPage:not(.viewer-page) .title-card,
+#roundsPage:not(.viewer-page) #game-results,
+#roundsPage:not(.viewer-page) .action-card,
+#roundsPage:not(.viewer-page) #resting-panel {
+  margin-left: clamp(6px, 1.8vw, 10px) !important;
+  margin-right: clamp(6px, 1.8vw, 10px) !important;
+}
+#roundsPage:not(.viewer-page) #game-results {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+#roundsPage .balanced-ui-rating {
+  flex: 0 0 auto;
+  min-width: 2.15rem;
+  padding: 0.12rem 0.38rem;
+  border: 1px solid rgba(124, 58, 237, 0.55);
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.14);
+  color: var(--text, #171728);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+}
+
+body.app-dark #roundsPage .balanced-ui-rating {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.24);
+  border-color: rgba(167, 139, 250, 0.62);
+}
+
+/* Build 616 — final dark Color guard for organiser Round Manager courts. */
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard {
+  background: linear-gradient(145deg,rgba(29,31,45,.98),rgba(16,18,29,.99)) !important;
+  border-width: 1px !important; border-style: solid !important; border-radius: 18px !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.04) !important;
+}
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-1 { border-color:rgba(27,209,180,.48) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-1 .courtname { background:linear-gradient(135deg,rgba(12,63,70,.96),rgba(8,35,43,.99)) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-2 { border-color:rgba(52,120,255,.54) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-2 .courtname { background:linear-gradient(135deg,rgba(19,45,94,.96),rgba(10,24,55,.99)) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-3 { border-color:rgba(245,166,35,.50) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-3 .courtname { background:linear-gradient(135deg,rgba(88,55,12,.96),rgba(45,29,8,.99)) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-4 { border-color:rgba(239,77,123,.50) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-4 .courtname { background:linear-gradient(135deg,rgba(96,22,49,.96),rgba(49,12,30,.99)) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-5 { border-color:rgba(154,96,255,.52) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-5 .courtname { background:linear-gradient(135deg,rgba(62,31,108,.96),rgba(31,16,64,.99)) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-6 { border-color:rgba(148,163,184,.36) !important; }
+body.tile-style-color:not(.app-light) #roundsPage:not(.viewer-page) .courtcard.court-6 .courtname { background:linear-gradient(135deg,rgba(49,57,72,.96),rgba(25,30,41,.99)) !important; }
+
+/* Build 720 — strict approved Color Tiles palette for Round Manager courts.
+   rounds.css loads after ui.css, so this final guard intentionally lives here. */
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-1 { border-color:rgba(21,151,174,.66) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-1 .courtname { background:linear-gradient(135deg,#1597ae,#0f829b) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-2 { border-color:rgba(23,111,145,.68) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-2 .courtname { background:linear-gradient(135deg,#1c88a8,#176f91) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-3 { border-color:rgba(215,84,51,.68) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-3 .courtname { background:linear-gradient(135deg,#e86948,#d75433) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-4 { border-color:rgba(217,76,85,.68) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-4 .courtname { background:linear-gradient(135deg,#ef5a62,#d94c55) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-5 { border-color:rgba(140,54,143,.68) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-5 .courtname { background:linear-gradient(135deg,#ad42aa,#8c368f) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-6 { border-color:rgba(21,151,174,.66) !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-6 .courtname { background:linear-gradient(135deg,#1597ae,#0f829b) !important; color:#fff !important; }
+
+/* Build 721 — approved Color Tiles palette for Round Manager. */
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-1 { border-color:#16c9c7 !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-1 .courtname { background:linear-gradient(135deg,#25d5d0,#0db6b6) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-2 { border-color:#078ed2 !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-2 .courtname { background:linear-gradient(135deg,#079fdf,#087fc2) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-3 { border-color:#f51d86 !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-3 .courtname { background:linear-gradient(135deg,#ff2b91,#e51177) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-4 { border-color:#7626d5 !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-4 .courtname { background:linear-gradient(135deg,#8a35e5,#5e18bd) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-5 { border-color:#31994c !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-5 .courtname { background:linear-gradient(135deg,#43a95a,#27853e) !important; color:#fff !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-6 { border-color:#648de8 !important; }
+body.tile-style-color #roundsPage:not(.viewer-page) .courtcard.court-6 .courtname { background:linear-gradient(135deg,#79a2f2,#557cdd) !important; color:#fff !important; }
+
+/* ── Already rested: compact, collapsible, display-only reference ── */
+.rested-info-section {
+  margin-top: 0;
+}
+.rested-info-title {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  font-size: 0.66rem !important;
+  opacity: 0.82;
+}
+.rested-info-box {
+  gap: 2px !important;
+  padding: 4px !important;
+  margin-top: 1px !important;
+  min-height: 0 !important;
+  opacity: 0.74;
+}
+.rested-info-player {
+  pointer-events: none !important;
+  cursor: default !important;
+  font-size: calc(var(--player-font-size) * 0.82) !important;
+  padding: 2px 7px !important;
+  margin: 1px !important;
+  gap: 4px !important;
+  min-height: 0 !important;
+}
+.rested-info-player .rating-ring-wrap {
+  width: 22px !important;
+  height: 22px !important;
+  transform: scale(0.82);
+  transform-origin: center;
+  margin: -2px;
+}
+.rested-info-player .rating-ring-icon {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+
+/* Build 779 — compact all-player round history (replaces Rested list) */
+.player-history-section { margin-top: 0; padding-left: 12px; min-width: 0; }
+.player-history-title { opacity: .9; }
+.player-history-box { display: block !important; padding: 3px 0 2px !important; margin-top: 1px !important; opacity: 1; overflow: hidden; }
+.player-history-box.rest-collapsed { display: none !important; }
+.player-history-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.player-history-table { border-collapse: collapse; width: max-content; min-width: 100%; font-size: .64rem; line-height: 1.15; }
+.player-history-table th, .player-history-table td { padding: 5px 7px; text-align: center; white-space: nowrap; border-bottom: 1px solid rgba(128,128,128,.16); }
+.player-history-table th { font-size: .58rem; opacity: .68; font-weight: 700; }
+.player-history-table th:first-child, .player-history-table td:first-child { text-align: left; position: sticky; left: 0; z-index: 2; background: var(--bg, #fff); }
+body.dark .player-history-table th:first-child, body.dark .player-history-table td:first-child { background: var(--bg, #111827); }
+.player-history-name { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.player-history-played-count, .player-history-played { color: #25a84a; font-weight: 700; }
+.player-history-rested-count, .player-history-rest { color: #e34b4b; font-weight: 700; }
+.player-history-played { font-size: .72rem; }
+.player-history-rest { font-size: .82rem; }
+
+@media (max-width: 480px) {
+  .player-history-section { padding-left: 7px; }
+  .player-history-table { font-size: .56rem; }
+  .player-history-table th { font-size: .5rem; }
+  .player-history-table th, .player-history-table td { padding: 4px 5px; }
+  .player-history-name { max-width: 5.75rem; }
+  .player-history-played { font-size: .64rem; }
+  .player-history-rest { font-size: .72rem; }
+}
+
+/* Player History readability — minimum mobile text size */
+.player-history-table {
+  font-size: max(.82rem, calc(var(--player-font-size, 1rem) * .72)) !important;
+  line-height: 1.25 !important;
+}
+.player-history-table th {
+  font-size: max(.72rem, calc(var(--player-font-size, 1rem) * .64)) !important;
+}
+.player-history-table th,
+.player-history-table td {
+  padding: 6px 7px !important;
+}
+.player-history-played {
+  font-size: max(.86rem, calc(var(--player-font-size, 1rem) * .76)) !important;
+}
+.player-history-rest {
+  font-size: max(.9rem, calc(var(--player-font-size, 1rem) * .8)) !important;
+}
+@media (max-width: 480px) {
+  .player-history-table {
+    font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  }
+  .player-history-table th {
+    font-size: max(.7rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  }
+  .player-history-table th,
+  .player-history-table td {
+    padding: 5px 6px !important;
+  }
+  .player-history-name { max-width: 7.5rem !important; }
+}
+
+/* Build 791 — Resting + Players: single professional tile components
+   One outer card owns the border, radius, background and shadow.
+   Header and content are internal regions only — no nested card shells. */
+
+:root {
+  --resting-accent: #e63757;
+  --players-accent: #4a9eff;
+}
+
+/* ----- Shared outer card ----- */
+#roundsPage .resting-section,
+#roundsPage .player-history-section {
+  box-sizing: border-box !important;
+  width: calc(100% - 20px) !important;
+  margin: 14px 10px 8px !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  letter-spacing: normal !important;
+}
+
+/* ----- Shared header inside the card ----- */
+#roundsPage .resting-section > .resting-toggle-btn,
+#roundsPage .player-history-section > .resting-toggle-btn {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 9px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-size: .76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.2px !important;
+}
+
+/* A divider, not a second card */
+#roundsPage .resting-section > .resting-toggle-btn + .rest-box:not(.rest-collapsed),
+#roundsPage .player-history-section > .resting-toggle-btn + .player-history-box:not(.rest-collapsed) {
+  border-top: 1px solid rgba(255,255,255,.09) !important;
+}
+
+/* ----- Content areas: deliberately not cards ----- */
+#roundsPage .resting-section > .rest-box,
+#roundsPage .player-history-section > .player-history-box {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+#roundsPage .resting-section > .rest-box:not(.rest-collapsed) {
+  display: flex !important;
+  padding: 12px 14px 13px !important;
+  gap: 8px !important;
+}
+
+#roundsPage .player-history-section > .player-history-box:not(.rest-collapsed) {
+  display: block !important;
+  padding: 0 !important;
+}
+
+/* Resting player pills are content, not a second container */
+#roundsPage .resting-section .rest-btn {
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ----- Player table lives directly in the Players card ----- */
+#roundsPage .player-history-scroll,
+#roundsPage .player-history-table,
+#roundsPage .player-history-table thead,
+#roundsPage .player-history-table tbody,
+#roundsPage .player-history-table tr {
+  background: transparent !important;
+}
+
+#roundsPage .player-history-scroll {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#roundsPage .player-history-table {
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#roundsPage .player-history-table th,
+#roundsPage .player-history-table td {
+  background: transparent !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+#roundsPage .player-history-table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+/* Sticky Player column must blend into the same card body */
+#roundsPage .player-history-table th:first-child,
+#roundsPage .player-history-table td:first-child {
+  background: inherit !important;
+}
+
+/* ----- FLAT ----- */
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .resting-section {
+  background: rgba(230,55,87,.045) !important;
+  border: 1.5px solid rgba(230,55,87,.42) !important;
+  box-shadow: none !important;
+}
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .player-history-section {
+  background: rgba(74,158,255,.035) !important;
+  border: 1.5px solid rgba(74,158,255,.42) !important;
+  box-shadow: none !important;
+}
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .resting-section > .resting-toggle-btn {
+  color: var(--resting-accent) !important;
+  background: rgba(230,55,87,.055) !important;
+}
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .player-history-section > .resting-toggle-btn {
+  color: var(--players-accent) !important;
+  background: rgba(74,158,255,.05) !important;
+}
+
+/* ----- GLOW ----- */
+body.tile-style-glow #roundsPage .resting-section {
+  background: rgba(230,55,87,.045) !important;
+  border: 1.5px solid var(--resting-accent) !important;
+  box-shadow: 0 0 14px rgba(230,55,87,.20) !important;
+}
+body.tile-style-glow #roundsPage .player-history-section {
+  background: rgba(74,158,255,.035) !important;
+  border: 1.5px solid var(--players-accent) !important;
+  box-shadow: 0 0 14px rgba(74,158,255,.20) !important;
+}
+body.tile-style-glow #roundsPage .resting-section > .resting-toggle-btn {
+  color: #ff6b82 !important;
+  background: rgba(230,55,87,.075) !important;
+}
+body.tile-style-glow #roundsPage .player-history-section > .resting-toggle-btn {
+  color: #72b5ff !important;
+  background: rgba(74,158,255,.07) !important;
+}
+
+/* ----- COLOR ----- */
+/* Resting = red family; Players = blue family. Same deep-tint language as Color courts. */
+body.tile-style-color #roundsPage .resting-section {
+  background: linear-gradient(145deg, rgba(61,24,31,.98), rgba(29,17,21,.99)) !important;
+  border: 1px solid rgba(230,55,87,.56) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04) !important;
+}
+body.tile-style-color #roundsPage .player-history-section {
+  background: linear-gradient(145deg, rgba(18,42,72,.98), rgba(12,25,43,.99)) !important;
+  border: 1px solid rgba(74,158,255,.54) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04) !important;
+}
+
+body.tile-style-color #roundsPage .resting-section > .resting-toggle-btn {
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(126,28,45,.96), rgba(76,19,30,.99)) !important;
+}
+body.tile-style-color #roundsPage .player-history-section > .resting-toggle-btn {
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(27,76,139,.96), rgba(17,47,88,.99)) !important;
+}
+
+/* Keep all content on the same body surface */
+body.tile-style-color #roundsPage .resting-section > .rest-box,
+body.tile-style-color #roundsPage .player-history-section > .player-history-box,
+body.tile-style-color #roundsPage .player-history-table th:first-child,
+body.tile-style-color #roundsPage .player-history-table td:first-child {
+  background: transparent !important;
+}
+
+/* Light theme equivalents */
+body.tile-style-color.app-light #roundsPage .resting-section {
+  background: #fff3f5 !important;
+  border-color: rgba(230,55,87,.42) !important;
+}
+body.tile-style-color.app-light #roundsPage .player-history-section {
+  background: #f1f7ff !important;
+  border-color: rgba(74,158,255,.42) !important;
+}
+body.tile-style-color.app-light #roundsPage .resting-section > .resting-toggle-btn {
+  color: #8d1e32 !important;
+  background: rgba(230,55,87,.12) !important;
+}
+body.tile-style-color.app-light #roundsPage .player-history-section > .resting-toggle-btn {
+  color: #245f9f !important;
+  background: rgba(74,158,255,.11) !important;
+}
+
+/* Compact mobile rhythm without reducing the established readable font floor */
+@media (max-width: 480px) {
+  #roundsPage .resting-section,
+  #roundsPage .player-history-section {
+    width: calc(100% - 16px) !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+  #roundsPage .resting-section > .rest-box:not(.rest-collapsed) {
+    padding: 10px 10px 11px !important;
+  }
+}
+
+
+
+/* Build 793 — inactive players remain visible but visually secondary */
+#roundsPage .player-history-inactive .player-history-name {
+  color: var(--muted, #8b93a7) !important;
+  opacity: .68 !important;
+  font-weight: 500 !important;
+}
+
+
+/* Build 794 — display-only Not Yet Paired card */
+#roundsPage .not-yet-paired-section {
+  box-sizing: border-box !important;
+  width: calc(100% - 20px) !important;
+  margin: 14px 10px 8px !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+#roundsPage .not-yet-paired-section > .not-yet-paired-title {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 9px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-size: .76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.1px !important;
+}
+
+#roundsPage .not-yet-paired-summary {
+  font-weight: 700 !important;
+  opacity: .72 !important;
+}
+
+#roundsPage .not-yet-paired-box {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+#roundsPage .not-yet-paired-box.rest-collapsed {
+  display: none !important;
+}
+
+#roundsPage .not-yet-paired-scroll {
+  width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#roundsPage .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 31rem !important;
+  border-collapse: collapse !important;
+  font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  line-height: 1.25 !important;
+}
+
+#roundsPage .not-yet-paired-table th,
+#roundsPage .not-yet-paired-table td {
+  padding: 8px 10px !important;
+  border-bottom: 1px solid rgba(128,128,128,.16) !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+
+#roundsPage .not-yet-paired-table th {
+  font-size: max(.68rem, calc(var(--player-font-size, 1rem) * .61)) !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  opacity: .68 !important;
+}
+
+#roundsPage .not-yet-paired-table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+#roundsPage .not-yet-paired-name {
+  font-weight: 700 !important;
+}
+
+#roundsPage .not-yet-paired-count {
+  width: 4rem !important;
+  text-align: center !important;
+  font-weight: 800 !important;
+  color: #ffb648 !important;
+}
+
+#roundsPage .not-yet-paired-chip {
+  display: inline-block !important;
+  margin: 2px 5px 2px 0 !important;
+  padding: 3px 8px !important;
+  border: 1px solid rgba(255,182,72,.42) !important;
+  border-radius: 999px !important;
+  color: #ffbd58 !important;
+  background: rgba(255,182,72,.055) !important;
+  font-weight: 650 !important;
+}
+
+#roundsPage .not-yet-paired-complete {
+  color: #35c96b !important;
+  font-weight: 700 !important;
+}
+
+/* Flat */
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .not-yet-paired-section {
+  background: rgba(245,166,35,.035) !important;
+  border: 1.5px solid rgba(245,166,35,.42) !important;
+  box-shadow: none !important;
+}
+body:not(.tile-style-glow):not(.tile-style-color) #roundsPage .not-yet-paired-title {
+  color: #d88c18 !important;
+  background: rgba(245,166,35,.055) !important;
+}
+
+/* Glow */
+body.tile-style-glow #roundsPage .not-yet-paired-section {
+  background: rgba(245,166,35,.035) !important;
+  border: 1.5px solid #f5a623 !important;
+  box-shadow: 0 0 14px rgba(245,166,35,.20) !important;
+}
+body.tile-style-glow #roundsPage .not-yet-paired-title {
+  color: #ffc45d !important;
+  background: rgba(245,166,35,.075) !important;
+}
+
+/* Color */
+body.tile-style-color #roundsPage .not-yet-paired-section {
+  background: linear-gradient(145deg, rgba(58,43,18,.98), rgba(29,23,14,.99)) !important;
+  border: 1px solid rgba(245,166,35,.54) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04) !important;
+}
+body.tile-style-color #roundsPage .not-yet-paired-title {
+  color: #fff !important;
+  background: linear-gradient(135deg, rgba(112,73,13,.96), rgba(69,47,12,.99)) !important;
+}
+body.tile-style-color.app-light #roundsPage .not-yet-paired-section {
+  background: #fff9ee !important;
+  border-color: rgba(218,143,25,.42) !important;
+}
+body.tile-style-color.app-light #roundsPage .not-yet-paired-title {
+  color: #80530d !important;
+  background: rgba(245,166,35,.13) !important;
+}
+
+@media (max-width: 480px) {
+  #roundsPage .not-yet-paired-section {
+    width: calc(100% - 16px) !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+}
+
+
+/* Build 795 — Not Paired / All partner view toggle */
+#roundsPage .not-yet-paired-controls {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 4px !important;
+  padding: 7px 10px 5px !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(128,128,128,.12) !important;
+}
+
+#roundsPage .not-yet-paired-view-btn {
+  appearance: none !important;
+  border: 1px solid rgba(148,163,184,.26) !important;
+  border-radius: 999px !important;
+  padding: 5px 10px !important;
+  min-height: 30px !important;
+  background: rgba(148,163,184,.06) !important;
+  color: var(--muted, #9ca3af) !important;
+  font-family: var(--font-body) !important;
+  font-size: .68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .7px !important;
+  cursor: pointer !important;
+}
+
+#roundsPage .not-yet-paired-view-btn.active {
+  color: #fff !important;
+  background: rgba(245,166,35,.22) !important;
+  border-color: rgba(245,166,35,.62) !important;
+}
+
+#roundsPage .not-yet-paired-chip {
+  transition: none !important;
+}
+
+/* Not paired = red */
+#roundsPage .not-yet-paired-chip.unpaired-chip {
+  color: #ff6b6b !important;
+  border-color: rgba(255,80,80,.58) !important;
+  background: rgba(255,65,65,.07) !important;
+}
+
+/* Already paired = green */
+#roundsPage .not-yet-paired-chip.paired-chip {
+  color: #38d26f !important;
+  border-color: rgba(56,210,111,.58) !important;
+  background: rgba(56,210,111,.08) !important;
+}
+
+/* Keep default Not Paired view visually red as requested */
+#roundsPage .not-yet-paired-box .not-yet-paired-chip:not(.paired-chip) {
+  color: #ff6b6b !important;
+  border-color: rgba(255,80,80,.58) !important;
+  background: rgba(255,65,65,.07) !important;
+}
+
+body.tile-style-color.app-light #roundsPage .not-yet-paired-view-btn.active {
+  color: #7a4b05 !important;
+  background: rgba(245,166,35,.18) !important;
+}
+
+/* Build 799 — consolidated Player History presentation
+   Final layout only: no stacked 796–798 presentation overrides. */
+
+/* Parent */
+#roundsPage .player-history-group {
+  box-sizing: border-box !important;
+  width: calc(100% - 16px) !important;
+  margin: 14px 8px 8px !important;
+  padding: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgba(17,20,27,.96) !important;
+  border: 1.5px solid rgba(128,143,166,.38) !important;
+  box-shadow: none !important;
+}
+#roundsPage .player-history-group-title {
+  appearance: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(255,255,255,.025) !important;
+  color: var(--text) !important;
+  font-family: var(--font-body) !important;
+  font-size: .8rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 1.3px !important;
+  text-align: left !important;
+}
+#roundsPage .player-history-group-body {
+  padding: 10px 8px 12px !important;
+  background: transparent !important;
+}
+#roundsPage .player-history-group-body.rest-collapsed { display:none !important; }
+
+/* Both child cards: identical geometry */
+#roundsPage .player-history-group-body > .player-history-section,
+#roundsPage .player-history-group-body > .not-yet-paired-section {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 8px 0 !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+/* Both child headers: identical rhythm */
+#roundsPage .player-history-group-body > .player-history-section > .resting-toggle-btn,
+#roundsPage .player-history-group-body > .not-yet-paired-section > .resting-toggle-btn {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 9px 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  text-align: left !important;
+  font-size: .76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .9px !important;
+}
+
+/* Round History */
+#roundsPage .player-history-section {
+  background: rgba(17,28,44,.78) !important;
+  border: 1.5px solid rgba(66,133,214,.62) !important;
+}
+#roundsPage .player-history-section > .resting-toggle-btn {
+  justify-content: space-between !important;
+  color: #5da2f4 !important;
+  background: rgba(42,88,148,.13) !important;
+}
+
+/* Pairing History */
+#roundsPage .not-yet-paired-section {
+  background: rgba(13,35,34,.78) !important;
+  border: 1.5px solid rgba(48,160,145,.58) !important;
+}
+#roundsPage .not-yet-paired-section > .not-yet-paired-title {
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  color: #55c3b2 !important;
+  background: rgba(34,124,112,.13) !important;
+}
+#roundsPage .not-yet-paired-title > .resting-toggle-label {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+}
+#roundsPage .pairing-header-actions {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+}
+#roundsPage .pairing-header-toggle {
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 2px !important;
+  border: 1px solid rgba(130,145,160,.30) !important;
+  border-radius: 999px !important;
+  background: rgba(0,0,0,.16) !important;
+}
+#roundsPage .pairing-header-toggle .not-yet-paired-view-btn {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 24px !important;
+  margin: 0 !important;
+  padding: 3px 7px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--muted,#9299a8) !important;
+  font-size: .54rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .15px !important;
+  white-space: nowrap !important;
+}
+#roundsPage .pairing-header-toggle .not-yet-paired-view-btn.active {
+  color: #fff !important;
+  background: rgba(43,151,136,.46) !important;
+}
+#roundsPage .pairing-header-actions .resting-toggle-arrow {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+/* Table typography and spacing: Pairing matches Round History */
+#roundsPage .not-yet-paired-box,
+#roundsPage .not-yet-paired-scroll,
+#roundsPage .not-yet-paired-table {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+#roundsPage .not-yet-paired-scroll {
+  width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+#roundsPage .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 31rem !important;
+  border-collapse: collapse !important;
+  font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  line-height: 1.25 !important;
+}
+#roundsPage .not-yet-paired-table th,
+#roundsPage .not-yet-paired-table td {
+  padding: 8px 10px !important;
+  border-bottom: 1px solid rgba(128,128,128,.16) !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+#roundsPage .not-yet-paired-table th {
+  font-size: max(.68rem, calc(var(--player-font-size, 1rem) * .61)) !important;
+  font-weight: 800 !important;
+  letter-spacing: .7px !important;
+  color: var(--muted,#8f97a6) !important;
+  text-align: left !important;
+}
+#roundsPage .not-yet-paired-name {
+  font-size: inherit !important;
+  font-weight: 600 !important;
+  color: var(--muted,#a0a8b8) !important;
+}
+#roundsPage .not-yet-paired-count {
+  font-size: inherit !important;
+  font-weight: 700 !important;
+  color: #f0b54d !important;
+  text-align: center !important;
+}
+#roundsPage .not-yet-paired-chip {
+  display: inline-block !important;
+  margin: 2px 5px 2px 0 !important;
+  padding: 2px 7px !important;
+  border-radius: 999px !important;
+  font-size: inherit !important;
+  line-height: 1.15 !important;
+  font-weight: 600 !important;
+}
+#roundsPage .not-yet-paired-chip.unpaired-chip,
+#roundsPage .not-yet-paired-chip:not(.paired-chip) {
+  color: #ff7474 !important;
+  border: 1px solid rgba(255,80,80,.58) !important;
+  background: rgba(255,65,65,.06) !important;
+}
+#roundsPage .not-yet-paired-chip.paired-chip {
+  color: #43d57a !important;
+  border: 1px solid rgba(56,210,111,.58) !important;
+  background: rgba(56,210,111,.07) !important;
+}
+#roundsPage .not-yet-paired-complete {
+  color: #43d57a !important;
+  font-weight: 700 !important;
+}
+#roundsPage .not-yet-paired-controls { display:none !important; }
+
+/* Selected tile styles keep the same geometry; only treatment changes */
+body.tile-style-glow #roundsPage .player-history-section {
+  box-shadow: 0 0 12px rgba(66,133,214,.16) !important;
+}
+body.tile-style-glow #roundsPage .not-yet-paired-section {
+  box-shadow: 0 0 12px rgba(48,160,145,.16) !important;
+}
+body.tile-style-color #roundsPage .player-history-section {
+  background: linear-gradient(145deg, rgba(18,42,72,.96), rgba(12,25,43,.98)) !important;
+}
+body.tile-style-color #roundsPage .not-yet-paired-section {
+  background: linear-gradient(145deg, rgba(15,52,50,.96), rgba(10,29,30,.98)) !important;
+}
+body.app-light #roundsPage .player-history-group {
+  background: #f8faff !important;
+}
+body.app-light #roundsPage .player-history-section {
+  background: #f2f7ff !important;
+}
+body.app-light #roundsPage .not-yet-paired-section {
+  background: #effbf9 !important;
+}
+
+@media (max-width: 390px) {
+  #roundsPage .player-history-group-body { padding-left:6px !important; padding-right:6px !important; }
+  #roundsPage .player-history-group-body > .player-history-section > .resting-toggle-btn,
+  #roundsPage .player-history-group-body > .not-yet-paired-section > .resting-toggle-btn {
+    padding-left:10px !important;
+    padding-right:8px !important;
+  }
+  #roundsPage .not-yet-paired-title > .resting-toggle-label {
+    font-size:.68rem !important;
+    letter-spacing:.55px !important;
+  }
+  #roundsPage .pairing-header-toggle .not-yet-paired-view-btn {
+    padding-left:5px !important;
+    padding-right:5px !important;
+    font-size:.50rem !important;
+  }
+}
+
+
+
+/* Build 800 — fixed Player columns for both history tables */
+
+/* Round History: fixed Player column with an opaque surface so scrolled rounds never show through */
+#roundsPage .player-history-table th:first-child,
+#roundsPage .player-history-table td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 6 !important;
+  text-align: left !important;
+  background: #142238 !important;
+  box-shadow: 1px 0 0 rgba(90,120,160,.34) !important;
+}
+
+#roundsPage .player-history-table thead th:first-child {
+  z-index: 8 !important;
+  background: #16253d !important;
+}
+
+/* Pairing History: fix Player column in exactly the same way */
+#roundsPage .not-yet-paired-table th:first-child,
+#roundsPage .not-yet-paired-table td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 6 !important;
+  text-align: left !important;
+  background: #102725 !important;
+  box-shadow: 1px 0 0 rgba(65,145,132,.34) !important;
+}
+
+#roundsPage .not-yet-paired-table thead th:first-child {
+  z-index: 8 !important;
+  background: #122c29 !important;
+}
+
+/* Keep the fixed Player cells above all horizontally scrolling content */
+#roundsPage .player-history-scroll,
+#roundsPage .not-yet-paired-scroll {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+/* Flat/Glow use the same solid card surfaces */
+body:not(.tile-style-color) #roundsPage .player-history-table th:first-child,
+body:not(.tile-style-color) #roundsPage .player-history-table td:first-child {
+  background: #171c25 !important;
+}
+body:not(.tile-style-color) #roundsPage .not-yet-paired-table th:first-child,
+body:not(.tile-style-color) #roundsPage .not-yet-paired-table td:first-child {
+  background: #151d1d !important;
+}
+
+/* Light theme */
+body.app-light #roundsPage .player-history-table th:first-child,
+body.app-light #roundsPage .player-history-table td:first-child {
+  background: #f2f7ff !important;
+}
+body.app-light #roundsPage .not-yet-paired-table th:first-child,
+body.app-light #roundsPage .not-yet-paired-table td:first-child {
+  background: #effbf9 !important;
+}
+
+
+/* Build 850 — Pairing History uses the app's own gender icons and subtle gender row tint */
+#roundsPage .not-yet-paired-name,
+#roundsPage .not-yet-paired-chip {
+  align-items: center !important;
+}
+#roundsPage .not-yet-paired-name {
+  display: flex !important;
+  gap: 6px !important;
+}
+#roundsPage .not-yet-paired-chip {
+  display: inline-flex !important;
+  gap: 4px !important;
+}
+#roundsPage .pairing-gender-icon {
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  object-fit: contain !important;
+  flex: 0 0 auto !important;
+  cursor: default !important;
+}
+#roundsPage .pairing-gender-icon-chip {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* Reuse the app's male/female visual language without changing pairing status colors. */
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td {
+  background-color: rgba(50, 145, 255, .055) !important;
+}
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td {
+  background-color: rgba(255, 105, 160, .055) !important;
+}
+/* Sticky Player cell needs its own opaque-enough tint so scrolled columns never show through. */
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #15232a !important;
+}
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #241d24 !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td {
+  background-color: rgba(50, 145, 255, .07) !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td {
+  background-color: rgba(255, 105, 160, .07) !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #edf6ff !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #fff0f5 !important;
+}
+/* Rounds Template editor actions */
+.template-editor-round-actions{display:flex;gap:8px;width:100%;margin-top:10px}
+.template-editor-round-actions button{flex:1;min-height:40px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:#17213f;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.template-editor-round-actions button:last-child{background:#5c4df2}
+.template-editor-close{background:transparent!important;border:1px solid #ff426d!important;color:#ff6c8d!important}
+
+/* Build 970 — iOS-safe frozen Player column for Dashboard history tables.
+   Keep the first column fixed and fully opaque while the remaining columns
+   slide underneath it, without text/markers bleeding over player names. */
+#roundsPage .player-history-table,
+#roundsPage .not-yet-paired-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+#roundsPage .player-history-table th:first-child,
+#roundsPage .player-history-table td:first-child,
+#roundsPage .not-yet-paired-table th:first-child,
+#roundsPage .not-yet-paired-table td:first-child {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 20 !important;
+  background-clip: padding-box !important;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 1px 0 0 rgba(120,145,170,.30), 4px 0 7px rgba(0,0,0,.10) !important;
+}
+
+#roundsPage .player-history-table thead th:first-child,
+#roundsPage .not-yet-paired-table thead th:first-child {
+  z-index: 24 !important;
+}
+
+/* Round History frozen surface */
+#roundsPage .player-history-table th:first-child,
+#roundsPage .player-history-table td:first-child {
+  background-color: #171c25 !important;
+}
+body.tile-style-color #roundsPage .player-history-table th:first-child,
+body.tile-style-color #roundsPage .player-history-table td:first-child {
+  background-color: #142238 !important;
+}
+body.app-light #roundsPage .player-history-table th:first-child,
+body.app-light #roundsPage .player-history-table td:first-child {
+  background-color: #f2f7ff !important;
+}
+
+/* Pairing History frozen surface */
+#roundsPage .not-yet-paired-table th:first-child,
+#roundsPage .not-yet-paired-table td:first-child {
+  background-color: #151d1d !important;
+}
+body.tile-style-color #roundsPage .not-yet-paired-table th:first-child,
+body.tile-style-color #roundsPage .not-yet-paired-table td:first-child {
+  background-color: #102725 !important;
+}
+body.app-light #roundsPage .not-yet-paired-table th:first-child,
+body.app-light #roundsPage .not-yet-paired-table td:first-child {
+  background-color: #effbf9 !important;
+}
+
+/* Preserve Pairing History gender tint on the frozen Player cell, but keep it opaque. */
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #15232a !important;
+}
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #241d24 !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #edf6ff !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #fff0f5 !important;
+}
+
+/* Build 971 — Pairing History frozen Player column hardening for iOS Safari.
+   The Player cell is a fixed-width opaque curtain above the horizontally
+   scrolling Unpaired / partner columns, so those cells can never paint over
+   player names while swiping. */
+#roundsPage .not-yet-paired-scroll {
+  position: relative !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#roundsPage .not-yet-paired-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+#roundsPage .not-yet-paired-table th:first-child,
+#roundsPage .not-yet-paired-table td:first-child {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 50 !important;
+  box-sizing: border-box !important;
+  width: 10rem !important;
+  min-width: 10rem !important;
+  max-width: 10rem !important;
+  overflow: hidden !important;
+  background-clip: border-box !important;
+  -webkit-transform: translate3d(0,0,0) !important;
+  transform: translate3d(0,0,0) !important;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  box-shadow: 1px 0 0 rgba(80,145,135,.42), 5px 0 8px rgba(0,0,0,.14) !important;
+}
+
+#roundsPage .not-yet-paired-table thead th:first-child {
+  z-index: 60 !important;
+}
+
+/* Fully opaque pairing-history curtain surfaces. */
+#roundsPage .not-yet-paired-table th:first-child,
+#roundsPage .not-yet-paired-table td:first-child {
+  background-color: #151d1d !important;
+}
+body.tile-style-color #roundsPage .not-yet-paired-table th:first-child,
+body.tile-style-color #roundsPage .not-yet-paired-table td:first-child {
+  background-color: #102725 !important;
+}
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #15232a !important;
+}
+#roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #241d24 !important;
+}
+body.app-light #roundsPage .not-yet-paired-table th:first-child,
+body.app-light #roundsPage .not-yet-paired-table td:first-child {
+  background-color: #effbf9 !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-male > td:first-child {
+  background-color: #edf6ff !important;
+}
+body.app-light #roundsPage .not-yet-paired-table tbody tr.pairing-row-female > td:first-child {
+  background-color: #fff0f5 !important;
+}
+
+@media (max-width: 390px) {
+  #roundsPage .not-yet-paired-table th:first-child,
+  #roundsPage .not-yet-paired-table td:first-child {
+    width: 9.5rem !important;
+    min-width: 9.5rem !important;
+    max-width: 9.5rem !important;
+  }
+}
+
+/* Build 986 — Dashboard relationship switch for Doubles/XD: Pairing | Opponent */
+.relationship-history-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: rgba(0,0,0,.16);
+}
+.relationship-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  opacity: .62;
+  white-space: nowrap;
+}
+.relationship-mode-btn.active {
+  background: rgba(255,255,255,.14);
+  opacity: 1;
+}
+@media (max-width: 430px) {
+  .not-yet-paired-title .pairing-header-actions { gap: 5px; }
+  .relationship-mode-btn { min-height: 26px; padding: 0 7px; font-size: 9px; }
+}
+
+/* Build 987 — Dashboard history visual alignment.
+   Round History is the reference; Pairing/Opponent title and table rows match it. */
+#roundsPage .not-yet-paired-section > .not-yet-paired-title {
+  justify-content: space-between !important;
+  gap: 0 !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 9px 12px !important;
+  font-size: .76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .9px !important;
+  line-height: 1.15 !important;
+}
+#roundsPage .not-yet-paired-title > .resting-toggle-label {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+  white-space: nowrap !important;
+}
+#roundsPage .not-yet-paired-title > .resting-toggle-arrow {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+/* Relationship/view switches get a separate compact row below the fixed-height title. */
+#roundsPage .relationship-history-controls {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 38px !important;
+  padding: 5px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  border-bottom: 1px solid rgba(128,128,128,.16) !important;
+  background: rgba(0,0,0,.08) !important;
+}
+#roundsPage .relationship-history-controls .pairing-header-toggle {
+  margin-left: auto !important;
+}
+
+/* Match Round History table typography and row rhythm exactly. */
+#roundsPage .not-yet-paired-table {
+  font-size: max(.82rem, calc(var(--player-font-size, 1rem) * .72)) !important;
+  line-height: 1.25 !important;
+}
+#roundsPage .not-yet-paired-table th {
+  font-size: max(.72rem, calc(var(--player-font-size, 1rem) * .64)) !important;
+}
+#roundsPage .not-yet-paired-table th,
+#roundsPage .not-yet-paired-table td {
+  padding: 6px 7px !important;
+}
+#roundsPage .not-yet-paired-name,
+#roundsPage .not-yet-paired-count,
+#roundsPage .not-yet-paired-with,
+#roundsPage .not-yet-paired-chip {
+  font-size: inherit !important;
+  line-height: 1.25 !important;
+}
+#roundsPage .pairing-gender-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+#roundsPage .pairing-gender-icon-chip {
+  width: .9rem !important;
+  height: .9rem !important;
+}
+#roundsPage .not-yet-paired-chip {
+  margin: 0 4px 0 0 !important;
+  padding: 1px 6px !important;
+  min-height: 0 !important;
+}
+
+@media (max-width: 480px) {
+  #roundsPage .not-yet-paired-table {
+    font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  }
+  #roundsPage .not-yet-paired-table th {
+    font-size: max(.7rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  }
+  #roundsPage .not-yet-paired-table th,
+  #roundsPage .not-yet-paired-table td {
+    padding: 5px 6px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #roundsPage .not-yet-paired-title > .resting-toggle-label {
+    font-size: inherit !important;
+    letter-spacing: inherit !important;
+  }
+  #roundsPage .relationship-history-controls {
+    gap: 5px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+}
+
+/* Build 988 — Dashboard uses one tabbed history card: Rounds | Pairing | Opponents. */
+#roundsPage .dashboard-tabs-body {
+  padding: 0 !important;
+  overflow: hidden;
+}
+#roundsPage .dashboard-history-tabs {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(125,135,160,.18);
+  background: rgba(10,12,19,.24);
+  box-sizing: border-box;
+}
+#roundsPage .dashboard-history-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(210,214,235,.55);
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+}
+#roundsPage .dashboard-history-tab.active {
+  color: #7567ff;
+}
+#roundsPage .dashboard-history-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: currentColor;
+}
+#roundsPage .dashboard-history-panel { display: none; }
+#roundsPage .dashboard-history-panel.active { display: block; }
+
+/* Tabs replace the old blue/orange history title bars. */
+#roundsPage .dashboard-history-panel .dashboard-inner-history-title {
+  display: none !important;
+}
+#roundsPage .dashboard-history-panel .player-history-section,
+#roundsPage .dashboard-history-panel .not-yet-paired-section {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#roundsPage .dashboard-history-panel .player-history-box,
+#roundsPage .dashboard-history-panel .not-yet-paired-box {
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+/* Pairing/Opponent keep only their Not paired/Not played vs All control. */
+#roundsPage .dashboard-history-panel .relationship-history-controls {
+  justify-content: flex-end !important;
+  min-height: 42px !important;
+  padding: 6px 10px !important;
+  background: transparent !important;
+}
+
+body.app-light #roundsPage .dashboard-history-tabs {
+  background: rgba(245,247,252,.72);
+  border-bottom-color: rgba(70,85,110,.16);
+}
+body.app-light #roundsPage .dashboard-history-tab {
+  color: rgba(60,70,95,.58);
+}
+body.app-light #roundsPage .dashboard-history-tab.active {
+  color: #5f54e8;
+}
+
+@media (max-width: 390px) {
+  #roundsPage .dashboard-history-tabs { padding: 0 4px; }
+  #roundsPage .dashboard-history-tab { font-size: .8rem; padding: 0 4px; }
+}
+
+/* Build 989 — Dashboard history tabs refinement.
+   Keep the Dashboard outer card/border. Remove only the inner history-panel outlines.
+   The table surface, not the tab button, carries the Rounds/Pairing/Opponents color.
+   Pairing/Opponents follow Round History row rhythm; all three use zebra rows. */
+#roundsPage .dashboard-history-tabs {
+  border-bottom: 0 !important;
+  background: transparent !important;
+}
+#roundsPage .dashboard-history-tab {
+  background: transparent !important;
+}
+#roundsPage .dashboard-history-panel .player-history-section,
+#roundsPage .dashboard-history-panel .not-yet-paired-section,
+#roundsPage .dashboard-history-panel .player-history-box,
+#roundsPage .dashboard-history-panel .not-yet-paired-box,
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll,
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Distinct table surfaces for each tab. */
+#roundsPage .dashboard-history-panel-rounds {
+  background: linear-gradient(145deg, rgba(18,42,72,.98), rgba(12,25,43,.99)) !important;
+}
+#roundsPage .dashboard-history-panel-pairing {
+  background: linear-gradient(145deg, rgba(73,50,13,.98), rgba(42,29,10,.99)) !important;
+}
+#roundsPage .dashboard-history-panel-opponents {
+  background: linear-gradient(145deg, rgba(15,52,50,.98), rgba(10,29,30,.99)) !important;
+}
+
+/* Pairing and Opponents use the same table geometry as Round History. */
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  font-size: max(.82rem, calc(var(--player-font-size, 1rem) * .72)) !important;
+  line-height: 1.25 !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th {
+  font-size: max(.72rem, calc(var(--player-font-size, 1rem) * .64)) !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th,
+#roundsPage .dashboard-history-panel .not-yet-paired-table td {
+  padding: 6px 7px !important;
+  vertical-align: middle !important;
+}
+
+/* Zebra rows: same pattern and rhythm in all three views. */
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.025) !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.075) !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.085) !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.085) !important;
+}
+
+/* The sticky first column must use the same zebra surface as the rest of its row. */
+#roundsPage .dashboard-history-panel .player-history-table tbody tr:nth-child(odd) > td:first-child,
+#roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table tbody tr:nth-child(even) > td:first-child,
+#roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background-color: rgba(0,0,0,.085) !important;
+}
+
+/* Keep table-header color tied to the active table surface. */
+#roundsPage .dashboard-history-panel-rounds thead th { background: rgba(23,55,91,.72) !important; }
+#roundsPage .dashboard-history-panel-pairing thead th { background: rgba(84,57,16,.72) !important; }
+#roundsPage .dashboard-history-panel-opponents thead th { background: rgba(18,63,59,.72) !important; }
+
+body.app-light #roundsPage .dashboard-history-panel-rounds {
+  background: #eef5ff !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-pairing {
+  background: #fff7e8 !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-opponents {
+  background: #ecfaf7 !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-rounds thead th { background: #e2edfb !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing thead th { background: #f9ecd0 !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents thead th { background: #def2ed !important; }
+body.app-light #roundsPage .dashboard-history-panel .player-history-table tbody tr:nth-child(odd) > td,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.58) !important;
+}
+body.app-light #roundsPage .dashboard-history-panel .player-history-table tbody tr:nth-child(even) > td,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(60,80,110,.045) !important;
+}
+
+@media (max-width: 480px) {
+  #roundsPage .dashboard-history-panel .not-yet-paired-table {
+    font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  }
+  #roundsPage .dashboard-history-panel .not-yet-paired-table th {
+    font-size: max(.7rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  }
+  #roundsPage .dashboard-history-panel .not-yet-paired-table th,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table td {
+    padding: 5px 6px !important;
+  }
+}
+
+/* Build 990 — Portrait dashboard design approved by user.
+   Keep the Dashboard card/border. The three tab panels are borderless colour
+   surfaces with matching geometry and zebra rows. */
+#roundsPage .dashboard-tabs-body {
+  background: #0b1019 !important;
+}
+#roundsPage .dashboard-history-tabs {
+  min-height: 58px !important;
+  padding: 0 14px !important;
+  background: #0b1019 !important;
+  border: 0 !important;
+}
+#roundsPage .dashboard-history-tab {
+  min-height: 58px !important;
+  padding: 0 6px !important;
+  background: transparent !important;
+  color: rgba(196,201,217,.66) !important;
+  font-size: .92rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .01em !important;
+}
+#roundsPage .dashboard-history-tab.active {
+  color: #7567ff !important;
+}
+#roundsPage .dashboard-history-tab.active::after {
+  left: 18% !important;
+  right: 18% !important;
+  height: 4px !important;
+  background: #7567ff !important;
+  border-radius: 5px 5px 0 0 !important;
+}
+
+/* No Rounds / Pairing / Opponents panel outline. */
+#roundsPage .dashboard-history-panel,
+#roundsPage .dashboard-history-panel .player-history-section,
+#roundsPage .dashboard-history-panel .not-yet-paired-section,
+#roundsPage .dashboard-history-panel .player-history-box,
+#roundsPage .dashboard-history-panel .not-yet-paired-box,
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll,
+#roundsPage .dashboard-history-panel table {
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Each tab colours the TABLE surface, not the tab itself. */
+#roundsPage .dashboard-history-panel-rounds {
+  background: linear-gradient(135deg, #123664 0%, #0b2343 100%) !important;
+}
+#roundsPage .dashboard-history-panel-pairing {
+  background: linear-gradient(135deg, #60420d 0%, #382706 100%) !important;
+}
+#roundsPage .dashboard-history-panel-opponents {
+  background: linear-gradient(135deg, #075149 0%, #06342f 100%) !important;
+}
+
+/* Pairing/Opponent filter bar belongs to the colour surface. */
+#roundsPage .dashboard-history-panel .relationship-history-controls {
+  box-sizing: border-box !important;
+  min-height: 48px !important;
+  padding: 8px 14px !important;
+  background: rgba(0,0,0,.08) !important;
+  border: 0 !important;
+}
+#roundsPage .dashboard-history-panel .pairing-header-toggle {
+  padding: 3px !important;
+  border: 1px solid rgba(213,219,230,.25) !important;
+  background: rgba(4,11,18,.30) !important;
+}
+#roundsPage .dashboard-history-panel-pairing .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background: rgba(188,128,5,.72) !important;
+  color: #fff !important;
+}
+#roundsPage .dashboard-history-panel-opponents .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background: rgba(12,126,112,.78) !important;
+  color: #fff !important;
+}
+
+/* Identical table rhythm across Rounds, Pairing and Opponents. */
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  width: 100% !important;
+  font-size: max(.80rem, calc(var(--player-font-size, 1rem) * .71)) !important;
+  line-height: 1.2 !important;
+  border-collapse: collapse !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table thead tr,
+#roundsPage .dashboard-history-panel .not-yet-paired-table thead tr {
+  height: 38px !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table tbody tr,
+#roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr {
+  height: 43px !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table th,
+#roundsPage .dashboard-history-panel .not-yet-paired-table th {
+  box-sizing: border-box !important;
+  padding: 7px 10px !important;
+  font-size: max(.70rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  font-weight: 800 !important;
+  letter-spacing: .45px !important;
+  color: rgba(178,187,207,.72) !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid rgba(255,255,255,.075) !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table td,
+#roundsPage .dashboard-history-panel .not-yet-paired-table td {
+  box-sizing: border-box !important;
+  padding: 7px 10px !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid rgba(255,255,255,.065) !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table tbody tr:last-child td,
+#roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+/* Strong but clean zebra pattern, colour matched per table. */
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background: rgba(39,91,151,.20) !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background: rgba(2,16,35,.18) !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: rgba(177,121,15,.16) !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: rgba(31,20,2,.18) !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: rgba(31,136,122,.16) !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: rgba(2,24,22,.18) !important;
+}
+
+/* Sticky player column follows the zebra row exactly. */
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: rgba(39,91,151,.20) !important; }
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: rgba(2,16,35,.18) !important; }
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: rgba(177,121,15,.16) !important; }
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: rgba(31,20,2,.18) !important; }
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: rgba(31,136,122,.16) !important; }
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: rgba(2,24,22,.18) !important; }
+
+/* Header belongs to the same surface. */
+#roundsPage .dashboard-history-panel-rounds thead th { background: rgba(20,55,96,.88) !important; }
+#roundsPage .dashboard-history-panel-pairing thead th { background: rgba(92,62,11,.88) !important; }
+#roundsPage .dashboard-history-panel-opponents thead th { background: rgba(7,68,62,.88) !important; }
+
+/* Keep names/counts compact like the approved portrait. */
+#roundsPage .dashboard-history-panel .not-yet-paired-name,
+#roundsPage .dashboard-history-panel .player-history-table td:first-child {
+  font-size: inherit !important;
+  font-weight: 650 !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-count {
+  color: #ffc34a !important;
+  font-weight: 800 !important;
+}
+
+/* Light mode equivalents keep the same three identities. */
+body.app-light #roundsPage .dashboard-tabs-body,
+body.app-light #roundsPage .dashboard-history-tabs { background: #f8f9fc !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds { background: linear-gradient(135deg,#e8f2ff,#dceaff) !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing { background: linear-gradient(135deg,#fff4d8,#f9e9bd) !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents { background: linear-gradient(135deg,#e4f8f4,#d8f1ec) !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds thead th { background:#d8e9fb !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing thead th { background:#f4dfad !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents thead th { background:#ccebe5 !important; }
+
+@media (max-width: 390px) {
+  #roundsPage .dashboard-history-tabs { padding: 0 6px !important; }
+  #roundsPage .dashboard-history-tab { font-size: .82rem !important; }
+  #roundsPage .dashboard-history-panel .player-history-table th,
+  #roundsPage .dashboard-history-panel .player-history-table td,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table th,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table td {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+}
+
+/* Build 991 — compact Dashboard tables.
+   Dashboard text is intentionally smaller than the court/player cards.
+   Rounds, Pairing and Opponents share exactly the same header/row rhythm. */
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  font-size: clamp(.68rem, calc(var(--player-font-size, 1rem) * .60), .76rem) !important;
+  line-height: 1.08 !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table thead tr,
+#roundsPage .dashboard-history-panel .not-yet-paired-table thead tr {
+  height: 30px !important;
+  min-height: 30px !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table tbody tr,
+#roundsPage .dashboard-history-panel .not-yet-paired-table tbody tr {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table th,
+#roundsPage .dashboard-history-panel .not-yet-paired-table th {
+  height: 30px !important;
+  padding: 4px 6px !important;
+  font-size: clamp(.60rem, calc(var(--player-font-size, 1rem) * .52), .67rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: .25px !important;
+  white-space: nowrap !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table td,
+#roundsPage .dashboard-history-panel .not-yet-paired-table td {
+  height: 34px !important;
+  padding: 4px 6px !important;
+  line-height: 1.08 !important;
+}
+
+/* Pairing/Opponent rows must stay the same height as Rounds regardless of chips/icons. */
+#roundsPage .dashboard-history-panel .not-yet-paired-name,
+#roundsPage .dashboard-history-panel .not-yet-paired-count,
+#roundsPage .dashboard-history-panel .not-yet-paired-with,
+#roundsPage .dashboard-history-panel .not-yet-paired-chip {
+  font-size: inherit !important;
+  line-height: 1.05 !important;
+}
+#roundsPage .dashboard-history-panel .pairing-gender-icon {
+  width: .82rem !important;
+  height: .82rem !important;
+  min-width: .82rem !important;
+}
+#roundsPage .dashboard-history-panel .pairing-gender-icon-chip {
+  width: .72rem !important;
+  height: .72rem !important;
+  min-width: .72rem !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-chip {
+  min-height: 20px !important;
+  height: 20px !important;
+  padding: 1px 5px !important;
+  margin: 0 3px 0 0 !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-with {
+  gap: 3px !important;
+  min-height: 20px !important;
+}
+
+/* Compact filter strip so it does not dominate the table. */
+#roundsPage .dashboard-history-panel .relationship-history-controls {
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 4px 8px !important;
+}
+#roundsPage .dashboard-history-panel .pairing-header-toggle {
+  min-height: 28px !important;
+  padding: 2px !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-view-btn {
+  min-height: 24px !important;
+  padding: 3px 9px !important;
+  font-size: .62rem !important;
+  line-height: 1 !important;
+}
+
+/* Keep all three views aligned to the exact same visible width and geometry. */
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll {
+  width: 100% !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  min-width: 100% !important;
+}
+
+@media (max-width: 390px) {
+  #roundsPage .dashboard-history-panel .player-history-table,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table {
+    font-size: .66rem !important;
+  }
+  #roundsPage .dashboard-history-panel .player-history-table th,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table th {
+    font-size: .58rem !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+  #roundsPage .dashboard-history-panel .player-history-table td,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table td {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+}
+
+/* Build 991 — Dashboard table cleanup: borderless compact tables, no cross-tab overflow. */
+#roundsPage .dashboard-history-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#roundsPage .dashboard-history-panel .player-history-section,
+#roundsPage .dashboard-history-panel .not-yet-paired-section,
+#roundsPage .dashboard-history-panel .player-history-box,
+#roundsPage .dashboard-history-panel .not-yet-paired-box,
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Zebra replaces grid lines completely. */
+#roundsPage .dashboard-history-panel table,
+#roundsPage .dashboard-history-panel th,
+#roundsPage .dashboard-history-panel td,
+#roundsPage .dashboard-history-panel tr {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table th:first-child,
+#roundsPage .dashboard-history-panel .player-history-table td:first-child,
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:first-child,
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:first-child {
+  box-shadow: none !important;
+}
+
+/* All three tabs occupy exactly the Dashboard width. */
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+  width: 42% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(2),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(2) {
+  width: 18% !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(3),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(3) {
+  width: 40% !important;
+  overflow: hidden !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-name,
+#roundsPage .dashboard-history-panel .not-yet-paired-with {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Keep relationship control inside its own panel; it must never overlay the table. */
+#roundsPage .dashboard-history-panel .relationship-history-controls {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 40px !important;
+  padding: 5px 10px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#roundsPage .dashboard-history-panel .pairing-header-toggle {
+  max-width: 100% !important;
+  flex: 0 0 auto !important;
+}
+
+/* Chips stay on one compact line; render shows one name + remainder badge. */
+#roundsPage .dashboard-history-panel .not-yet-paired-chip {
+  max-width: calc(100% - 2.25rem) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+#roundsPage .dashboard-history-panel .relationship-more-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 1.85rem !important;
+  margin-left: 2px !important;
+  padding: 1px 5px !important;
+  border: 1px solid rgba(255,90,90,.58) !important;
+  border-radius: 999px !important;
+  color: #ff7474 !important;
+  font-size: .62rem !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  vertical-align: middle !important;
+}
+
+/* Build 992 — relationship history count cards.
+   Replace +N summaries with compact rectangular player cards and an adjacent
+   count pill showing the exact pair/opponent encounter count in ALL view. */
+#roundsPage .dashboard-history-panel .not-yet-paired-with {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-with::-webkit-scrollbar {
+  display: none !important;
+}
+#roundsPage .dashboard-history-panel .relationship-player-card {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-height: 20px !important;
+  height: 20px !important;
+  padding: 1px 3px 1px 5px !important;
+  margin: 0 !important;
+  gap: 3px !important;
+  border-radius: 6px !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+#roundsPage .dashboard-history-panel-pairing .relationship-player-card {
+  background: rgba(118,78,16,.42) !important;
+  border: 1px solid rgba(243,180,70,.34) !important;
+}
+#roundsPage .dashboard-history-panel-opponents .relationship-player-card {
+  background: rgba(9,82,73,.46) !important;
+  border: 1px solid rgba(62,199,181,.30) !important;
+}
+#roundsPage .dashboard-history-panel .relationship-count-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  min-width: 17px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  margin-left: 1px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: rgba(255,102,102,.22) !important;
+  color: #ff8b8b !important;
+  font-size: .58rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-pairing .relationship-player-card {
+  background: rgba(255,242,207,.92) !important;
+  border-color: rgba(182,126,24,.30) !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-opponents .relationship-player-card {
+  background: rgba(220,244,239,.94) !important;
+  border-color: rgba(33,135,122,.26) !important;
+}
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill {
+  background: rgba(224,75,75,.12) !important;
+  color: #c83c3c !important;
+}
+#roundsPage .dashboard-history-panel .relationship-more-chip {
+  display: none !important;
+}
+
+/* Build 993 — player names are non-negotiable: never truncate them.
+   Preserve the sticky/full player-name column and let data/history scroll instead. */
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  table-layout: auto !important;
+  max-width: none !important;
+}
+/* Rounds: keep full names; round columns may extend horizontally. */
+#roundsPage .dashboard-history-panel-rounds .player-history-table {
+  width: max-content !important;
+  min-width: 100% !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table th:first-child,
+#roundsPage .dashboard-history-panel-rounds .player-history-table td:first-child {
+  min-width: 138px !important;
+  width: 138px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table th:nth-child(2),
+#roundsPage .dashboard-history-panel-rounds .player-history-table td:nth-child(2),
+#roundsPage .dashboard-history-panel-rounds .player-history-table th:nth-child(3),
+#roundsPage .dashboard-history-panel-rounds .player-history-table td:nth-child(3) {
+  min-width: 62px !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table th:nth-child(n+4),
+#roundsPage .dashboard-history-panel-rounds .player-history-table td:nth-child(n+4) {
+  min-width: 46px !important;
+}
+/* Pairing/Opponents: first column always shows the complete player name.
+   The relationship column gets the remaining width and scrolls its cards internally. */
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table,
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+  width: auto !important;
+  min-width: 138px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(2),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(2) {
+  width: 64px !important;
+  min-width: 64px !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(3),
+#roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(3) {
+  width: auto !important;
+  min-width: 150px !important;
+  overflow: hidden !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-name {
+  display: inline-flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#roundsPage .dashboard-history-panel .not-yet-paired-with {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  text-overflow: clip !important;
+}
+@media (max-width: 390px) {
+  #roundsPage .dashboard-history-panel-rounds .player-history-table th:first-child,
+  #roundsPage .dashboard-history-panel-rounds .player-history-table td:first-child,
+  #roundsPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+  #roundsPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+    min-width: 128px !important;
+    width: 128px !important;
+  }
+}
+
+/* Build 994 — Dashboard table surface cleanup.
+   Keep the Dashboard outer rounded card. Remove only the inner table/frame
+   and use opaque row surfaces so iOS sticky-column compositing cannot create
+   mixed/patchy colours while horizontally scrolling. */
+#roundsPage .dashboard-history-panel,
+#roundsPage .dashboard-history-panel .player-history-section,
+#roundsPage .dashboard-history-panel .not-yet-paired-section,
+#roundsPage .dashboard-history-panel .player-history-box,
+#roundsPage .dashboard-history-panel .not-yet-paired-box,
+#roundsPage .dashboard-history-panel .player-history-scroll,
+#roundsPage .dashboard-history-panel .not-yet-paired-scroll,
+#roundsPage .dashboard-history-panel .player-history-table,
+#roundsPage .dashboard-history-panel .not-yet-paired-table {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Opaque cells prevent the panel gradient / sticky layer from bleeding through. */
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: #4b350d !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: #3b2a0b !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: #0b443f !important;
+}
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: #093732 !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background: #153d6b !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background: #102f54 !important;
+}
+
+/* Do not let older gender/sticky rules recolour only the Player cell. */
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #4b350d !important; }
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #3b2a0b !important; }
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #0b443f !important; }
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #093732 !important; }
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: #153d6b !important; }
+#roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: #102f54 !important; }
+
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td { background: #fff4d8 !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td { background: #f9e9bd !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td { background: #e4f8f4 !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td { background: #d8f1ec !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td { background: #e8f2ff !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td { background: #dceaff !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #fff4d8 !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #f9e9bd !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #e4f8f4 !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #d8f1ec !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: #e8f2ff !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: #dceaff !important; }
+
+/* Build 995 — Dashboard must read as active content, never a disabled layer. */
+#roundsPage .dashboard-tabs-group,
+#roundsPage .dashboard-tabs-body,
+#roundsPage .dashboard-history-tabs,
+#roundsPage .dashboard-history-panel,
+#roundsPage .dashboard-history-panel table,
+#roundsPage .dashboard-history-panel th,
+#roundsPage .dashboard-history-panel td {
+  opacity:1 !important;
+  filter:none !important;
+}
+#roundsPage .dashboard-tabs-body { background:#0b1019 !important; }
+#roundsPage .dashboard-history-tabs { background:#151b27 !important; }
+#roundsPage .dashboard-history-tab { color:#d9deea !important; }
+#roundsPage .dashboard-history-tab.active { color:#8f82ff !important; }
+#roundsPage .dashboard-history-panel-rounds { background:#102a46 !important; }
+#roundsPage .dashboard-history-panel-pairing { background:#30260c !important; }
+#roundsPage .dashboard-history-panel-opponents { background:#0b302d !important; }
+#roundsPage .dashboard-history-panel .player-history-table th,
+#roundsPage .dashboard-history-panel .not-yet-paired-table th { color:#f8fafc !important; }
+#roundsPage .dashboard-history-panel .player-history-table td,
+#roundsPage .dashboard-history-panel .not-yet-paired-table td,
+#roundsPage .dashboard-history-panel .not-yet-paired-name,
+#roundsPage .dashboard-history-panel .not-yet-paired-with { color:#f4f7ff !important; }
+#roundsPage .dashboard-history-panel .not-yet-paired-count { color:#ffd166 !important; }
+#roundsPage .dashboard-history-panel .not-yet-paired-chip {
+  opacity:1 !important;
+  color:#ffb8b8 !important;
+  background:rgba(255,65,65,.18) !important;
+  border-color:rgba(255,107,107,.58) !important;
+}
+body.app-light #roundsPage .dashboard-tabs-body,
+body.app-light #roundsPage .dashboard-history-tabs { background:#f8fafc !important; }
+body.app-light #roundsPage .dashboard-history-tab { color:#475569 !important; }
+body.app-light #roundsPage .dashboard-history-tab.active { color:#5746df !important; }
+body.app-light #roundsPage .dashboard-history-panel .player-history-table th,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-table th,
+body.app-light #roundsPage .dashboard-history-panel .player-history-table td,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-table td,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-name,
+body.app-light #roundsPage .dashboard-history-panel .not-yet-paired-with { color:#172033 !important; }
+
+/* Build 996 — uniform Dashboard headers; zebra shading belongs to body rows only. */
+#roundsPage .dashboard-history-panel .player-history-table thead th,
+#roundsPage .dashboard-history-panel .not-yet-paired-table thead th,
+#roundsPage .dashboard-history-panel .player-history-table thead th:first-child,
+#roundsPage .dashboard-history-panel .not-yet-paired-table thead th:first-child {
+  position:static !important;
+  text-align:center !important;
+  color:#f8fafc !important;
+  box-shadow:none !important;
+}
+#roundsPage .dashboard-history-panel-rounds .player-history-table thead th { background:#173b66 !important; }
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th { background:#5c3e0b !important; }
+#roundsPage .dashboard-history-panel-opponents .not-yet-paired-table thead th { background:#07443e !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table thead th { background:#d8e9fb !important; color:#172033 !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th { background:#f4dfad !important; color:#172033 !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table thead th { background:#ccebe5 !important; color:#172033 !important; }
+
+/* Build 997 — defeat the legacy sticky first-column header colour. */
+body #roundsPage .dashboard-history-panel .player-history-table thead th:first-child,
+body #roundsPage .dashboard-history-panel .not-yet-paired-table thead th:first-child {
+  position:static !important;
+  z-index:auto !important;
+  box-shadow:none !important;
+}
+body #roundsPage .dashboard-history-panel-rounds .player-history-table thead th:first-child { background:#173b66 !important; }
+body #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child { background:#5c3e0b !important; }
+body #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table thead th:first-child { background:#07443e !important; }
+body.app-light #roundsPage .dashboard-history-panel-rounds .player-history-table thead th:first-child { background:#d8e9fb !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child { background:#f4dfad !important; }
+body.app-light #roundsPage .dashboard-history-panel-opponents .not-yet-paired-table thead th:first-child { background:#ccebe5 !important; }
+
+/* Build 998 — clean indigo Pairing palette. */
+#roundsPage .dashboard-history-panel-pairing { background:#171b3a !important; }
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th,
+body #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child {
+  background:#34306f !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td,
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background:#222653 !important;
+}
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td,
+#roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background:#1b2048 !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-pairing { background:#eef0ff !important; }
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th,
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child {
+  background:#d7dcff !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td,
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background:#f2f3ff !important;
+}
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td,
+body.app-light #roundsPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background:#e7eaff !important;
+}
+
+/* Build 999 — shared encounter-count colours for Pairing and Opponents. */
+#roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-zero {
+  color:#d7dee9 !important;
+  background:#334155 !important;
+  border-color:#64748b !important;
+}
+#roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-one {
+  color:#dcfce7 !important;
+  background:#16804a !important;
+  border-color:#4ade80 !important;
+}
+#roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-two {
+  color:#fff8d6 !important;
+  background:#9a6700 !important;
+  border-color:#facc15 !important;
+}
+#roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-three {
+  color:#fff1e6 !important;
+  background:#b84a0e !important;
+  border-color:#fb923c !important;
+}
+#roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-many {
+  color:#fff1f2 !important;
+  background:#a7193f !important;
+  border-color:#fb7185 !important;
+}
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-zero { color:#334155 !important; background:#e2e8f0 !important; }
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-one { color:#126239 !important; background:#dcfce7 !important; }
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-two { color:#765000 !important; background:#fef3c7 !important; }
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-three { color:#9a3412 !important; background:#ffedd5 !important; }
+body.app-light #roundsPage .dashboard-history-panel .relationship-count-pill.relationship-count-many { color:#9f1239 !important; background:#ffe4e6 !important; }
+
+/* Build 1000 — Pairing and Opponents share one neutral table system. */
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) { background:#111827 !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th,
+body #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th:first-child {
+  background:#1f2a3d !important; color:#f8fafc !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td,
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background:#172235 !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td,
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background:#121c2c !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  background:#273752 !important; border-color:#526783 !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background:#6558e8 !important; border-color:#8b80ff !important; color:#fff !important;
+}
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) { background:#f8fafc !important; }
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th,
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th:first-child {
+  background:#e2e8f0 !important; color:#172033 !important;
+}
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td,
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background:#f8fafc !important; }
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td,
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background:#eef2f7 !important; }
+body.app-light #roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  background:#fff !important; border-color:#cbd5e1 !important;
+}
+
+/* Build 1001 — natural names, aligned columns and relaxed relationship rows. */
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-name,
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  text-transform:none !important;
+  letter-spacing:normal !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(1) { text-align:left !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(2) { text-align:center !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(3) { text-align:left !important; }
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr {
+  height:42px !important;
+  min-height:42px !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table td {
+  height:42px !important;
+  padding:6px 8px !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-with {
+  gap:7px !important;
+  min-height:26px !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  min-height:26px !important;
+  height:26px !important;
+  padding:3px 6px 3px 8px !important;
+  gap:5px !important;
+  margin-right:1px !important;
+  border-radius:13px !important;
+}
+#roundsPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-count-pill {
+  min-width:19px !important;
+  height:19px !important;
+  margin-left:2px !important;
+}
+
+/* Build 1002 — visual Resting and Dashboard cards. */
+#roundsPage .resting-section,
+#roundsPage .player-history-group.dashboard-tabs-group {
+  margin:18px 12px 10px !important;
+  padding:0 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+}
+#roundsPage .resting-section {
+  background:linear-gradient(135deg,#761527,#3b1019) !important;
+  border:1.5px solid #be2d46 !important;
+  box-shadow:0 8px 22px rgba(190,45,70,.18),inset 0 1px rgba(255,255,255,.06) !important;
+}
+#roundsPage .player-history-group.dashboard-tabs-group {
+  background:linear-gradient(135deg,#1a2230,#111722) !important;
+  border:1.5px solid #657083 !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.05) !important;
+}
+#roundsPage .resting-section > .resting-toggle-btn,
+#roundsPage .player-history-group.dashboard-tabs-group > .player-history-group-title {
+  display:grid !important;
+  grid-template-columns:46px minmax(0,1fr) 40px !important;
+  align-items:center !important;
+  gap:12px !important;
+  width:100% !important;
+  min-height:84px !important;
+  height:auto !important;
+  padding:11px 16px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  color:#fff !important;
+  background:transparent !important;
+  text-transform:none !important;
+  box-sizing:border-box !important;
+}
+#roundsPage .round-card-icon {
+  display:grid !important;
+  place-items:center !important;
+  width:46px !important;
+  height:46px !important;
+  border-radius:50% !important;
+  color:#fff !important;
+}
+#roundsPage .resting-card-icon { background:rgba(73,5,18,.46) !important; }
+#roundsPage .dashboard-card-icon { background:rgba(71,82,102,.42) !important; }
+#roundsPage .round-card-icon svg {
+  width:26px !important;
+  height:26px !important;
+  fill:currentColor !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+}
+#roundsPage .round-card-copy {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  min-width:0 !important;
+  gap:6px !important;
+  text-align:left !important;
+}
+#roundsPage .round-card-title,
+#roundsPage .round-card-copy > .resting-toggle-label {
+  color:#fff !important;
+  font-size:1.12rem !important;
+  font-weight:850 !important;
+  line-height:1.1 !important;
+  letter-spacing:.8px !important;
+  text-transform:uppercase !important;
+  white-space:nowrap !important;
+}
+#roundsPage .round-card-subtitle {
+  color:rgba(255,255,255,.82) !important;
+  font-family:var(--font-body,inherit) !important;
+  font-size:.83rem !important;
+  font-weight:500 !important;
+  line-height:1.3 !important;
+  letter-spacing:0 !important;
+  text-transform:none !important;
+  white-space:normal !important;
+}
+#roundsPage .resting-toggle-count { font-weight:850 !important; }
+#roundsPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+#roundsPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+  display:grid !important;
+  place-items:center !important;
+  width:40px !important;
+  height:40px !important;
+  margin:0 !important;
+  border-radius:50% !important;
+  color:#fff !important;
+  background:rgba(255,255,255,.09) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  font-size:1.08rem !important;
+  line-height:1 !important;
+}
+#roundsPage .resting-section > .rest-box:not(.rest-collapsed),
+#roundsPage .player-history-group.dashboard-tabs-group > .dashboard-tabs-body:not(.rest-collapsed) {
+  border-top:1px solid rgba(255,255,255,.10) !important;
+}
+body.app-light #roundsPage .resting-section {
+  background:linear-gradient(135deg,#fff0f3,#ffe2e8) !important;
+  border-color:#e45b72 !important;
+}
+body.app-light #roundsPage .player-history-group.dashboard-tabs-group {
+  background:linear-gradient(135deg,#f8fafc,#e8edf5) !important;
+  border-color:#9aa6b8 !important;
+}
+body.app-light #roundsPage .round-card-title,
+body.app-light #roundsPage .round-card-copy > .resting-toggle-label { color:#172033 !important; }
+body.app-light #roundsPage .round-card-subtitle { color:#556174 !important; }
+body.app-light #roundsPage .round-card-icon { color:#fff !important; }
+body.app-light #roundsPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+body.app-light #roundsPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+  color:#273449 !important;
+  background:rgba(93,108,130,.13) !important;
+}
+@media (max-width:390px) {
+  #roundsPage .resting-section > .resting-toggle-btn,
+  #roundsPage .player-history-group.dashboard-tabs-group > .player-history-group-title {
+    grid-template-columns:42px minmax(0,1fr) 38px !important;
+    gap:10px !important;
+    min-height:78px !important;
+    padding:9px 13px !important;
+  }
+  #roundsPage .round-card-icon { width:42px !important; height:42px !important; }
+  #roundsPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+  #roundsPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+    width:38px !important; height:38px !important;
+  }
+  #roundsPage .round-card-title,
+  #roundsPage .round-card-copy > .resting-toggle-label { font-size:1rem !important; }
+  #roundsPage .round-card-subtitle { font-size:.76rem !important; }
+}
+
+/* Build 30 — Resting/Dashboard align exactly with Start action width and title scale. */
+#roundsPage .resting-section,
+#roundsPage .player-history-group.dashboard-tabs-group {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+#roundsPage .round-card-title,
+#roundsPage .round-card-copy > .resting-toggle-label {
+  font-size: clamp(.9rem, 4vw, 1.05rem) !important;
+}
+@media (max-width:390px) {
+  #roundsPage .round-card-title,
+  #roundsPage .round-card-copy > .resting-toggle-label {
+    font-size: clamp(.9rem, 4vw, 1.05rem) !important;
+  }
+}
+
+/* Build 31 — one shared horizontal gutter for Start, Resting and Dashboard. */
+#roundsPage:not(.viewer-page) .action-card,
+#roundsPage:not(.viewer-page) #resting-panel {
+  width: auto !important;
+  margin-left: clamp(6px, 1.8vw, 10px) !important;
+  margin-right: clamp(6px, 1.8vw, 10px) !important;
+  box-sizing: border-box !important;
+}
+#roundsPage:not(.viewer-page) #resting-panel > .resting-section,
+#roundsPage:not(.viewer-page) #resting-panel > .player-history-group.dashboard-tabs-group {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}

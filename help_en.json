@@ -1,0 +1,358 @@
+{
+  "getting_started": {
+    "welcome": {
+      "title": "🏸 Welcome to CLUB Scheduler",
+      "content": "CLUB Scheduler helps badminton clubs organise fair, balanced sessions. It tracks ratings, match history, and lets you manage multiple clubs across three modes: Player, Organiser, and Club Manager.",
+      "tip": "Start by signing in — tap Get Started on the welcome screen and enter your email to receive a one-time code."
+    },
+    "sign_in": {
+      "title": "🔑 Signing In",
+      "list": [
+        "Tap 'Get Started' on the welcome screen",
+        "Enter your email address",
+        "Check your email for a 6-digit code",
+        "Enter the code to sign in",
+        "You stay signed in — no need to sign in again each time"
+      ],
+      "tip": "Use the same email every time — your profile, clubs, and ratings are all linked to it."
+    },
+    "modes": {
+      "title": "🎛️ Three Modes — Player, Organiser, Club Manager",
+      "content": "After signing in you choose a mode from the mode selection screen. Each mode gives you a different home screen.",
+      "list": [
+        "🏸 Player — view slots, live sessions, your card and ratings",
+        "🏸 Organiser — run sessions, manage players, generate rounds",
+        "🔒 Vault — manage your club: register players, handle join requests"
+      ],
+      "tip": "Tap the mode title at the top or the ✕ button to switch modes anytime."
+    },
+    "first_session": {
+      "title": "🚀 Running Your First Session",
+      "steps": [
+        "1. Select Organiser mode from the mode screen",
+        "2. Connect to your club via the Club tile",
+        "3. Go to Players — add players present today",
+        "4. Tap Go > in the stepper to move to Pairs, Courts, Rounds",
+        "5. On the Rounds page tap New Round to generate courts",
+        "6. After each game record W or L",
+        "7. Repeat until session is done, then tap End Session"
+      ]
+    },
+    "rating_explained": {
+      "title": "⭐ How Ratings Work",
+      "content": "Every player starts at rating 1.0. Ratings go up when you win and down when you lose. The change depends on opponent strength.",
+      "list": [
+        "1.0 – 1.9 → Rookie",
+        "2.0 – 2.9 → Club",
+        "3.0 – 3.9 → Competitive",
+        "4.0 – 4.4 → Advanced",
+        "4.5+ → Elite"
+      ],
+      "tip": "You have a Global Rating (across all clubs) and a Club Rating (for this club only)."
+    }
+  },
+  "players": {
+    "add_players_tabs": {
+      "title": "➕ Adding Players — Browse, Favorites, Type",
+      "content": "The Add Players panel has three tabs:",
+      "list": [
+        "🔍 Browse — search your club or all players and tap to select",
+        "⭐ Favorites — saved sets of players for quick reuse",
+        "✏️ Type — type new player names directly"
+      ],
+      "tip": "Use Browse to import existing club members, Type to add a brand new player."
+    },
+    "player_rows": {
+      "title": "👥 Player List",
+      "content": "Each row shows one player. The colour indicates gender.",
+      "list": [
+        "Checkbox ticked → player is active (will be scheduled)",
+        "Checkbox unticked → player is resting (skipped this session)",
+        "Tap the star to save a player to Favorites",
+        "Tap the trash icon to remove from this session"
+      ]
+    },
+    "courts_rule": {
+      "title": "🎾 Courts & Player Count",
+      "list": [
+        "4 active players = 1 court",
+        "8 active players = 2 courts",
+        "12 active players = 3 courts",
+        "Every 4 players = 1 additional court"
+      ],
+      "note": "Gender does not affect the number of courts."
+    },
+    "troubleshooting": {
+      "title": "🔧 Common Issues",
+      "list": [
+        "Can't generate a round? — You need at least 4 active players",
+        "Player not being scheduled? — Check their checkbox is ticked",
+        "Wrong gender shown? — Edit the player in Vault → Modify"
+      ]
+    }
+  },
+  "rounds": {
+    "generating_rounds": {
+      "title": "🔄 Generating Rounds",
+      "content": "Tap 'New Round' to automatically generate fair court assignments. The system balances pairings so everyone plays with different partners over time.",
+      "tip": "The scheduler tracks who has played with and against whom to keep matchups fresh."
+    },
+    "courts_layout": {
+      "title": "🏸 Court Layout",
+      "list": [
+        "Each row = one court",
+        "Each court has 2 teams of 2 players",
+        "Left team vs Right team",
+        "Players not on a court are resting this round"
+      ]
+    },
+    "recording_results": {
+      "title": "✅ Recording Results",
+      "content": "After each game tap W (Win) or L (Loss) for each court. This updates ratings immediately.",
+      "list": [
+        "W = the left team won",
+        "L = the right team won",
+        "Results sync to all club members in real time"
+      ],
+      "tip": "Record results before generating the next round — results affect how the next round is balanced."
+    },
+    "lock_unlock": {
+      "title": "🔒 Lock / Unlock Round",
+      "list": [
+        "Locked — no manual player swaps allowed",
+        "Unlocked — you can swap players between courts",
+        "Auto-rotation still works even when locked"
+      ],
+      "note": "Lock the round once you are happy with the court assignments."
+    },
+    "swapping_players": {
+      "title": "🔄 Swapping Players",
+      "list": [
+        "1. Unlock the round first",
+        "2. Tap the player you want to move",
+        "3. Tap the player to swap with (another court or from resting)",
+        "4. Swap happens immediately"
+      ],
+      "tip": "Use swaps to balance a lopsided court or handle last-minute player changes."
+    },
+    "resting_players": {
+      "title": "💤 Resting Players",
+      "content": "Players not on a court this round are resting. The number next to their name shows how many rounds they have rested.",
+      "tip": "The scheduler prioritises resting players in the next round to keep things fair."
+    }
+  },
+  "vault": {
+    "what_is_vault": {
+      "title": "🔒 What is Vault?",
+      "content": "Vault is the club management mode. It gives you three tools:",
+      "list": [
+        "📋 Register — view all players registered to your club",
+        "✏️ Modify — edit player details such as name, gender, and rating",
+        "🔔 Requests — approve or reject join requests from new members"
+      ],
+      "tip": "Vault requires a Pro subscription or admin access."
+    },
+    "register": {
+      "title": "📋 Register Tab",
+      "content": "Shows all players currently registered to your club.",
+      "list": [
+        "Search by name to find a specific player",
+        "Tap a player to view their profile",
+        "Player count shown at the top"
+      ]
+    },
+    "modify": {
+      "title": "✏️ Modify Tab",
+      "content": "Edit any player's details in your club.",
+      "list": [
+        "Tap a player to open the edit panel",
+        "Change name, gender, or club rating",
+        "Changes sync immediately to all devices"
+      ],
+      "note": "Only Vault users can modify player details."
+    },
+    "requests": {
+      "title": "🔔 Join Requests",
+      "content": "When a new user joins your club they appear here for approval.",
+      "list": [
+        "Approve → player is linked to their account",
+        "Reject → request is removed",
+        "NEW badge shows when there are pending requests"
+      ],
+      "tip": "Check Requests regularly so new members are not kept waiting."
+    }
+  },
+  "clubs": {
+    "creating_club": {
+      "title": "🏟️ Creating a Club",
+      "list": [
+        "Select Organiser mode",
+        "Tap the Club tile → tap Create",
+        "Enter a club name and passwords",
+        "Share the join password with members",
+        "Keep the admin password private"
+      ],
+      "note": "The admin password cannot be recovered if lost. Keep it safe."
+    },
+    "joining_club": {
+      "title": "🤝 Joining a Club",
+      "list": [
+        "Select Player or Club Manager mode",
+        "Tap My Clubs on the home screen",
+        "Tap Join Club and enter the club name and password",
+        "Your request goes to the Vault admin for approval",
+        "Once approved you are a full member"
+      ],
+      "tip": "You can join multiple clubs and switch between them from the My Clubs tile."
+    },
+    "switching_clubs": {
+      "title": "🔁 Switching Clubs",
+      "content": "If you belong to multiple clubs you can switch the active club from the My Clubs tile on the home screen.",
+      "tip": "Each club has its own Club Rating — your Global Rating is shared across all clubs."
+    },
+    "club_management": {
+      "title": "🏢 Club Management",
+      "content": "From Organiser mode tap the Club tile to access:",
+      "list": [
+        "Connect — join an existing club",
+        "Create — start a new club",
+        "Delete — remove a club you admin"
+      ]
+    }
+  },
+  "viewer": {
+    "what_is_viewer": {
+      "title": "🏸 Player Mode",
+      "content": "Player mode is for members who want to view and join slots, check their card, and follow live sessions.",
+      "list": [
+        "My Card — see your own profile, rating, and match history",
+        "Dashboard — watch live courts and scores in real time",
+        "My Clubs — switch clubs or join a new one",
+        "Report — view monthly stats for your club"
+      ],
+      "tip": "Player mode is available to all members. No subscription required."
+    },
+    "my_card": {
+      "title": "👤 My Card",
+      "content": "Your personal profile shows your current ratings and match history.",
+      "list": [
+        "Global Rating — your rating across all clubs",
+        "Club Rating — your rating in this specific club",
+        "Win / Loss record for this club",
+        "Recent session history"
+      ]
+    },
+    "dashboard_viewer": {
+      "title": "📡 Dashboard",
+      "content": "The Dashboard shows all live and recent sessions for your club.",
+      "list": [
+        "LIVE badge — session is currently active",
+        "Tap a session to see court details",
+        "Scores update in real time"
+      ],
+      "tip": "You can watch any live session even if you are not playing."
+    }
+  },
+  "subscription": {
+    "trial": {
+      "title": "⏳ Free Trial",
+      "content": "New accounts get a 60-day free trial with full access to all features including Organiser and Vault modes.",
+      "tip": "A trial banner shows in Settings so you can track how many days remain."
+    },
+    "plans": {
+      "title": "⚡ Subscription Plans",
+      "content": "After the trial ends you need a plan to continue using Organiser and Club Manager modes. Player mode remains free.",
+      "list": [
+        "1 Month — 30 days",
+        "6 Months — 180 days",
+        "1 Year — 365 days",
+        "Lifetime — no expiry"
+      ],
+      "tip": "Contact your club admin or visit the license portal to subscribe."
+    },
+    "restore": {
+      "title": "♻️ Restoring Your Plan",
+      "content": "If you reinstall the app or sign in on a new device your plan is restored automatically when you sign in with the same email.",
+      "note": "Make sure to use the same email address you subscribed with."
+    }
+  },
+  "settings": {
+    "tile_style": {
+      "title": "🎨 Tile Style",
+      "content": "Change how the home screen tiles look. Three styles available:",
+      "list": [
+        "Flat — clean minimal look using your current theme colours",
+        "Glow — dark surface tiles with a coloured glowing top border",
+        "Color — each tile gets a distinct solid accent colour"
+      ],
+      "tip": "Tile style works in both Dark and Light mode."
+    },
+    "theme": {
+      "title": "🌙 Dark / Light Theme",
+      "content": "Switch between Dark and Light theme from Settings. All screens and tiles adapt automatically.",
+      "tip": "Dark mode is easier on the eyes in a dimly lit gym."
+    },
+    "language": {
+      "title": "🌐 Language",
+      "content": "The app supports multiple languages. Change your language from Settings.",
+      "list": [
+        "English",
+        "Japanese (日本語)",
+        "Korean (한국어)",
+        "Chinese (中文)",
+        "Vietnamese (Tiếng Việt)"
+      ]
+    },
+    "logout": {
+      "title": "🚪 Sign Out",
+      "content": "You can sign out from the Settings page. Your data is saved to the cloud — signing back in restores everything.",
+      "note": "Signing out clears your local session. You will need to sign in again with your email."
+    }
+  },
+  "faq": {
+    "offline": {
+      "title": "📶 Does It Work Offline?",
+      "content": "The app shell loads offline. However syncing ratings, saving session history, and loading club data all require internet.",
+      "tip": "Always ensure you have a connection before ending a session."
+    },
+    "ratings_not_updating": {
+      "title": "⭐ My Rating Is Not Updating",
+      "list": [
+        "Make sure you recorded W or L for the round",
+        "Check your internet connection",
+        "Ratings update after each round is scored",
+        "Re-open the app to force a refresh"
+      ]
+    },
+    "session_lost": {
+      "title": "😟 I Closed the App Mid-Session",
+      "content": "Live session data is saved to the cloud every round. When you reopen the app the session resumes automatically.",
+      "tip": "Sign in before playing so the system knows who you are and can link your results."
+    },
+    "auto_end": {
+      "title": "⏱️ Session Ended Automatically",
+      "content": "If no rounds are scored for 1 hour the session ends automatically. All data is saved before it closes.",
+      "note": "This prevents sessions from being accidentally left open overnight."
+    },
+    "multiple_devices": {
+      "title": "📱 Using Multiple Devices",
+      "content": "The app works across multiple devices in the same club.",
+      "list": [
+        "Live session visible from any device in Player or Organiser mode",
+        "Only the session starter or admin can End Session",
+        "Ratings sync automatically after each round"
+      ]
+    },
+    "cache_old_version": {
+      "title": "🔄 App Showing Old Version",
+      "content": "The app always fetches fresh files when online. If you still see an old version:",
+      "list": [
+        "Make sure you have an internet connection",
+        "Close and reopen the app",
+        "On Safari: Settings → Safari → Clear History and Website Data",
+        "On Chrome: DevTools → Application → Clear site data"
+      ],
+      "tip": "This should only be needed once — after that updates happen automatically."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "scs-app",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-06",
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "scs-app.com/auth/*",
+      "zone_name": "scs-app.com"
+    }
+  ]
+}
