@@ -4807,8 +4807,8 @@ function _vhsRenderCalendarDay(dateStr, dayNumber, extraClass) {
     'onclick="vaultHomeSlotsSelectDate(\'' + dateStr + '\')"><span class="vs-cal-num">' + dayNumber + '</span></div>';
 }
 
-function _vhsRenderCalendarGrid() {
-  var gridEl = document.getElementById('vaultSlotsCalGrid');
+function _vhsRenderCalendarGrid(targetId) {
+  var gridEl = document.getElementById(targetId || 'vaultSlotsCalGrid');
   if (!gridEl) return;
   var firstOfMonth = new Date(_vhsCalYear, _vhsCalMonth, 1);
   var lastOfMonth = new Date(_vhsCalYear, _vhsCalMonth + 1, 0);
@@ -4991,17 +4991,29 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   if (doneSummary) doneSummary.textContent = doneCount ? doneCount + ' completed slot' + (doneCount === 1 ? '' : 's') : (t('noCompletedSlots') || 'No completed slots');
 
   var panel = document.getElementById('vaultSlotExpandedPanel');
+  var completedCalendar = document.getElementById('vaultCompletedCalendar');
   var upBtn = document.getElementById('vaultUpcomingCollapse');
   var doneBtn = document.getElementById('vaultCompletedCollapse');
   if (upBtn) upBtn.setAttribute('aria-expanded', wanted === 'upcoming' && !!_vhsExpandedOverview ? 'true' : 'false');
   if (doneBtn) doneBtn.setAttribute('aria-expanded', wanted === 'completed' && !!_vhsExpandedOverview ? 'true' : 'false');
   if (panel) panel.hidden = !_vhsExpandedOverview;
+  if (completedCalendar) completedCalendar.hidden = !(!!_vhsExpandedOverview && wanted === 'completed');
   if (!_vhsExpandedOverview) { listEl.innerHTML = ''; _vhsSlotView = 'upcoming'; _vhsSlotsByDate = upcoming.slotsByDate; return; }
 
   var data = wanted === 'completed' ? completed : upcoming;
   _vhsSlotView = wanted;
   _vhsSlotsByDate = data.slotsByDate;
-  var slots = _vsFlattenSlotsByDate(_vhsSlotsByDate);
+
+  if (wanted === 'completed') {
+    if (!_vhsSelectedDateStr) _vhsSelectedDateStr = _vsTodayStr();
+    var completedLabel = document.getElementById('vaultCompletedMonthLabel');
+    if (completedLabel) completedLabel.textContent = _vsMonthLabel(_vhsCalYear, _vhsCalMonth);
+    _vhsRenderCalendarGrid('vaultCompletedCalGrid');
+  }
+
+  var slots = wanted === 'completed'
+    ? ((_vhsSlotsByDate[_vhsSelectedDateStr] || []).slice())
+    : _vsFlattenSlotsByDate(_vhsSlotsByDate);
   if (!slots.length) {
     listEl.innerHTML = '<div class="mc-slots-empty">' + (wanted === 'completed' ? (t('noCompletedSlots') || 'No completed slots') : (t('noUpcomingSlots') || 'No upcoming slots')) + '</div>';
     return;

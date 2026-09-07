@@ -1291,6 +1291,17 @@ html,body{overscroll-behavior:none;}
   </button>
 
   <div id="vaultSlotExpandedPanel" class="vault-slot-expanded-panel" hidden>
+    <div id="vaultCompletedCalendar" class="vault-completed-calendar" hidden>
+      <div class="mc-slots-calendar-panel">
+        <div class="mc-slots-cal-nav">
+          <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
+          <div class="vs-cal-month-label mc-slots-month-label" id="vaultCompletedMonthLabel">—</div>
+          <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
+        </div>
+        <div class="vs-cal-weekdays mc-slots-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+        <div class="vs-cal-grid mc-slots-cal-grid" id="vaultCompletedCalGrid"></div>
+      </div>
+    </div>
     <div class="mc-slots-results-panel">
       <div class="mc-slots-list" id="vaultSlotsList"></div>
     </div>

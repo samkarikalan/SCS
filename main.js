@@ -5789,7 +5789,53 @@ function scsPrimaryNavigate(target) {
   }
 
   if (target === 'viewer') welcomeSelectedWorkspace = 'viewer';
-  if (target === 'vault') { welcomeSelectedWorkspace = 'vault'; window._scsVaultAddSlotMode = false; }
+  if (target === 'vault') {
+    welcomeSelectedWorkspace = 'vault';
+    window._scsVaultAddSlotMode = false;
+    // Bottom Slot always opens the Slot Manager overview. If a manager club is
+    // already authenticated, reuse it directly; otherwise keep the existing
+    // Slot Manager login flow.
+    var savedVaultClub = '';
+    var vaultVerified = false;
+    try {
+      savedVaultClub = localStorage.getItem('kbrr_vault_club_id') || '';
+      vaultVerified = sessionStorage.getItem('scs_vault_verified') === '1' || localStorage.getItem('scs_vault_verified') === '1';
+    } catch (_) {}
+
+    // Navigation back to an already-authenticated Slot Manager must not depend
+    // on a new network role lookup. Reuse the verified local manager session.
+    if (savedVaultClub && vaultVerified) {
+      appMode = 'vault';
+      try { sessionStorage.setItem('appMode', 'vault'); } catch (_) {}
+      try { localStorage.setItem('kbrr_app_mode', 'vault'); } catch (_) {}
+      if (typeof applyMode === 'function') applyMode('vault');
+      if (typeof updateModePill === 'function') updateModePill('vault');
+      if (typeof showHomeScreen === 'function') showHomeScreen();
+      window._scsVaultAddSlotMode = false;
+      if (typeof _vhsExpandedOverview !== 'undefined') _vhsExpandedOverview = null;
+      if (typeof renderVaultHomeSlotsUI === 'function') {
+        Promise.resolve(renderVaultHomeSlotsUI(true)).catch(function(e){ console.warn('Slot Manager overview render skipped:', e); });
+      }
+      scsSyncPrimaryBottomNav('vault');
+      return;
+    }
+
+    // No authenticated manager session: use the existing Slot Manager login flow.
+    if (typeof openVaultWorkspaceForAdmin === 'function') {
+      Promise.resolve(openVaultWorkspaceForAdmin(savedVaultClub, false)).then(function(opened) {
+        if (!opened) return;
+        window._scsVaultAddSlotMode = false;
+        if (typeof _vhsExpandedOverview !== 'undefined') _vhsExpandedOverview = null;
+        if (typeof renderVaultHomeSlotsUI === 'function') {
+          return renderVaultHomeSlotsUI(true);
+        }
+      }).then(function() { scsSyncPrimaryBottomNav('vault'); }).catch(function(error) {
+        console.error('Could not open Slot Manager:', error);
+        if (typeof showToast === 'function') showToast(error && error.message ? error.message : 'Could not open Slot Manager');
+      });
+      return;
+    }
+  }
   switchMode(target);
 }
 
