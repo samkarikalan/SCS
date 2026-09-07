@@ -1549,7 +1549,8 @@ async function openOrganiserWorkspaceForMember(selectedClubId) {
         selectedClub = realClubs.find(function(club) { return club.id === preferredIds[preferredIndex]; }) || null;
       }
     }
-    if (!selectedClub && realClubs.length === 1) selectedClub = realClubs[0];
+    // First Round Manager entry must visibly choose a club. Once a Round
+    // Manager club is saved, later entries go straight to that club.
     if (!selectedClub) selectedClub = await showOrganiserAccessMenu(realClubs);
     if (!selectedClub) return;
     var offlineEntry = navigator.onLine === false;
@@ -1654,9 +1655,10 @@ function switchMode(mode) {
 
   // Organiser -- available to every signed-in player who belongs to the club.
   if (mode === 'organiser') {
-    var vaultPreferredClub = (typeof hasVerifiedWorkspaceRole === 'function' && hasVerifiedWorkspaceRole('vault'))
-      ? (localStorage.getItem('kbrr_vault_club_id') || '') : '';
-    openOrganiserWorkspaceForMember(vaultPreferredClub || window.__scsWelcomeOrganiserChoice || '');
+    // Round Manager owns its first-time club choice. Do not silently inherit
+    // Slot Manager's club before Round Manager has been set once.
+    var savedOrganiserClub = localStorage.getItem('kbrr_org_club_id') || '';
+    openOrganiserWorkspaceForMember(savedOrganiserClub);
     return;
   }
 
@@ -1727,6 +1729,56 @@ function showRoundManagerSignedOutChoice(options) {
     roundManagerStartDemo();
   });
   document.body.appendChild(overlay);
+}
+
+async function scsChangeRoundManagerClub() {
+  if (typeof appMode === 'undefined' || appMode !== 'organiser') return;
+  try {
+    var clubs = await getOrganiserEligibleClubs();
+    var demoSession = typeof isDemoMode === 'function' && isDemoMode();
+    var choices = demoSession ? clubs : clubs.filter(function(club) { return club.source !== 'demo'; });
+    if (!choices.length) {
+      if (typeof showToast === 'function') showToast('No organiser clubs are available.');
+      return;
+    }
+    var selected = await showOrganiserAccessMenu(choices, { directSelect: true });
+    if (!selected || !selected.id) return;
+    var currentId = localStorage.getItem('kbrr_org_club_id') || '';
+    if (String(currentId) === String(selected.id)) return;
+
+    var currentClub = { id: currentId, name: localStorage.getItem('kbrr_org_club_name') || '' };
+    if (currentId && typeof _scsGuideConfirmClubChange === 'function') {
+      var ok = await _scsGuideConfirmClubChange(currentClub, selected);
+      if (!ok) return;
+    }
+    if (currentId && typeof _scsGuideResetOrganiserSessionForClubChange === 'function') {
+      await _scsGuideResetOrganiserSessionForClubChange();
+    }
+    var club = selected;
+    if (navigator.onLine !== false && typeof syncOrganiserMembershipAccess === 'function') {
+      club = await syncOrganiserMembershipAccess(null, selected.id) || selected;
+    }
+    syncRoundAndSlotManagerClub(String(club.id), club.name || selected.name || '');
+    if (typeof setMyClub === 'function') setMyClub(String(club.id), club.name || selected.name || '');
+    window.__scsWelcomeOrganiserChoice = String(club.id);
+    sessionStorage.setItem('scs_organiser_verified', '1');
+    localStorage.setItem('scs_organiser_verified', '1');
+    if (typeof syncToLocal === 'function') await syncToLocal();
+    if (typeof updateModePill === 'function') updateModePill('organiser');
+    if (typeof showHomeScreen === 'function') showHomeScreen();
+  } catch (error) {
+    console.warn('Round Manager club change failed:', error);
+    if (typeof showToast === 'function') showToast(error && error.message ? error.message : 'Could not change club.');
+  }
+}
+
+function scsTopbarModeAction(event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  if (typeof appMode !== 'undefined' && appMode === 'organiser') {
+    scsChangeRoundManagerClub();
+    return;
+  }
+  openModeSwitcher();
 }
 
 function updateModePill(mode) {

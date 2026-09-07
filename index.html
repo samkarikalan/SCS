@@ -882,7 +882,7 @@ html,body{overscroll-behavior:none;}
 <!-- Top bar -->
 
 <div class="home-topbar">
-  <div class="scs-topbar-center" id="modePillBtn" onclick="openModeSwitcher()" style="cursor:pointer;justify-content:flex-start;margin:0;">
+  <div class="scs-topbar-center" id="modePillBtn" onclick="scsTopbarModeAction(event)" style="cursor:pointer;justify-content:flex-start;margin:0;">
     <div class="scs-topbar-icon-wrap"><span id="modePillIcon">🏸</span></div>
     <div class="scs-topbar-text">
       <div class="scs-topbar-title" id="modePillLabel"></div>
@@ -3204,7 +3204,7 @@ html,body{overscroll-behavior:none;}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1048', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1049', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen
