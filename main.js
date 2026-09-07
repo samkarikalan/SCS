@@ -5713,7 +5713,10 @@ function scsHomeQuickAction(action) {
     return;
   }
   if (action === 'slot') {
-    try { sessionStorage.setItem('scs_home_quick_action', 'post-slot'); } catch (e) {}
+    // Open the existing Slot Manager page first. The user can then use the
+    // existing + Add Slot button/calendar flow, matching the proven old app UI.
+    // Do not auto-open the composer here.
+    try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
     welcomeSelectedWorkspace = 'vault';
     switchMode('vault');
     return;

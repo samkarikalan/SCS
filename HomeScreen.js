@@ -414,28 +414,12 @@ if (orgGrid)    orgGrid.style.display    = isOrganiser ? '' : 'none';
 if (viewerGrid) viewerGrid.style.display = isViewer    ? '' : 'none';
 if (vaultGrid)  vaultGrid.style.display  = isVault     ? '' : 'none';
 
-// A top + → Post a Slot action may need to wait for the existing Slot Manager
-// password/club gate. Once that normal flow reaches the Vault home, open the
-// existing slot composer; no slot-management function is duplicated or removed.
+// Top + → Post a Slot now opens the existing Slot Manager page itself.
+// The proven calendar + "Add Slot" flow remains the only creation entry point.
+// Keep any legacy pending flag cleared so an older cached action cannot
+// unexpectedly open the composer over the Slot Manager page.
 if (isVault) {
-  var pendingHomeQuickAction = '';
-  try { pendingHomeQuickAction = sessionStorage.getItem('scs_home_quick_action') || ''; } catch (e) {}
-  if (pendingHomeQuickAction === 'post-slot') {
-    try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
-    setTimeout(function() {
-      if (typeof appMode !== 'undefined' && appMode !== 'vault') return;
-      // The current Slot Manager UI creates slots from the Viewer-style Vault
-      // calendar. Open that existing composer directly instead of routing to
-      // the legacy hidden vaultSlotsPage, whose sheet can remain invisible.
-      var dateStr = (typeof _vsTodayStr === 'function') ? _vsTodayStr() : new Date().toISOString().slice(0, 10);
-      if (typeof vaultHomeSlotsAddSlot === 'function') {
-        vaultHomeSlotsAddSlot(dateStr);
-      } else if (typeof vaultSlotsOpenDateSheet === 'function') {
-        vaultSlotsOpenDateSheet(dateStr);
-        if (typeof vaultSlotsShowPostForm === 'function') vaultSlotsShowPostForm();
-      }
-    }, 80);
-  }
+  try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
 }
 var orgActionBar    = document.getElementById('homeMoreSectionOrg');
 var viewerActionBar = document.getElementById('homeMoreSectionV');
