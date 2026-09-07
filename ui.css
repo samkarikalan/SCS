@@ -34144,3 +34144,18 @@ body.app-light #fixedPairsPage .sheet-header { background:var(--bg) !important; 
   bottom:calc(88px + env(safe-area-inset-bottom)) !important;
   z-index:10020 !important;
 }
+
+/* Build 1051 — Slot bottom tab is a compact viewer; Home + Add Slot owns creation. */
+.vault-slot-overview { display:flex; flex-direction:column; gap:12px; }
+.vault-slot-collapse-card { width:100%; border:1px solid var(--border); border-radius:18px; background:var(--card); color:var(--text); padding:16px 18px; display:flex; align-items:center; justify-content:space-between; text-align:left; font:inherit; }
+.vault-slot-collapse-copy { display:flex; flex-direction:column; gap:5px; min-width:0; }
+.vault-slot-collapse-copy strong { font-size:1rem; }
+.vault-slot-collapse-copy small { color:var(--muted); font-size:.78rem; }
+.vault-slot-collapse-side { display:flex; align-items:center; gap:10px; }
+.vault-slot-chevron { font-size:1.25rem; transition:transform .16s ease; }
+.vault-slot-collapse-card[aria-expanded="true"] .vault-slot-chevron { transform:rotate(180deg); }
+.vault-slot-expanded-panel { padding-top:2px; }
+.vault-add-slot-calendar .vault-inline-add-slot-btn { width:100%; margin-top:18px; }
+.vault-slot-overview.is-add-slot-mode > .vault-slot-collapse-card,
+.vault-slot-overview.is-add-slot-mode > .vault-slot-expanded-panel { display:none !important; }
+.vault-slot-overview.is-add-slot-mode > .vault-add-slot-calendar { display:block !important; }

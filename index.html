@@ -1279,43 +1279,37 @@ html,body{overscroll-behavior:none;}
 
   <div id="vaultTileGrid" class="vault-tile-grid">
 
-<!-- Vault Upcoming Slots — same layout/style as Viewer page -->
-<section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card">
-  <div class="mc-slots-head">
-    <div>
-      <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
-      <div class="mc-slots-sub" id="vaultSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</div>
+<!-- Slot Manager: compact Upcoming / Completed collapsed cards -->
+<section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card vault-slot-overview">
+  <button type="button" id="vaultUpcomingCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('upcoming')" aria-expanded="false">
+    <span class="vault-slot-collapse-copy"><strong data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</strong><small id="vaultSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</small></span>
+    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
+  </button>
+  <button type="button" id="vaultCompletedCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('completed')" aria-expanded="false">
+    <span class="vault-slot-collapse-copy"><strong data-i18n="completedSlotsTitle">📅 Completed Slots</strong><small id="vaultCompletedSlotsSummary" data-i18n="noCompletedSlots">No completed slots</small></span>
+    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultCompletedSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
+  </button>
+
+  <div id="vaultSlotExpandedPanel" class="vault-slot-expanded-panel" hidden>
+    <div class="mc-slots-results-panel">
+      <div class="mc-slots-list" id="vaultSlotsList"></div>
     </div>
-    <div class="mc-slots-tools">
-      <div class="mc-slots-filter" role="tablist" aria-label="Slot Manager view">
-        <button type="button" id="vaultSlotsFilterUpcoming" class="mc-slots-filter-btn is-active" role="tab" aria-selected="true" onclick="vaultHomeSlotsSetView('upcoming')" data-i18n="upcoming">Upcoming</button>
-        <button type="button" id="vaultSlotsFilterCompleted" class="mc-slots-filter-btn" role="tab" aria-selected="false" onclick="vaultHomeSlotsSetView('completed')" data-i18n="completed">Completed</button>
+  </div>
+
+  <!-- Home + > Add a Slot uses only this calendar and the Add Slot button. -->
+  <div id="vaultAddSlotCalendar" class="vault-add-slot-calendar" hidden>
+    <div class="mc-slots-calendar-panel">
+      <div class="mc-slots-cal-nav">
+        <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
+        <div class="vs-cal-month-label mc-slots-month-label" id="vaultSlotsMonthLabel">—</div>
+        <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
       </div>
-      <button class="mc-slots-refresh-btn" id="vaultSlotsRefreshBtn" type="button" onclick="vaultHomeSlotsManualRefresh()" title="Refresh slots">↻</button>
-      <div class="mc-slots-count" id="vaultSlotsCount">0</div>
+      <div class="vs-cal-weekdays mc-slots-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+      <div class="vs-cal-grid mc-slots-cal-grid" id="vaultSlotsCalGrid"></div>
     </div>
-  </div>
-
-  <div class="mc-slots-calendar-panel">
-  <div class="mc-slots-cal-nav">
-    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
-    <div class="vs-cal-month-label mc-slots-month-label" id="vaultSlotsMonthLabel">—</div>
-    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
-  </div>
-
-  <div class="vs-cal-weekdays mc-slots-weekdays">
-    <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
-  </div>
-  <div class="vs-cal-grid mc-slots-cal-grid" id="vaultSlotsCalGrid"></div>
-
-  </div><!-- end calendar panel -->
-
-  <div class="mc-slots-results-panel">
-    <div class="mc-slots-selected-title" id="vaultSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
-    <div class="mc-slots-list" id="vaultSlotsList"></div>
+    <button id="vaultAddSlotOnlyBtn" class="vault-inline-add-slot-btn" type="button" onclick="vaultHomeSlotsAddSlot(_vhsSelectedDateStr)">+ Add Slot</button>
   </div>
 </section>
-
 
   </div><!-- end vaultTileGrid -->
 </div><!-- end homeVaultGrid -->

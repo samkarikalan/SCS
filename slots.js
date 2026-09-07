@@ -4592,6 +4592,8 @@ var _vhsExpandedSlotId = null;
 var _vhsCarouselSlotId = null;
 var _vhsLoadGeneration = 0;
 var _vhsSlotView = 'upcoming';
+var _vhsExpandedOverview = null;
+window._scsVaultAddSlotMode = false;
 
 function _vhsUpdateViewControls() {
   var upcomingBtn = document.getElementById('vaultSlotsFilterUpcoming');
@@ -4623,6 +4625,24 @@ function vaultHomeSlotsSetView(view) {
   _vhsCalMonth = today.getMonth();
   _vhsUpdateViewControls();
   renderVaultHomeSlotsUI(true);
+}
+
+async function vaultHomeSlotsToggleSection(view) {
+  var next = view === 'completed' ? 'completed' : 'upcoming';
+  var same = _vhsExpandedOverview === next;
+  _vhsExpandedOverview = same ? null : next;
+  var panel = document.getElementById('vaultSlotExpandedPanel');
+  var up = document.getElementById('vaultUpcomingCollapse');
+  var done = document.getElementById('vaultCompletedCollapse');
+  if (up) up.setAttribute('aria-expanded', _vhsExpandedOverview === 'upcoming' ? 'true' : 'false');
+  if (done) done.setAttribute('aria-expanded', _vhsExpandedOverview === 'completed' ? 'true' : 'false');
+  if (panel) panel.hidden = !_vhsExpandedOverview;
+  if (!_vhsExpandedOverview) return;
+  _vhsSlotView = next;
+  _vhsSelectedDateStr = null;
+  _vhsCarouselSlotId = null;
+  _vhsExpandedSlotId = null;
+  await renderVaultHomeSlotsUI(true);
 }
 
 function homeToggleMoreTilesVault() {
@@ -4926,89 +4946,67 @@ function _vhsRenderNext30SlotsSection(selectedDateStr) {
 
 async function renderVaultHomeSlotsUI(loadFresh) {
   var section = document.getElementById('vaultUpcomingSlots');
-  var labelEl = document.getElementById('vaultSlotsMonthLabel');
   var listEl = document.getElementById('vaultSlotsList');
-  var titleEl = document.getElementById('vaultSlotsSelectedTitle');
-  var summaryEl = document.getElementById('vaultSlotsSummary');
-  var countEl = document.getElementById('vaultSlotsCount');
   if (!section || !listEl) return;
-  _vhsUpdateViewControls();
-  _vsRenderWeekdayLabels(section);
+
+  var addMode = !!window._scsVaultAddSlotMode;
+  section.classList.toggle('is-add-slot-mode', addMode);
+  var addCalendar = document.getElementById('vaultAddSlotCalendar');
+  if (addCalendar) addCalendar.hidden = !addMode;
 
   var today = new Date();
   if (_vhsCalYear === null || _vhsCalMonth === null) {
-    _vhsCalYear = today.getFullYear();
-    _vhsCalMonth = today.getMonth();
+    _vhsCalYear = today.getFullYear(); _vhsCalMonth = today.getMonth();
   }
-  section.style.display = '';
-  if (labelEl) labelEl.textContent = _vsMonthLabel(_vhsCalYear, _vhsCalMonth);
 
-  if (loadFresh !== false) {
-    if (summaryEl) summaryEl.textContent = t('loadingSlots') || 'Loading slots...';
-    if (countEl) countEl.textContent = '—';
-    listEl.innerHTML = '<div class="mc-slots-empty">' + (t('loadingSlots') || 'Loading slots...') + '</div>';
+  if (addMode) {
+    _vhsSlotView = 'upcoming';
+    if (!_vhsSelectedDateStr || _vhsSelectedDateStr < _vsTodayStr()) _vhsSelectedDateStr = _vsTodayStr();
+    var labelEl = document.getElementById('vaultSlotsMonthLabel');
+    if (labelEl) labelEl.textContent = _vsMonthLabel(_vhsCalYear, _vhsCalMonth);
+    if (loadFresh !== false) await _vhsLoadMonthSlots();
+    _vhsRenderCalendarGrid();
+    return;
+  }
+
+  // Keep both collapsed-card counts fresh without exposing the calendar or Add button.
+  async function loadOverview(view) {
+    _vhsSlotView = view;
+    _vhsSelectedDateStr = null;
     await _vhsLoadMonthSlots();
+    return { dates:Object.keys(_vhsSlotsByDate || {}).sort(), slotsByDate:_vhsSlotsByDate };
   }
+  var wanted = _vhsExpandedOverview || 'upcoming';
+  var upcoming = await loadOverview('upcoming');
+  var completed = await loadOverview('completed');
+  var upCount = _vsFlattenSlotsByDate(upcoming.slotsByDate).length;
+  var doneCount = _vsFlattenSlotsByDate(completed.slotsByDate).length;
+  var upCountEl = document.getElementById('vaultSlotsCount');
+  var doneCountEl = document.getElementById('vaultCompletedSlotsCount');
+  var upSummary = document.getElementById('vaultSlotsSummary');
+  var doneSummary = document.getElementById('vaultCompletedSlotsSummary');
+  if (upCountEl) upCountEl.textContent = upCount;
+  if (doneCountEl) doneCountEl.textContent = doneCount;
+  if (upSummary) upSummary.textContent = upCount ? upCount + ' upcoming slot' + (upCount === 1 ? '' : 's') : (t('noUpcomingSlots') || 'No upcoming slots');
+  if (doneSummary) doneSummary.textContent = doneCount ? doneCount + ' completed slot' + (doneCount === 1 ? '' : 's') : (t('noCompletedSlots') || 'No completed slots');
 
-  var dates = Object.keys(_vhsSlotsByDate).sort();
-  if (!_vhsSelectedDateStr) {
-    var todayStr = _vsTodayStr();
-    if (_vhsSlotView === 'completed') {
-      var completedThroughToday = dates.filter(function(dateStr) { return dateStr <= todayStr; });
-      _vhsSelectedDateStr = completedThroughToday[completedThroughToday.length - 1] || dates[dates.length - 1] || todayStr;
-    } else {
-      var nextUpcomingDate = dates.find(function(dateStr) { return dateStr >= todayStr; });
-      _vhsSelectedDateStr = (_vhsSlotsByDate[todayStr] || []).length ? todayStr : (nextUpcomingDate || todayStr);
-      var selectedUpcomingDate = new Date(_vhsSelectedDateStr + 'T00:00:00');
-      if (!isNaN(selectedUpcomingDate.getTime())) {
-        _vhsCalYear = selectedUpcomingDate.getFullYear();
-        _vhsCalMonth = selectedUpcomingDate.getMonth();
-        if (labelEl) labelEl.textContent = _vsMonthLabel(_vhsCalYear, _vhsCalMonth);
-      }
-    }
-  }
+  var panel = document.getElementById('vaultSlotExpandedPanel');
+  var upBtn = document.getElementById('vaultUpcomingCollapse');
+  var doneBtn = document.getElementById('vaultCompletedCollapse');
+  if (upBtn) upBtn.setAttribute('aria-expanded', wanted === 'upcoming' && !!_vhsExpandedOverview ? 'true' : 'false');
+  if (doneBtn) doneBtn.setAttribute('aria-expanded', wanted === 'completed' && !!_vhsExpandedOverview ? 'true' : 'false');
+  if (panel) panel.hidden = !_vhsExpandedOverview;
+  if (!_vhsExpandedOverview) { listEl.innerHTML = ''; _vhsSlotView = 'upcoming'; _vhsSlotsByDate = upcoming.slotsByDate; return; }
 
-  if (summaryEl) summaryEl.textContent = _vhsSlotView === 'completed'
-    ? (dates.length ? dates.length + ' ' + (t('completedDates') || 'completed date(s)') : (t('noCompletedSlots') || 'No completed slots'))
-    : _vsUpcomingDateText(dates.length);
-  if (countEl) countEl.textContent = dates.length;
-  _vhsRenderCalendarGrid();
-  if (titleEl) titleEl.textContent = _mcsFormatDateTitle(_vhsSelectedDateStr);
-
+  var data = wanted === 'completed' ? completed : upcoming;
+  _vhsSlotView = wanted;
+  _vhsSlotsByDate = data.slotsByDate;
   var slots = _vsFlattenSlotsByDate(_vhsSlotsByDate);
-  var todayStr = _vsTodayStr();
-  var canAdd = _vhsSlotView === 'upcoming' && _vhsSelectedDateStr >= todayStr;
-  var addDate = _vsEscape(_vhsSelectedDateStr);
-  var addBtn = canAdd
-    ? '<button class="vault-inline-add-slot-btn" onclick="vaultHomeSlotsAddSlot(\'' + addDate + '\')">+ ' + (t('addSlot') || t('addAnotherSlot') || 'Add Slot') + '</button>'
-    : '';
-  var selectedDateHasSlots = !!((_vhsSlotsByDate[_vhsSelectedDateStr] || []).length);
   if (!slots.length) {
-    listEl.innerHTML = '<div class="mc-slots-empty">' + (_vhsSlotView === 'completed' ? (t('noCompletedSlots') || 'No completed slots') : (t('noUpcomingSlots') || 'No upcoming slots')) + '</div>' + addBtn;
+    listEl.innerHTML = '<div class="mc-slots-empty">' + (wanted === 'completed' ? (t('noCompletedSlots') || 'No completed slots') : (t('noUpcomingSlots') || 'No upcoming slots')) + '</div>';
     return;
   }
-  if (!selectedDateHasSlots) {
-    listEl.innerHTML = '<div class="mc-slots-empty">' + (t('noSlotsThisDate') || 'No slots were posted on this date.') + '</div>' + addBtn;
-    return;
-  }
-  var focusedIndex = _vhsCarouselSlotId
-    ? slots.findIndex(function(slot) { return String(slot && slot.id) === String(_vhsCarouselSlotId); })
-    : -1;
-  var startIndex = focusedIndex >= 0 ? focusedIndex : _vsFindFirstSlideForDate(slots, _vhsSelectedDateStr);
-  _vhsCarouselIndex = startIndex;
-  // Keep an empty tapped date selected so Add Slot creates on that exact date.
-  // Only use the carousel slot date as the title when the tapped date already has slots.
-  if (titleEl && selectedDateHasSlots) titleEl.textContent = _mcsFormatDateTitle(slots[startIndex].__carouselDate);
-  listEl.innerHTML = _vsRenderSlotCarousel(slots, _vhsRenderSlotCard, 'vaultSlotsCarousel') + addBtn;
-  _vsInitSlotCarousel('vaultSlotsCarousel', startIndex, function(index) {
-    _vhsCarouselIndex = index;
-    if (selectedDateHasSlots && slots[index] && slots[index].__carouselDate) {
-      _vhsCarouselSlotId = String(slots[index].id || '');
-      _vhsSelectedDateStr = slots[index].__carouselDate;
-      if (titleEl) titleEl.textContent = _mcsFormatDateTitle(_vhsSelectedDateStr);
-      _vhsRenderCalendarGrid();
-    }
-  }, !selectedDateHasSlots);
+  listEl.innerHTML = slots.map(_vhsRenderSlotCard).join('');
 }
 
 // Refresh the Viewer-style Vault calendar after creating/updating/deleting from

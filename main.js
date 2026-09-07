@@ -5701,7 +5701,7 @@ function scsPrimaryNavigate(target) {
   }
   if (target === 'viewer') welcomeSelectedWorkspace = 'viewer';
   if (target === 'organiser') welcomeSelectedWorkspace = 'organiser';
-  if (target === 'vault') welcomeSelectedWorkspace = 'vault';
+  if (target === 'vault') { welcomeSelectedWorkspace = 'vault'; window._scsVaultAddSlotMode = false; }
   switchMode(target);
 }
 
@@ -5724,6 +5724,7 @@ async function scsOpenPostSlotManager() {
 
   try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
   welcomeSelectedWorkspace = 'vault';
+  window._scsVaultAddSlotMode = true;
   var savedVaultClub = '';
   try { savedVaultClub = localStorage.getItem('kbrr_vault_club_id') || ''; } catch (e) {}
 
