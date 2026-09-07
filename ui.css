@@ -34110,3 +34110,37 @@ body.app-light .scs-primary-bottom-nav button.is-active { color:var(--accent,#14
 .org-imode-manager-arrow { font:400 1.35rem/1 Arial,sans-serif; text-align:right; opacity:.8; }
 body.app-light .org-imode-manager-tile { border-color:rgba(31,42,68,.14); background:rgba(255,255,255,.34); color:inherit; }
 @media (max-width:360px) { .org-imode-manager-tiles { gap:8px; } .org-imode-manager-tile { padding:0 9px; font-size:.69rem; } }
+
+/* Build 1050 — navigation-safe page bottoms + Fixed Pairs header alignment. */
+/* Fixed Pairs header uses the exact flat page-title treatment used by Players. */
+body.tile-style-color #fixedPairsPage .sheet-header,
+body.tile-style-color.app-light #fixedPairsPage .sheet-header,
+body.tile-style-color:not(.app-light) #fixedPairsPage .sheet-header {
+  width:100% !important;
+  margin:0 0 8px !important;
+  padding:10px 14px !important;
+  box-sizing:border-box !important;
+  background:var(--bg) !important;
+  border:0 !important;
+  border-bottom:1px solid var(--border) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+body.app-light #fixedPairsPage .sheet-header { background:var(--bg) !important; }
+
+/* Keep every normal page clear of the persistent Home/Round/Slot/Settings bar. */
+.page {
+  padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important;
+  scroll-padding-bottom:calc(104px + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+}
+#roundsPage {
+  min-height:100dvh;
+  padding-bottom:calc(118px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Fixed-pair add action must sit above, never behind, the persistent bottom nav. */
+#fixedPairsPage #fpOpenCreateBtn.fp-open-create-btn {
+  bottom:calc(88px + env(safe-area-inset-bottom)) !important;
+  z-index:10020 !important;
+}

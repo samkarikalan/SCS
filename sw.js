@@ -1,5 +1,5 @@
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1048-imode-player-shortcuts';
+const CACHE_NAME = 'scs-app-build-1050-imode-player-shortcuts';
 const APP_SHELL = './index.html?v=1048';
 
 const ASSETS = [
