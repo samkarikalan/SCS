@@ -1299,11 +1299,13 @@ function selectMode(mode) {
   appMode = mode;
   sessionStorage.setItem('appMode', mode);
   localStorage.setItem('kbrr_app_mode', mode);
-  // Hide mode select overlay
+  // My Hub is the app home. Keep the legacy mode selector in the DOM only
+  // for compatibility, but never render it over the Home screen.
   var overlay = document.getElementById('modeSelectOverlay');
-  // Welcome is already visible from the initial HTML. Never hide it during
-  // startup checks; this prevents any Player/Organiser page from flashing.
-  if (overlay) overlay.style.display = 'flex';
+  if (overlay) {
+    overlay.classList.remove('scs-launch-first-paint');
+    overlay.style.display = 'none';
+  }
   // Apply viewer/organiser body classes
   applyMode(mode);
   // Show home screen (defined in HomeScreen.js)

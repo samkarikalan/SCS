@@ -1303,35 +1303,21 @@ async function authShowModeLauncher() {
     return;
   }
 
-  // My Hub-only mode skips the launcher and opens the existing My Hub page.
-  if (typeof getVisibleWorkspaces === 'function') {
-    var visibleWorkspaces = getVisibleWorkspaces();
-    if (visibleWorkspaces.length === 1 && visibleWorkspaces[0] === 'viewer') {
-      if (typeof switchMode === 'function') switchMode('viewer');
-      return;
-    }
-  }
-
-  var overlay = document.getElementById('modeSelectOverlay');
-
-  // First-login fix: the app can reach Welcome immediately after authentication,
-  // while the anonymous startup prefetch still contains no organiser clubs.
-  // Refresh the authenticated hub data BEFORE revealing Welcome so Round Manager
-  // never paints an empty club selector that only fills in after a later refresh.
+  // My Hub is now the application Home. Keep the former mode launcher only
+  // as dormant compatibility markup and open My Hub directly after login.
   if (typeof window.scsPrefetchWelcomeHubData === 'function') {
     try {
       await window.scsPrefetchWelcomeHubData(true);
     } catch (error) {
-      console.warn('Welcome hub refresh skipped:', error);
+      console.warn('Home hub refresh skipped:', error);
     }
   }
-
-  if (overlay) overlay.style.display = 'flex';
-  if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay();
-  if (typeof renderLauncherStartSessionCard === 'function') {
-    renderLauncherStartSessionCard();
-    setTimeout(renderLauncherStartSessionCard, 800);
+  var overlay = document.getElementById('modeSelectOverlay');
+  if (overlay) {
+    overlay.classList.remove('scs-launch-first-paint');
+    overlay.style.display = 'none';
   }
+  if (typeof switchMode === 'function') switchMode('viewer');
 }
 
 function authShowClubPicker(memberships, user) {
@@ -1372,16 +1358,7 @@ async function authPickClub(clubId, clubName, nickname) {
   if (typeof setMyClub   === 'function') setMyClub(clubId, clubName);
   if (typeof setMyPlayer === 'function') setMyPlayer({ name: nickname, gender: 'Male' });
   authHideOverlay();
-  if (typeof selectMode === 'function') (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    selectMode(saved);
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+  if (typeof selectMode === 'function') selectMode('viewer');
 }
 
 /* ── Do Forgot Password -- recovery keyword ── */
@@ -1429,32 +1406,14 @@ async function authDoJoinClub() {
   // Success -- go to app
   authHideOverlay();
   if (typeof updateProfileBtn === 'function') updateProfileBtn();
-  (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    selectMode(saved);
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+  selectMode('viewer');
 }
 
 /* ── Skip join club ── */
 function authSkipJoin() {
   if (typeof authClearPendingInvite === 'function') authClearPendingInvite();
   authHideOverlay();
-  (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    selectMode(saved);
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+  selectMode('viewer');
 }
 
 /* ── Logout ── */
@@ -1534,16 +1493,7 @@ async function authDoRequestJoin(clubId, clubName) {
   if (result.alreadyMember) {
     // Already member -- go straight to app
     authHideOverlay();
-    (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    selectMode(saved);
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+    selectMode('viewer');
     return;
   }
 

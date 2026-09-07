@@ -1,13 +1,13 @@
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1044-myhub-home-nav';
-const APP_SHELL = './index.html?v=1044';
+const CACHE_NAME = 'scs-app-build-1045-myhub-home-fix';
+const APP_SHELL = './index.html?v=1045';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1044', './rounds.css?v=1004',
+  './ui.css?v=1045', './rounds.css?v=1004',
   './offline-db.js?v=917', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=936', './auth.js?v=856',
-  './authUI.js?v=966', './subscription.js?v=856', './HomeScreen.js?v=1044',
-  './engjap.js?v=864', './qrcode-generator.js?v=856', './main.js?v=1044', './games.js?v=1019',
+  './authUI.js?v=1045', './subscription.js?v=856', './HomeScreen.js?v=1045',
+  './engjap.js?v=864', './qrcode-generator.js?v=856', './main.js?v=1045', './games.js?v=1019',
   './rounds.js?v=937', './mbm.js?v=856', './players.js?v=906',
   './importPlayers.js?v=985', './settings.js?v=987', './summary.js?v=856',
   './help.js?v=856', './profile.js?v=856', './dashboard.js?v=856',
