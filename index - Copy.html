@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<!-- CLUBS v1.7.4 -->
+<html lang="en">
+<head>
+  <script>window.SCS_APP_VERSION = "1.7.9"; window.SCS_BUILD = "179";</script>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+<style>html,body{overscroll-behavior:none;}</style>
+  <link rel="apple-touch-icon" href="icon-192.png?v=164">
+  <link rel="manifest" href="manifest.json?v=164">
+  <meta name="theme-color" content="#0f0f13" id="metaThemeColor">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CLUB Scheduler">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sports Club Scheduler</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script src="snapshot.js?v=164" defer></script>
+
+  <script src="supabase.js?v=165" defer></script>
+
+  <script src="auth.js?v=164" defer></script>
+
+  <script src="authUI.js?v=164" defer></script>
+
+  <script src="subscription.js?v=164" defer></script>
+
+  <script src="HomeScreen.js?v=165" defer></script>
+
+  <script src="main.js?v=169" defer></script>
+
+  <script src="engjap.js?v=177" defer></script>
+
+  <script src="games.js?v=164" defer></script>
+
+  <script src="rounds.js?v=164" defer></script>
+  <script src="mbm.js?v=164" defer></script>
+
+  <script src="players.js?v=164" defer></script>
+
+  <script src="importPlayers.js?v=164" defer></script>
+
+  <script src="settings.js?v=175" defer></script>
+
+  <script src="summary.js?v=164" defer></script>
+
+  <script src="help.js?v=164" defer></script>
+
+  <script src="profile.js?v=164" defer></script>
+
+  <script src="dashboard.js?v=164" defer></script>
+  <script src="slots.js?v=190" defer></script>
+  <script src="notifications.js?v=164" defer></script>
+
+  <script src="viewer.js?v=164" defer></script>
+
+  <script src="report.js?v=164" defer></script>
+
+  <link rel="stylesheet" href="ui.css?v=982">
+  <link rel="stylesheet" href="rounds.css?v=165">
+</head>
+<body>
+
+  <!-- ============================= -->
+
+  <!--       MODE SELECT OVERLAY     -->
+
+  <!-- ============================= -->
+
+  <!-- Keep ghost for compatibility  -->
+
+  <div id="modeSelectOverlay" class="mode-launcher-fullscreen" style="display:none;">
+    <!-- iOS-style header for mode selection -->
+    <div class="scs-topbar scs-topbar-standalone ml-topbar-home">
+      <div class="ml-topbar-approw">
+        <div class="ml-topbar-appicon">🏸</div>
+        <div class="ml-topbar-appinfo">
+          <div class="ml-topbar-appname">Sports Club Scheduler</div>
+          <div class="ml-topbar-username" id="welcomeTopbarSub">Welcome</div>
+        </div>
+      </div>
+      <div class="ml-topbar-actions">
+        <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtnML" title="Toggle theme">🌙</button>
+        <button class="scs-topbar-btn scs-topbar-power" onclick="authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
+      </div>
+    </div>
+    <div class="ml-inner">
+      <div class="ml-modes">
+        <div class="ml-section-label ml-section-first">
+          <span class="ml-section-icon">👤</span> <span data-i18n="forYou">For You</span>
+        </div>
+        <button class="ml-mode viewer" id="experienceModeViewer" onclick="switchMode('viewer')">
+          <div class="ml-mode-icon-circle viewer">👁</div>
+          <div class="ml-mode-info">
+            <div class="ml-mode-name" data-i18n="viewer">Player Hub</div>
+            <div class="ml-mode-desc" data-i18n="watchLiveDesc">Watch live rounds &amp; scores</div>
+          </div>
+          <span class="ml-arr-circle">›</span>
+        </button>
+        <div class="ml-section-label" id="experienceOrganiserSection">
+          <span class="ml-section-icon">🏅</span> <span data-i18n="forOrganisers">For Organisers</span>
+        </div>
+        <button class="ml-mode organiser" id="experienceModeOrganiser" onclick="switchMode('organiser')">
+          <div class="ml-mode-icon-circle organiser">🏆</div>
+          <div class="ml-mode-info">
+            <div class="ml-mode-name" data-i18n="roundOrganiser">Round Organiser</div>
+            <div class="ml-mode-desc" data-i18n="roundOrganiserDesc">Run session, score games, manage players</div>
+          </div>
+          <span class="ml-arr-circle">›</span>
+        </button>
+        <button class="ml-mode vault" id="experienceModeVault" onclick="isDemoMode()?showDemoVaultBlock():switchMode('vault')">
+          <div class="ml-mode-icon-circle vault">🔑</div>
+          <div class="ml-mode-info">
+            <div class="ml-mode-name" data-i18n="vaultManager">Vault Manager</div>
+            <div class="ml-mode-desc" data-i18n="vaultManagerDesc">Club admin — players, requests, management</div>
+          </div>
+          <span class="ml-arr-circle">›</span>
+        </button>
+      </div>
+      <div class="ml-experience-switch" aria-label="Experience mode">
+        <div class="ml-experience-track" id="mlExperienceTrack">
+          <span class="ml-experience-thumb" id="mlExperienceThumb"></span>
+          <button id="mlExperienceStandard" type="button" onclick="setExperienceMode('standard')">Standard</button>
+          <button id="mlExperienceIntermediate" type="button" onclick="setExperienceMode('intermediate')">Intermediate</button>
+          <button id="mlExperienceAdvanced" type="button" onclick="setExperienceMode('advanced')">Advanced</button>
+        </div>
+        <div class="ml-experience-caption" id="mlExperienceCaption">All hubs</div>
+      </div>
+      <div class="ml-footer">
+        <button class="ml-settings-btn" onclick="closeModeSheet();homeGo('settingsPage','tabBtnSettings')">⚙️ <span data-i18n="settings">Settings</span></button>
+        <div class="ml-lang-row" id="mlLangRow">
+          <span class="ml-lang-current" id="mlLangCurrent" onclick="mlToggleLang()">🇺🇸 English ▾</span>
+          <div class="ml-lang-picker" id="mlLangPicker" style="display:none;" onclick="event.stopPropagation()">
+            <div class="ml-lang-opt" onclick="mlSelectLang('en','🇺🇸','English')">🇺🇸 English</div>
+            <div class="ml-lang-opt" onclick="mlSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</div>
+            <!-- kr, zh, vi hidden for now — translation files kept for future use -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--        AUTH SCREENS           -->
+
+  <!-- ============================= -->
+
+  <div id="authOverlay" class="auth-overlay" style="display:none;">
+
+<!-- WELCOME screen -->
+
+<div id="authWelcome" class="auth-screen">
+  <div class="auth-logo">🏸</div>
+  <div class="auth-app-name" data-i18n="appTitle">Sports Club Scheduler</div>
+  <div class="auth-tagline" data-i18n="tagline">Badminton &amp; Pickleball</div>
+  <div class="auth-welcome-btns">
+    <button class="auth-btn-primary" onclick="authShowScreen('login')" data-i18n="login">Login</button>
+    <button class="auth-btn-secondary" onclick="authShowScreen('signup')" data-i18n="createAccount">Create Account</button>
+    <div class="auth-demo-divider"><span>or</span></div>
+    <button class="auth-btn-demo" onclick="authStartDemo()" id="demoBtnWelcome">
+      🎮 <span data-i18n="tryDemo">Try Demo</span>
+    </button>
+
+  <div class="ml-lang-row" style="margin-top:24px;justify-content:center;">
+    <span class="ml-lang-current" id="authLangCurrent" onclick="authToggleLang()" style="font-size:0.9rem;">🇺🇸 English ▾</span>
+    <div class="ml-lang-picker" id="authLangPicker" style="display:none;" onclick="event.stopPropagation()">
+      <div class="ml-lang-opt" onclick="authSelectLang('en','🇺🇸','English')">🇺🇸 English</div>
+      <div class="ml-lang-opt" onclick="authSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</div>
+      <!-- kr, zh, vi hidden — translation files kept for future use -->
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- LOGIN screen -->
+
+<div id="authLogin" class="auth-screen" style="display:none;">
+  <div class="auth-back-row">
+    <button class="auth-back-btn" onclick="authShowScreen('welcome')">&#8249;</button>
+    <span class="auth-screen-title" data-i18n="login">Login</span>
+  </div>
+  <div class="auth-form">
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="emailLabel">Email</label>
+      <input type="email" id="loginEmail" class="auth-input" placeholder="your@email.com" autocapitalize="none" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="passwordLabel">Password</label>
+      <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="current-password">
+    </div>
+    <div id="loginError" class="auth-error" style="display:none;"></div>
+    <button class="auth-btn-primary" onclick="authDoLogin()" data-i18n="login">Login</button>
+    <button class="auth-btn-link" onclick="authShowScreen('forgot')" data-i18n="forgotPassword">Forgot password?</button>
+  </div>
+</div>
+
+<!-- SIGN UP screen -->
+
+<div id="authSignup" class="auth-screen" style="display:none;">
+  <div class="auth-back-row">
+    <button class="auth-back-btn" onclick="authShowScreen('welcome')">&#8249;</button>
+    <span class="auth-screen-title" data-i18n="createAccount">Create Account</span>
+  </div>
+  <div class="auth-form">
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="emailLabel">Email</label>
+      <input type="email" id="signupEmail" class="auth-input" placeholder="your@email.com" autocapitalize="none" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="displayName">Display Name <span class="auth-hint" data-i18n="yourNameAlias">your name or alias</span></label>
+      <input type="text" id="signupDisplayName" class="auth-input" placeholder="e.g. Kari">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="gender">Gender</label>
+      <select id="signupGender" class="auth-input">
+        <option value="Male" data-i18n="genderMale">Male</option>
+        <option value="Female" data-i18n="genderFemale">Female</option>
+      </select>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="password">Password <span class="auth-hint" data-i18n="minSixChars">min 6 characters</span></label>
+      <input type="password" id="signupPassword" class="auth-input" placeholder="Password" autocomplete="new-password">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="confirmPassword">Confirm Password</label>
+      <input type="password" id="signupConfirm" class="auth-input" placeholder="Repeat password" autocomplete="new-password">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="recoveryKeyword">Recovery Keyword <span class="auth-hint" data-i18n="toResetPassword">to reset password if forgotten</span></label>
+      <input type="text" id="signupRecoveryWord" class="auth-input" placeholder="e.g. mango, sunflower..." autocapitalize="none">
+    </div>
+    <div id="signupError" class="auth-error" style="display:none;"></div>
+    <button class="auth-btn-primary" onclick="authDoSignup()" data-i18n="createAccount">Create Account</button>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD screen -->
+
+<div id="authForgot" class="auth-screen" style="display:none;">
+  <div class="auth-back-row">
+    <button class="auth-back-btn" onclick="authShowScreen('login')">&#8249;</button>
+    <span class="auth-screen-title" data-i18n="resetPassword">Reset Password</span>
+  </div>
+  <div class="auth-form">
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="emailLabel">Email</label>
+      <input type="email" id="forgotEmail" class="auth-input" placeholder="your@email.com">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="recoveryKeyword">Recovery Keyword</label>
+      <input type="text" id="forgotRecoveryWord" class="auth-input" placeholder="Your recovery keyword" autocapitalize="none">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="newPassword">New Password</label>
+      <input type="password" id="forgotNewPw" class="auth-input" placeholder="Min 6 characters">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="confirmNewPassword">Confirm New Password</label>
+      <input type="password" id="forgotConfirmPw" class="auth-input" placeholder="Repeat new password">
+    </div>
+    <div id="forgotError" class="auth-error" style="display:none;"></div>
+    <button class="auth-btn-primary" onclick="authDoForgotReset()" data-i18n="resetPassword">Reset Password</button>
+  </div>
+</div>
+
+<!-- CLAIM ACCOUNT screen -->
+
+<div id="authClaim" class="auth-screen" style="display:none;">
+  <div class="auth-back-row">
+    <button class="auth-back-btn" onclick="authShowScreen('welcome')">&#8249;</button>
+    <span class="auth-screen-title" data-i18n="claimMyAccount">Claim My Account</span>
+  </div>
+  <div class="auth-form">
+    <p class="auth-hint-block" style="margin-bottom:16px;color:var(--text-dim,#888);font-size:0.85rem;">
+      Your admin has registered you. Enter your club, nickname and the default password they gave you to set up your account.
+    </p>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="clubLabel">Club</label>
+      <select id="claimClubSelect" class="auth-input">
+        <option value="">— Loading clubs… —</option>
+      </select>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Nickname <span class="auth-hint" data-i18n="asRegisteredByAdmin">as registered by admin</span></label>
+      <input type="text" id="claimNickname" class="auth-input" placeholder="Your nickname">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="defaultPassword">Default Password <span class="auth-hint" data-i18n="givenByAdmin">given by admin</span></label>
+      <input type="password" id="claimDefaultPassword" class="auth-input" placeholder="Default password">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="yourEmail">Your Email</label>
+      <input type="email" id="claimEmail" class="auth-input" placeholder="your@email.com" autocapitalize="none">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="newPassword">New Password</label>
+      <input type="password" id="claimPassword" class="auth-input" placeholder="Min 6 characters">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="confirmPassword">Confirm Password</label>
+      <input type="password" id="claimConfirm" class="auth-input" placeholder="Repeat password">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="recoveryKeyword">Recovery Keyword</label>
+      <input type="text" id="claimRecoveryWord" class="auth-input" placeholder="e.g. mango, sunflower..." autocapitalize="none">
+    </div>
+    <div id="claimError" class="auth-error" style="display:none;"></div>
+    <button class="auth-btn-primary" onclick="authDoClaimAccount()" data-i18n="claimAccount">Claim Account</button>
+  </div>
+</div>
+
+<!-- JOIN CLUB screen -->
+
+<div id="authJoinClub" class="auth-screen" style="display:none;">
+  <div class="auth-back-row">
+    <div style="flex:1"></div>
+    <button class="auth-btn-link" onclick="authSkipJoin()" data-i18n="skipBtn">Skip</button>
+  </div>
+  <div class="auth-logo" style="font-size:2.5rem;">🏢</div>
+  <div class="auth-screen-title" style="margin-bottom:6px;" data-i18n="findYourClub">Find Your Club</div>
+  <div class="auth-tagline" data-i18n="searchByClubName">Search by club name and request to join</div>
+  <div class="auth-form" style="margin-top:24px;">
+    <div class="auth-field">
+      <label class="auth-label" data-i18n="searchClub">Search Club</label>
+      <input type="text" id="joinClubSearch" class="auth-input"
+        placeholder="Type club name..." data-i18n-placeholder="typeClubSearch"
+        oninput="authSearchClubsUI(this.value)">
+    </div>
+    <div id="joinClubResults" class="auth-club-results" style="display:none;"></div>
+    <div id="joinClubError" class="auth-error" style="display:none;"></div>
+    <div id="joinClubPending" class="auth-pending" style="display:none;">
+      <div class="auth-pending-icon">⏳</div>
+      <div class="auth-pending-text" data-i18n="requestSent">Request sent! Waiting for admin approval.</div>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--        CLUB JOIN OVERLAY      -->
+
+  <!-- HOME SCREEN -->
+
+  <div id="homePageOverlay" class="home-overlay" style="display:none;">
+
+<!-- Demo Banner -->
+<div id="demoBanner" style="display:none;">
+  <div class="demo-banner-inner">
+    <span class="demo-banner-label">🎮 Demo</span>
+    <span class="demo-banner-timer" id="demoTimerDisplay">10:00</span>
+    <button class="demo-banner-signup" onclick="authDemoSignupPrompt()">Sign Up Free →</button>
+    <button class="demo-banner-exit" onclick="authExitDemo()">✕</button>
+  </div>
+</div>
+
+<!-- Top bar -->
+
+<div class="home-topbar">
+  <div class="scs-topbar-center" id="modePillBtn" onclick="openModeSwitcher()" style="cursor:pointer;justify-content:flex-start;margin:0;">
+    <div class="scs-topbar-icon-wrap"><span id="modePillIcon">🏸</span></div>
+    <div class="scs-topbar-text">
+      <div class="scs-topbar-title" id="modePillLabel"></div>
+      <div class="scs-topbar-sub" id="modePillSub"></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtnHome" title="Toggle theme">🌙</button>
+    <button class="scs-topbar-btn scs-topbar-power" onclick="appMode==='vault'?vaultLogoutClub():appMode==='organiser'?organiserLogoutClub():authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
+    <button class="scs-topbar-x" onclick="openModeSwitcher()">✕</button>
+  </div>
+</div>
+
+<!-- Trial banner moved to Settings page -->
+
+<div id="trialBanner" style="display:none;"></div>
+
+<!-- SESSION STEPPER (organiser) -->
+
+<div id="homeOrganizerFlow" style="display:none;">
+
+  <div class="session-stepper">
+    <div class="stepper-step" id="stepDot0">
+      <div class="stepper-dot"><span class="sn">1</span></div>
+      <div class="stepper-label" data-i18n="players">Players</div>
+    </div>
+    <div class="stepper-line" id="stepLine0"></div>
+    <div class="stepper-step" id="stepDot1">
+      <div class="stepper-dot"><span class="sn">2</span></div>
+      <div class="stepper-label" data-i18n="pairsLabel">Pairs</div>
+    </div>
+    <div class="stepper-line" id="stepLine1"></div>
+    <div class="stepper-step" id="stepDot2">
+      <div class="stepper-dot"><span class="sn">3</span></div>
+      <div class="stepper-label" data-i18n="courtsLabel">Courts</div>
+    </div>
+    <div class="stepper-line" id="stepLine2"></div>
+    <div class="stepper-step" id="stepDot3">
+      <div class="stepper-dot"><span class="sn">4</span></div>
+      <div class="stepper-label" data-i18n="roundsLabel">Rounds</div>
+    </div>
+  </div>
+
+  <!-- Step card kept hidden: JS references these IDs but card is no longer shown -->
+  <div class="step-card" id="stepCard" style="display:none;">
+    <div class="step-card-icon" id="stepCardIcon">👥</div>
+    <div class="step-card-body">
+      <div class="step-card-title" id="stepCardTitle">Select Players</div>
+      <div class="step-card-sub"   id="stepCardSub">Add at least 4 players</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+      <button class="step-card-btn" id="stepCardBtn" onclick="stepAction()">Go ›</button>
+      <button class="step-card-skip" id="stepSkipBtn" onclick="stepSkip()" style="display:none;" data-i18n="skipBtn">Skip</button>
+    </div>
+  </div>
+
+  <!-- stepCourtsPanel stub removed: stepNumCourts/stepModeToggle live in homeOrgGrid rounds tile -->
+
+</div>
+
+<!-- VIEWER FLOW - removed (dashboard tile covers this) -->
+
+<div id="homeViewerFlow" style="display:none;"></div>
+
+<!-- ── ORGANISER GRID ── -->
+
+<div id="homeOrgGrid" style="display:none;">
+
+  <!-- Hidden club tile (JS may reference orgTileIcon/orgVctName) -->
+  <div style="display:none;">
+    <div id="orgTileIcon">🏢</div>
+    <div id="orgVctName">Club</div>
+    <div id="orgVctBadge">Tap to connect</div>
+  </div>
+
+  <!-- ── Row 1: Players + Fixed Pairs (2 columns) ── -->
+  <div class="home-grid org-top-row">
+    <div class="home-tile" data-tile-color="2" onclick="homeGo('playersPage','tabBtnPlayers')">
+      <div class="home-tile-icon tile-players">👥</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="players">Players</div>
+        <div class="home-tile-sub" id="tileSubPlayers" data-i18n="addRemove">Add · Remove</div>
+      </div>
+    </div>
+    <div class="home-tile" data-tile-color="3" onclick="homeGo('fixedPairsPage','tabBtnFixedPairs')">
+      <div class="home-tile-icon tile-pairs">🤝</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="fixedPairs">Fixed Pairs</div>
+        <div class="home-tile-sub" id="tileSubPairs" data-i18n="optional">Optional</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Row 2: Round Scheduler + Match Flow cards ── -->
+  <div class="home-tile org-rounds-tile" data-tile-color="1" style="cursor:default;">
+    <!-- Courts stepper + competitive toggle (compact row) -->
+    <div class="org-rounds-row">
+      <span class="org-rounds-label" data-i18n="courtsLabel">Courts</span>
+      <div class="counter">
+        <button class="circle-btn" onclick="stepCourtAdj(-1)">−</button>
+        <span id="stepNumCourts">1</span>
+        <button class="circle-btn" onclick="stepCourtAdj(1)">+</button>
+      </div>
+    </div>
+    <div class="org-rounds-row">
+      <span class="org-rounds-label" data-i18n="markWinner">Mark Winner</span>
+      <label class="switch">
+        <input type="checkbox" id="stepModeToggle" onchange="stepSyncMode()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="game-generation-block">
+      <div class="game-generation-title" data-i18n="gameGeneration">Game Generation</div>
+      <label class="game-mode-radio-row">
+        <input type="radio" name="homeGameGenerationMode" value="standard" onchange="stepSyncGameGeneration(this.value)">
+        <span data-i18n="standardGames">Standard Games</span>
+      </label>
+      <label class="game-mode-radio-row">
+        <input type="radio" name="homeGameGenerationMode" value="unique" onchange="stepSyncGameGeneration(this.value)">
+        <span data-i18n="uniqueGamesPlain">Unique Games</span>
+      </label>
+      <label class="game-mode-radio-row">
+        <input type="radio" name="homeGameGenerationMode" value="balanced" onchange="stepSyncGameGeneration(this.value)">
+        <span data-i18n="balancedGames">Balanced Games</span>
+      </label>
+    </div>
+    <!-- Two launch cards -->
+    <div class="org-launch-cards">
+      <button class="org-launch-card org-launch-rounds" id="gotoRoundsBtn" onclick="stepCourtsDone()" disabled>
+        <div class="org-launch-bg-art org-launch-bg-rounds"></div>
+        <div class="org-launch-text">
+          <div class="org-launch-title" data-i18n="roundModeTitle">Round Mode</div>
+          <div class="org-launch-desc" data-i18n="roundModeDesc">Create and manage multiple rounds across all courts.</div>
+        </div>
+        <div class="org-launch-actions">
+          <div class="org-launch-enter org-launch-enter-btn">
+            <span data-i18n="enter">Enter</span>
+            <span class="org-launch-arr">›</span>
+          </div>
+          <div class="org-launch-end-btn" id="roundsEndBtn" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
+        </div>
+      </button>
+      <button class="org-launch-card org-launch-mbm" id="gotoMbmBtn" onclick="mbmGo()" disabled>
+        <div class="org-launch-bg-art org-launch-bg-mbm"></div>
+        <div class="org-launch-text">
+          <div class="org-launch-title" data-i18n="rollingModeTitle">Rolling Mode</div>
+          <div class="org-launch-desc" data-i18n="rollingModeDesc">Continuous auto-scheduling of matches one after another.</div>
+        </div>
+        <div class="org-launch-actions">
+          <div class="org-launch-enter org-launch-enter-btn">
+            <span data-i18n="enter">Enter</span>
+            <span class="org-launch-arr">›</span>
+          </div>
+          <div class="org-launch-end-btn" id="mbmEndBtn2" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── More toggle ── -->
+  <button class="home-show-more-btn" id="homeShowMoreBtn" onclick="homeToggleMoreTiles()">
+    <span id="homeShowMoreLabel">More ›</span>
+  </button>
+
+  <!-- ── Collapsible: Dashboard, Release Players, Requests, Help ── -->
+  <div id="homeMoreSection" class="home-more-section home-more-collapsed">
+    <div class="home-grid-3col">
+      <div class="home-tile" data-tile-color="4" onclick="homeGo('dashboardPage','tabBtnDashboard')">
+        <div class="home-tile-icon">📡</div>
+        <div class="home-tile-text">
+          <div class="home-tile-name" data-i18n="dashboard">Dashboard</div>
+          <div class="home-tile-sub" id="tileSubDashboard">Live sessions</div>
+        </div>
+      </div>
+      <div class="home-tile" data-tile-color="5" onclick="homeGo('vaultPlayingPage',null)">
+        <div class="home-tile-icon" style="position:relative;">
+          ⚡
+          <div class="vt-badge" id="vtBadgePlaying" style="display:none;position:absolute;top:-6px;right:-6px;">LIVE</div>
+        </div>
+        <div class="home-tile-text">
+          <div class="home-tile-name">Release Players</div>
+          <div class="home-tile-sub" id="tileSubPlaying">—</div>
+        </div>
+      </div>
+      <div class="home-tile" data-tile-color="3" onclick="homeGo('vaultRequestsPage',null)">
+        <div class="home-tile-icon" style="position:relative;">
+          🔔
+          <div class="vt-badge" id="vtBadgeRequestsOrg" style="display:none;position:absolute;top:-6px;right:-6px;">NEW</div>
+        </div>
+        <div class="home-tile-text">
+          <div class="home-tile-name" data-i18n="requests">Requests</div>
+          <div class="home-tile-sub" id="tileSubRequestsOrg">Join requests</div>
+        </div>
+      </div>
+    </div>
+    <button class="home-help-btn" onclick="homeGo('helpPage',null)" data-i18n="helpGuide">❓ Help & Guide</button>
+  </div><!-- end homeMoreSection -->
+
+</div><!-- end homeOrgGrid -->
+
+<!-- ── VAULT MANAGER GRID (new) ── -->
+
+<div id="homeVaultGrid" style="display:none;">
+
+  <!-- Club status tile — hidden -->
+  <div class="vault-club-tile" id="vaultClubStatusTile" style="display:none;height:0;overflow:hidden;margin:0;padding:0;">
+    <div class="vct-dot" id="vctDot" onclick="homeGo('vaultClubMgmtPage',null)" style="cursor:pointer;"></div>
+    <div class="vct-info" onclick="homeGo('vaultClubMgmtPage',null)" style="cursor:pointer;flex:1;">
+      <div class="vct-name" id="vctName">No club selected</div>
+      <span class="vct-badge" id="vctBadge" style="display:none">ADMIN</span>
+    </div>
+    <button onclick="vaultLogoutClub()" style="background:none;border:1px solid var(--red,#e63757);color:var(--red,#e63757);border-radius:8px;padding:5px 10px;font-size:0.7rem;font-weight:700;cursor:pointer;flex-shrink:0;" data-i18n="leaveClub">Leave</button>
+    <span onclick="homeGo('vaultClubMgmtPage',null)" style="color:var(--muted,#aaa);font-size:1rem;cursor:pointer;margin-left:6px;">›</span>
+  </div>
+
+  <!-- No club state — shown to first time users -->
+
+  <div id="vaultNoClubState" style="display:none; padding:20px 16px;">
+    <div style="text-align:center; padding:20px 0 24px;">
+      <div style="font-size:2.5rem; margin-bottom:10px;">🏢</div>
+      <div style="font-size:1rem; font-weight:700; color:var(--text); margin-bottom:6px;" data-i18n="createYourClub">Create Your Club</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.5;" data-i18n="noClubYet">No club yet — create one to get started</div>
+    </div>
+    <div class="pref-card" style="padding:14px;">
+      <input type="text" id="vaultQuickClubName" class="auth-input" placeholder="Club name" style="width:100%;margin-bottom:8px;">
+      <input type="password" id="vaultQuickMemberPw" class="auth-input" data-i18n-placeholder="organiserPasswordPh" placeholder="Organiser password" style="width:100%;margin-bottom:8px;">
+      <input type="password" id="vaultQuickAdminPw" class="auth-input" data-i18n-placeholder="enterAdminPasswordPh" placeholder="Admin password" style="width:100%;margin-bottom:8px;">
+      <button onclick="vaultQuickCreateClub()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;" data-i18n="createClub">Create Club</button>
+      <div id="vaultQuickFeedback" style="font-size:0.78rem;margin-top:8px;text-align:center;"></div>
+    </div>
+  </div>
+
+  <div id="vaultTileGrid" class="vault-tile-grid">
+
+<!-- Vault Upcoming Slots — same layout/style as Viewer page -->
+<section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card">
+  <div class="mc-slots-head">
+    <div>
+      <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
+      <div class="mc-slots-sub" id="vaultSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</div>
+    </div>
+    <div class="mc-slots-count" id="vaultSlotsCount">0</div>
+  </div>
+
+  <div class="mc-slots-cal-nav">
+    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
+    <div class="vs-cal-month-label mc-slots-month-label" id="vaultSlotsMonthLabel">—</div>
+    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
+  </div>
+
+  <div class="vs-cal-weekdays mc-slots-weekdays">
+    <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+  </div>
+  <div class="vs-cal-grid mc-slots-cal-grid" id="vaultSlotsCalGrid"></div>
+
+  <div class="mc-slots-selected-title" id="vaultSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
+  <div class="mc-slots-list" id="vaultSlotsList"></div>
+</section>
+
+<button class="home-show-more-btn" id="homeShowMoreBtnVault" onclick="homeToggleMoreTilesVault()">
+  <span id="homeShowMoreLabelVault">More ›</span>
+</button>
+
+<div id="homeMoreSectionVault" class="home-more-section home-more-collapsed">
+
+<div class="vault-tile vt-register" data-tile-color="1" onclick="homeGo('vaultRegisterPage',null)">
+  <div class="vt-icon">📋</div>
+  <div class="vt-text">
+    <div class="vt-stat" id="vtStatRegister">—</div>
+    <div class="vt-name" data-i18n="registerPlayers">Register Players</div>
+    <div class="vt-sub" data-i18n="playersInClub">players in club</div>
+  </div>
+</div>
+
+<div class="vault-tile vt-modify" data-tile-color="2" onclick="homeGo('vaultModifyPage',null)">
+  <div class="vt-icon">✏️</div>
+  <div class="vt-text">
+    <div class="vt-stat" id="vtStatModify">—</div>
+    <div class="vt-name" data-i18n="modifyPlayers">Modify Players</div>
+    <div class="vt-sub" data-i18n="tapToEdit">tap to edit</div>
+  </div>
+</div>
+
+<div class="vault-tile vt-requests" data-tile-color="3" onclick="homeGo('vaultRequestsPage',null)">
+  <div class="vt-badge" id="vtBadgeRequests" style="display:none">NEW</div>
+  <div class="vt-icon">🔔</div>
+  <div class="vt-text">
+    <div class="vt-stat" id="vtStatRequests">—</div>
+    <div class="vt-name" data-i18n="requests">Requests</div>
+    <div class="vt-sub" data-i18n="pendingApproval">pending approval</div>
+  </div>
+</div>
+
+<div class="vault-tile vt-venues" data-tile-color="5" onclick="homeGo('vaultVenuesPage',null)">
+  <div class="vt-icon">📍</div>
+  <div class="vt-text">
+    <div class="vt-name" data-i18n="venues">Venues</div>
+    <div class="vt-sub" data-i18n="savedMapLocations">saved map locations</div>
+  </div>
+</div>
+
+<div class="vault-tile vt-requests" data-tile-color="4" onclick="vaultOpenDeleteOnly()">
+  <div class="vt-icon">🗑️</div>
+  <div class="vt-text">
+    <div class="vt-name" data-i18n="deleteClub">Delete Club</div>
+    <div class="vt-sub" data-i18n="removeClub">remove club</div>
+  </div>
+</div>
+
+  </div><!-- end homeMoreSectionVault -->
+  </div><!-- end vaultTileGrid -->
+</div><!-- end homeVaultGrid -->
+
+<!-- ── VIEWER GRID ── -->
+
+<div id="homeViewerGrid" style="display:none;">
+
+  <!-- Viewer no-club full-screen overlay — shown only when viewer has no club yet -->
+  <div id="viewerNoClubBanner" style="display:none;position:fixed;inset:0;z-index:9990;background:var(--bg,#12121a);overflow-y:auto;">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(108,99,255,0.18);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🏢</div>
+        <div>
+          <div style="font-size:1rem;font-weight:800;color:var(--text);letter-spacing:-0.3px;">Find a Club</div>
+          <div style="font-size:0.72rem;color:var(--muted);">Viewer mode setup</div>
+        </div>
+      </div>
+      <button class="sheet-close-btn" onclick="document.getElementById('viewerNoClubBanner').style.display='none';openModeSwitcher();">✕</button>
+    </div>
+
+    <!-- Welcome card -->
+    <div style="margin:16px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px;">👋 Welcome to Viewer mode</div>
+      <div style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Search for your club below and send a join request. Once approved by your organiser, you can watch live sessions and view your monthly stats.</div>
+    </div>
+
+    <!-- Search section -->
+    <div style="margin:14px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Search Club</div>
+      <div style="position:relative;">
+        <input type="text" id="vncbSearch" class="auth-input"
+          placeholder="Type club name..."
+          style="width:100%;box-sizing:border-box;padding-right:42px;"
+          oninput="vncbSearchUI(this.value)">
+        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:1rem;">🔍</span>
+      </div>
+      <div id="vncbResults" style="display:none;margin-top:8px;border-radius:12px;border:1px solid var(--border);overflow:hidden;background:var(--surface2);"></div>
+      <div id="vncbError" style="display:none;font-size:0.8rem;color:var(--red,#e63757);margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(230,55,87,0.08);"></div>
+    </div>
+
+    <!-- Step: nickname entry -->
+    <div id="vncbNicknameSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div id="vncbNicknameMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
+      <input type="text" id="vncbNicknameInput" class="auth-input"
+        placeholder="Your nickname in this club"
+        style="width:100%;box-sizing:border-box;margin-bottom:10px;"
+        onkeydown="if(event.key==='Enter') vncbSubmitNickname()">
+      <button onclick="vncbSubmitNickname()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">Continue →</button>
+    </div>
+
+    <!-- Step: password claim -->
+    <div id="vncbPasswordSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div id="vncbPasswordMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
+      <input type="password" id="vncbPasswordInput" class="auth-input"
+        placeholder="Default password"
+        style="width:100%;box-sizing:border-box;margin-bottom:10px;"
+        onkeydown="if(event.key==='Enter') vncbSubmitPassword()">
+      <button onclick="vncbSubmitPassword()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">🔑 Claim &amp; Join</button>
+    </div>
+
+    <!-- Step: nickname conflict -->
+    <div id="vncbNicknameAltSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div id="vncbNicknameAltMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
+      <input type="text" id="vncbNicknameAltInput" class="auth-input"
+        placeholder="Choose a different nickname"
+        style="width:100%;box-sizing:border-box;margin-bottom:10px;"
+        onkeydown="if(event.key==='Enter') vncbSubmitNicknameAlt()">
+      <button onclick="vncbSubmitNicknameAlt()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">Submit Request</button>
+    </div>
+
+    <!-- Feedback card -->
+    <div id="vncbFeedback" style="display:none;margin:10px 16px 0;padding:20px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+      <div id="vncbFeedbackIcon" style="font-size:2.2rem;margin-bottom:10px;">⏳</div>
+      <div id="vncbFeedbackTitle" style="font-weight:700;color:var(--text);margin-bottom:4px;font-size:0.95rem;"></div>
+      <div id="vncbFeedbackMsg" style="font-size:0.8rem;color:var(--muted);line-height:1.5;"></div>
+    </div>
+
+    <!-- Bottom safe area -->
+    <div style="height:32px;"></div>
+  </div>
+
+  <!-- ── My Card content inline (no tile, no navigation) ── -->
+
+  <div id="myCardEmpty" style="display:none;">
+    <div class="dash-empty">
+      <div class="dash-empty-icon">👤</div>
+      <p style="font-weight:700;margin-bottom:6px" data-i18n="signInStats">Sign in to view your stats</p>
+      <p style="font-size:0.78rem;color:var(--text-dim);margin-top:4px" data-i18n="trackStats">Track your ratings, wins and match history.</p>
+      <button class="btn-save" style="margin-top:16px" onclick="authShowScreen('login')" data-i18n="login">Login</button>
+    </div>
+  </div>
+
+  <div id="myCardContent" style="display:none;">
+
+    <!-- Identity -->
+    <div class="mycard-identity">
+      <img id="mcAvatar" src="male.png?v=164" class="mycard-avatar">
+      <div class="mycard-identity-info">
+        <div class="mycard-name" id="mcName"></div>
+        <div id="mcTier" class="profile-tier"></div>
+      </div>
+      <button id="mcLogoutBtn" style="display:none!important" onclick="if(typeof authLogout==='function')authLogout()" data-i18n="logout">Logout</button>
+    </div>
+
+    <!-- Ratings + Points -->
+    <div class="mycard-ratings">
+      <button id="mcDetailsArrow" class="mc-details-arrow" type="button" onclick="toggleMyCardDetails()" aria-expanded="false" aria-controls="mcDetailsPanel">⌄</button>
+      <div class="mycard-rating-box">
+        <div class="mycard-rating-value" id="mcGlobalRating">—</div>
+        <div class="mycard-rating-label" data-i18n="globalRating">Global Rating</div>
+        <div class="mycard-club-breakdown" id="mcRatingBreakdown"></div>
+      </div>
+      <div class="mycard-rating-divider"></div>
+      <div class="mycard-rating-box">
+        <div class="mycard-rating-value" style="color:var(--accent)" id="mcGlobalPoints">—</div>
+        <div class="mycard-rating-label" data-i18n="globalPoints">Global Points</div>
+        <div class="mycard-club-breakdown" id="mcPointsBreakdown"></div>
+      </div>
+    </div>
+
+    <div id="mcDetailsPanel" class="mc-details-panel" style="display:none;">
+
+    <!-- All-time Wins/Losses -->
+    <div class="profile-stats-row" style="margin:12px 16px 8px;">
+      <div class="profile-stat-box">
+        <div id="mcWins" class="profile-stat-value wins">—</div>
+        <div class="profile-stat-label" data-i18n="allTimeWins">All-time Wins</div>
+      </div>
+      <div class="profile-stat-divider"></div>
+      <div class="profile-stat-box">
+        <div id="mcLosses" class="profile-stat-value losses">—</div>
+        <div class="profile-stat-label" data-i18n="allTimeLosses">All-time Losses</div>
+      </div>
+    </div>
+
+    <!-- Period Stats -->
+    <div class="mc-period-list" id="mcPeriodStats">
+      <div class="mc-period-row">
+        <span class="mc-period-label" data-i18n="thisWeek">This Week</span>
+        <div class="mc-period-stats-inner">
+          <span class="mc-period-val wins" id="mcWeekWins">—</span>W
+          <span class="mc-period-val losses" id="mcWeekLosses">—</span>L
+          <span class="mc-period-val points" id="mcWeekPoints">—</span>pts
+          <span class="mc-period-val cost" id="mcWeekCost"></span>
+        </div>
+      </div>
+      <div class="mc-period-row">
+        <span class="mc-period-label" data-i18n="thisMonth">This Month</span>
+        <div class="mc-period-stats-inner">
+          <span class="mc-period-val wins" id="mcMonthWins">—</span>W
+          <span class="mc-period-val losses" id="mcMonthLosses">—</span>L
+          <span class="mc-period-val points" id="mcMonthPoints">—</span>pts
+          <span class="mc-period-val cost" id="mcMonthCost"></span>
+        </div>
+      </div>
+      <div class="mc-period-row">
+        <span class="mc-period-label" data-i18n="thisYear">This Year</span>
+        <div class="mc-period-stats-inner">
+          <span class="mc-period-val wins" id="mcYearWins">—</span>W
+          <span class="mc-period-val losses" id="mcYearLosses">—</span>L
+          <span class="mc-period-val points" id="mcYearPoints">—</span>pts
+          <span class="mc-period-val cost" id="mcYearCost"></span>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end mcDetailsPanel -->
+
+  </div><!-- end myCardContent -->
+
+  <!-- ── Viewer Upcoming Slots (handled by slots.js) ── -->
+  <section id="mcUpcomingSlots" class="mc-slots-card" style="display:none;">
+    <div class="mc-slots-head">
+      <div>
+        <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
+        <div class="mc-slots-sub" id="mcSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</div>
+      </div>
+      <div class="mc-slots-tools">
+        <button class="mc-slots-refresh-btn" id="mcSlotsRefreshBtn" type="button" onclick="myCardSlotsManualRefresh()" title="Refresh slots">↻</button>
+        <div class="mc-slots-count" id="mcSlotsCount">0</div>
+      </div>
+    </div>
+
+    <div class="mc-slots-cal-nav">
+      <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="myCardSlotsChangeMonth(-1)">‹</button>
+      <div class="vs-cal-month-label mc-slots-month-label" id="mcSlotsMonthLabel">—</div>
+      <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="myCardSlotsChangeMonth(1)">›</button>
+    </div>
+
+    <div class="vs-cal-weekdays mc-slots-weekdays">
+      <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+    </div>
+    <div class="vs-cal-grid mc-slots-cal-grid" id="mcSlotsCalGrid"></div>
+
+    <div class="mc-slots-selected-title" id="mcSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
+    <div class="mc-slots-list" id="mcSlotsList"></div>
+  </section>
+
+
+  <!-- ── Show More toggle (viewer) — above all tiles ── -->
+  <button class="home-show-more-btn" id="homeShowMoreBtnV" onclick="homeToggleMoreTilesV()" style="display:none;">
+    <span id="homeShowMoreLabelV">More ›</span>
+  </button>
+
+  <!-- ── Collapsible: all tiles ── -->
+  <div id="homeMoreSectionV" class="home-more-section home-more-collapsed">
+
+  <!-- Two-column tile grid: My Clubs | Dashboard / Recent Matches | Report -->
+  <div class="home-grid" style="margin-top:10px;">
+
+    <!-- My Clubs -->
+    <div class="home-tile" data-tile-color="1" id="tileJoinClub" onclick="homeGo('joinClubPage',null)">
+      <div class="home-tile-icon vcl-icon">🏢</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="myClubs">My Clubs</div>
+        <div class="home-tile-sub" id="tileSubJoinClub">Find &amp; request</div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="home-tile" data-tile-color="2" onclick="homeGo('dashboardPage','tabBtnDashboard')">
+      <div class="home-tile-icon">📡</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="dashboard">Dashboard</div>
+        <div class="home-tile-sub" id="tileSubDashboardV">Live sessions</div>
+      </div>
+    </div>
+
+    <!-- Recent Matches -->
+    <div class="home-tile" data-tile-color="3" onclick="homeGo('recentMatchesPage',null)">
+      <div class="home-tile-icon">🏸</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name">Recent Matches</div>
+        <div class="home-tile-sub" id="tileSubRecentMatches">Tap to view</div>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="home-tile" data-tile-color="4" onclick="homeGo('vaultReport2Page',null)">
+      <div class="home-tile-icon">📊</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="report">Report</div>
+        <div class="home-tile-sub">monthly stats</div>
+      </div>
+    </div>
+
+  </div><!-- end home-grid -->
+
+  </div><!-- end homeMoreSectionV -->
+
+</div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--           TOP BAR             -->
+
+  <!-- ============================= -->
+
+  <div class="top-bar scs-topbar">
+    <div class="scs-topbar-center" id="modePillBtn2" onclick="openModeSwitcher()">
+      <div class="scs-topbar-icon-wrap"><span id="modePillIcon2">🏸</span></div>
+      <div class="scs-topbar-text">
+        <div class="scs-topbar-title" id="modePillLabel2"></div>
+        <div class="scs-topbar-sub" id="modePillSub2"></div>
+      </div>
+    </div>
+    <div class="scs-topbar-right">
+      <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtn" title="Toggle theme">🌙</button>
+      <button class="scs-topbar-btn scs-topbar-power" onclick="appMode==='vault'?vaultLogoutClub():appMode==='organiser'?organiserLogoutClub():authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
+      <button class="scs-topbar-x" onclick="openModeSwitcher()">✕</button>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--       TOP TAB NAVIGATION      -->
+
+  <!-- ============================= -->
+
+  <!-- Ghost IDs — tab bar removed, navigation via home screen only -->
+
+<span id="tabBtnVault"     style="display:none"></span>
+<span id="tabBtnMyCard"    style="display:none"></span>
+<span id="tabBtnFixedPairs" style="display:none"></span>
+<span id="tabBtnPlayers"   style="display:none"></span>
+<span id="tabBtnRounds"    style="display:none"></span>
+<span id="tabBtnSummary"   style="display:none"></span>
+<span id="tabBtnDashboard" style="display:none"></span>
+<span id="tabBtnViewer"    style="display:none"></span>
+<span id="tabBtnJoinClub"  style="display:none"></span>
+
+  <!-- ============================= -->
+
+  <!--        JOIN CLUB PAGE         -->
+
+  <!-- ============================= -->
+
+  <div id="joinClubPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="myClubs">🏢 My Clubs</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+
+<div style="padding:14px;">
+
+  <!-- My Clubs list -->
+
+  <div id="myClubsList" style="margin-bottom:14px;">
+    <div class="jc-section-title" data-i18n="myClubs">My Clubs</div>
+    <div id="myClubsListInner">
+      <div class="jc-empty" data-i18n="loading">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+
+  <div class="jc-divider"></div>
+
+  <!-- Search section -->
+
+  <div class="jc-section-title" style="margin-top:14px;" data-i18n="findAClub">Find a Club</div>
+  <div style="position:relative; margin-bottom:10px;">
+    <input type="text" id="joinClubPageSearch" class="auth-input"
+      placeholder="Type club name to search..." data-i18n-placeholder="typeClubSearch"
+      oninput="joinClubPageSearchUI(this.value)"
+      style="width:100%; box-sizing:border-box; padding-right:40px;">
+    <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none;">🔍</span>
+  </div>
+  <div id="joinClubPageResults" style="display:none;"></div>
+  <div id="joinClubPageError" class="auth-error" style="display:none;"></div>
+
+  <!-- Step 1: Nickname entry (shown after tapping Request to Join) -->
+  <div id="joinClubNicknameEntrySection" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-top:10px;">
+    <div id="joinClubNicknameEntryMsg" style="font-size:0.85rem; color:var(--text); margin-bottom:12px; line-height:1.5;"></div>
+    <input type="text" id="joinClubNicknameEntryInput" class="auth-input"
+      placeholder="Your nickname in this club"
+      style="width:100%; box-sizing:border-box; margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter') joinClubSubmitNicknameEntry()">
+    <button onclick="joinClubSubmitNicknameEntry()" style="width:100%; padding:12px; background:var(--accent,#6c63ff); color:#fff; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;">Continue →</button>
+  </div>
+
+  <!-- Password claim section (unclaimed player found) -->
+
+  <div id="joinClubPasswordSection" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-top:10px;">
+    <div id="joinClubPasswordMsg" style="font-size:0.85rem; color:var(--text); margin-bottom:12px; line-height:1.5;"></div>
+    <input type="password" id="joinClubPasswordInput" class="auth-input"
+      placeholder="Default password"
+      style="width:100%; box-sizing:border-box; margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter') joinClubSubmitPassword()">
+    <button onclick="joinClubSubmitPassword()" style="width:100%; padding:12px; background:var(--accent,#6c63ff); color:#fff; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;">🔑 <span data-i18n="claimAndJoin">Claim &amp; Join</span></button>
+  </div>
+
+  <!-- Nickname conflict section (taken by someone else) -->
+
+  <div id="joinClubNicknameSection" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-top:10px;">
+    <div id="joinClubNicknameMsg" style="font-size:0.85rem; color:var(--text); margin-bottom:12px; line-height:1.5;"></div>
+    <input type="text" id="joinClubNicknameInput" class="auth-input"
+      placeholder="Enter your nickname for this club"
+      style="width:100%; box-sizing:border-box; margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter') joinClubSubmitNickname()">
+    <button onclick="joinClubSubmitNickname()" style="width:100%; padding:12px; background:var(--accent,#6c63ff); color:#fff; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;" data-i18n="submitRequest">Submit Request</button>
+  </div>
+  <div id="joinClubPageFeedback" style="display:none; text-align:center; padding:20px 12px; border-radius:14px; background:var(--card-bg,#1e1e2e); border:1px solid var(--border,#333); margin-top:10px;">
+    <div id="joinClubPageFeedbackIcon" style="font-size:2rem; margin-bottom:8px;">⏳</div>
+    <div id="joinClubPageFeedbackTitle" style="font-weight:600; color:var(--text); margin-bottom:4px;"></div>
+    <div id="joinClubPageFeedbackMsg" style="font-size:0.82rem; color:var(--muted);"></div>
+  </div>
+
+  <!-- Keep legacy IDs for compatibility -->
+
+  <div id="joinClubStatusCard" style="display:none;"></div>
+  <div id="joinClubSearchSection" style="display:none;"></div>
+</div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--         SETTINGS PAGE         -->
+
+  <!-- ============================= -->
+
+  <div id="settingsPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="settings">⚙️ Settings</span>
+      <button class="sheet-close-btn" onclick="document.getElementById('settingsPage').style.display='none';document.getElementById('homePageOverlay').classList.remove('settings-open');openModeSwitcher()">✕</button>
+    </div>
+    <div class="pref-wrap">
+
+  <!-- SUBSCRIPTION -->
+
+  <div class="pref-section-label" data-i18n="subscription">Subscription</div>
+  <div class="pref-card" id="settingsTrialCard">
+    <!-- Plan status -->
+    <div class="pref-row" style="margin-bottom:12px;">
+      <span class="pref-row-label" id="settingsTrialLabel">Free Trial</span>
+      <span class="pref-row-value" id="settingsTrialValue">—</span>
+    </div>
+    <!-- Subscribe + Key — hidden when Pro active -->
+    <div id="settingsSubActions">
+      <button onclick="if(typeof showUpgradeScreen==='function')showUpgradeScreen()"
+        style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#7c3aed,#6c63ff);color:#fff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;">
+        ⭐ Subscribe / Upgrade
+      </button>
+      
+      
+      
+    </div>
+  </div>
+
+  <!-- APPEARANCE — Theme + Font + Tile Style merged -->
+
+  <div class="pref-section-label">Experience Mode</div>
+  <div class="pref-card">
+    <div class="pref-row" style="flex-direction:column;align-items:stretch;gap:10px;">
+      <span class="pref-row-label">Available hubs</span>
+      <div class="pref-pill-group appear-pill-group" id="experienceModePills">
+        <button class="pref-pill" id="experience_standard" onclick="setExperienceMode('standard')">Standard</button>
+        <button class="pref-pill" id="experience_intermediate" onclick="setExperienceMode('intermediate')">Intermediate</button>
+        <button class="pref-pill" id="experience_advanced" onclick="setExperienceMode('advanced')">Advanced</button>
+      </div>
+      <div id="experienceModeDescription" style="font-size:.74rem;color:var(--text-dim);line-height:1.45;"></div>
+    </div>
+  </div>
+
+  <div class="pref-section-label" data-i18n="appearance">Appearance</div>
+  <div class="pref-card" id="appearanceCard">
+
+<!-- Theme -->
+
+<div class="pref-row">
+  <span class="pref-row-label" data-i18n="theme">Theme</span>
+  <div class="pref-pill-group appear-pill-group" id="themePillGroup">
+    <button class="pref-pill" id="theme_light" onclick="appearSelect('theme','light',this)" data-i18n="light">Light</button>
+    <button class="pref-pill" id="theme_dark"  onclick="appearSelect('theme','dark',this)"  data-i18n="dark">Dark</button>
+  </div>
+</div>
+<div class="pref-divider"></div>
+
+<!-- Font Size -->
+
+<div class="pref-row">
+  <span class="pref-row-label" data-i18n="fontSize">Font Size</span>
+  <div class="pref-pill-group appear-pill-group" id="fontPillGroup">
+    <button class="pref-pill" id="font_small"  onclick="appearSelect('font','small',this)"  data-i18n="small">Small</button>
+    <button class="pref-pill" id="font_medium" onclick="appearSelect('font','medium',this)" data-i18n="medium">Medium</button>
+    <button class="pref-pill" id="font_large"  onclick="appearSelect('font','large',this)"  data-i18n="large">Large</button>
+    <button class="pref-pill" id="font_xlarge" onclick="appearSelect('font','xlarge',this)">X-Large</button>
+  </div>
+</div>
+<div class="pref-divider"></div>
+
+<!-- Tile Style -->
+
+<div class="pref-row" style="flex-direction:column;align-items:stretch;gap:10px;">
+  <span class="pref-row-label" data-i18n="tileStyle">Tile Style</span>
+  <div style="display:flex;gap:8px;">
+    <button id="styleBtn1" onclick="appearSelect('tile','flat',this)"  class="tile-style-btn" data-i18n="flat">Flat</button>
+    <button id="styleBtn2" onclick="appearSelect('tile','glow',this)"  class="tile-style-btn" data-i18n="glow">Glow</button>
+    <button id="styleBtn3" onclick="appearSelect('tile','color',this)" class="tile-style-btn" data-i18n="color">Color</button>
+  </div>
+  <!-- Live Preview -->
+  <div class="style-preview-box" id="stylePreviewBox">
+    <div class="style-preview-label" data-i18n="preview">Preview</div>
+    <div class="style-preview-grid">
+      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
+      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
+      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
+    </div>
+    <div class="style-preview-wide">
+      <span class="spw-icon">◆</span>
+      <div class="spw-info"><div class="spw-name" data-i18n="wideTile">Wide Tile</div><div class="spw-sub" data-i18n="description">Description</div></div>
+      <span class="spw-arr">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- Live preview bar -->
+
+<div class="pref-divider"></div>
+<div class="appear-preview-bar" id="appearPreviewBar" style="display:none;">
+  <span class="appear-preview-label" id="appearPreviewLabel"></span>
+  <div id="appearFontPreview" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:10px;color:var(--text);transition:font-size 0.3s ease;">Aa — Font Preview</div>
+</div>
+
+<!-- Apply Button -->
+
+<div style="padding:14px 0 4px;">
+  <button class="appear-apply-btn" id="appearApplyBtn" onclick="appearApply()">
+    <span id="appearApplyIcon">✦</span> Apply Changes
+  </button>
+</div>
+
+  </div>
+
+  <!-- RESET -->
+
+  <div class="pref-section-label" data-i18n="reset">Reset</div>
+  <div class="pref-card">
+    <div class="pref-row pref-row-tap pref-row-danger" onclick="showConfirm('confirmResetAll', ResetAll)">
+      <span class="pref-row-label" data-i18n="resetAll">Reset All</span>
+      <span class="pref-row-chevron">›</span>
+    </div>
+    <div class="pref-divider"></div>
+    <div class="pref-row pref-row-tap pref-row-warn" onclick="showConfirm('confirmResetGames', resetRounds)">
+      <span class="pref-row-label" data-i18n="resetExcept">Reset Rounds Only</span>
+      <span class="pref-row-chevron">›</span>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- Admin Password Modal -->
+
+  <div id="adminModal" class="admin-modal-overlay" style="display:none">
+    <div class="admin-modal">
+      <div class="admin-modal-title" id="adminModalTitle">🔐 Admin Access</div>
+      <input type="password" id="adminPasswordInput" class="admin-password-input"
+        placeholder="Enter password" onkeydown="if(event.key==='Enter') adminVerifyPassword()">
+      <div id="adminPasswordConfirmRow" style="display:none">
+        <input type="password" id="adminPasswordConfirm" class="admin-password-input"
+          placeholder="Confirm new password" style="margin-top:8px">
+      </div>
+      <div class="admin-modal-actions">
+        <button class="admin-modal-cancel" onclick="adminCloseModal()" data-i18n="cancel">Cancel</button>
+        <button class="admin-modal-ok" onclick="adminVerifyPassword()">OK</button>
+      </div>
+      <div class="admin-modal-error" id="adminModalError"></div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--       CONFIRM OVERLAY         -->
+
+  <!-- ============================= -->
+
+  <div id="confirmOverlay" class="confirm-overlay hidden">
+    <div class="confirm-box">
+      <div class="confirm-title" id="confirmTitle"></div>
+      <div class="confirm-actions">
+        <button class="btn cancel" id="confirmCancel"></button>
+        <button class="btn danger" id="confirmYes"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--  SHARED PLAYER SLOT           -->
+
+  <!--  Lives at body level.         -->
+
+  <!--  JS moves it between tabs.    -->
+
+  <!--  Starts inside playersPage.   -->
+
+  <!-- ============================= -->
+
+  <!-- ============================= -->
+
+  <!--           VAULT PAGE          -->
+
+  <!-- ============================= -->
+
+  <!-- ================================ -->
+
+  <!--   VAULT: PLAYING PAGE            -->
+
+  <!-- ================================ -->
+
+  <div id="vaultPlayingPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="playingNow">🔴 Playing Now</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <div class="vault-sync-row">
+        <span class="vault-sync-text" id="vaultPlayingSyncStatus"></span>
+        <button class="vault-sync-btn" onclick="playerPlayingRenderList()" data-i18n="refresh">↻ Refresh</button>
+      </div>
+      <div id="playerPlayingList" class="player-mgmt-list"></div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT: REGISTER PAGE           -->
+
+  <!-- ================================ -->
+
+  <div id="vaultRegisterPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="registerPlayers">📋 Register Players</span>
+      <button class="sheet-close-btn" onclick="vaultRegisterClose()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <div id="vaultRegisterContainer"></div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT: VENUES PAGE             -->
+
+  <!-- ================================ -->
+
+  <div id="vaultVenuesPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title">📍 Venues</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <button class="venue-page-add-btn venue-page-add-fab" onclick="vaultVenuesShowNewForm()">+</button>
+    <div class="vault-wrap venue-wrap">
+      <div class="venue-card venue-form-card venue-form-hidden" id="vaultVenueFormCard">
+        <div class="venue-card-title" data-i18n="masterVenue">Master Venue</div>
+        <div class="venue-card-subtitle">Save the physical location once. Tap ☆ to make it a favorite for this club.</div>
+        <div class="venue-grid">
+          <div class="venue-field venue-field-full">
+            <label data-i18n="englishVenueName">English Venue Name</label>
+            <input id="venueNameInput" class="venue-input" type="text" placeholder="Edogawa Sports Center">
+          </div>
+          <div class="venue-field venue-field-full">
+            <label data-i18n="japaneseVenueName">Japanese Venue Name</label>
+            <input id="venueJapaneseNameInput" class="venue-input" type="text" placeholder="江戸川区スポーツセンター">
+          </div>
+          <div class="venue-field venue-field-full">
+            <label data-i18n="googleMapsLink">Google Maps Link</label>
+            <div class="venue-map-row">
+              <input id="venueMapInput" class="venue-input" type="url" placeholder="https://www.google.com/maps/...">
+              <button type="button" class="venue-import-btn" onclick="vaultVenuesImportFromMaps()" data-i18n="import">Import</button>
+            </div>
+          </div>
+          <div class="venue-field venue-field-full">
+            <label data-i18n="englishAddress">English Address</label>
+            <input id="venueAddressInput" class="venue-input" type="text" placeholder="4-2-20 Nishikasai, Edogawa-ku, Tokyo">
+          </div>
+          <div class="venue-field venue-field-full">
+            <label data-i18n="japaneseAddress">Japanese Address</label>
+            <input id="venueAddressJaInput" class="venue-input" type="text" placeholder="東京都江戸川区西葛西4丁目2番20号">
+          </div>
+          <div class="venue-field">
+            <label data-i18n="latitude">Latitude</label>
+            <input id="venueLatInput" class="venue-input" type="number" step="any" placeholder="35.706">
+          </div>
+          <div class="venue-field">
+            <label data-i18n="longitude">Longitude</label>
+            <input id="venueLngInput" class="venue-input" type="number" step="any" placeholder="139.873">
+          </div>
+          <div class="venue-field">
+            <label data-i18n="courtsLabel">Courts</label>
+            <input id="venueCourtsInput" class="venue-input" type="number" min="0" step="1" placeholder="8">
+          </div>
+          <div class="venue-field venue-checks">
+            <label data-i18n="facilities">Facilities</label>
+            <label class="venue-check"><input id="venueIndoorInput" type="checkbox" checked> <span data-i18n="indoor">Indoor</span></label>
+            <label class="venue-check"><input id="venueParkingInput" type="checkbox"> <span data-i18n="parking">Parking</span></label>
+          </div>
+          <div class="venue-field venue-field-full">
+            <label data-i18n="notes">Notes</label>
+            <textarea id="venueNotesInput" class="venue-input venue-textarea" placeholder="Court name, entrance, floor, etc." data-i18n-placeholder="venueNotesPlaceholder"></textarea>
+          </div>
+        </div>
+        <div id="venueFormFeedback" class="venue-feedback"></div>
+        <div class="venue-actions">
+          <button class="venue-btn venue-btn-secondary" onclick="vaultVenuesClearForm()" data-i18n="clearBtn">Clear</button>
+          <button class="venue-btn venue-btn-primary" onclick="vaultVenuesSave()" data-i18n="saveVenue">Save Venue</button>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-card-title-row">
+          <div>
+            <div class="venue-card-title" data-i18n="venues">Venues</div>
+            <div class="venue-card-subtitle">★ favorites appear first when creating slots</div>
+          </div>
+          <button class="venue-refresh-btn" onclick="vaultVenuesOpenPage()">↻</button>
+        </div>
+        <input id="venueSearchInput" class="venue-input venue-search" type="search" placeholder="Search venues..." data-i18n-placeholder="searchVenues" oninput="vaultVenuesRenderList(false)">
+        <div id="vaultVenuesList" class="venue-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT: SLOTS PAGE              -->
+
+  <!-- ================================ -->
+
+  <div id="vaultSlotsPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="slots">🗓️ Slots</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <div class="vs-cal-nav">
+        <button class="vs-cal-nav-btn" onclick="vaultSlotsChangeMonth(-1)">‹</button>
+        <div class="vs-cal-month-label" id="vsCalMonthLabel">—</div>
+        <button class="vs-cal-nav-btn" onclick="vaultSlotsChangeMonth(1)">›</button>
+      </div>
+      <div class="vs-cal-weekdays">
+        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+      </div>
+      <div class="vs-cal-grid" id="vsCalGrid"><!-- filled by JS --></div>
+      <div class="vs-cal-legend">
+        <span><i class="vs-dot vs-dot-upcoming"></i> <span data-i18n="upcoming">Upcoming</span></span>
+        <span><i class="vs-dot vs-dot-completed"></i> <span data-i18n="completed">Completed</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom sheet: date detail / slot list / post-new-slot form -->
+  <div class="bottom-sheet-overlay" id="vsDateSheetOverlay" onclick="vaultSlotsCloseDateSheet(event)">
+    <div class="bottom-sheet-panel" onclick="event.stopPropagation()">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title-bar">
+        <div class="bottom-sheet-title" id="vsDateSheetTitle">—</div>
+        <button class="bottom-sheet-x" onclick="vaultSlotsCloseDateSheet()">✕</button>
+      </div>
+      <div class="bottom-sheet-content" id="vsDateSheetContent"><!-- filled by JS --></div>
+    </div>
+  </div>
+
+  <!-- Slot post form template: structure lives in index.html; logic remains in slots.js -->
+  <template id="vsPostFormTemplate">
+    <div class="vs-post-form-compact vs-post-sample-layout">
+      <div class="vs-post-sample-hero">
+        <div>
+          <div class="vs-post-sample-kicker">CREATE SLOT</div>
+          <div class="vs-post-sample-title">__SLOT_DATE__</div>
+        </div>
+        <div class="vs-post-sample-badge">Draft / Post</div>
+      </div>
+
+      <section class="vs-sample-card">
+        <div class="vs-sample-card-title"><span>📍</span> Session Details</div>
+        <div class="vs-sample-field">
+          <label>Venue</label>
+          <input type="hidden" id="vsFormVenue" value="">
+          <input type="hidden" id="vsFormVenueId" value="">
+          <button type="button" id="vsVenuePickerBtn" class="vs-sample-input vs-venue-picker-btn" onclick="vaultSlotsOpenVenuePicker()">
+            <span id="vsVenuePickerLabel">🔍 Tap to select venue</span>
+            <span class="vs-venue-picker-arrow">›</span>
+          </button>
+          <div class="vs-venue-inline" id="vsFormVenueInfo" style="display:none;">
+            <span id="vsFormVenueAddress"></span>
+            <button type="button" id="vsFormVenueMapBtn" onclick="vaultSlotsOpenSelectedVenueMap()">Open Map</button>
+          </div>
+          <p class="vs-sample-hint">Favorites appear first. Manage them from Vault → Venues.</p>
+        </div>
+        <div class="vs-sample-time-row">
+          <button type="button" class="vs-sample-time-box" id="vsFormStartField" onclick="vsTimePickerOpen('start')">
+            <small>Start</small><strong><span id="vsFormStartLabel">9:00 AM</span></strong><em>▾</em>
+          </button>
+          <div class="vs-sample-time-arrow">→</div>
+          <button type="button" class="vs-sample-time-box" id="vsFormEndField" onclick="vsTimePickerOpen('end')">
+            <small>End</small><strong><span id="vsFormEndLabel">11:00 AM</span></strong><em>▾</em>
+          </button>
+          <input type="hidden" id="vsFormStart" value="09:00">
+          <input type="hidden" id="vsFormEnd" value="11:00">
+        </div>
+      </section>
+
+      <section class="vs-sample-card">
+        <div class="vs-sample-card-title"><span>⚙️</span> Session Settings</div>
+        <div class="vs-sample-two-col">
+          <div class="vs-sample-counter-card">
+            <div class="vs-sample-counter-label">Players <small>2–20</small></div>
+            <div class="vs-stepper vs-sample-stepper">
+              <button class="vs-stepper-btn" onclick="vaultSlotsAdjustMax(-1)">−</button>
+              <div class="vs-stepper-value" id="vsFormMaxValue">8</div>
+              <button class="vs-stepper-btn" onclick="vaultSlotsAdjustMax(1)">+</button>
+            </div>
+          </div>
+          <div class="vs-sample-counter-card">
+            <div class="vs-sample-counter-label">Courts <small>Session</small></div>
+            <div class="vs-stepper vs-sample-stepper">
+              <button class="vs-stepper-btn" onclick="vaultSlotsAdjustCourts(-1)">−</button>
+              <div class="vs-stepper-value" id="vsFormCourtValue">1</div>
+              <button class="vs-stepper-btn" onclick="vaultSlotsAdjustCourts(1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vs-sample-field">
+          <label>Mode</label>
+          <div class="vs-segmented vs-sample-segment" id="vsFormSessionModePills">
+            <div class="vs-segmented-thumb"></div>
+            <button class="vs-pill vs-pill-active" data-val="round" onclick="_vsFormSelectSessionMode('round')">Round</button>
+            <button class="vs-pill" data-val="rolling" onclick="_vsFormSelectSessionMode('rolling')">Rolling</button>
+          </div>
+        </div>
+
+        <div class="vs-sample-field">
+          <label>Gender</label>
+          <div class="vs-segmented vs-sample-segment vs-sample-three" id="vsFormGenderPills">
+            <div class="vs-segmented-thumb"></div>
+            <button class="vs-pill" data-val="Male" onclick="_vsFormSelectGender('Male')">♂ Male</button>
+            <button class="vs-pill" data-val="Female" onclick="_vsFormSelectGender('Female')">♀ Female</button>
+            <button class="vs-pill vs-pill-active" data-val="all" onclick="_vsFormSelectGender('all')">👥 Both</button>
+          </div>
+        </div>
+
+        <div class="vs-sample-field vs-sample-last">
+          <label>Minimum Rating</label>
+          <div class="vs-segmented vs-sample-segment vs-sample-four" id="vsFormRatingPills">
+            <div class="vs-segmented-thumb"></div>
+            <button class="vs-pill vs-pill-active" data-val="0" onclick="_vsFormSelectRating('0')">Any</button>
+            <button class="vs-pill" data-val="2" onclick="_vsFormSelectRating('2')">2.0+</button>
+            <button class="vs-pill" data-val="3" onclick="_vsFormSelectRating('3')">3.0+</button>
+            <button class="vs-pill" data-val="4" onclick="_vsFormSelectRating('4')">4.0+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="vs-sample-card">
+        <div class="vs-sample-card-title-row">
+          <div class="vs-sample-card-title"><span>👥</span> Players</div>
+          <button type="button" class="vs-sample-add-btn" onclick="vaultSlotsAddPlayersBeforePosting()">+ Add</button>
+        </div>
+        <div id="vsInitialPlayersBox" class="vs-initial-players-box vs-sample-player-box">__INITIAL_PLAYERS__</div>
+      </section>
+
+      <section class="vs-sample-card vs-sample-schedule-card">
+        <div class="vs-sample-card-title"><span>⏰</span> Schedule</div>
+        <div class="vs-sample-field vs-sample-last">
+          <label>Schedule Post At</label>
+          <input type="datetime-local" id="vsFormScheduledPostAt" class="vs-sample-input" value="__SCHEDULE_VALUE__">
+          <p class="vs-sample-hint">Players can see and join only after this time.</p>
+        </div>
+      </section>
+
+      <section class="vs-sample-card">
+        <div class="vs-sample-card-title"><span>📢</span> Publish</div>
+        <div class="vs-sample-field vs-sample-last">
+          <label>Visibility</label>
+          <div class="vs-segmented vs-sample-segment" id="vsFormVisibilityCards">
+            <div class="vs-segmented-thumb"></div>
+            <button class="vs-pill" data-val="public" onclick="_vsFormSelectVisibility('public')">🌐 Public</button>
+            <button class="vs-pill vs-pill-active" data-val="private" onclick="_vsFormSelectVisibility('private')">🔒 Private</button>
+          </div>
+          <p class="vs-sample-hint" id="vsFormVisibilityHint">Only club players can see and join</p>
+        </div>
+      </section>
+
+      <div id="vsFormFeedback" class="vs-form-feedback"></div>
+      <div class="vs-post-actions-sticky vs-sample-actions">
+        <button class="vs-btn vs-btn-primary vs-btn-schedule" onclick="vaultSlotsSubmitNewSlot('scheduled')">Schedule</button>
+        <button class="vs-btn vs-btn-post" onclick="vaultSlotsSubmitNewSlot('posted')">Post Now</button>
+        <button class="vs-btn vs-btn-primary vs-btn-save" onclick="vaultSlotsSubmitNewSlot()">Save</button>
+      </div>
+    </div>
+  </template>
+
+
+
+  <!-- ================================ -->
+
+  <!--   VAULT: MODIFY PAGE             -->
+
+  <!-- ================================ -->
+
+  <div id="vaultModifyPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="modifyPlayers">✏️ Modify Players</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <!-- Filter row -->
+      <div class="vm-filter-row">
+        <select id="vmFilterGender" class="vm-filter-select" onchange="vaultModifyFilter()">
+          <option value="" data-i18n="genderAll">All</option>
+          <option value="Male" data-i18n="genderMale">Male</option>
+          <option value="Female" data-i18n="genderFemale">Female</option>
+        </select>
+        <button class="vault-sync-btn" onclick="vaultRenderModify()">↻</button>
+      </div>
+      <!-- Search -->
+      <div class="vm-search-wrap">
+        <span class="vm-search-icon">🔍</span>
+        <input id="vmSearchInput" class="vm-search-input" type="text" placeholder="Search players…" data-i18n-placeholder="searchPlayers" oninput="vaultModifyFilter()">
+      </div>
+      <!-- Count + list -->
+      <div class="vm-count-row">
+        <span id="vmPlayerCount" class="vm-count-badge"></span>
+      </div>
+      <div id="vaultModifyList" class="vm-player-list"></div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT MODIFY: EDIT MODAL       -->
+
+  <!-- ================================ -->
+
+  <div id="vmEditModal" class="vm-modal-backdrop" onclick="vmCloseEditModal(event)">
+    <div class="vm-modal-sheet">
+      <div class="vm-modal-handle"></div>
+      <div class="vm-modal-title" data-i18n="editPlayer">Edit Player</div>
+      <input type="hidden" id="vmEditPlayerId">
+      <input type="hidden" id="vmEditUserAccountId">
+      <div class="vm-field-group">
+        <label class="vm-field-label" data-i18n="nickname">Nickname</label>
+        <input id="vmEditName" class="vm-field-input" type="text" placeholder="Player name">
+      </div>
+      <div class="vm-field-row">
+        <div class="vm-field-group" style="flex:1">
+          <label class="vm-field-label" data-i18n="gender">Gender</label>
+          <select id="vmEditGender" class="vm-field-input">
+            <option value="Male" data-i18n="genderMale">Male</option>
+            <option value="Female" data-i18n="genderFemale">Female</option>
+          </select>
+        </div>
+        <div class="vm-field-group" style="flex:1">
+          <label class="vm-field-label" data-i18n="rating">Rating</label>
+          <input id="vmEditRating" class="vm-field-input" type="number" step="0.1" min="1.0" max="5.0" placeholder="1.0">
+        </div>
+      </div>
+      <div class="vm-field-row">
+        <div class="vm-field-group" style="flex:1">
+          <label class="vm-field-label" data-i18n="wins">Wins</label>
+          <input id="vmEditWins" class="vm-field-input" type="number" min="0" placeholder="0">
+        </div>
+        <div class="vm-field-group" style="flex:1">
+          <label class="vm-field-label" data-i18n="losses">Losses</label>
+          <input id="vmEditLosses" class="vm-field-input" type="number" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="vm-field-group">
+        <label class="vm-field-label" data-i18n="userID">User ID</label>
+        <input id="vmEditUserId" class="vm-field-input" type="text" placeholder="user_id" autocapitalize="none">
+      </div>
+      <div class="vm-field-group">
+        <label class="vm-field-label" data-i18n="passwordBlank">Password (leave blank to keep)</label>
+        <input id="vmEditPassword" class="vm-field-input" type="text" placeholder="••••••••">
+      </div>
+      <div id="vmEditFeedback" style="font-size:0.8rem;min-height:18px;margin-bottom:8px"></div>
+      <div class="vm-modal-actions">
+        <button class="vm-action-btn vm-ghost" onclick="vmCloseEditModal()" data-i18n="cancel">Cancel</button>
+        <button class="vm-action-btn vm-accent" onclick="vmSaveEdit()" data-i18n="save">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT: REQUESTS PAGE           -->
+
+  <!-- ================================ -->
+
+  <div id="vaultRequestsPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="joinRequests">🔔 Join Requests</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <div class="vault-sync-row">
+        <span class="vault-sync-text"></span>
+        <button class="vault-sync-btn" onclick="vaultLoadRequests()" data-i18n="refresh">↻ Refresh</button>
+      </div>
+      <div id="vaultRequestsList" class="vault-requests-list">
+        <div class="profile-sessions-loading" data-i18n="loadingRequests">Loading requests...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================ -->
+
+  <!--   VAULT: CLUB MGMT PAGE          -->
+
+  <!-- ================================ -->
+
+  <div id="vaultClubMgmtPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="deleteClub">🗑️ Delete Club</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+
+  <!-- action tiles — hidden -->
+
+  <div class="vault-tile-grid" style="margin-bottom:14px;display:none;">
+    <div class="vault-tile vt-register" data-tile-color="1" onclick="clubMgmtShowPanel('connect')" style="min-height:70px;">
+      <div class="vt-icon">🔗</div>
+      <div class="vt-text">
+        <div class="vt-name" data-i18n="connectClub">Connect</div>
+        <div class="vt-sub" data-i18n="joinAClub">join a club</div>
+      </div>
+    </div>
+    <div class="vault-tile vt-modify" data-tile-color="2" onclick="clubMgmtShowPanel('create')" style="min-height:70px;">
+      <div class="vt-icon">➕</div>
+      <div class="vt-text">
+        <div class="vt-name" data-i18n="createClub">Create</div>
+        <div class="vt-sub" data-i18n="newClub">new club</div>
+      </div>
+    </div>
+    <div class="vault-tile vt-requests" data-tile-color="3" onclick="clubMgmtShowPanel('delete')" style="min-height:70px;display:none;">
+      <div class="vt-icon">🗑️</div>
+      <div class="vt-text">
+        <div class="vt-name" data-i18n="deleteClub">Delete</div>
+        <div class="vt-sub" data-i18n="removeClub">remove club</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONNECT PANEL -->
+
+  <div id="clubMgmtConnectPanel" style="display:none;">
+    <div class="vault-club-card" id="clubLoginCard">
+      <div id="clubLoggedInState" style="display:none">
+        <div class="vault-club-connected">
+          <div class="vault-club-left">
+            <div class="vault-status-dot" id="clubLoginDot"></div>
+            <div>
+              <div class="vault-club-name" id="clubLoginName"></div>
+              <span class="vault-club-role" id="clubLoginRole"></span>
+            </div>
+          </div>
+          <button class="vault-change-btn" onclick="clubLoginSwitch()" data-i18n="change">Change</button>
+        </div>
+      </div>
+      <div id="clubLoginForm">
+        <div class="vault-section-label" data-i18n="connectToClub">&#127970; Connect to Club</div>
+        <div class="club-row">
+          <select id="sbClubSelectViewer" class="club-select" style="flex:1">
+            <option value="">&#8212; Select club &#8212;</option>
+          </select>
+        </div>
+        <div class="club-row" style="margin-top:8px">
+          <input type="password" id="sbPasswordInputViewer" class="club-input"
+                 placeholder="Admin password"
+                 onkeydown="if(event.key==='Enter')viewerJoinClub()">
+          <button class="btn-save" onclick="viewerJoinClub()" data-i18n="joinBtn">Join</button>
+        </div>
+        <div id="sbClubFeedbackViewer" style="font-size:0.78rem;margin-top:4px;color:var(--red)"></div>
+      </div>
+    </div>
+    <div class="vault-sync-row">
+      <span id="sbSyncStatus" class="vault-sync-text"></span>
+      <button class="vault-sync-btn" onclick="syncToLocal()" data-i18n="sync">&#8635; Sync</button>
+    </div>
+  </div>
+
+  <!-- CREATE PANEL -->
+
+  <div id="clubMgmtCreatePanel" style="display:none;">
+    <div class="settings-card" style="padding:14px;">
+      <div class="manage-section-title" data-i18n="createNewClub">Create New Club</div>
+      <div class="club-row">
+        <input type="text" id="sbNewClubName" class="club-input" placeholder="Club name">
+      </div>
+      <div class="club-row" style="margin-top:6px">
+        <input type="password" id="sbNewClubSelectPw" class="club-input" data-i18n-placeholder="organiserPasswordPh" placeholder="Organiser password">
+      </div>
+      <div class="club-row" style="margin-top:6px">
+        <input type="password" id="sbNewClubAdminPw" class="club-input" data-i18n-placeholder="enterAdminPasswordPh" placeholder="Admin password">
+      </div>
+      <button class="btn-save" style="width:100%;margin-top:8px" onclick="clubCreateSendOtp()" data-i18n="createClub">Create Club</button>
+      <div id="clubCreateFeedback" style="font-size:0.78rem;margin-top:6px"></div>
+    </div>
+  </div>
+
+  <!-- DELETE PANEL -->
+
+  <div id="clubMgmtDeletePanel" style="display:block;">
+    <div class="settings-card" style="padding:14px;">
+      <div class="manage-section-title manage-section-danger" data-i18n="deleteClub">Delete Club</div>
+      <!-- Club selector hidden — uses currently connected club -->
+      <select id="sbDeleteClubSelect" style="display:none;">
+        <option value="">— Select club to delete —</option>
+      </select>
+      <div class="club-row" style="margin-top:8px">
+        <input type="password" id="sbDeleteAdminPw" class="club-input"
+               placeholder="Admin password"
+               onkeydown="if(event.key==='Enter')clubDeleteWithPassword()">
+        <button class="btn-clear" onclick="clubDeleteWithPassword()" data-i18n="delete">Delete</button>
+      </div>
+      <div id="clubDeleteFeedback" style="font-size:0.78rem;margin-top:6px"></div>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- ── ORGANISER CLUB MANAGEMENT PAGE ── -->
+
+  <div id="orgClubMgmtPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="roundOrganiser">🏆 Club — Round Organiser</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+
+  <!-- Club status card -->
+
+  <div class="vault-club-card" id="orgClubLoginCard">
+    <div id="orgClubLoggedInState" style="display:none">
+      <div class="vault-club-connected">
+        <div class="vault-club-left">
+          <div class="vault-status-dot" id="orgClubLoginDot"></div>
+          <div>
+            <div class="vault-club-name" id="orgClubLoginName"></div>
+            <span class="vault-club-role" id="orgClubLoginRole"></span>
+          </div>
+        </div>
+        <button class="vault-change-btn" onclick="orgClubLoginSwitch()" data-i18n="change">Change</button>
+      </div>
+    </div>
+    <div id="orgClubLoginForm">
+      <div class="vault-section-label" data-i18n="connectToClubBadminton">🏸 Connect to Club</div>
+      <div class="club-row">
+        <select id="orgClubSelect" class="club-select" style="flex:1">
+          <option value="">&#8212; Select club &#8212;</option>
+        </select>
+      </div>
+      <div class="club-row" style="margin-top:8px">
+        <input type="password" id="orgClubPassword" class="club-input"
+               placeholder="Admin password"
+               onkeydown="if(event.key==='Enter')orgJoinClub()">
+        <button class="btn-save" onclick="orgJoinClub()" data-i18n="joinBtn">Join</button>
+      </div>
+      <div id="orgClubFeedback" style="font-size:0.78rem;margin-top:4px;color:var(--red)"></div>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- vaultPage kept as minimal stub for organiser mode -->
+
+  <div id="vaultPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title">&#9889; Vault</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="vault-wrap">
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:0.9rem;">
+        <span data-i18n="useAdminMode">Use Vault Manager mode for full admin access.</span>
+      </div>
+    </div>
+  </div><!-- vaultPage -->
+
+ <div id="playersPage" class="page" style="display:none">
+  <div class="sheet-header">
+      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true">Done</button>
+      <span class="sheet-title" data-i18n="players">👥 Players</span>
+      <button class="sheet-done-btn" id="playersBackBtn" onclick="navBack()">Done</button>
+    </div>
+
+  <!-- ── Player action cards ── -->
+  <div class="players-action-row">
+
+    <div class="home-tile" data-tile-color="2" onclick="newImportShowModal()">
+      <div class="home-tile-icon tile-players">👥</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" data-i18n="addPlayers">Add Players</div>
+        <div class="home-tile-sub" data-i18n="selectFromSaved">From saved list</div>
+      </div>
+    </div>
+
+    <div class="home-tile" data-tile-color="1" onclick="window._regNavSource='playersPage';homeGo('vaultRegisterPage',null);">
+      <div class="home-tile-icon" style="background:rgba(45,206,137,0.15);">✨</div>
+      <div class="home-tile-text">
+        <div class="home-tile-name" style="color:#2dce89;" data-i18n="newPlayer">New Player</div>
+        <div class="home-tile-sub" data-i18n="registerToClub">Register to club</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card" id="playerListCard">
+    <div id="playerList" class="player-list"></div>
+  </div>
+
+</div>
+
+<!-- FIXED PAIRS PAGE -->
+
+<div id="fixedPairsPage" class="page" style="display:none;">
+  <div class="sheet-header">
+      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true">Done</button>
+      <span class="sheet-title" data-i18n="fixedPairs">🤝 Fixed Pairs</span>
+      <button class="sheet-done-btn" id="fixedPairsBackBtn" onclick="navBack()">Done</button>
+    </div>
+
+  <div class="card" id="fixedPairsCard">
+
+<div class="fp-picker-row">
+  <div class="fp-picker-field" id="fpField1" onclick="fpTogglePicker(1)">
+    <div class="fp-avatar-placeholder" id="fpAvatar1"></div>
+    <span class="fp-label" id="fpLabel1" data-i18n="player1">Player 1</span>
+    <span class="fp-chevron">▼</span>
+  </div>
+  <div class="fp-picker-field" id="fpField2" onclick="fpTogglePicker(2)">
+    <div class="fp-avatar-placeholder" id="fpAvatar2"></div>
+    <span class="fp-label" id="fpLabel2" data-i18n="player2">Player 2</span>
+    <span class="fp-chevron">▼</span>
+  </div>
+</div>
+<div id="fpDropdown1" class="fp-dropdown" style="display:none"></div>
+<div id="fpDropdown2" class="fp-dropdown" style="display:none"></div>
+
+<button id="fpAddBtn" class="schedule-btn disabled-btn" onclick="modifyFixedPair()" data-i18n="add" disabled>Add</button>
+
+<div id="fixed-pair-list" class="fixed-pairs-list"></div>
+
+  </div>
+</div>
+
+  <!-- ============================= -->
+
+  <!--          ROUNDS PAGE          -->
+
+  <!-- ============================= -->
+
+  <div id="roundsPage" class="page" style="display:none;">
+
+<!-- Single tight top bar -->
+
+<div class="rounds-top-bar">
+  <button class="rtb-back" onclick="showHomeScreen()" data-i18n="backHome">‹ Home</button>
+  <button class="rtb-settings" onclick="toggleRoundSettings()" aria-label="Settings" style="display:none;">⚙️</button>
+  <button class="rtb-settings" onclick="showRoundHistory()" aria-label="Past Rounds">🕓</button>
+  <div class="rtb-spacer"></div>
+  <div class="rtb-live" id="sessionLiveBar" style="display:none;">
+    <div class="rtb-dot"></div>
+    <span class="rtb-live-txt">LIVE</span>
+    <button class="rtb-end" id="endBtn" onclick="endSession()" data-i18n="endBtn">End</button>
+  </div>
+</div>
+
+<div class="title-card">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="roundTitle">R</div>
+    <button class="rtb-shuffle" id="roundShufle" onclick="RefreshRound()" aria-label="Mix round" disabled>🎲</button>
+  </div>
+  <!-- pills hidden but functions kept -->
+  <span class="mode-banner-badge ready-mode" id="roundModeBadge" style="display:none;">READY</span>
+  <img id="lockToggleBtn" class="lock-icon" src="lock.png?v=164" alt="Lock" style="display:none;" />
+</div>
+
+<div id="game-results"></div>
+
+<div class="action-card">
+  <button id="nextBtn" class="action right primary start-state" onclick="toggleRound()">
+    <span id="btnText">Start</span>
+    <span class="icon"> ▶</span>
+  </button>
+  <button id="stopRoundBtn" class="stop-round-btn" onclick="undoStartRound()" style="display:none;">⏹</button>
+</div>
+
+<div id="resting-panel"></div>
+
+<!-- Round Settings Sheet (bottom overlay) -->
+
+<div class="bottom-sheet-overlay" id="roundSettingsOverlay" onclick="closeRoundSettings(event)">
+  <div class="bottom-sheet-panel" id="roundSettingsPanel">
+    <div class="bottom-sheet-handle"></div>
+    <div class="bottom-sheet-title-bar">
+      <div class="bottom-sheet-title" data-i18n="settings">⚙️ Round Settings</div>
+      <button class="bottom-sheet-x" onclick="closeRoundSettings()">✕</button>
+    </div>
+  <div id="roundSettingsBody">
+
+<!-- Courts Row -->
+
+<div class="setting-row">
+  <label class="setting-label" data-i18n="courts">Courts</label>
+  <div class="counter">
+    <button class="circle-btn" id="courtMinus">−</button>
+    <span id="num-courts">1</span>
+    <button class="circle-btn" id="courtPlus">+</button>
+  </div>
+</div>
+
+<div class="setting-divider"></div>
+
+<!-- Mode Toggle Row -->
+
+<div class="setting-row">
+  <label class="setting-label">
+    <span data-i18n="markWinner">Mark Winner</span>
+  </label>
+  <label class="switch">
+    <input type="checkbox" id="modeToggle">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="game-generation-block round-settings-game-generation">
+  <div class="game-generation-title" data-i18n="gameGeneration">Game Generation</div>
+  <label class="game-mode-radio-row">
+    <input type="radio" name="roundGameGenerationMode" value="standard" onchange="setGameGenerationMode(this.value, true)">
+    <span data-i18n="standardGames">Standard Games</span>
+  </label>
+  <label class="game-mode-radio-row">
+    <input type="radio" name="roundGameGenerationMode" value="unique" onchange="setGameGenerationMode(this.value, true)">
+    <span data-i18n="uniqueGamesPlain">Unique Games</span>
+  </label>
+  <label class="game-mode-radio-row">
+    <input type="radio" name="roundGameGenerationMode" value="balanced" onchange="setGameGenerationMode(this.value, true)">
+    <span data-i18n="balancedGames">Balanced Games</span>
+  </label>
+</div>
+
+<!-- Quick nav tiles -->
+
+<div class="rounds-nav-tiles">
+  <div class="rounds-nav-tile" data-tile-color="1" onclick="roundsGoPlayers()">
+    <div class="rounds-nav-icon tile-players">👥</div>
+    <div class="rounds-nav-name" data-i18n="players">Players</div>
+    <div class="rounds-nav-sub" id="gearSubPlayers" data-i18n="addRemove">Add · Remove</div>
+  </div>
+  <div class="rounds-nav-tile" data-tile-color="2" onclick="roundsGoFixedPairs()">
+    <div class="rounds-nav-icon tile-pairs">🤝</div>
+    <div class="rounds-nav-name" data-i18n="fixedPairs">Fixed Pairs</div>
+    <div class="rounds-nav-sub" id="gearSubPairs">Optional</div>
+  </div>
+</div>
+
+  </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--      ROUND HISTORY PAGE       -->
+
+  <!-- ============================= -->
+
+  <!-- Round History Sheet (bottom overlay) -->
+
+<div class="bottom-sheet-overlay" id="roundHistoryOverlay" onclick="closeRoundHistory(event)" style="display:none;">
+  <div class="bottom-sheet-panel">
+    <div class="bottom-sheet-handle"></div>
+    <div class="bottom-sheet-title-bar">
+      <div class="bottom-sheet-title">🕓 Past Rounds</div>
+      <button class="bottom-sheet-x" onclick="closeRoundHistory()">✕</button>
+    </div>
+    <div class="bottom-sheet-content" id="roundHistoryContainer"></div>
+  </div>
+</div>
+
+  <!-- ============================= -->
+
+  <!--      ROLLING MATCHES PAGE      -->
+
+  <!-- ============================= -->
+
+  <div id="mbmPage" class="page" style="display:none;">
+
+    <div class="rounds-top-bar">
+      <button class="rtb-back" onclick="showHomeScreen()">‹ Home</button>
+      <button class="rtb-settings" onclick="showMbmHistory()" aria-label="Past Matches">🕓</button>
+      <div class="rtb-spacer"></div>
+      <div class="rtb-live" id="mbmLiveBar" style="display:none;">
+        <div class="rtb-dot"></div>
+        <span class="rtb-live-txt">LIVE</span>
+        <button class="rtb-end" id="mbmEndBtn" onclick="endSession()">End</button>
+      </div>
+    </div>
+
+    <div class="title-card">
+      <div style="display:flex;align-items:center;gap:10px;justify-content:space-between;width:100%;">
+        <div id="mbmRoundTitle">🔄 Rolling Matches</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="mbm-court-adj" onclick="mbmAdjCourts(-1)">−</button>
+          <span id="mbmCourtCount" style="min-width:18px;text-align:center;font-weight:700;">1</span>
+          <button class="mbm-court-adj" onclick="mbmAdjCourts(1)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mbm-game-results"></div>
+
+    <!-- Waiting queue -->
+    <div id="mbmWaitingPanel" class="mbm-waiting-panel" style="display:none;">
+      <div class="mbm-waiting-title">⏳ Waiting</div>
+      <div id="mbmWaitingList" class="mbm-waiting-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--         SUMMARY PAGE          -->
+
+  <!-- ============================= -->
+
+  <div id="summaryPage" class="page" style="display:none;">
+  <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="summary">📊 Summary</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div class="exp_btn" onclick="exportBRR2HTML()" data-i18n="exporthtml">📄</div>
+    <div id="reportContainer"></div>
+    <div id="export"></div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--        DASHBOARD PAGE         -->
+
+  <!-- ============================= -->
+
+  <div id="dashboardPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="dashboard">📡 Dashboard</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div id="dashboardContainer" class="dashboard-container">
+      <div class="dashboard-loading"><div class="help-spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- VIEWER PAGE — session detail -->
+
+  <div id="viewerPage" class="page" style="display:none;">
+    <div class="scs-topbar scs-topbar-page">
+      <div class="scs-topbar-center">
+        <div class="scs-topbar-icon-wrap">📡</div>
+        <div class="scs-topbar-text">
+          <div class="scs-topbar-title" id="viewerHeaderTitle">Viewer</div>
+          <div class="scs-topbar-sub" id="viewerHeaderNickname">Live Session</div>
+        </div>
+      </div>
+      <div class="scs-topbar-right">
+        <button class="scs-topbar-x" onclick="viewerGoBack()">✕</button>
+      </div>
+    </div>
+    <div id="viewerResults"></div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--          MY CARD PAGE         -->
+
+  <!-- ============================= -->
+
+  <div id="myCardPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="myCard">My Card</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+
+<!-- Not logged in state -->
+
+<div id="myCardEmpty_page" style="display:none;">
+  <div class="dash-empty">
+    <div class="dash-empty-icon">👤</div>
+    <p style="font-weight:700;margin-bottom:6px" data-i18n="signInStats">Sign in to view your stats</p>
+    <p style="font-size:0.78rem;color:var(--text-dim);margin-top:4px" data-i18n="trackStats">Track your ratings, wins and match history.</p>
+    <button class="btn-save" style="margin-top:16px" onclick="authShowScreen('login')" data-i18n="login">Login</button>
+  </div>
+</div>
+
+<!-- Profile content -->
+
+<div id="myCardContent_page" style="display:none;padding:20px 16px;text-align:center;">
+  <div style="font-size:2rem;margin-bottom:10px;">👤</div>
+  <div style="font-size:0.9rem;color:var(--muted);">Your stats are shown on the home screen.</div>
+  <button class="btn-save" style="margin-top:16px" onclick="showHomeScreen()">← Back to Home</button>
+</div>
+
+  </div>
+
+  <!-- ============================= -->
+  <!--       RECENT MATCHES PAGE      -->
+  <!-- ============================= -->
+
+  <div id="recentMatchesPage" class="page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title">🏸 Recent Matches</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div id="mcMatches" style="padding:0 16px 32px;">
+      <div class="profile-sessions-loading" data-i18n="loading">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+
+  <!--           HELP PAGE           -->
+
+  <!-- ============================= -->
+
+  <div id="helpPage" class="page" style="display:none;">
+  <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title" data-i18n="help">❓ Help</span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+
+<!-- Search bar -->
+
+<div class="help-search-wrap">
+  <span class="help-search-icon">🔍</span>
+  <input type="text" id="helpSearch" class="help-search-input"
+    placeholder="Search help..."
+    oninput="helpSearch(this.value)">
+</div>
+
+<!-- Section navigation -->
+
+<div id="helpNav" class="help-nav"></div>
+
+<!-- Content -->
+
+<div id="helpContainer" class="help-container"></div>
+
+  </div>
+
+  <!-- ============================= -->
+
+  <!--         IMPORT MODAL          -->
+
+  <!-- ============================= -->
+
+  <div id="newImportModal"
+       class="newImport-modal"
+       style="display:none;"
+       onclick="if(event.target===this)newImportHideModal()">
+    <div class="newImport-container">
+
+  <div class="newImport-selected-section">
+    <div class="newImport-selected-header">
+      <strong>Selected (<span id="newImportSelectedCount">0</span>)</strong>
+    </div>
+    <div id="newImportSelectedCards"
+         class="newImport-cards-container newImport-selected-container">
+    </div>
+    <div class="newImport-selected-actions">
+      <button class="newImport-clear-btn" onclick="newImportClearSelected()" data-i18n="clearBtn">Clear</button>
+    </div>
+    <div class="newImport-footer">
+      <button class="newImport-ok-btn" id="newImportAddBtn" onclick="addPlayersFromInputUI(false)" data-i18n="add">Add</button>
+      <button class="newImport-replace-btn" id="newImportReplaceBtn" onclick="addPlayersFromInputUI(true)" style="display:none;" data-i18n="replaceBtn">Replace</button>
+      <button class="newImport-cancel-btn" onclick="newImportHideModal()" data-i18n="cancel">Cancel</button>
+    </div>
+  </div>
+
+  <div class="newImport-select-section">
+    <!-- Hidden elements kept for JS compatibility -->
+    <div id="newImportSelectCards" style="display:none"></div>
+    <input id="newImportSearch" style="display:none">
+    <div id="newImportClearHistoryBtn" style="display:none"></div>
+    <div id="newImportClearFavoritesBtn" style="display:none"></div>
+    <div id="newImportAddplayersBtn" style="display:none"></div>
+    <div id="newImportFavoritesBtn" style="display:none"></div>
+    <div id="newImportHistoryBtn" style="display:none"></div>
+    <!-- Type and Browse shown directly -->
+    <div id="newImportAddPlayersSection">
+
+  <!-- Add Players sub-tabs: Browse | Favorites | Type -->
+
+  <div class="newImport-subtabs addplayers-subtabs">
+    <button class="newImport-subtab-btn active" id="addPlayersBrowseBtn"
+            onclick="addPlayersShowTab('browse')" data-i18n="browseBtn">🔍 Browse</button>
+    <button class="newImport-subtab-btn" id="addPlayersFavBtn"
+            onclick="addPlayersShowTab('favorites')" data-i18n="favoritesTab">⭐ Favorites</button>
+    <button class="newImport-subtab-btn" id="addPlayersTypeBtn"
+            onclick="addPlayersShowTab('type')" data-i18n="typeTab">✏️ Type</button>
+  </div>
+
+  <!-- BROWSE tab -->
+
+  <div id="addPlayersBrowsePanel" style="display:block">
+    <div class="addplayer-row" style="gap:8px">
+      <input type="text" id="addPlayersBrowseSearch" class="addplayer-setname-input"
+             placeholder="Search..." data-i18n-placeholder="searchDot" oninput="addPlayersBrowseFilter()"
+             style="flex:1;margin:0">
+    </div>
+    <div id="addPlayersBrowseList" class="addplayers-browse-list"></div>
+  </div>
+
+  <!-- FAVORITES tab -->
+
+  <div id="addPlayersFavPanel" style="display:none">
+    <div id="newImportFavSetsContainer"></div>
+    <div id="newImportFavList" class="newImport-cards-container"></div>
+  </div>
+
+  <!-- TYPE tab -->
+
+  <div id="addPlayersTypePanel" style="display:none">
+    <textarea id="players-names" rows="3" placeholder="John&#10;Mike&#10;Sarah" style="width:100%;margin-bottom:8px"></textarea>
+    <div class="addplayer-row">
+      <select id="player-gender" class="addplayer-select">
+        <option value="Male" data-i18n="genderMale">Male</option>
+        <option value="Female" data-i18n="genderFemale">Female</option>
+      </select>
+    </div>
+    <div class="addplayer-row">
+      <button class="newImport-ok-btn addplayer-btn" onclick="addPlayer()">
+        <span data-i18n="addPlayer">Add Player</span> &nbsp;<span id="addPlayerFavToggle" class="addplayer-fav-toggle-icon" onclick="event.stopPropagation(); newImportToggleAddFav()">☆</span>
+      </button>
+    </div>
+    <div id="addPlayerFeedback" style="display:none;font-size:0.8rem;color:#e6a817;padding:4px 2px;"></div>
+    <div id="newImportFavoriteSetRow" style="display:none">
+      <div class="addplayer-setname-row">
+        <input id="newImportSetName" type="text" class="addplayer-setname-input" placeholder="Set name e.g. Monday Group">
+      </div>
+      <div class="addplayer-setname-actions">
+        <button class="newImport-ok-btn addplayer-btn" onclick="newImportSaveFavoriteSet()" data-i18n="saveSet">Save Set</button>
+        <button class="newImport-cancel-btn addplayer-btn" onclick="newImportToggleAddFav()" data-i18n="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Player Stats Modal -->
+
+<div id="playerStatsModal" class="stats-modal-overlay" style="display:none" onclick="if(event.target===this)closePlayerStats()">
+  <div class="stats-modal">
+    <button class="stats-close-btn" onclick="closePlayerStats()">✕</button>
+    <div id="playerStatsContent"></div>
+  </div>
+</div>
+
+<!-- ============================= -->
+
+<!--       PROFILE DRAWER          -->
+
+<!-- ============================= -->
+
+<div id="profileOverlay" class="profile-overlay hidden" onclick="closeProfileDrawer()"></div>
+<div id="profileDrawer" class="profile-drawer">
+
+  <!-- Player Picker (shown when no player selected) -->
+
+  <div id="profilePicker" class="profile-picker">
+    <!-- Player list view -->
+    <div id="pickerListView">
+      <div class="profile-drawer-header">
+        <span class="profile-drawer-title" data-i18n="whoAreYou">Who are you?</span>
+        <button class="profile-drawer-close" onclick="closeProfileDrawer()">✕</button>
+      </div>
+      <p class="profile-picker-hint" data-i18n="selectNameProfile">Select your name to personalise your profile</p>
+      <div class="profile-picker-search-wrap">
+        <input type="text" id="profileSearch" class="profile-picker-search"
+          placeholder="🔍 Search player..." data-i18n-placeholder="searchPlayerDot"
+          oninput="filterPickerList(this.value)">
+      </div>
+      <div id="profilePickerList" class="profile-picker-list"></div>
+    </div>
+    <!-- PIN screen view (shown instead of list) -->
+    <div id="pinScreenView" style="display:none;"></div>
+  </div>
+
+  <!-- Profile Card (shown when player selected) -->
+
+  <div id="profileCard" class="profile-card-view" style="display:none;">
+    <div class="profile-drawer-header">
+      <span class="profile-drawer-title" data-i18n="myProfile">My Profile</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="profile-switch-btn" onclick="switchProfilePlayer()" data-i18n="switchBtn">Switch</button>
+        <button class="profile-switch-btn" style="color:var(--red)" onclick="authDoLogout()" data-i18n="logout">Logout</button>
+        <button class="profile-drawer-close" onclick="closeProfileDrawer()">✕</button>
+      </div>
+    </div>
+    </div>
+
+<!-- Avatar + Name + Ratings -->
+
+<div class="profile-identity">
+  <img id="pcAvatar" src="male.png?v=164" class="profile-avatar">
+  <div class="profile-identity-info">
+    <div class="profile-name-row">
+      <div id="pcName" class="profile-name"></div>
+      <div class="profile-ratings-inline">
+        <div class="inline-rating">
+          <span class="inline-rating-label" data-i18n="globalRating">Global Rating</span>
+          <span id="pcRating" class="inline-rating-value global"></span>
+        </div>
+        <div class="inline-rating">
+          <span class="inline-rating-label" data-i18n="clubRating">Club Rating</span>
+          <span id="pcClubRating" class="inline-rating-value club">—</span>
+        </div>
+      </div>
+    </div>
+    <div id="pcTier" class="profile-tier"></div>
+  </div>
+</div>
+
+<!-- Stats row -->
+
+<div class="profile-stats-row">
+  <div class="profile-stat-box">
+    <div id="pcWins" class="profile-stat-value wins">—</div>
+    <div class="profile-stat-label" data-i18n="allTimeWins">All-time Wins</div>
+  </div>
+  <div class="profile-stat-divider"></div>
+  <div class="profile-stat-box">
+    <div id="pcLosses" class="profile-stat-value losses">—</div>
+    <div class="profile-stat-label" data-i18n="allTimeLosses">All-time Losses</div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- ONBOARDING OVERLAY -->
+
+  <div id="onboardingOverlay" class="onboarding-overlay" style="display:none;">
+    <div class="onboarding-card">
+      <div class="onboarding-icon">🏸</div>
+      <div class="onboarding-title" id="onboardingTitle" data-i18n="welcomeTitle">Welcome</div>
+      <div class="onboarding-msg" id="onboardingMsg"></div>
+      <button class="onboarding-btn" id="onboardingBtn" data-i18n="getStarted">Get Started</button>
+    </div>
+  </div>
+
+  <!-- PAYWALL OVERLAY -->
+
+  <div id="paywallOverlay" class="paywall-overlay" style="display:none;">
+    <div class="paywall-card">
+      <div class="paywall-icon">🏸</div>
+      <div class="paywall-title" data-i18n="clubSchedulerPro">Club Scheduler Pro</div>
+      <div class="paywall-subtitle" data-i18n="trialEnded">Your free trial has ended</div>
+
+  <div class="paywall-features">
+    <div class="paywall-feature" data-i18n="subFeature3">✓ Organiser mode — run sessions</div>
+    <div class="paywall-feature" data-i18n="subFeature4">✓ Players &amp; Fixed Pairs management</div>
+    <div class="paywall-feature" data-i18n="subFeature2">✓ Live rounds &amp; scoring</div>
+    <div class="paywall-feature" data-i18n="subFeature1">✓ Full stats &amp; session history</div>
+    <div class="paywall-feature" data-i18n="subFeature5">✓ Viewer mode — watch live scores</div>
+  </div>
+
+  <div class="paywall-price">¥500 <span>/ year</span></div>
+  <div class="paywall-note" data-i18n="lessOneShuttle">Less than one shuttle per year</div>
+
+<button class="paywall-btn-primary" onclick="subPurchase()" data-i18n="subscribeNow">Subscribe Now</button>
+<button class="paywall-btn-restore" onclick="subRestore()" data-i18n="restorePurchase">Restore Purchase</button>
+
+</div>
+
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js?v=168')
+          .then(function(reg) {
+            console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
+            // Check for updates occasionally without interrupting the current screen
+            reg.update();
+            setInterval(function() { reg.update(); }, 15 * 60 * 1000);
+            // When a new SW is waiting, activate it for the next clean app open
+            reg.addEventListener('updatefound', function() {
+              var newWorker = reg.installing;
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                }
+              });
+            });
+          })
+          .catch(function(err) { console.log('SW failed:', err); });
+
+        // Avoid forced reloads while the user is active; fresh assets load next open.
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          window.__scsUpdateReady = true;
+        });
+      });
+    }
+  </script>
+
+  </div></div></div></div><!-- close newImportModal -->
+
+  <!-- ══════════════════════════════════════════════════ -->
+
+  <!--              VAULT REPORT PAGE                      -->
+
+  <!-- ══════════════════════════════════════════════════ -->
+
+  <div id="vaultReportPage" class="page" style="display:none;position:relative;z-index:600;background:var(--bg);min-height:100vh;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title">📊 <span data-i18n="report">Report</span></span>
+      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+    </div>
+    <div style="padding:16px;">
+
+  <!-- Month selector -->
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div>
+      <div style="font-size:1rem;font-weight:700;" id="reportMonthTitle">Monthly Report</div>
+      <div style="font-size:0.75rem;color:var(--muted);" id="reportMonthSub">Current month</div>
+    </div>
+    <button id="reportGenerateBtn"
+      onclick="reportGenerate()"
+      style="background:linear-gradient(135deg,#e85d75,#c0392b);color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;">
+      ☁️ Export
+    </button>
+  </div>
+
+  <!-- Status -->
+
+  <div id="reportStatus" style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;min-height:20px;"></div>
+
+  <!-- Link -->
+
+<a id="reportLink" href="#" target="_blank"
+style="display:none;font-size:0.72rem;color:var(--accent);word-break:break-all;margin-bottom:16px;display:none;line-height:1.4;">
+</a>
+
+  <!-- Preview container — widgets rendered here -->
+
+  <div id="reportPreview" style="margin-top:8px;">
+    <div style="padding:24px;text-align:center;color:var(--muted);font-size:0.9rem;">📊 Loading report...</div>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- VAULT: REPORT PAGE 2 -->
+  <div id="vaultReport2Page" class="page" style="display:none;">
+
+    <!-- Sticky report header -->
+    <div class="r2-header">
+      <div class="r2-header-top">
+        <span class="r2-title">📊 Report</span>
+        <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+      </div>
+
+      <!-- Year row -->
+      <div class="r2-year-row">
+        <button class="r2-year-btn" onclick="r2ChangeYear(-1)">‹</button>
+        <span id="r2Year" class="r2-year-label">2026</span>
+        <button class="r2-year-btn" onclick="r2ChangeYear(1)">›</button>
+      </div>
+
+      <!-- Club pills -->
+      <div id="r2ClubPicker" class="r2-pill-row" style="display:none;"></div>
+
+      <!-- Month pills -->
+      <div id="r2Months" class="r2-pill-row"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="r2-content-wrap">
+      <div id="r2Content" style="padding-bottom:32px;">
+        <div style="padding:32px;text-align:center;color:var(--muted);">Loading...</div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+// Disable pull-to-refresh on Android Chrome PWA without blocking inner scroll
+(function() {
+  var lastY = 0;
+
+  function getScrollParent(el) {
+    while (el && el !== document.body) {
+      var style = window.getComputedStyle(el);
+      var overflow = style.overflow + style.overflowY;
+      if (/auto|scroll/.test(overflow) && el.scrollHeight > el.clientHeight) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return document.scrollingElement || document.body;
+  }
+
+  document.addEventListener('touchstart', function(e) {
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    var y = e.touches[0].clientY;
+    var scrollEl = getScrollParent(e.target);
+    var atTop = scrollEl.scrollTop <= 0;
+    var pullingDown = y > lastY;
+
+    // Only block if the scrollable container is at the very top and user pulls down
+    if (atTop && pullingDown) {
+      e.preventDefault();
+    }
+    lastY = y;
+  }, { passive: false });
+})();
+</script>
+
+  <!-- Venue Picker Modal -->
+  <div id="venuePickerOverlay" class="venue-picker-overlay" style="display:none;" onclick="vaultSlotsCloseVenuePicker(event)">
+    <div class="venue-picker-sheet" onclick="event.stopPropagation()">
+      <div class="venue-picker-header">
+        <div>
+          <div class="venue-picker-kicker">📍 SELECT VENUE</div>
+          <div class="venue-picker-title" data-i18n="chooseVenue">Choose a venue</div>
+        </div>
+        <button type="button" class="venue-picker-close" onclick="vaultSlotsCloseVenuePicker()">✕</button>
+      </div>
+      <input id="venuePickerSearch" class="venue-input venue-picker-search" type="search" placeholder="Search venue or type * to show all" data-i18n-placeholder="searchVenueWildcard" oninput="vaultSlotsRenderVenuePicker(false)">
+      <div id="venuePickerList" class="venue-picker-list"></div>
+    </div>
+  </div>
+
+</body>
+</html>

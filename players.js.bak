@@ -1,0 +1,877 @@
+/* ============================================================
+   PLAYERS TAB -- Add, edit, delete, players and fixed pairs
+   File: players.js
+   ============================================================ */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const textarea = document.getElementById("players-names");
+  if (!textarea) return;
+  // Grow on input, but never shrink below the CSS min-height (3 rows)
+  textarea.addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = this.scrollHeight + "px";
+  });
+  textarea.addEventListener("blur", function () {
+    // Reset to natural size when empty so CSS min-height takes over
+    if (!this.value.trim()) this.style.height = "";
+  });
+});
+
+/* =========================
+   GENDER HELPERS
+========================= */
+function getGenderIconByName(playerName) {
+  const player = schedulerState.allPlayers.find(p => p.name === playerName);
+  if (!player) return "❔";
+  return player.gender === "Male" ? "👨‍💼" : "🙎‍♀️";
+}
+
+function getGenderIcon(gender) {
+  return gender === "Male" ? "👨‍💼" : "🙎‍♀️";
+}
+
+function updateGenderGroups() {
+  schedulerState.malePlayers = schedulerState.allPlayers
+    .filter(p => p.gender === "Male" && p.active).map(p => p.name);
+  schedulerState.femalePlayers = schedulerState.allPlayers
+    .filter(p => p.gender === "Female" && p.active).map(p => p.name);
+}
+
+/* =========================
+   FIXED PAIRS
+========================= */
+function refreshFixedCards() {
+  const list = document.getElementById("fixed-pair-list");
+  list.innerHTML = "";
+  schedulerState.fixedPairs.forEach(([p1, p2], index) => addFixedCard(p1, p2, index));
+}
+
+function clearFixedPairsUI() {
+  // Clear the list
+  const list = document.getElementById("fixed-pair-list");
+  if (list) list.innerHTML = "";
+  // Reset picker selections
+  fpResetPickers();
+}
+
+// ── Custom picker state ──
+const fpSelected = { 1: null, 2: null };
+let fpOpenPicker = null;
+
+function fpGetImgSrc(playerName) {
+  const player = schedulerState.allPlayers.find(p => p.name === playerName);
+  return (player && player.gender === "Female") ? "female.png" : "male.png";
+}
+
+function fpGetRating(playerName) {
+  const player = schedulerState.allPlayers.find(p => p.name === playerName);
+  return player ? parseFloat(player.rating || 1).toFixed(1) : "";
+}
+
+function fpTogglePicker(n) {
+  const other = n === 1 ? 2 : 1;
+  if (fpOpenPicker === n) { fpClosePicker(n); return; }
+  fpClosePicker(other);
+  fpOpenPicker = n;
+  document.getElementById("fpField" + n).classList.add("fp-open");
+  fpRenderDropdown(n);
+  document.getElementById("fpDropdown" + n).style.display = "block";
+}
+
+function fpClosePicker(n) {
+  const field = document.getElementById("fpField" + n);
+  if (field) field.classList.remove("fp-open");
+  const dd = document.getElementById("fpDropdown" + n);
+  if (dd) dd.style.display = "none";
+  if (fpOpenPicker === n) fpOpenPicker = null;
+}
+
+function fpRenderDropdown(n) {
+  const other = n === 1 ? 2 : 1;
+  const otherSel = fpSelected[other];
+  const pairedPlayers = new Set(schedulerState.fixedPairs.flat());
+  const available = schedulerState.activeplayers.filter(p =>
+    p !== otherSel && !pairedPlayers.has(p)
+  );
+  const dd = document.getElementById("fpDropdown" + n);
+  dd.innerHTML = "";
+  const wrap = document.createElement("div");
+  wrap.className = "fp-dropdown-inner";
+  if (!available.length) {
+    wrap.innerHTML = '<div class="fp-option-empty">' + t('noPlayersAvailable') + '</div>';
+  }
+  available.forEach(name => {
+    const row = document.createElement("div");
+    row.className = "fp-option" + (fpSelected[n] === name ? " fp-highlighted" : "");
+    row.innerHTML = `
+      <img src="${fpGetImgSrc(name)}" class="fp-option-avatar">
+      <span class="fp-option-name">${name}</span>
+      <span class="fp-option-rating">★ ${fpGetRating(name)}</span>
+    `;
+    row.onclick = (e) => { e.stopPropagation(); fpSelectPlayer(n, name); };
+    wrap.appendChild(row);
+  });
+  dd.appendChild(wrap);
+}
+
+function fpSelectPlayer(n, name) {
+  fpSelected[n] = name;
+  const src   = fpGetImgSrc(name);
+  const field = document.getElementById("fpField" + n);
+
+  // Swap placeholder for real avatar
+  const oldAv = document.getElementById("fpAvatar" + n);
+  const img   = document.createElement("img");
+  img.src = src; img.className = "fp-avatar-img"; img.id = "fpAvatar" + n;
+  oldAv.replaceWith(img);
+
+  const label = document.getElementById("fpLabel" + n);
+  label.textContent = name;
+  label.classList.add("fp-label-chosen");
+  field.classList.add("fp-selected");
+  fpClosePicker(n);
+
+  // Enable Add button if both selected
+  const addBtn = document.getElementById("fpAddBtn");
+  if (addBtn) {
+    const ready = fpSelected[1] && fpSelected[2];
+    addBtn.disabled = !ready;
+    addBtn.classList.toggle("disabled-btn", !ready);
+  }
+}
+
+function fpResetPickers() {
+  [1, 2].forEach(n => {
+    fpSelected[n] = null;
+    fpClosePicker(n);
+    const field = document.getElementById("fpField" + n);
+    if (field) field.classList.remove("fp-selected", "fp-open");
+    const oldAv = document.getElementById("fpAvatar" + n);
+    if (oldAv) {
+      const ph = document.createElement("div");
+      ph.className = "fp-avatar-placeholder"; ph.id = "fpAvatar" + n;
+      oldAv.replaceWith(ph);
+    }
+    const label = document.getElementById("fpLabel" + n);
+    if (label) { label.textContent = t('playerPrefix') + n; label.classList.remove("fp-label-chosen"); }
+    const dd = document.getElementById("fpDropdown" + n);
+    if (dd) dd.style.display = "none";
+  });
+  const addBtn = document.getElementById("fpAddBtn");
+  if (addBtn) { addBtn.disabled = true; addBtn.classList.add("disabled-btn"); }
+}
+
+function updateFixedPairSelectors() {
+  // Re-render dropdowns if open, otherwise just reset pickers
+  fpResetPickers();
+}
+
+function getGenderImg(playerName) {
+  const player = schedulerState.allPlayers.find(p => p.name === playerName);
+  const src = (player && player.gender === "Female") ? "female.png" : "male.png";
+  return `<img src="${src}" class="fixed-pair-avatar">`;
+}
+
+function fpCardGetAvail(excludeNames) {
+  const pairedPlayers = new Set(schedulerState.fixedPairs.flat());
+  return schedulerState.activeplayers.filter(p => !excludeNames.includes(p) || !pairedPlayers.has(p));
+}
+
+function addFixedCard(p1, p2, key) {
+  const list = document.getElementById('fixed-pair-list');
+  const card = document.createElement("div");
+  card.className = "fixed-card fixed-card-inline";
+  card.setAttribute("data-key", key);
+
+  const src1 = fpGetImgSrc(p1);
+  const src2 = fpGetImgSrc(p2);
+
+  card.innerHTML = `
+    <div class="fixed-card-pickers">
+      <div class="fp-picker-field fp-selected fc-field" id="fcField_${key}_1" onclick="fcTogglePicker('${key}',1)">
+        <img src="${src1}" class="fp-avatar-img" id="fcAvatar_${key}_1">
+        <span class="fp-label fp-label-chosen" id="fcLabel_${key}_1">${p1}</span>
+        <span class="fp-chevron">▼</span>
+      </div>
+      <div class="fp-picker-field fp-selected fc-field" id="fcField_${key}_2" onclick="fcTogglePicker('${key}',2)">
+        <img src="${src2}" class="fp-avatar-img" id="fcAvatar_${key}_2">
+        <span class="fp-label fp-label-chosen" id="fcLabel_${key}_2">${p2}</span>
+        <span class="fp-chevron">▼</span>
+      </div>
+    </div>
+    <div class="fixed-card-actions">
+      <button class="pec-btn delete fc-delete-btn" onclick="fcDeletePair('${key}')">🗑</button>
+    </div>
+    <div id="fcDropdown_${key}_1" class="fp-dropdown fc-dropdown" style="display:none"></div>
+    <div id="fcDropdown_${key}_2" class="fp-dropdown fc-dropdown" style="display:none"></div>
+  `;
+  list.appendChild(card);
+}
+
+let fcOpenPicker = null;
+
+function fcTogglePicker(key, n) {
+  const id = key + '_' + n;
+  if (fcOpenPicker === id) { fcClosePicker(key, n); return; }
+  // close any open
+  if (fcOpenPicker) {
+    const [ck, cn] = fcOpenPicker.split('_');
+    fcClosePicker(ck, parseInt(cn));
+  }
+  fcOpenPicker = id;
+  document.getElementById('fcField_' + id).classList.add('fp-open');
+  fcRenderDropdown(key, n);
+  document.getElementById('fcDropdown_' + id).style.display = 'block';
+}
+
+function fcClosePicker(key, n) {
+  const id = key + '_' + n;
+  const field = document.getElementById('fcField_' + id);
+  if (field) field.classList.remove('fp-open');
+  const dd = document.getElementById('fcDropdown_' + id);
+  if (dd) dd.style.display = 'none';
+  if (fcOpenPicker === id) fcOpenPicker = null;
+}
+
+function fcRenderDropdown(key, n) {
+  const id = key + '_' + n;
+  const otherId = key + '_' + (n === 1 ? 2 : 1);
+  const otherName = document.getElementById('fcLabel_' + otherId)?.textContent || '';
+
+  const pairedPlayers = new Set(schedulerState.fixedPairs.flat());
+  const currentName = document.getElementById('fcLabel_' + id)?.textContent || '';
+
+  const available = schedulerState.activeplayers.filter(p =>
+    p !== otherName && (p === currentName || !pairedPlayers.has(p))
+  );
+
+  const dd = document.getElementById('fcDropdown_' + id);
+  dd.innerHTML = '';
+  const inner = document.createElement('div');
+  inner.className = 'fp-dropdown-inner';
+
+  if (!available.length) {
+    inner.innerHTML = '<div class="fp-option-empty">' + t('noPlayersAvailable') + '</div>';
+  } else {
+    available.forEach(name => {
+      const row = document.createElement('div');
+      row.className = 'fp-option' + (name === currentName ? ' fp-highlighted' : '');
+      row.innerHTML = `
+        <img src="${fpGetImgSrc(name)}" class="fp-option-avatar">
+        <span class="fp-option-name">${name}</span>
+        <span class="fp-option-rating">★ ${fpGetRating(name)}</span>
+      `;
+      row.onclick = (e) => { e.stopPropagation(); fcSelectPlayer(key, n, name); };
+      inner.appendChild(row);
+    });
+  }
+  dd.appendChild(inner);
+}
+
+function fcSelectPlayer(key, n, newName) {
+  const id = key + '_' + n;
+  const otherId = key + '_' + (n === 1 ? 2 : 1);
+  const oldName = document.getElementById('fcLabel_' + id).textContent;
+  const otherName = document.getElementById('fcLabel_' + otherId).textContent;
+
+  // Update fixedPairs state
+  const pairIdx = schedulerState.fixedPairs.findIndex(pair =>
+    (pair[0] === oldName && pair[1] === otherName) ||
+    (pair[1] === oldName && pair[0] === otherName)
+  );
+  if (pairIdx !== -1) {
+    schedulerState.fixedPairs[pairIdx] = n === 1 ? [newName, otherName] : [otherName, newName];
+  }
+
+  // Update card UI
+  const src = fpGetImgSrc(newName);
+  document.getElementById('fcAvatar_' + id).src = src;
+  document.getElementById('fcLabel_' + id).textContent = newName;
+  fcClosePicker(key, n);
+}
+
+function fcDeletePair(key) {
+  const p1 = document.getElementById('fcLabel_' + key + '_1')?.textContent;
+  const p2 = document.getElementById('fcLabel_' + key + '_2')?.textContent;
+  if (p1 && p2) modifyFixedPair(p1, p2);
+}
+
+function modifyFixedPair(p1 = null, p2 = null) {
+  if (!p1 || !p2) {
+    p1 = fpSelected[1];
+    p2 = fpSelected[2];
+  }
+  if (!p1 || !p2) { alert("Please select both players."); return; }
+  if (p1 === p2)  { alert("You cannot pair the same player with themselves."); return; }
+  const pairKey = [p1, p2].sort().join('&');
+  const index   = schedulerState.fixedPairs.findIndex(
+    pair => pair.slice().sort().join('&') === pairKey
+  );
+  if (index !== -1) {
+    schedulerState.fixedPairs.splice(index, 1);
+    removeFixedCard(pairKey);
+    fpResetPickers();
+    return;
+  }
+  schedulerState.fixedPairs.push([p1, p2]);
+  addFixedCard(p1, p2, pairKey);
+  fpResetPickers();
+}
+
+function removeFixedCard(key) {
+  const card = document.querySelector(`[data-key="${key}"]`);
+  if (card) card.remove();
+}
+
+function removeFixedPairsForPlayer(playerName) {
+  schedulerState.fixedPairs = schedulerState.fixedPairs.filter(pair => {
+    const keep = !pair.includes(playerName);
+    if (!keep) removeFixedCard(pair.slice().sort().join("&"));
+    return keep;
+  });
+  updateFixedPairSelectors();
+}
+
+/* =========================
+   PLAYER STATE SAVE
+========================= */
+
+/* =========================
+   RATING SYNC -- schedulerState → history
+   Called after save so import history carries latest ratings
+========================= */
+
+function saveAllPlayersState() {
+  localStorage.setItem("schedulerPlayers",   JSON.stringify(schedulerState.allPlayers));
+  localStorage.setItem("newImportFavorites", JSON.stringify(newImportState.favoritePlayers));
+}
+
+/* =========================
+   EDIT PLAYER
+========================= */
+function editPlayer(i, field, val) {
+  const player = schedulerState.allPlayers[i];
+  if (field === 'active') {
+    player.active = !!val;
+    if (val) {
+      const highest = Math.max(0, ...schedulerState.allPlayers.map(p => p.turnOrder || 0));
+      player.turnOrder = highest + 1;
+    }
+  } else {
+    player[field] = val.trim();
+  }
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+  updatePlayerList();
+  updateFixedPairSelectors();
+}
+
+/* =========================
+   DELETE PLAYER
+========================= */
+function deletePlayer(i) {
+  const deletedPlayer = schedulerState.allPlayers[i]?.name;
+  if (!deletedPlayer) return;
+  schedulerState.allPlayers.splice(i, 1);
+  removeFixedPairsForPlayer(deletedPlayer);
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+  // Release is_playing in DB — same as playerPlayingRelease() in settings.js
+  try {
+    const _rc = (typeof getMyClub === 'function') ? getMyClub() : { id: null };
+    if (_rc && _rc.id) {
+      sbPatch('memberships', `club_id=eq.${_rc.id}&nickname=ilike.${deletedPlayer}`, { is_playing: false });
+    }
+  } catch(e) { console.warn('Could not release is_playing for ' + deletedPlayer, e); }
+  updatePlayerList();
+  updateFixedPairSelectors();
+  refreshFixedCards();
+}
+
+function toggleActive(index, checkbox) {
+  schedulerState.allPlayers[index].active = checkbox.checked;
+  const card = checkbox.closest(".player-edit-card");
+  checkbox.checked ? card.classList.remove("inactive") : card.classList.add("inactive");
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+  updateFixedPairSelectors();
+}
+
+function toggleGender(index, iconEl) {
+  const player = schedulerState.allPlayers[index];
+  if (!player) return;
+  player.gender = player.gender === "Male" ? "Female" : "Male";
+  const genderClass = player.gender.toLowerCase();
+  // Update img src if using image avatar, or textContent if emoji
+  if (iconEl.tagName === "IMG") {
+    iconEl.src = player.gender === "Female" ? "female.png" : "male.png";
+  } else {
+    iconEl.textContent = getGenderIcon(player.gender);
+  }
+  iconEl.classList.remove("male", "female");
+  iconEl.classList.add(genderClass);
+  const card = iconEl.closest(".player-edit-card");
+  if (card) { card.classList.remove("male", "female"); card.classList.add(genderClass); }
+  updateGenderGroups();
+  updateFixedPairSelectors();
+  refreshFixedCards();
+  saveAllPlayersState();
+}
+
+/* =========================
+   IMPORT MODAL BRIDGE
+========================= */
+function showImportModal() {
+  const textarea = document.getElementById("players-textarea");
+  if (textarea) {
+    textarea.value = "";
+    textarea.placeholder = translations[currentLang].importExample;
+  }
+  document.getElementById('importModal').style.display = 'block';
+}
+
+function hideImportModal() {
+  document.getElementById('newImportModal').style.display = 'none';
+}
+
+// OK button -- moves selectedPlayers into scheduler
+function addPlayersFromInputUI(replace) {
+  const importPlayers = newImportState.selectedPlayers;
+  if (!importPlayers || importPlayers.length === 0) { alert('No players selected!'); return; }
+
+  // Replace clears existing list first — release old players from DB before wiping
+  if (replace) {
+    const oldNames = schedulerState.allPlayers.filter(p => p.active).map(p => p.name);
+    if (oldNames.length > 0 && typeof dbReleaseSessionSlots === 'function') {
+      dbReleaseSessionSlots(oldNames);
+    }
+    schedulerState.allPlayers.splice(0, schedulerState.allPlayers.length);
+  }
+
+  // Build selected name set for quick lookup
+  const selectedKeys = new Set(importPlayers.map(p => p.displayName.trim().toLowerCase()));
+
+  // Remove players no longer in selected list (they were deselected in the modal)
+  const removedNames = [];
+  for (let i = schedulerState.allPlayers.length - 1; i >= 0; i--) {
+    const key = schedulerState.allPlayers[i].name.trim().toLowerCase();
+    if (!selectedKeys.has(key)) {
+      removedNames.push(schedulerState.allPlayers[i].name);
+      schedulerState.allPlayers.splice(i, 1);
+    }
+  }
+  // Release DB slots for removed players
+  if (removedNames.length > 0 && typeof dbReleaseSessionSlots === 'function') {
+    dbReleaseSessionSlots(removedNames);
+  }
+
+  // Add newly selected players not already in list
+  importPlayers.forEach(p => {
+    const name    = p.displayName.trim();
+    const gender  = p.gender || "Male";
+    const nameKey = name.toLowerCase();
+    const exists  = schedulerState.allPlayers.some(e => e.name.trim().toLowerCase() === nameKey);
+    if (!exists) schedulerState.allPlayers.push({ name, gender, active: true });
+  });
+
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+
+  hideImportModal();
+  newImportState.selectedPlayers = [];
+  showPage('playersPage', null);
+  updatePlayerList();
+  syncRatings();
+  if (typeof homeUpdateStepper === 'function') homeUpdateStepper();
+
+  // Claim session slots for all active players
+  const names = schedulerState.allPlayers.filter(p => p.active).map(p => p.name);
+  if (typeof dbClaimSessionSlots === "function") dbClaimSessionSlots(names);
+}
+
+/* =========================
+   PASTE / TEXT MODAL (legacy)
+========================= */
+function pastePlayersText() {
+  const textarea    = document.getElementById('players-textarea');
+  const stopMarkers = [
+    /court full/i, /wl/i, /waitlist/i, /late cancel/i,
+    /cancelled/i, /reserve/i, /bench/i, /extras/i, /backup/i
+  ];
+  function cleanText(text) {
+    const lines = text.split(/\r?\n/);
+    let startIndex = 0, stopIndex = lines.length;
+    const confirmIdx = lines.findIndex(l => /confirm/i.test(l));
+    if (confirmIdx >= 0) {
+      startIndex = confirmIdx + 1;
+      for (let i = startIndex; i < lines.length; i++) {
+        if (stopMarkers.some(re => re.test(lines[i]))) { stopIndex = i; break; }
+      }
+    }
+    const out = [];
+    for (let i = startIndex; i < stopIndex; i++) {
+      const l = lines[i].trim();
+      if (!l || l.toLowerCase().includes("http")) continue;
+      out.push(l);
+    }
+    return out.join("\n");
+  }
+  if (navigator.clipboard && navigator.clipboard.readText) {
+    navigator.clipboard.readText()
+      .then(text => {
+        const cleaned = cleanText(text);
+        if (!cleaned) { alert("No valid player names found."); return; }
+        textarea.value += (textarea.value ? '\n' : '') + cleaned;
+        textarea.focus();
+      })
+      .catch(() => alert('Paste not allowed. Long-press and paste instead.'));
+  } else {
+    alert('Paste not supported on this device.');
+  }
+}
+
+function addPlayersFromText() {
+  const textarea = document.getElementById("players-textarea");
+  if (!textarea) return;
+  const text = textarea.value.trim();
+  if (!text) return;
+  const defaultGender = document.querySelector('input[name="genderSelect"]:checked')?.value || "Male";
+  const lines = text.split(/\r?\n/);
+  const stopMarkers = [
+    /court full/i, /wl/i, /waitlist/i, /late cancel/i,
+    /cancelled/i, /reserve/i, /bench/i, /extras/i, /backup/i
+  ];
+  let startIndex = 0, stopIndex = lines.length;
+  const confirmIdx = lines.findIndex(l => /confirm/i.test(l));
+  if (confirmIdx >= 0) {
+    startIndex = confirmIdx + 1;
+    for (let i = startIndex; i < lines.length; i++) {
+      if (stopMarkers.some(re => re.test(lines[i]))) { stopIndex = i; break; }
+    }
+  }
+  const genderLookup = { male: "Male", m: "Male", female: "Female", f: "Female" };
+  if (typeof translations !== "undefined") {
+    Object.values(translations).forEach(l => {
+      if (l.male)   genderLookup[l.male.toLowerCase()]   = "Male";
+      if (l.female) genderLookup[l.female.toLowerCase()] = "Female";
+    });
+  }
+  const extractedNames = [];
+  for (let i = startIndex; i < stopIndex; i++) {
+    let line = lines[i].trim();
+    if (!line || /https?/i.test(line)) continue;
+    let gender = defaultGender;
+    const m = line.match(/^(\d+\.?\s*)?(.*)$/);
+    if (m) line = m[2].trim();
+    line = line.replace(/\.$/, '').trim();
+    line = line.replace(/\.$/, '').trim(); // Remove trailing dot: "Anand P." → "Anand P"
+    if (line.includes(",")) {
+      const [name, g] = line.split(",").map(p => p.trim());
+      line = name;
+      if (g && genderLookup[g.toLowerCase()]) gender = genderLookup[g.toLowerCase()];
+    }
+    const pm = line.match(/\(([^)]+)\)/);
+    if (pm) {
+      const inside = pm[1].trim().toLowerCase();
+      if (genderLookup[inside]) gender = genderLookup[inside];
+      line = line.replace(/\([^)]+\)/, "").trim();
+    }
+    if (!line) continue;
+    const normalized = line.toLowerCase();
+    const exists =
+      schedulerState.allPlayers.some(p => p.name.trim().toLowerCase() === normalized) ||
+      extractedNames.some(p => p.name.trim().toLowerCase() === normalized);
+    if (!exists) extractedNames.push({ name: line, gender, active: true });
+  }
+  if (!extractedNames.length) return;
+  schedulerState.allPlayers.push(...extractedNames);
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+  updatePlayerList();
+  updateFixedPairSelectors();
+  hideImportModal();
+}
+
+/* =========================
+   PLAYER LIST RENDERING
+========================= */
+function createPlayerCard(player, index) {
+  let cardClass = `player-edit-card player-row ${player.gender.toLowerCase()}`;
+  if (!player.active) cardClass += " inactive";
+  const card = document.createElement("div");
+  card.className = cardClass;
+  card.draggable = true;
+  card.dataset.index = index;
+  card.addEventListener("dragstart", onDragStart);
+  card.addEventListener("dragover",  onDragOver);
+  card.addEventListener("drop",      onDrop);
+  // Touch drag for mobile — non-passive so we can preventDefault once drag is confirmed
+  card.addEventListener("touchstart", onTouchDragStart, { passive: false });
+  card.addEventListener("touchmove",  onTouchDragMove,  { passive: false });
+  card.addEventListener("touchend",   onTouchDragEnd,   { passive: true });
+  card.addEventListener("touchcancel",onTouchDragCancel,{ passive: true });
+  const genderImg = player.gender === "Female" ? "female.png" : "male.png";
+  card.innerHTML = `
+    <div class="pec-col pec-active">
+      <input type="checkbox" ${player.active ? "checked" : ""} onchange="toggleActive(${index}, this)">
+    </div>
+    <div class="pec-col pec-sl">${index + 1}</div>
+    <div class="pec-col pec-gender">
+      <img src="${genderImg}" class="gender-icon pec-gender-img" style="cursor:default">
+    </div>
+    <div class="pec-col pec-name">${player.name}</div>
+    <div class="pec-col pec-rating">
+      <span class="rating-badge" data-player="${player.name}">${(typeof getActiveRating === 'function' ? getActiveRating(player.name) : getRating(player.name)).toFixed(1)}</span>
+    </div>
+    <div class="pec-col pec-delete">
+      <button class="circle-btn delete" onclick="deletePlayer(${index})" title="Remove player">−</button>
+    </div>
+  `;
+  return card;
+}
+
+function editPlayerName(index) {
+  const oldName = schedulerState.allPlayers[index].name;
+  const newName = prompt("Edit player name", oldName);
+  if (!newName) return;
+  const trimmed = newName.trim();
+  if (!trimmed) return;
+  const duplicate = schedulerState.allPlayers.some(
+    (p, i) => i !== index && p.name.toLowerCase() === trimmed.toLowerCase()
+  );
+  if (duplicate) { alert("Player name already exists!"); return; }
+  schedulerState.allPlayers = schedulerState.allPlayers.map((p, i) =>
+    i === index ? { ...p, name: trimmed } : p
+  );
+  updatePlayerList();
+}
+
+let draggedIndex = null;
+function onDragStart(e) {
+  draggedIndex = Number(e.currentTarget.dataset.index);
+  e.dataTransfer.effectAllowed = "move";
+}
+function onDragOver(e) { e.preventDefault(); }
+function onDrop(e) {
+  const targetIndex = Number(e.currentTarget.dataset.index);
+  if (draggedIndex === targetIndex) return;
+  const [moved] = schedulerState.allPlayers.splice(draggedIndex, 1);
+  schedulerState.allPlayers.splice(targetIndex, 0, moved);
+  updatePlayerList();
+}
+
+/* ── Touch drag-to-reorder ──
+   Uses a 200 ms long-press threshold so a quick vertical swipe
+   scrolls the page normally; only a deliberate hold activates drag.
+── */
+let _touchDragEl    = null;
+let _touchDragIdx   = null;
+let _touchStartY    = 0;
+let _touchStartX    = 0;
+let _dragActivated  = false;   // true once long-press threshold passed
+let _longPressTimer = null;
+
+const LONG_PRESS_MS  = 200;   // ms hold before drag activates
+const DRAG_THRESHOLD = 6;     // px movement that cancels long-press
+
+function _cancelLongPress() {
+  if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
+}
+
+function _activateDrag() {
+  if (!_touchDragEl || _dragActivated) return;
+  _dragActivated = true;
+  _touchDragEl.style.opacity   = '0.5';
+  _touchDragEl.style.transform = 'scale(1.02)';
+  _touchDragEl.style.zIndex    = '100';
+  _touchDragEl.style.transition = 'none';
+  // Haptic if supported
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function onTouchDragStart(e) {
+  // Don't hijack taps on interactive children (checkbox, button)
+  if (e.target.closest('button, input, select')) return;
+
+  const card = e.currentTarget;
+  _touchDragEl  = card;
+  _touchDragIdx = Number(card.dataset.index);
+  _touchStartY  = e.touches[0].clientY;
+  _touchStartX  = e.touches[0].clientX;
+  _dragActivated = false;
+
+  // Start long-press timer — do NOT preventDefault yet, so scroll still works
+  _longPressTimer = setTimeout(_activateDrag, LONG_PRESS_MS);
+}
+
+function onTouchDragMove(e) {
+  if (!_touchDragEl) return;
+
+  const dx = Math.abs(e.touches[0].clientX - _touchStartX);
+  const dy = Math.abs(e.touches[0].clientY - _touchStartY);
+
+  if (!_dragActivated) {
+    // If user moved more than threshold before long-press fired → cancel drag, allow scroll
+    if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+      _cancelLongPress();
+      _touchDragEl = null;
+    }
+    return; // don't preventDefault — let browser scroll
+  }
+
+  // Drag is active — block scroll
+  e.preventDefault();
+
+  const y = e.touches[0].clientY;
+  const offsetDy = y - _touchStartY;
+  _touchDragEl.style.transform = `translateY(${offsetDy}px) scale(1.02)`;
+
+  // Highlight the card we're hovering over
+  const container = document.getElementById('playerList');
+  const cards = Array.from(container.querySelectorAll('.player-edit-card'));
+  const rect = _touchDragEl.getBoundingClientRect();
+  const midY = rect.top + rect.height / 2;
+
+  cards.forEach(c => { c.style.boxShadow = ''; });
+  for (const c of cards) {
+    if (c === _touchDragEl) continue;
+    const cr = c.getBoundingClientRect();
+    if (midY > cr.top && midY < cr.bottom) {
+      c.style.boxShadow = '0 0 0 2px var(--accent)';
+      break;
+    }
+  }
+}
+
+function onTouchDragEnd(e) {
+  _cancelLongPress();
+  if (!_touchDragEl) return;
+
+  // Reset visual styles
+  _touchDragEl.style.opacity    = '';
+  _touchDragEl.style.transform  = '';
+  _touchDragEl.style.zIndex     = '';
+  _touchDragEl.style.transition = '';
+
+  if (_dragActivated) {
+    const y = e.changedTouches[0].clientY;
+    const container = document.getElementById('playerList');
+    const cards = Array.from(container.querySelectorAll('.player-edit-card'));
+    cards.forEach(c => { c.style.boxShadow = ''; });
+
+    let targetIdx = _touchDragIdx;
+    for (const c of cards) {
+      if (c === _touchDragEl) continue;
+      const cr = c.getBoundingClientRect();
+      if (y > cr.top && y < cr.bottom) {
+        targetIdx = Number(c.dataset.index);
+        break;
+      }
+    }
+
+    if (targetIdx !== _touchDragIdx) {
+      const [moved] = schedulerState.allPlayers.splice(_touchDragIdx, 1);
+      schedulerState.allPlayers.splice(targetIdx, 0, moved);
+      updatePlayerList();
+    }
+  }
+
+  _touchDragEl   = null;
+  _touchDragIdx  = null;
+  _dragActivated = false;
+}
+
+function onTouchDragCancel() {
+  _cancelLongPress();
+  if (!_touchDragEl) return;
+  _touchDragEl.style.opacity    = '';
+  _touchDragEl.style.transform  = '';
+  _touchDragEl.style.zIndex     = '';
+  _touchDragEl.style.transition = '';
+  const container = document.getElementById('playerList');
+  if (container) container.querySelectorAll('.player-edit-card').forEach(c => { c.style.boxShadow = ''; });
+  _touchDragEl   = null;
+  _touchDragIdx  = null;
+  _dragActivated = false;
+}
+
+function updatePlayerList() {
+  const container = document.getElementById("playerList");
+  container.innerHTML = "";
+  schedulerState.allPlayers.forEach((player, index) => {
+    container.appendChild(createPlayerCard(player, index));
+  });
+  schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
+    ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
+  // Sync restQueue — only during an active session
+  if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
+    schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
+  }
+  updateFixedPairSelectors();
+  updateCourtButtons();
+  updateRoundsPageAccess();
+  // Refresh home tiles to reflect updated player count
+  if (typeof homeRefreshTiles === 'function') homeRefreshTiles();
+  // Sync MBM waiting queue if session active
+  if (typeof mbmSyncPlayers === 'function') mbmSyncPlayers();
+  // Save snapshot if session in progress
+  if (typeof saveSnapshot === 'function') saveSnapshot();
+}
+
+/* =========================
+   COLOUR HELPERS
+========================= */
+function getPlayedColor(value) {
+  if (!value || value <= 0) return "#e0e0e0";
+  return `hsl(${(Math.min(value, 20) - 1) * 36}, 92%, 58%)`;
+}
+function getRestColor(value) {
+  if (!value || value <= 0) return "#e0e0e0";
+  return `hsl(${((Math.min(value, 20) - 1) * 36 + 180) % 360}, 88%, 62%)`;
+}
+
+/* =========================
+   TOAST / ALERT
+========================= */
+function showToast(msg) {
+  if (!msg) return;
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.remove("hidden");
+  setTimeout(() => { if (toast) toast.classList.add("hidden"); }, 2500);
+}
+function alert(msg) { showToast(msg); }
+
+/* =========================
+   MISC HELPERS
+========================= */
+function debounce(func, delay = 250) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+
