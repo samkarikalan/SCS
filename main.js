@@ -5705,6 +5705,46 @@ function scsPrimaryNavigate(target) {
   switchMode(target);
 }
 
+async function scsOpenPostSlotManager() {
+  // Home + > Post a Slot must land on the established Slot Manager HOME shown
+  // in the old app (Upcoming/Completed calendar with the inline + Add Slot).
+  // Do not route through the hidden legacy vaultSlotsPage and do not open the
+  // composer automatically.  Resolve/authenticate the manager club first,
+  // then paint the normal Vault home and its existing slot calendar.
+  if (typeof canAccessMode === 'function' && !canAccessMode('vault')) {
+    if (typeof showModeUpgradePrompt === 'function') showModeUpgradePrompt('vault');
+    return false;
+  }
+  if (typeof authIsLoggedIn === 'function' && !authIsLoggedIn()) {
+    try { sessionStorage.setItem('scs_pending_workspace', 'vault'); } catch (e) {}
+    welcomeSelectedWorkspace = 'vault';
+    if (typeof authShowScreen === 'function') authShowScreen('login');
+    return false;
+  }
+
+  try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
+  welcomeSelectedWorkspace = 'vault';
+  var savedVaultClub = '';
+  try { savedVaultClub = localStorage.getItem('kbrr_vault_club_id') || ''; } catch (e) {}
+
+  var opened = await openVaultWorkspaceForAdmin(savedVaultClub, false);
+  if (!opened) return false;
+
+  // openVaultWorkspaceForAdmin already sets appMode='vault' and calls
+  // showHomeScreen(). Repeat only the lightweight render/positioning here so
+  // this quick action always finishes on the visible Slot Manager calendar.
+  if (typeof renderVaultHomeSlotsUI === 'function') {
+    try { await renderVaultHomeSlotsUI(true); } catch (e) { console.warn('Slot Manager calendar render skipped:', e); }
+  }
+  window.requestAnimationFrame(function() {
+    var slotCard = document.getElementById('vaultUpcomingSlots');
+    if (slotCard) {
+      try { slotCard.scrollIntoView({ block:'start' }); } catch (e) {}
+    }
+  });
+  return true;
+}
+
 function scsHomeQuickAction(action) {
   scsCloseHomeQuickMenu();
   if (action === 'round') {
@@ -5713,12 +5753,10 @@ function scsHomeQuickAction(action) {
     return;
   }
   if (action === 'slot') {
-    // Open the existing Slot Manager page first. The user can then use the
-    // existing + Add Slot button/calendar flow, matching the proven old app UI.
-    // Do not auto-open the composer here.
-    try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
-    welcomeSelectedWorkspace = 'vault';
-    switchMode('vault');
+    scsOpenPostSlotManager().catch(function(error) {
+      console.error('Could not open Slot Manager for Post a Slot:', error);
+      if (typeof showToast === 'function') showToast(error && error.message ? error.message : 'Could not open Slot Manager');
+    });
     return;
   }
   if (action === 'club') {

@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1048';
+      var BUILD = '1054';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.61"; window.SCS_BUILD = "1048"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.62"; window.SCS_BUILD = "1054"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -109,7 +109,7 @@ html,body{overscroll-behavior:none;}
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1047" defer></script>
+  <script src="main.js?v=1054" defer></script>
 
   <script src="games.js?v=1019" defer></script>
 
@@ -3205,7 +3205,7 @@ html,body{overscroll-behavior:none;}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1049', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1054', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen
