@@ -2635,6 +2635,77 @@ function updateSessionLiveBar() {
 /* =============================================================
    VAULT MODE -- Admin password gate
 ============================================================= */
+async function getVaultEligibleClubs() {
+  var user = (typeof authGetUser === 'function') ? authGetUser() : null;
+  if (!user || !user.id || typeof sbGet !== 'function') return [];
+  var grants = await sbGet('user_club_roles',
+    'user_account_id=eq.' + encodeURIComponent(user.id) +
+    '&vault_verified=eq.true&order=updated_at.desc&select=club_id,updated_at')
+    .catch(function() { return []; });
+  var ids = [];
+  (grants || []).forEach(function(row) {
+    var id = String(row.club_id || '');
+    if (id && ids.indexOf(id) < 0) ids.push(id);
+  });
+  if (!ids.length) return [];
+  var clubs = await sbGet('clubs', 'id=in.(' + ids.join(',') + ')&select=id,name').catch(function() { return []; });
+  var names = {};
+  (clubs || []).forEach(function(club) { names[String(club.id)] = club.name || ''; });
+  return ids.filter(function(id) { return Object.prototype.hasOwnProperty.call(names, id); }).map(function(id) {
+    return { id:id, name:names[id], source:'vault' };
+  });
+}
+
+async function openVaultWorkspaceForAdmin(selectedClubId, forceChoose) {
+  var clubs = await getVaultEligibleClubs();
+  var selectedClub = selectedClubId
+    ? clubs.find(function(club) { return String(club.id) === String(selectedClubId); })
+    : null;
+
+  if (forceChoose === true && clubs.length) {
+    selectedClub = await showOrganiserAccessMenu(clubs, { directSelect:true });
+    if (!selectedClub) return false;
+  }
+
+  if (!selectedClub && clubs.length) {
+    var savedId = localStorage.getItem('kbrr_vault_club_id') || '';
+    selectedClub = clubs.find(function(club) { return String(club.id) === String(savedId); }) || null;
+  }
+
+  // First Slot Manager / Add Slot entry: visibly choose from already verified
+  // manager clubs. If none has been verified on this account yet, use the
+  // existing admin-password club setup flow.
+  if (!selectedClub && clubs.length) {
+    selectedClub = await showOrganiserAccessMenu(clubs);
+    if (!selectedClub) return false;
+  }
+  if (!selectedClub) {
+    _showClubSetupSheet('vault');
+    return false;
+  }
+
+  localStorage.setItem('kbrr_vault_club_id', String(selectedClub.id));
+  localStorage.setItem('kbrr_vault_club_name', selectedClub.name || '');
+  sessionStorage.setItem('scs_vault_verified', '1');
+  localStorage.setItem('scs_vault_verified', '1');
+  syncRoundAndSlotManagerClub(selectedClub.id, selectedClub.name || '');
+  if (typeof setMyClub === 'function') setMyClub(selectedClub.id, selectedClub.name || '');
+
+  var overlay = document.getElementById('modeSelectOverlay');
+  if (overlay) {
+    overlay.classList.remove('scs-launch-first-paint');
+    overlay.style.display = 'none';
+  }
+  appMode = 'vault';
+  sessionStorage.setItem('appMode', 'vault');
+  localStorage.setItem('kbrr_app_mode', 'vault');
+  applyMode('vault');
+  updateModePill('vault');
+  welcomeMarkModeUsed('vault');
+  if (typeof showHomeScreen === 'function') showHomeScreen();
+  return true;
+}
+
 function requestVaultMode() {
   // Pro subscription required for Vault mode
   if (typeof canAccessMode === 'function' && !canAccessMode('vault')) {
@@ -2642,33 +2713,23 @@ function requestVaultMode() {
     return;
   }
 
-  // Already verified as admin this session — go straight in
-  if (hasVerifiedWorkspaceRole('vault')) {
-    // Restore sessionStorage flag for this session
-    sessionStorage.setItem('scs_vault_verified', '1');
-    var vaultClubId = localStorage.getItem('kbrr_vault_club_id') || '';
-    var vaultClubName = localStorage.getItem('kbrr_vault_club_name') || '';
-    var club = vaultClubId ? { id: vaultClubId, name: vaultClubName } : null;
-    if (club && club.id) {
-      if (typeof setMyClub === 'function') setMyClub(club.id, club.name || '');
-      const overlay = document.getElementById('modeSelectOverlay');
-      if (overlay) {
-        overlay.classList.remove('scs-launch-first-paint');
-        overlay.style.display = 'none';
-      }
-      appMode = 'vault';
-      sessionStorage.setItem('appMode', 'vault');
-      localStorage.setItem('kbrr_app_mode', 'vault');
-      applyMode('vault');
-      updateModePill('vault');
-      welcomeMarkModeUsed('vault');
-      if (typeof showHomeScreen === 'function') showHomeScreen();
-      return;
-    }
+  var savedVaultClub = localStorage.getItem('kbrr_vault_club_id') || '';
+  if (hasVerifiedWorkspaceRole('vault') && savedVaultClub) {
+    openVaultWorkspaceForAdmin(savedVaultClub, false);
+    return;
   }
 
-  // Not vault-verified — always show club setup sheet to demand admin password
-  _showClubSetupSheet('vault');
+  // No saved Slot Manager club yet. The async opener will show the available
+  // verified manager clubs or fall back to the existing admin-password setup.
+  openVaultWorkspaceForAdmin('', false);
+}
+
+async function vaultSlotsChangeClub() {
+  var changed = await openVaultWorkspaceForAdmin('', true);
+  if (!changed) return;
+  if (typeof homeGo === 'function') homeGo('vaultSlotsPage', null);
+  if (typeof vaultSlotsOpenPage === 'function') await vaultSlotsOpenPage();
+  if (typeof vaultSlotsUpdateClubPill === 'function') vaultSlotsUpdateClubPill();
 }
 
 /* =============================================================

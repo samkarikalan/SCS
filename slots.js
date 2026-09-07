@@ -6091,3 +6091,24 @@ async function scsJoinProbabilityCheckNow(force) {
   else setTimeout(run, 0);
   setInterval(run, 60000);
 })();
+
+// Build 1050: keep the Add Slot / Slots header aligned with the selected
+// Slot Manager club and provide the same one-tap club-change entry used by
+// Round Manager. Existing slot functions remain unchanged.
+function vaultSlotsUpdateClubPill() {
+  var pill = document.getElementById('vaultSlotsClubPill');
+  if (!pill) return;
+  var name = localStorage.getItem('kbrr_vault_club_name') || localStorage.getItem('kbrr_my_club_name') || 'Club';
+  var nameEl = pill.querySelector('.welcome-club-pill-name');
+  if (nameEl) nameEl.textContent = name;
+  pill.title = 'Change club: ' + name;
+}
+
+(function() {
+  var originalOpen = window.vaultSlotsOpenPage;
+  if (typeof originalOpen !== 'function') return;
+  window.vaultSlotsOpenPage = async function() {
+    vaultSlotsUpdateClubPill();
+    return await originalOpen.apply(this, arguments);
+  };
+})();
