@@ -422,11 +422,18 @@ if (isVault) {
   try { pendingHomeQuickAction = sessionStorage.getItem('scs_home_quick_action') || ''; } catch (e) {}
   if (pendingHomeQuickAction === 'post-slot') {
     try { sessionStorage.removeItem('scs_home_quick_action'); } catch (e) {}
-    setTimeout(async function() {
+    setTimeout(function() {
       if (typeof appMode !== 'undefined' && appMode !== 'vault') return;
-      if (typeof homeGo === 'function') homeGo('vaultSlotsPage', null);
-      if (typeof vaultSlotsOpenPage === 'function') await vaultSlotsOpenPage();
-      if (typeof vaultSlotsShowPostForm === 'function') vaultSlotsShowPostForm();
+      // The current Slot Manager UI creates slots from the Viewer-style Vault
+      // calendar. Open that existing composer directly instead of routing to
+      // the legacy hidden vaultSlotsPage, whose sheet can remain invisible.
+      var dateStr = (typeof _vsTodayStr === 'function') ? _vsTodayStr() : new Date().toISOString().slice(0, 10);
+      if (typeof vaultHomeSlotsAddSlot === 'function') {
+        vaultHomeSlotsAddSlot(dateStr);
+      } else if (typeof vaultSlotsOpenDateSheet === 'function') {
+        vaultSlotsOpenDateSheet(dateStr);
+        if (typeof vaultSlotsShowPostForm === 'function') vaultSlotsShowPostForm();
+      }
     }, 80);
   }
 }
