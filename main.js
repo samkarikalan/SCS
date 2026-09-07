@@ -1401,6 +1401,376 @@ function openModeSwitcher() {
   switchMode('viewer');
 }
 
+var _organiserWorkspaceOpening = false;
+
+function organiserAccessEscape(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function showOrganiserAccessMenu(clubs, options) {
+  options = options || {};
+  var directSelect = options.directSelect === true;
+  return new Promise(function(resolve) {
+    var existing = document.getElementById('organiserAccessOverlay');
+    if (existing) existing.remove();
+    var user = (typeof authGetUser === 'function') ? authGetUser() : null;
+    var playerName = user && (user.nickname || user.displayName || user.email)
+      ? (user.nickname || user.displayName || user.email)
+      : ((typeof t === 'function' && t('playerRole')) || 'Player');
+    var activeClub = (typeof getMyClub === 'function') ? getMyClub() : null;
+    var cachedId = localStorage.getItem('kbrr_org_club_id') || '';
+    var selectedId = clubs.some(function(club) { return String(club.id) === String(cachedId); })
+      ? String(cachedId)
+      : (clubs.some(function(club) { return String(club.id) === String((activeClub && activeClub.id) || ''); })
+        ? String(activeClub.id)
+        : String(clubs[0].id));
+    var overlay = document.createElement('div');
+    overlay.id = 'organiserAccessOverlay';
+    overlay.className = 'organiser-access-overlay';
+    overlay.innerHTML = `
+      <section class="organiser-access-sheet" role="dialog" aria-modal="true" aria-labelledby="organiserAccessTitle">
+        <button class="organiser-access-close" type="button" aria-label="Close">×</button>
+        ${directSelect ? '' : `<div class="organiser-access-icon" aria-hidden="true">▦</div>
+        <h2 id="organiserAccessTitle">${organiserAccessEscape((typeof t === 'function' && t('continueAsOrganiser')) || 'Continue as Organiser')}</h2>
+        <p class="organiser-access-account">${organiserAccessEscape((typeof t === 'function' && t('signedInAs')) || 'Signed in as')} <strong>${organiserAccessEscape(playerName)}</strong></p>`}
+        <div class="organiser-access-label">${organiserAccessEscape((typeof t === 'function' && t('selectClubTitle')) || 'Select Club')}</div>
+        <div class="organiser-access-clubs">
+          ${clubs.map(function(club) {
+            var selected = String(club.id) === String(selectedId);
+            var accessLabel = club.source === 'vault'
+              ? ((typeof t === 'function' && t('clubManagerRole')) || 'Club Manager')
+              : ((typeof t === 'function' && t('clubMember')) || 'Club member');
+            return `<button class="organiser-access-club${selected ? ' selected' : ''}" type="button" data-club-id="${organiserAccessEscape(club.id)}">
+              <span class="organiser-access-club-mark" aria-hidden="true">🏸</span>
+              <span class="organiser-access-club-copy"><strong>${organiserAccessEscape(club.name || club.id)}</strong><small>${organiserAccessEscape(accessLabel)}</small></span>
+              <span class="organiser-access-radio" aria-hidden="true"></span>
+            </button>`;
+          }).join('')}
+        </div>
+        ${directSelect ? '' : `<div class="organiser-access-actions">
+          <button class="organiser-access-continue" type="button">${organiserAccessEscape((typeof t === 'function' && t('continueBtn')) || 'Continue')} <span aria-hidden="true">→</span></button>
+        </div>`}
+      </section>`;
+    document.body.appendChild(overlay);
+
+    var finished = false;
+    function finish(result) {
+      if (finished) return;
+      finished = true;
+      overlay.remove();
+      resolve(result);
+    }
+    overlay.querySelectorAll('.organiser-access-club').forEach(function(button) {
+      button.addEventListener('click', function() {
+        selectedId = button.getAttribute('data-club-id') || selectedId;
+        if (directSelect) {
+          var selectedClub = clubs.find(function(club) { return String(club.id) === String(selectedId); }) || clubs[0];
+          finish(selectedClub);
+          return;
+        }
+        overlay.querySelectorAll('.organiser-access-club').forEach(function(item) {
+          item.classList.toggle('selected', item === button);
+        });
+      });
+    });
+    overlay.querySelector('.organiser-access-close').addEventListener('click', function() { finish(null); });
+    var continueButton = overlay.querySelector('.organiser-access-continue');
+    if (continueButton) {
+      continueButton.addEventListener('click', function() {
+        finish(clubs.find(function(club) { return club.id === selectedId; }) || clubs[0]);
+      });
+    }
+    overlay.addEventListener('click', function(event) { if (event.target === overlay) finish(null); });
+  });
+}
+
+async function scsOpenPlayersManagerWhenRoundManagerEmpty(clubId) {
+  try {
+    // Never leave an existing online or iMode session, even if its current
+    // player data has not finished painting yet.
+    var hasOnlineSession = (typeof getMySessionId === 'function') && !!getMySessionId();
+    var hasOfflineSession = !!(window.SCSOfflineRounds &&
+      typeof window.SCSOfflineRounds.hasSessionInProgress === 'function' &&
+      window.SCSOfflineRounds.hasSessionInProgress());
+    if (hasOnlineSession || hasOfflineSession) return false;
+
+    // Only redirect on initial Round Manager entry when there is no active
+    // session and no usable player list.
+    // Existing sessions and normal Round Manager navigation remain untouched.
+    var playerCount = 0;
+    try {
+      if (typeof schedulerState !== 'undefined' && schedulerState) {
+        if (Array.isArray(schedulerState.activeplayers)) playerCount = schedulerState.activeplayers.length;
+        if (!playerCount && Array.isArray(schedulerState.allPlayers)) {
+          playerCount = schedulerState.allPlayers.filter(function(player) {
+            return player && player.active !== false;
+          }).length;
+        }
+      }
+    } catch (_) {}
+    if (playerCount > 0) return false;
+
+    if (typeof homeHideScreen === 'function') homeHideScreen();
+    if (typeof showPage === 'function') showPage('playersPage', null);
+    if (typeof _updateDynamicBackBtns === 'function') _updateDynamicBackBtns('playersPage');
+    return true;
+  } catch (error) {
+    console.warn('Round Manager empty-state redirect failed:', error);
+    return false;
+  }
+}
+
+async function openOrganiserWorkspaceForMember(selectedClubId) {
+  if (_organiserWorkspaceOpening) return;
+  _organiserWorkspaceOpening = true;
+  try {
+    var clubs = await getOrganiserEligibleClubs();
+    var demoSession = typeof isDemoMode === 'function' && isDemoMode();
+    var realClubs = demoSession ? clubs : clubs.filter(function(club) { return club.source !== 'demo'; });
+    if (!realClubs.length) {
+      showRoundManagerSignedOutChoice({ signedInNoClub: true });
+      return;
+    }
+    var selectedClub = selectedClubId
+      ? realClubs.find(function(club) { return club.id === String(selectedClubId); })
+      : null;
+    if (!selectedClub) {
+      var activeClub = (typeof getMyClub === 'function') ? getMyClub() : null;
+      var vaultIsVerified = (typeof hasVerifiedWorkspaceRole === 'function' && hasVerifiedWorkspaceRole('vault')) ||
+        sessionStorage.getItem('scs_vault_verified') === '1' || localStorage.getItem('scs_vault_verified') === '1';
+      var preferredIds = [
+        localStorage.getItem('kbrr_org_club_id') || '',
+        vaultIsVerified ? (localStorage.getItem('kbrr_vault_club_id') || '') : '',
+        activeClub && activeClub.id
+      ].map(function(id) { return String(id || ''); }).filter(Boolean);
+      for (var preferredIndex = 0; preferredIndex < preferredIds.length && !selectedClub; preferredIndex++) {
+        selectedClub = realClubs.find(function(club) { return club.id === preferredIds[preferredIndex]; }) || null;
+      }
+    }
+    if (!selectedClub && realClubs.length === 1) selectedClub = realClubs[0];
+    if (!selectedClub) selectedClub = await showOrganiserAccessMenu(realClubs);
+    if (!selectedClub) return;
+    var offlineEntry = navigator.onLine === false;
+    var club;
+    if (offlineEntry) {
+      // Never create/update membership offline. Use the last club that passed
+      // the normal online organiser verification on this device.
+      if (localStorage.getItem('scs_organiser_verified') !== '1' ||
+          String(localStorage.getItem('kbrr_org_club_id') || '') !== String(selectedClub.id)) {
+        if (typeof showToast === 'function') showToast('Round Manager needs a previously verified subscription and club for offline use.');
+        return;
+      }
+      club = {
+        id: String(selectedClub.id),
+        name: selectedClub.name || localStorage.getItem('kbrr_org_club_name') || '',
+        source: 'offline-cache'
+      };
+    } else {
+      club = await syncOrganiserMembershipAccess(null, selectedClub.id);
+      if (!club || !club.id) return;
+    }
+    if (typeof setMyClub === 'function') setMyClub(club.id, club.name || '');
+    localStorage.setItem('kbrr_club_mode', club.source === 'vault' ? 'admin' : 'user');
+    var overlay = document.getElementById('modeSelectOverlay');
+    if (overlay) {
+      overlay.classList.remove('scs-launch-first-paint');
+      overlay.style.display = 'none';
+    }
+    appMode = 'organiser';
+    sessionStorage.setItem('appMode', 'organiser');
+    localStorage.setItem('kbrr_app_mode', 'organiser');
+    applyMode('organiser');
+    updateModePill('organiser');
+    welcomeMarkModeUsed('organiser');
+    // Paint Round Manager first, then route a genuinely empty setup to Players.
+    if (typeof showHomeScreen === 'function') showHomeScreen();
+    setTimeout(function() {
+      scsOpenPlayersManagerWhenRoundManagerEmpty(club.id).catch(function(error) {
+        console.warn('Round Manager initial Players page skipped:', error);
+      });
+    }, 0);
+    // Offline entry goes straight to the dedicated Round Mode Offline card.
+    // Online entry keeps the existing default Round Mode card.
+    if (offlineEntry) {
+      setTimeout(function() {
+        if (typeof orgSetSchedulingSlide === 'function') orgSetSchedulingSlide(1);
+      }, 0);
+    }
+  } catch (error) {
+    if (typeof showToast === 'function') showToast(error.message || 'Could not open Organiser');
+  } finally {
+    _organiserWorkspaceOpening = false;
+    updateWelcomeWorkspaceClubNames();
+  }
+}
+
+function switchMode(mode) {
+  if (!experienceAllowsRole(mode)) {
+    if (typeof showToast === 'function') showToast('This hub is hidden by your Experience Mode setting');
+    return;
+  }
+  // Check subscription access
+  if (typeof canAccessMode === 'function' && !canAccessMode(mode)) {
+    if (typeof showModeUpgradePrompt === 'function') showModeUpgradePrompt(mode);
+    return;
+  }
+
+  // Protected workspaces must never bypass the account login when opened
+  // from Welcome or from the mode switcher.
+  if (mode !== 'viewer' &&
+      typeof authIsLoggedIn === 'function' &&
+      !authIsLoggedIn()) {
+    if (mode === 'organiser') {
+      showRoundManagerSignedOutChoice();
+      return;
+    }
+    sessionStorage.setItem('scs_pending_workspace', mode);
+    welcomeSelectedWorkspace = mode;
+    if (typeof authShowScreen === 'function') authShowScreen('login');
+    return;
+  }
+
+  // Viewer -- no login or club needed
+  if (mode === 'viewer') {
+    const overlay = document.getElementById('modeSelectOverlay');
+    if (overlay) {
+      overlay.classList.remove('scs-launch-first-paint');
+      overlay.style.display = 'none';
+    }
+    appMode = mode;
+    sessionStorage.setItem('appMode', mode);
+    localStorage.setItem('kbrr_app_mode', mode);
+    applyMode(mode);
+    updateModePill(mode);
+    if (typeof showHomeScreen === 'function') showHomeScreen();
+    welcomeRefreshClubBroadcast();
+  if (typeof window.scsNotificationsCheckNow === 'function') {
+      setTimeout(function() { window.scsNotificationsCheckNow(); }, 350);
+    }
+    return;
+  }
+
+  // Organiser -- available to every signed-in player who belongs to the club.
+  if (mode === 'organiser') {
+    var vaultPreferredClub = (typeof hasVerifiedWorkspaceRole === 'function' && hasVerifiedWorkspaceRole('vault'))
+      ? (localStorage.getItem('kbrr_vault_club_id') || '') : '';
+    openOrganiserWorkspaceForMember(vaultPreferredClub || window.__scsWelcomeOrganiserChoice || '');
+    return;
+  }
+
+  // Vault -- independent session flag, admin password only
+  if (mode === 'vault') {
+    requestVaultMode();
+    return;
+  }
+}
+
+async function roundManagerStartDemo() {
+  if (!(typeof isDemoMode === 'function' && isDemoMode())) {
+    if (typeof authStartDemo !== 'function') return;
+    await authStartDemo();
+  }
+  if (typeof isDemoMode === 'function' && isDemoMode()) {
+    await openOrganiserWorkspaceForMember(typeof DEMO_CLUB_ID !== 'undefined' ? DEMO_CLUB_ID : '');
+  }
+}
+
+function showRoundManagerSignedOutChoice(options) {
+  options = options || {};
+  var signedInNoClub = options.signedInNoClub === true;
+  var existing = document.getElementById('roundManagerEntryChoiceOverlay');
+  if (existing) existing.remove();
+  var overlay = document.createElement('div');
+  overlay.id = 'roundManagerEntryChoiceOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:10025;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)';
+  overlay.innerHTML = `
+    <section class="club-setup-sheet" role="dialog" aria-modal="true" aria-labelledby="roundManagerEntryChoiceTitle">
+      <button type="button" class="club-setup-assist-close" aria-label="Close">&#215;</button>
+      <div class="mode-sheet-handle"></div>
+      <div class="mode-sheet-title" id="roundManagerEntryChoiceTitle">Round Manager</div>
+      <p style="font-size:.84rem;color:var(--text-dim);margin:0 0 16px;line-height:1.5">${signedInNoClub ? 'Choose a club or use Demo.' : 'Choose how you want to enter Round Manager.'}</p>
+      <div class="round-manager-entry-options" style="display:grid;gap:12px">
+        <button type="button" class="rounds-template-action-btn is-create" data-round-entry="member" style="${signedInNoClub ? 'display:none' : ''}">
+          <span class="rounds-template-action-icon" aria-hidden="true">👤</span>
+          <span><strong>Member Login</strong><small>Sign in with your existing SCS player account.</small></span>
+          <span class="rounds-template-action-arrow" aria-hidden="true">&rsaquo;</span>
+        </button>
+        <button type="button" class="rounds-template-action-btn is-edit" data-round-entry="club">
+          <span class="rounds-template-action-icon" aria-hidden="true">🏆</span>
+          <span><strong>Club &amp; Password</strong><small>Enter directly using the club's shared password.</small></span>
+          <span class="rounds-template-action-arrow" aria-hidden="true">&rsaquo;</span>
+        </button>
+        <button type="button" class="rounds-template-action-btn is-create" data-round-entry="demo">
+          <span class="rounds-template-action-icon" aria-hidden="true">🎮</span>
+          <span><strong>Use Demo</strong><small>Open the Demo club and try Round Manager immediately.</small></span>
+          <span class="rounds-template-action-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </section>`;
+  function closeChoice() { if (overlay && overlay.parentNode) overlay.remove(); }
+  overlay.querySelector('.club-setup-assist-close').addEventListener('click', closeChoice);
+  overlay.addEventListener('click', function(event) { if (event.target === overlay) closeChoice(); });
+  overlay.querySelector('[data-round-entry="member"]').addEventListener('click', function() {
+    closeChoice();
+    sessionStorage.setItem('scs_pending_workspace', 'organiser');
+    welcomeSelectedWorkspace = 'organiser';
+    if (typeof authShowScreen === 'function') authShowScreen('login');
+  });
+  overlay.querySelector('[data-round-entry="club"]').addEventListener('click', function() {
+    closeChoice();
+    _showClubSetupSheet('organiser_guest');
+  });
+  overlay.querySelector('[data-round-entry="demo"]').addEventListener('click', function() {
+    closeChoice();
+    roundManagerStartDemo();
+  });
+  document.body.appendChild(overlay);
+}
+
+function updateModePill(mode) {
+  const icons  = { viewer: '🏸', organiser: '🏆', vault: '🔑' };
+  const labels = { viewer: t('myHub'), organiser: t('roundManager'), vault: t('slotManager') };
+  const colors = { viewer: '#6c8cff', organiser: '#2dce89', vault: '#f5a623' };
+  const icon  = icons[mode]  || '🏸';
+  const label = labels[mode] || 'Mode';
+  const color = colors[mode] || '#6c8cff';
+  ['', '2'].forEach(suffix => {
+    const iconEl  = document.getElementById('modePillIcon'  + suffix);
+    const labelEl = document.getElementById('modePillLabel' + suffix);
+    const btnEl   = document.getElementById('modePillBtn'   + suffix);
+    if (iconEl)  iconEl.textContent  = icon;
+    if (labelEl) labelEl.textContent = label;
+    // modePillBtn2 (main scs-topbar): apply full pill styling
+    if (btnEl && suffix === '2') { btnEl.style.color = color; btnEl.style.borderColor = color + '44'; btnEl.style.background = color + '11'; }
+    // modePillBtn (home topbar): reset any previously applied inline styles
+    if (btnEl && suffix === '') { btnEl.style.color = ''; btnEl.style.borderColor = ''; btnEl.style.background = ''; }
+  });
+  // Update dynamic subtitle on both topbars
+  var subtitle = '';
+  if (mode === 'viewer') {
+    var accountUser = (typeof authGetUser === 'function') ? authGetUser() : null;
+    var player = (typeof getMyPlayer === 'function') ? getMyPlayer() : null;
+    subtitle = (accountUser && (accountUser.nickname || accountUser.displayName)) ||
+      (player && (player.displayName || player.name || player.nickname)) || '';
+  } else if (mode === 'organiser' || mode === 'vault') {
+    var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+    subtitle = (club && club.name) || '';
+  }
+  ['modePillSub', 'modePillSub2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = subtitle;
+  });
+  // Update Settings page mode value
+  const settingsModeEl = document.getElementById('settingsModeValue');
+  if (settingsModeEl) { settingsModeEl.textContent = icon + ' ' + label; settingsModeEl.style.color = color; }
+  // Sync scs-topbar icon bg colour
+  document.querySelectorAll('.scs-topbar-icon-wrap').forEach(function(el) {
+    el.style.background = color + '28';
+  });
+}
+
 function initModeOnLoad() {
   // Build 1044: My Hub replaces the old workspace Welcome page.
   var homeEl = document.getElementById('homePageOverlay');
@@ -1448,64 +1818,44 @@ async function initAppFlow() {
     return;
   }
 
-  // ── Step 2: Verify subscription with server when online ──
-  // Offline launch deliberately keeps the last locally cached subscription
-  // state; canAccessMode() remains the gate for protected workspaces.
-  if (navigator.onLine !== false) {
-    await restoreUserClubRoles().catch(function(e) {
-      console.warn('Club role restore skipped:', e.message || e);
-    });
-
-    const subscriptionUser = typeof authGetUser === 'function' ? authGetUser() : null;
-    if (subscriptionUser && typeof verifyAccessWithServer === 'function') {
-      await verifyAccessWithServer(subscriptionUser);
-    }
-  }
-
-  // ── Step 3: Session resume — only on app open, only if already in organiser mode ──
-  // A shared club link explicitly targets My Hub. Do not leave a signed-in
-  // player at Welcome before opening the selected club's request screen.
+  // ── Step 2: My Hub is the application Home — paint it immediately. ──
+  // Do not block the first usable screen on club/subscription/prefetch network
+  // requests. Those refresh in the background and update the same existing
+  // controls/data when they finish. No feature or manager function is removed.
   if ((typeof authGetPendingJoinClubId === 'function' && authGetPendingJoinClubId()) ||
       sessionStorage.getItem('pending_join_club_id')) {
     if (typeof welcomeSelectWorkspace === 'function') welcomeSelectWorkspace('viewer');
-    switchMode('viewer');
-    return;
   }
-
-  const savedMode     = localStorage.getItem('kbrr_app_mode');
-  const orgVerified   = sessionStorage.getItem('scs_organiser_verified') === '1' ||
-                        localStorage.getItem('scs_organiser_verified')   === '1';
-  if (false && savedMode === 'organiser' && experienceAllowsRole('organiser') && orgVerified) {
-    var restoredOrgClubId = localStorage.getItem('kbrr_org_club_id') || '';
-    var restoredOrgClubName = localStorage.getItem('kbrr_org_club_name') || '';
-    if (restoredOrgClubId && typeof setMyClub === 'function') setMyClub(restoredOrgClubId, restoredOrgClubName);
-    applyMode('organiser');
-    updateModePill('organiser');
-    appMode = 'organiser';
-    // Await resume — if session restored, skip mode select
-    if (typeof checkAndResume === 'function') {
-      const resumed = await checkAndResume();
-      if (resumed) return;
-    }
-  }
-
-  // My Hub-only mode opens the existing My Hub page directly.
-  if (getVisibleWorkspaces().length === 1 && getVisibleWorkspaces()[0] === 'viewer') {
-    switchMode('viewer');
-    return;
-  }
-
-  // ── Step 4: Normal startup — My Hub is Home ──
   switchMode('viewer');
+
   if (typeof renderLauncherStartSessionCard === 'function') {
-    renderLauncherStartSessionCard();
+    setTimeout(renderLauncherStartSessionCard, 0);
     setTimeout(renderLauncherStartSessionCard, 800);
   }
-  // The overlay becomes visible only here on first launch. Paint the completed
-  // startup cache now (including Slot Manager next/pending badges), then let
-  // the normal freshness guard decide whether another request is necessary.
   if (typeof welcomeApplyAllHubData === 'function') welcomeApplyAllHubData();
+
+  // Refresh account roles/subscription after Home is already visible.
+  if (navigator.onLine !== false) {
+    Promise.resolve().then(async function() {
+      if (typeof restoreUserClubRoles === 'function') {
+        await restoreUserClubRoles().catch(function(e) {
+          console.warn('Club role restore skipped:', e && (e.message || e));
+        });
+      }
+      var subscriptionUser = typeof authGetUser === 'function' ? authGetUser() : null;
+      if (subscriptionUser && typeof verifyAccessWithServer === 'function') {
+        await verifyAccessWithServer(subscriptionUser).catch(function(e) {
+          console.warn('Subscription refresh skipped:', e && (e.message || e));
+        });
+      }
+      if (typeof welcomeApplyAllHubData === 'function') welcomeApplyAllHubData();
+      if (typeof showHomeScreen === 'function' && appMode === 'viewer') showHomeScreen();
+    }).catch(function(e) {
+      console.warn('Home background refresh skipped:', e && (e.message || e));
+    });
+  }
   if (typeof welcomeRefreshHubIfVisible === 'function') welcomeRefreshHubIfVisible(false);
+  return;
 }
 
 /* ============================================================
@@ -1558,31 +1908,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (lineCallbackHandled) return;
   }
 
-  // Validate a restored login before the welcome/workspace page is opened.
-  // A token replaced by another device is cleared immediately.
-  if (typeof authIsLoggedIn === 'function' && authIsLoggedIn()) {
-    if (typeof authVerifySession === 'function') {
-      var startupSessionValid = await authVerifySession();
-      if (!startupSessionValid) return;
-    }
-    if (typeof _startSessionWatch === 'function') _startSessionWatch();
-    if (typeof restoreUserClubRoles === 'function') {
-      await restoreUserClubRoles().catch(function(){});
-    }
-  }
-
-  // Download the first-use data for all three workspaces while the startup
-  // ring is still covering the UI. Switching modes will therefore render the
-  // prepared data immediately, followed by a quiet sync for freshness.
-  if (typeof window.scsPrefetchAllWorkspaceData === 'function') {
-    await window.scsPrefetchAllWorkspaceData();
-  }
-
-  // Show mode select only after restored account/workspace state and all
-  // workspace caches are settled.
+  // Paint the local app state first. My Hub is the Home screen and must never
+  // wait behind session validation or workspace prefetch network requests.
   initModeOnLoad();
   syncExperienceModeUI();
   if (typeof window.scsFinishStartup === 'function') window.scsFinishStartup();
+
+  // Validate a restored login in the background. authVerifySession() already
+  // handles a displaced/expired account by returning to the login screen.
+  if (typeof authIsLoggedIn === 'function' && authIsLoggedIn()) {
+    Promise.resolve().then(async function() {
+      if (typeof authVerifySession === 'function') {
+        var startupSessionValid = await authVerifySession();
+        if (!startupSessionValid) return;
+      }
+      if (typeof _startSessionWatch === 'function') _startSessionWatch();
+      if (typeof restoreUserClubRoles === 'function') {
+        await restoreUserClubRoles().catch(function(){});
+      }
+    }).catch(function(e) {
+      console.warn('Background session validation skipped:', e && (e.message || e));
+    });
+  }
+
+  // Preserve the existing prefetch functions, but do not make the Home render
+  // depend on them. They populate the same caches asynchronously.
+  if (typeof window.scsPrefetchAllWorkspaceData === 'function') {
+    window.scsPrefetchAllWorkspaceData().catch(function(e) {
+      console.warn('Workspace prefetch skipped:', e && (e.message || e));
+    });
+  }
 
   // schedulerState starts empty -- user imports players fresh each session
   consolidateMasterDB();
@@ -5211,6 +5566,10 @@ function scsToggleHomeQuickMenu(event) {
 }
 
 function scsSyncPrimaryBottomNav(active) {
+  // Keep the primary bar outside homePageOverlay so it remains available on
+  // Settings and other linked pages even when the Home overlay is hidden.
+  var primaryNav = document.getElementById('scsPrimaryBottomNav');
+  if (primaryNav && primaryNav.parentElement !== document.body) document.body.appendChild(primaryNav);
   var map = { viewer:'scsNavHome', organiser:'scsNavRound', vault:'scsNavSlot', settings:'scsNavSettings' };
   Object.keys(map).forEach(function(key) {
     var el = document.getElementById(map[key]);

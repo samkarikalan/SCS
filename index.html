@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1042';
+      var BUILD = '1047';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.61"; window.SCS_BUILD = "1043"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.61"; window.SCS_BUILD = "1047"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -71,7 +71,7 @@
 html,body{overscroll-behavior:none;}
 /* Build 359: Rotational workspace carousel with 1:0.5 tile widths. */
 #modeSelectOverlay.scs-launch-first-paint{
-  display:flex!important;
+  display:none!important;
   position:fixed;
   inset:0;
   z-index:2147483647;
@@ -100,16 +100,16 @@ html,body{overscroll-behavior:none;}
 
   <script src="auth.js?v=856" defer></script>
 
-  <script src="authUI.js?v=1045" defer></script>
+  <script src="authUI.js?v=1047" defer></script>
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1045" defer></script>
+  <script src="HomeScreen.js?v=1047" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1045" defer></script>
+  <script src="main.js?v=1047" defer></script>
 
   <script src="games.js?v=1019" defer></script>
 
@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1045">
+  <link rel="stylesheet" href="ui.css?v=1047">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -339,7 +339,7 @@ html,body{overscroll-behavior:none;}
     </div>
   </div>
 
-  <div id="modeSelectOverlay" class="mode-launcher-fullscreen welcome-launcher scs-launch-first-paint" style="display:flex;">
+  <div id="modeSelectOverlay" class="mode-launcher-fullscreen welcome-launcher scs-launch-first-paint" style="display:none;">
     <div class="welcome-shell">
       <div class="simple-welcome" aria-label="Choose SCS mode">
         <div class="simple-welcome-header">
@@ -3192,7 +3192,7 @@ html,body{overscroll-behavior:none;}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1044', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1047', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen

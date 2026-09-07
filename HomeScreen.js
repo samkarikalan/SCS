@@ -441,9 +441,12 @@ function setModeBarVisible(el, visible, displayValue) {
   el.style.display = visible ? (displayValue || 'block') : 'none';
   el.setAttribute('aria-hidden', visible ? 'false' : 'true');
 }
-setModeBarVisible(orgActionBar, isOrganiser, 'block');
-setModeBarVisible(viewerActionBar, isViewer, 'block');
-setModeBarVisible(vaultActionBar, isVault, 'block');
+// Build 1046: the global Home / Round / Slot / Settings bar replaces the
+// older per-hub shortcut bars. Keep those bars and their handlers in the DOM
+// for compatibility, but do not render them.
+setModeBarVisible(orgActionBar, false, 'block');
+setModeBarVisible(viewerActionBar, false, 'block');
+setModeBarVisible(vaultActionBar, false, 'block');
 // Apply player-count gates immediately, before optional home widgets render.
 // Some optional widgets can fail independently; setup controls must still
 // always match the same gate used by Round/Rolling Mode.
@@ -508,12 +511,13 @@ if (isOrganiser) {
   if (moreLabel)   moreLabel.textContent = 'More ›';
 }
 
-// Viewer action bar is always visible and fixed at the bottom.
+// The former Viewer shortcut bar is retained for compatibility but hidden;
+// the global primary navigation is the only bottom bar.
 var moreSectionV = document.getElementById('homeMoreSectionV');
 var mcSlotsSection = document.getElementById('mcUpcomingSlots');
 if (mcSlotsSection) mcSlotsSection.style.display = isViewer ? '' : 'none';
 if (moreSectionV) {
-  setModeBarVisible(moreSectionV, isViewer, 'block');
+  setModeBarVisible(moreSectionV, false, 'block');
   moreSectionV.classList.remove('home-more-collapsed');
   moreSectionV.classList.add('home-more-expanded');
 }

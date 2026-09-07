@@ -138,17 +138,9 @@ function authCloseToModeSelection() {
   var home = document.getElementById('homePageOverlay');
   if (home) home.style.display = 'none';
   document.querySelectorAll('.page').forEach(function(page) { page.style.display = 'none'; });
-
   var modeOverlay = document.getElementById('modeSelectOverlay');
-  if (modeOverlay) modeOverlay.style.display = 'flex';
-  if (typeof syncExperienceModeUI === 'function') syncExperienceModeUI();
-  if (typeof _refreshWelcomeSubtitle === 'function') _refreshWelcomeSubtitle();
-  if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay();
-  if (typeof window.scsPrefetchWelcomeHubData === 'function') {
-    window.scsPrefetchWelcomeHubData(true).catch(function(error) {
-      console.warn('Welcome hub refresh skipped:', error);
-    });
-  }
+  if (modeOverlay) { modeOverlay.classList.remove('scs-launch-first-paint'); modeOverlay.style.display = 'none'; }
+  authShowScreen('welcome');
 }
 
 /* ── Show error ── */
@@ -1236,16 +1228,7 @@ async function authAfterLogin(user) {
       // Set active club to first membership as default (used by organiser/vault modes)
       if (typeof setMyClub === 'function') setMyClub(firstMem.club_id, firstMem.club_name);
       authHideOverlay();
-      if (typeof selectMode === 'function') (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    authShowModeLauncher();
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+      if (typeof authShowModeLauncher === 'function') authShowModeLauncher();
       return;
     }
   } catch(e) { /* offline -- fall through to cached club */ }
@@ -1254,16 +1237,7 @@ async function authAfterLogin(user) {
   var club = (typeof getMyClub === 'function') ? getMyClub() : { id: null };
   if (club && club.id) {
     authHideOverlay();
-    if (typeof selectMode === 'function') (function() {
-  var saved = sessionStorage.getItem('appMode') || localStorage.getItem('kbrr_app_mode');
-  if (saved) {
-    authShowModeLauncher();
-  } else {
-    // First login — show mode select screen
-    var overlay = document.getElementById('modeSelectOverlay');
-    if (overlay) { overlay.style.display = 'flex'; if (typeof mlSyncLangDisplay === 'function') mlSyncLangDisplay(); }
-  }
-})();
+    if (typeof authShowModeLauncher === 'function') authShowModeLauncher();
     return;
   }
 
