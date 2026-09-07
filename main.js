@@ -5688,6 +5688,10 @@ function scsRefreshHomeQuickClubControls() {
       roundName = window.__scsWelcomeHubData.organiser.clubName || '';
     }
     roundEl.textContent = roundName || 'Select club';
+    var roundNameLine = document.getElementById('scsQuickRoundClubName');
+    if (roundNameLine) roundNameLine.textContent = roundName || 'Select a club';
+    var registerNameLine = document.getElementById('scsQuickRegisterClubName');
+    if (registerNameLine) registerNameLine.textContent = roundName || 'Select a club';
     roundEl.title = roundName ? 'Change Round Manager club' : 'Select Round Manager club';
   }
   if (slotEl) {

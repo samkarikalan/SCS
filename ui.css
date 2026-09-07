@@ -34244,3 +34244,85 @@ body.app-light .scs-home-quick-panel .scs-home-quick-club {
   text-overflow:clip;
   max-width:none;
 }
+\n\n/* Build 1058 — approved Home quick-menu layout. Keep club names and Logout fully visible. */
+.scs-home-quick-panel .scs-home-quick-action-row {
+  min-height:84px;
+  padding:12px 18px;
+  gap:14px;
+  overflow:visible;
+}
+.scs-home-quick-panel .scs-home-quick-action-row > .scs-home-quick-icon {
+  width:38px !important;
+  min-width:38px;
+  flex:0 0 38px;
+  font-size:1.55rem;
+  text-align:center;
+}
+.scs-home-quick-panel .scs-home-quick-copy,
+.scs-home-quick-panel .scs-home-quick-slot-copy {
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+}
+.scs-home-quick-panel .scs-home-quick-copy > strong,
+.scs-home-quick-panel .scs-home-quick-slot-copy > strong {
+  width:100%;
+  font-size:1.05rem;
+  line-height:1.2;
+  text-align:left;
+}
+.scs-home-quick-panel .scs-home-quick-subtitle,
+.scs-home-quick-panel .scs-home-quick-slot-club-name {
+  width:auto !important;
+  max-width:100% !important;
+  display:block;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  white-space:normal !important;
+  font-size:.82rem;
+  font-weight:500;
+  line-height:1.2;
+  opacity:.74;
+  text-align:left !important;
+}
+.scs-home-quick-panel .scs-home-quick-club {
+  width:auto !important;
+  max-width:none !important;
+  min-width:max-content;
+  min-height:42px;
+  padding:8px 12px;
+  border-radius:14px;
+  flex:0 0 auto;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  white-space:nowrap !important;
+  font-size:.9rem;
+}
+.scs-home-quick-panel .scs-home-quick-slot-row #scsQuickSlotClub {
+  align-self:center !important;
+  margin-left:auto !important;
+  max-width:none !important;
+  min-width:max-content;
+  gap:7px;
+}
+.scs-home-quick-panel .scs-home-quick-slot-row #scsQuickSlotClub .scs-quick-slot-logout-label {
+  width:auto !important;
+  display:inline-block;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  white-space:nowrap !important;
+}
+.scs-home-quick-panel .scs-home-quick-slot-row #scsQuickSlotClub .scs-quick-slot-logout-icon {
+  width:20px !important;
+  height:20px;
+  flex:0 0 20px;
+}
+@media (max-width:380px) {
+  .scs-home-quick-panel .scs-home-quick-action-row { padding-left:14px; padding-right:14px; gap:10px; }
+  .scs-home-quick-panel .scs-home-quick-club { padding:7px 9px; font-size:.82rem; }
+  .scs-home-quick-panel .scs-home-quick-copy > strong,
+  .scs-home-quick-panel .scs-home-quick-slot-copy > strong { font-size:1rem; }
+}
