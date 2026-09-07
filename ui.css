@@ -34186,3 +34186,8 @@ body.app-light .scs-home-quick-panel .scs-home-quick-club {
   background:rgba(0,0,0,.045);
   border-color:rgba(0,0,0,.08);
 }
+
+/* Build 1055: Post a Slot quick control shows authenticated club + logout icon. */
+.scs-home-quick-panel #scsQuickSlotClub { gap:7px; }
+.scs-home-quick-panel .scs-quick-slot-club-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.scs-home-quick-panel .scs-quick-slot-logout-icon { width:18px; height:18px; flex:0 0 18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }

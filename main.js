@@ -5693,7 +5693,15 @@ function scsRefreshHomeQuickClubControls() {
   if (slotEl) {
     var slotId = localStorage.getItem('kbrr_vault_club_id') || '';
     var slotName = localStorage.getItem('kbrr_vault_club_name') || '';
-    slotEl.textContent = slotId ? 'Logout' : 'Login';
+    if (slotId) {
+      slotEl.innerHTML = '<span class="scs-quick-slot-club-name"></span><svg class="scs-quick-slot-logout-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M13 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>';
+      var slotNameEl = slotEl.querySelector('.scs-quick-slot-club-name');
+      if (slotNameEl) slotNameEl.textContent = slotName || 'Club';
+      slotEl.setAttribute('aria-label', 'Logout ' + (slotName || 'Slot Manager'));
+    } else {
+      slotEl.textContent = 'Login';
+      slotEl.setAttribute('aria-label', 'Slot Manager login');
+    }
     slotEl.title = slotId ? 'Logout ' + (slotName || 'Slot Manager') : 'Login to Slot Manager';
   }
 }
