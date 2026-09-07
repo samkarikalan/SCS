@@ -1,5 +1,5 @@
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1054-post-slot-render-fix';
+const CACHE_NAME = 'scs-app-build-1055-home-quick-club-controls';
 const APP_SHELL = './index.html?v=1054';
 
 const ASSETS = [

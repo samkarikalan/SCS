@@ -34159,3 +34159,30 @@ body.app-light #fixedPairsPage .sheet-header { background:var(--bg) !important; 
 .vault-slot-overview.is-add-slot-mode > .vault-slot-collapse-card,
 .vault-slot-overview.is-add-slot-mode > .vault-slot-expanded-panel { display:none !important; }
 .vault-slot-overview.is-add-slot-mode > .vault-add-slot-calendar { display:block !important; }
+
+/* Build 1052: Home + quick actions show the manager club control on the right. */
+.scs-home-quick-panel .scs-home-quick-action-row > strong { flex:1; min-width:0; }
+.scs-home-quick-panel .scs-home-quick-club {
+  width:auto;
+  max-width:42%;
+  min-height:34px;
+  padding:6px 10px;
+  border-radius:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  font-size:.86rem;
+  font-weight:650;
+  line-height:1.1;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+}
+body.app-light .scs-home-quick-panel .scs-home-quick-club {
+  background:rgba(0,0,0,.045);
+  border-color:rgba(0,0,0,.08);
+}

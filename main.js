@@ -5676,6 +5676,52 @@ function scsToggleHomeQuickMenu(event) {
   var menu = document.getElementById('scsHomeQuickMenu');
   if (!menu) return;
   menu.hidden = !menu.hidden;
+  if (!menu.hidden) scsRefreshHomeQuickClubControls();
+}
+
+function scsRefreshHomeQuickClubControls() {
+  var roundEl = document.getElementById('scsQuickRoundClub');
+  var slotEl = document.getElementById('scsQuickSlotClub');
+  if (roundEl) {
+    var roundName = localStorage.getItem('kbrr_org_club_name') || '';
+    if (!roundName && window.__scsWelcomeHubData && window.__scsWelcomeHubData.organiser) {
+      roundName = window.__scsWelcomeHubData.organiser.clubName || '';
+    }
+    roundEl.textContent = roundName || 'Select club';
+    roundEl.title = roundName ? 'Change Round Manager club' : 'Select Round Manager club';
+  }
+  if (slotEl) {
+    var slotId = localStorage.getItem('kbrr_vault_club_id') || '';
+    var slotName = localStorage.getItem('kbrr_vault_club_name') || '';
+    slotEl.textContent = slotId ? 'Logout' : 'Login';
+    slotEl.title = slotId ? 'Logout ' + (slotName || 'Slot Manager') : 'Login to Slot Manager';
+  }
+}
+
+async function scsQuickRoundClubMenu(event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  if (typeof welcomeOpenOrganiserClubMenu === 'function') await welcomeOpenOrganiserClubMenu(event);
+  scsRefreshHomeQuickClubControls();
+}
+
+async function scsQuickSlotClubAction(event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  var slotId = localStorage.getItem('kbrr_vault_club_id') || '';
+  if (slotId) {
+    if (typeof vaultLogoutClub === 'function') vaultLogoutClub();
+    window.setTimeout(scsRefreshHomeQuickClubControls, 0);
+    return;
+  }
+  if (typeof openVaultWorkspaceForAdmin === 'function') {
+    await openVaultWorkspaceForAdmin('', false);
+    scsRefreshHomeQuickClubControls();
+    // Login from the quick menu is only a club authentication action. Return
+    // to Home instead of treating the club-name control as Post a Slot.
+    if (typeof switchMode === 'function') switchMode('viewer');
+    var menu = document.getElementById('scsHomeQuickMenu');
+    if (menu) menu.hidden = false;
+    scsRefreshHomeQuickClubControls();
+  }
 }
 
 function scsSyncPrimaryBottomNav(active) {
