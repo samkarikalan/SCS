@@ -34326,3 +34326,42 @@ body.app-light .scs-home-quick-panel .scs-home-quick-club {
   .scs-home-quick-panel .scs-home-quick-copy > strong,
   .scs-home-quick-panel .scs-home-quick-slot-copy > strong { font-size:1rem; }
 }
+
+/* Build 1060 — Home uses the existing SCS app identity header (My Hub title removed). */
+#homePageOverlay .home-topbar.home-app-header {
+  min-height: 86px;
+  padding: 11px 14px;
+  border: 1px solid rgba(74,126,233,.34);
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  background: linear-gradient(135deg,rgba(16,39,83,.95),rgba(7,18,42,.98));
+  box-shadow: 0 10px 26px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.055);
+  gap: 10px;
+}
+.home-app-brand { min-width:0; display:flex; align-items:center; gap:11px; flex:1 1 auto; }
+.home-app-logo { width:56px; height:56px; flex:0 0 56px; border-radius:50%; object-fit:cover; border:2px solid rgba(42,116,255,.88); box-shadow:0 0 0 3px rgba(42,116,255,.10); }
+.home-app-brand-copy { min-width:0; display:flex; flex-direction:column; line-height:1.04; }
+.home-app-brand-copy strong { color:#fff; font-size:1.35rem; font-weight:850; letter-spacing:.035em; }
+.home-app-brand-copy span { margin-top:5px; color:#9fb3d7; font-size:.78rem; font-weight:600; white-space:nowrap; }
+.home-app-tools { display:flex; align-items:center; gap:7px; flex:0 0 auto; }
+.home-app-tool { width:43px; height:43px; padding:0; display:flex; align-items:center; justify-content:center; border-radius:14px; border:1px solid rgba(71,130,255,.42); background:linear-gradient(145deg,rgba(19,38,80,.96),rgba(9,22,52,.98)); color:#fff; font-size:1.25rem; box-shadow:inset 0 1px 0 rgba(255,255,255,.075); }
+.home-app-add.scs-home-add-btn { width:43px; height:43px; border:1px solid rgba(71,130,255,.42); border-radius:14px; background:linear-gradient(145deg,rgba(19,38,80,.96),rgba(9,22,52,.98)); color:var(--accent,#6d5cff); padding:0 0 3px; font-size:2rem; }
+.home-app-language { position:relative; }
+.home-app-language-picker { position:absolute; top:49px; right:0; z-index:10100; min-width:145px; padding:7px; border:1px solid var(--border); border-radius:14px; background:var(--surface,#171824); box-shadow:0 14px 34px rgba(0,0,0,.4); }
+.home-app-language-picker[hidden] { display:none !important; }
+.home-app-language-picker button { width:100%; border:0; background:transparent; color:var(--text,#fff); padding:9px 10px; border-radius:9px; display:flex; gap:9px; align-items:center; text-align:left; }
+html.app-light #homePageOverlay .home-topbar.home-app-header { background:linear-gradient(135deg,#eef4ff,#fff); border-color:rgba(48,94,184,.18); }
+html.app-light .home-app-brand-copy strong { color:#14203a; }
+html.app-light .home-app-brand-copy span { color:#66728a; }
+html.app-light .home-app-tool, html.app-light .home-app-add.scs-home-add-btn { background:linear-gradient(145deg,#f5f8ff,#e9f0ff); color:#25314a; }
+@media (max-width:390px){
+  #homePageOverlay .home-topbar.home-app-header { padding:10px 10px; gap:7px; }
+  .home-app-logo { width:50px; height:50px; flex-basis:50px; }
+  .home-app-brand { gap:8px; }
+  .home-app-brand-copy strong { font-size:1.15rem; }
+  .home-app-brand-copy span { font-size:.68rem; }
+  .home-app-tools { gap:5px; }
+  .home-app-tool, .home-app-add.scs-home-add-btn { width:38px; height:38px; border-radius:12px; font-size:1.08rem; }
+  .home-app-add.scs-home-add-btn { font-size:1.75rem; }
+}

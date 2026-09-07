@@ -881,18 +881,27 @@ html,body{overscroll-behavior:none;}
 
 <!-- Top bar -->
 
-<div class="home-topbar">
-  <div class="scs-topbar-center" id="modePillBtn" onclick="scsTopbarModeAction(event)" style="cursor:pointer;justify-content:flex-start;margin:0;">
-    <div class="scs-topbar-icon-wrap"><span id="modePillIcon">🏸</span></div>
-    <div class="scs-topbar-text">
-      <div class="scs-topbar-title" id="modePillLabel"></div>
-      <div class="scs-topbar-sub" id="modePillSub"></div>
+<div class="home-topbar home-app-header" aria-label="SCS, scs-app.com">
+  <div class="home-app-brand">
+    <img class="home-app-logo" src="clubs-brand.png?v=856" alt="SCS Clubs">
+    <div class="home-app-brand-copy"><strong>SCS</strong><span>scs-app.com</span></div>
+  </div>
+  <div class="home-app-tools">
+    <button class="home-app-tool" type="button" aria-label="Settings" title="Settings" onclick="homeGo('settingsPage','tabBtnSettings')">⚙</button>
+    <button class="home-app-tool scs-topbar-theme" type="button" aria-label="Toggle light and dark mode" title="Toggle theme" onclick="scsToggleTheme()">🌙</button>
+    <div class="home-app-language">
+      <button class="home-app-tool" type="button" aria-label="Language" title="Language" onclick="event.stopPropagation();var p=document.getElementById('homeHeaderLanguagePicker');p.hidden=!p.hidden">🌐</button>
+      <div class="home-app-language-picker" id="homeHeaderLanguagePicker" hidden onclick="event.stopPropagation()">
+        <button type="button" onclick="mlSelectLang('en','🇺🇸','English');this.parentElement.hidden=true"><span>🇺🇸</span><b>English</b></button>
+        <button type="button" onclick="mlSelectLang('jp','🇯🇵','日本語');this.parentElement.hidden=true"><span>🇯🇵</span><b>日本語</b></button>
+        <button type="button" onclick="mlSelectLang('kr','🇰🇷','한국어');this.parentElement.hidden=true"><span>🇰🇷</span><b>한국어</b></button>
+        <button type="button" onclick="mlSelectLang('vi','🇻🇳','Tiếng Việt');this.parentElement.hidden=true"><span>🇻🇳</span><b>Tiếng Việt</b></button>
+        <button type="button" onclick="mlSelectLang('zh','🇨🇳','中文');this.parentElement.hidden=true"><span>🇨🇳</span><b>中文</b></button>
+      </div>
     </div>
+    <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <button class="scs-topbar-btn home-mode-refresh-btn" id="homeModeRefreshBtn" type="button" onclick="homeModeManualRefresh()" title="Refresh" style="display:none;">↻</button>
-    <button class="scs-home-add-btn" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
-  </div>
+  <button class="scs-topbar-btn home-mode-refresh-btn" id="homeModeRefreshBtn" type="button" onclick="homeModeManualRefresh()" title="Refresh" style="display:none;">↻</button>
 </div>
 
 <div id="scsHomeQuickMenu" class="scs-home-quick-menu" hidden onclick="if(event.target===this)scsCloseHomeQuickMenu()">

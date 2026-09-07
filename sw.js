@@ -1,6 +1,6 @@
-// SCS_BUILD_43_APPROVE_PLAYERS_QUICK_MENU
+// SCS_BUILD_44_HOME_APP_HEADER
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1059-conditional-approve-players-menu';
+const CACHE_NAME = 'scs-app-build-1060-home-app-header';
 const APP_SHELL = './index.html?v=1058';
 
 const ASSETS = [
