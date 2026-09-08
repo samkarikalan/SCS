@@ -1,14 +1,14 @@
-// SCS_BUILD_44_HOME_APP_HEADER
+// SCS_BUILD_45_HEADER_CONTROLS_TO_SETTINGS
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1060-home-app-header';
-const APP_SHELL = './index.html?v=1058';
+const CACHE_NAME = 'scs-app-build-1061-header-controls-settings';
+const APP_SHELL = './index.html?v=1061';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1058', './rounds.css?v=1004',
+  './ui.css?v=1061', './rounds.css?v=1004',
   './offline-db.js?v=917', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=936', './auth.js?v=856',
   './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1047',
-  './engjap.js?v=864', './main.js?v=1058', './games.js?v=1019',
+  './engjap.js?v=864', './main.js?v=1061', './games.js?v=1019',
   './rounds.js?v=937', './mbm.js?v=856', './players.js?v=906',
   './importPlayers.js?v=985', './settings.js?v=987', './summary.js?v=856',
   './help.js?v=856', './profile.js?v=856', './dashboard.js?v=856',

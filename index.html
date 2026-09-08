@@ -887,18 +887,6 @@ html,body{overscroll-behavior:none;}
     <div class="home-app-brand-copy"><strong>SCS</strong><span>scs-app.com</span></div>
   </div>
   <div class="home-app-tools">
-    <button class="home-app-tool" type="button" aria-label="Settings" title="Settings" onclick="homeGo('settingsPage','tabBtnSettings')">⚙</button>
-    <button class="home-app-tool scs-topbar-theme" type="button" aria-label="Toggle light and dark mode" title="Toggle theme" onclick="scsToggleTheme()">🌙</button>
-    <div class="home-app-language">
-      <button class="home-app-tool" type="button" aria-label="Language" title="Language" onclick="event.stopPropagation();var p=document.getElementById('homeHeaderLanguagePicker');p.hidden=!p.hidden">🌐</button>
-      <div class="home-app-language-picker" id="homeHeaderLanguagePicker" hidden onclick="event.stopPropagation()">
-        <button type="button" onclick="mlSelectLang('en','🇺🇸','English');this.parentElement.hidden=true"><span>🇺🇸</span><b>English</b></button>
-        <button type="button" onclick="mlSelectLang('jp','🇯🇵','日本語');this.parentElement.hidden=true"><span>🇯🇵</span><b>日本語</b></button>
-        <button type="button" onclick="mlSelectLang('kr','🇰🇷','한국어');this.parentElement.hidden=true"><span>🇰🇷</span><b>한국어</b></button>
-        <button type="button" onclick="mlSelectLang('vi','🇻🇳','Tiếng Việt');this.parentElement.hidden=true"><span>🇻🇳</span><b>Tiếng Việt</b></button>
-        <button type="button" onclick="mlSelectLang('zh','🇨🇳','中文');this.parentElement.hidden=true"><span>🇨🇳</span><b>中文</b></button>
-      </div>
-    </div>
     <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
   </div>
   <button class="scs-topbar-btn home-mode-refresh-btn" id="homeModeRefreshBtn" type="button" onclick="homeModeManualRefresh()" title="Refresh" style="display:none;">↻</button>
@@ -1910,6 +1898,19 @@ html,body{overscroll-behavior:none;}
 
   <div class="pref-section-label"><span class="pref-section-icon">✦</span><span data-i18n="appearance">Appearance</span></div>
   <div class="pref-card" id="appearanceCard">
+
+<!-- Language -->
+<div class="pref-row">
+  <span class="pref-row-label">🌐 <span data-i18n="language">Language</span></span>
+  <div class="pref-pill-group appear-pill-group" id="settingsLanguagePills">
+    <button class="pref-pill" type="button" onclick="mlSelectLang('en','🇺🇸','English')">🇺🇸 English</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('kr','🇰🇷','한국어')">🇰🇷 한국어</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('vi','🇻🇳','Tiếng Việt')">🇻🇳 Tiếng Việt</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('zh','🇨🇳','中文')">🇨🇳 中文</button>
+  </div>
+</div>
+<div class="pref-divider"></div>
 
 <!-- Theme -->
 
