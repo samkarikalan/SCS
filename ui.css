@@ -34468,11 +34468,6 @@ body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
 
 
 
-
-/* Build 1069 — remove Round iMode blue from the iOS status-bar area.
-   Root cause: black-translucent lets the first Round iMode surface (#1257b7)
-   paint behind the standalone iOS status bar. The PWA status bar is now opaque;
-   the normal app/root background owns that area instead. */
-#scsPrimarySafeAreaBackdrop {
-  display:none !important;
-}
+/* Build 1070 — keep the dedicated safe-area backdrop active.
+   Build 1069 accidentally forced it hidden with !important, which defeated
+   scsSetPrimarySafeArea() after returning from Players. */
