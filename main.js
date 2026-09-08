@@ -2270,6 +2270,14 @@ function showPage(pageID, el) {
   // Show selected page
   var selectedPage = document.getElementById(pageID);
   selectedPage.style.display = 'block';
+
+  // Keep back-navigation ownership in sync with the primary workspace page.
+  // This prevents a previously opened Settings page from leaving a stale
+  // _navSource="settings" value that can send Players -> Settings on close.
+  if (typeof _navSource !== 'undefined') {
+    if (pageID === 'roundsPage') _navSource = 'rounds';
+    else if (pageID === 'settingsPage') _navSource = 'settings';
+  }
   if (pageID === 'playersPage') {
     selectedPage.scrollTop = 0;
     if (selectedPage.scrollTo) { try { selectedPage.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch (_) { selectedPage.scrollTop = 0; } }
