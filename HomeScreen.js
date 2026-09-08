@@ -1077,6 +1077,15 @@ _updateDynamicBackBtns(pageId);
 
 /* ── Organiser navigation ── */
 function homeGuideOpenPlayersFromNav() {
+  // When Players is opened from Round Manager, preserve Round as its owner so
+  // the Players close button returns to Round Manager (not a previously opened Settings page).
+  var roundNav = document.getElementById('scsNavRound');
+  var fromRoundManager = !!(roundNav && roundNav.classList.contains('is-active')) ||
+    (typeof appMode !== 'undefined' && appMode === 'organiser');
+  if (fromRoundManager) {
+    roundsGoPlayers();
+    return;
+  }
   homeGo('playersPage', 'tabBtnPlayers');
 }
 
