@@ -2253,6 +2253,11 @@ window.scsIsRoundManagerVisible = function() {
 };
 
 function showPage(pageID, el) {
+  // Inner pages are never the branded Home surface. Keep the iOS safe area
+  // on the normal dark app background even when Players/Register navigation
+  // temporarily hides the manager home.
+  if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
+
   // A workspace page must sit above no launcher layer. Welcome refreshes can
   // complete after navigation and otherwise leave the mode selector catching
   // taps over Rounds and its Standard/Balanced settings.
@@ -5773,6 +5778,13 @@ async function scsQuickSlotClubAction(event) {
   }
 }
 
+function scsSetPrimarySafeArea(surface) {
+  if (!document.body) return;
+  var isHome = surface === 'home' || surface === 'viewer';
+  document.body.classList.toggle('scs-home-active', isHome);
+  document.body.classList.toggle('scs-nonhome-active', !isHome);
+}
+
 function scsSyncPrimaryBottomNav(active) {
   // Keep the primary bar outside homePageOverlay so it remains available on
   // Settings and other linked pages even when the Home overlay is hidden.
@@ -5787,10 +5799,7 @@ function scsSyncPrimaryBottomNav(active) {
   if (add) add.style.display = active === 'viewer' ? '' : 'none';
 
   // Keep the iOS safe-area/status-bar background blue only on Home.
-  if (document.body) {
-    document.body.classList.toggle('scs-home-active', active === 'viewer');
-    document.body.classList.toggle('scs-nonhome-active', active !== 'viewer');
-  }
+  scsSetPrimarySafeArea(active === 'viewer' ? 'home' : 'nonhome');
 
   // Build 1064: the SCS identity/title header belongs to Home only.
   // Round Manager, Slot Manager and Settings start directly with their content.

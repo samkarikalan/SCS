@@ -104,12 +104,12 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1048" defer></script>
+  <script src="HomeScreen.js?v=1066" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1064" defer></script>
+  <script src="main.js?v=1066" defer></script>
 
   <script src="games.js?v=1019" defer></script>
 
@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1061">
+  <link rel="stylesheet" href="ui.css?v=1066">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -3241,7 +3241,7 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1054', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1066', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen

@@ -941,6 +941,9 @@ function homeHideScreen() {
 var homeEl = document.getElementById('homePageOverlay');
 if (homeEl) homeEl.style.display = 'none';
 document.body.classList.remove('home-open');
+// Players/Register and every other inner page use the normal app safe area,
+// never the blue Home status-bar background.
+if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
 }
 
 var _myHubEmbeddedPages = {};

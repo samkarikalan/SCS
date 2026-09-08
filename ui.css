@@ -34450,7 +34450,7 @@ html.app-light #myHubHomeView #myCardContent .mycard-rating-divider,
 html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background: rgba(48,52,96,.15); }
 
 
-/* Build 1065 — status-bar safe area follows the active primary page.
+/* Build 1066 — status-bar safe area remains correct through Players/Register return flows.
    Home keeps the branded blue top; Round / Slot / Settings use the normal page background. */
 body.scs-nonhome-active::before {
   content:"";
