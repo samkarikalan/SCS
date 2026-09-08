@@ -39,6 +39,20 @@ if (typeof updateModePill === 'function') {
 }
 const src = player ? (player.gender === 'Female' ? 'female.png' : 'male.png') : null;
 
+// Home header is the logged-in user's area: show user identity instead of SCS branding.
+const headerAvatar = document.getElementById('homeUserHeaderAvatar');
+const headerName = document.getElementById('homeUserHeaderName');
+const headerSubtitle = document.getElementById('homeUserHeaderSubtitle');
+const headerAccount = (typeof authGetUser === 'function') ? authGetUser() : null;
+const headerDisplayName = (headerAccount && (headerAccount.nickname || headerAccount.displayName || headerAccount.name)) ||
+  (player && (player.displayName || player.name || player.nickname)) || 'Player';
+if (headerName) headerName.textContent = headerDisplayName;
+if (headerSubtitle) headerSubtitle.textContent = 'Member';
+if (headerAvatar) {
+  headerAvatar.src = src || ((headerAccount && headerAccount.gender === 'Female') ? 'female.png' : 'male.png');
+  headerAvatar.alt = headerDisplayName;
+}
+
 // Update profile buttons (main top bar + home overlay)
 [
 { avatar: 'profileBtnAvatar',  icon: 'profileBtnIcon'  },

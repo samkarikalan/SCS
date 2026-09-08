@@ -104,7 +104,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1072" defer></script>
+  <script src="HomeScreen.js?v=1081" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
@@ -127,7 +127,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="help.js?v=856" defer></script>
 
-  <script src="profile.js?v=856" defer></script>
+  <script src="profile.js?v=1081" defer></script>
 
   <script src="dashboard.js?v=856" defer></script>
   <script src="slots.js?v=897" defer></script>
@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1078">
+  <link rel="stylesheet" href="ui.css?v=1081">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -900,10 +900,10 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
 
 <!-- Top bar -->
 
-<div class="home-topbar home-app-header" aria-label="SCS, scs-app.com">
+<div class="home-topbar home-app-header" aria-label="User home">
   <div class="home-app-brand">
-    <img class="home-app-logo" src="clubs-brand.png?v=856" alt="SCS Clubs">
-    <div class="home-app-brand-copy"><strong>SCS</strong><span>scs-app.com</span></div>
+    <img id="homeUserHeaderAvatar" class="home-app-logo" src="male.png?v=856" alt="User">
+    <div class="home-app-brand-copy"><strong id="homeUserHeaderName">Player</strong><span id="homeUserHeaderSubtitle">Member</span></div>
   </div>
   <div class="home-app-tools">
     <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
