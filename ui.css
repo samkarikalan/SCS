@@ -34450,18 +34450,18 @@ html.app-light #myHubHomeView #myCardContent .mycard-rating-divider,
 html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background: rgba(48,52,96,.15); }
 
 
-/* Build 1066 — status-bar safe area remains correct through Players/Register return flows.
-   Home keeps the branded blue top; Round / Slot / Settings use the normal page background. */
-body.scs-nonhome-active::before {
-  content:"";
+/* Build 1068 — dedicated iOS safe-area layer.
+   Do not reuse body::before: Assist/Players uses that pseudo-element for its
+   modal backdrop. Home keeps its branded top; non-Home pages get app background. */
+#scsPrimarySafeAreaBackdrop {
   position:fixed;
-  z-index:9998;
+  z-index:2147483500;
   top:0;
   left:0;
   right:0;
   height:env(safe-area-inset-top, 0px);
   background:#0f0f13;
   pointer-events:none;
+  display:none;
 }
-body.app-light.scs-nonhome-active::before { background:#f4f6fb; }
-body.scs-home-active::before { content:none; }
+body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }

@@ -364,8 +364,22 @@ document.body.classList.add('home-open');
 homeEl.style.display = 'flex';
 if (typeof setMyHubTopTabView === 'function') setMyHubTopTabView('home');
 
-// Restore both top bars when back on home
-document.querySelectorAll('.home-topbar, .top-bar').forEach(function(b) { b.style.display = ''; });
+// Build 1068: showHomeScreen() is shared by My Hub, Round Manager and Slot Manager.
+// Returning from Players calls this function directly, so it must restore the
+// workspace chrome itself instead of relying on the earlier switchMode() call.
+// Otherwise iOS can keep the blue Round iMode/Home colour in the status safe area.
+var activeWorkspace = (typeof appMode !== 'undefined' && appMode) ? appMode : 'viewer';
+if (typeof scsSetPrimarySafeArea === 'function') {
+  scsSetPrimarySafeArea(activeWorkspace === 'viewer' ? 'home' : 'nonhome');
+}
+
+// Restore the shared top bars, but the branded SCS header belongs to Home only.
+// Keeping it hidden here for organiser/vault also prevents a one-frame blue paint
+// while Players closes and the Round Manager is being rebuilt.
+document.querySelectorAll('.home-topbar, .top-bar').forEach(function(b) {
+  if (b.classList.contains('home-app-header')) b.style.display = activeWorkspace === 'viewer' ? '' : 'none';
+  else b.style.display = '';
+});
 
 // Mode + status bar
 var isOrganiser = (typeof appMode !== 'undefined') && appMode === 'organiser';

@@ -5787,10 +5787,21 @@ function scsSetPrimarySafeArea(surface) {
   document.body.classList.toggle('scs-home-active', isHome);
   document.body.classList.toggle('scs-nonhome-active', !isHome);
 
-  // Build 1067: iOS standalone can keep the previous Home/round-card colour in
-  // the status-bar region after async Round Manager entry (Home > Start a Round,
-  // Players close, or iMode start). Repaint the actual document chrome as well
-  // as the body class so every non-Home route is deterministic.
+  // Build 1068: do not use body::before for the iOS safe area. Assist/Players
+  // already owns body::before while a guided child page is open, which made the
+  // status area inherit/repaint the Round iMode blue after Players was closed.
+  // A dedicated fixed element gives the primary navigation sole ownership of
+  // the status-bar safe area and survives Players/Add Player return flows.
+  var safeArea = document.getElementById('scsPrimarySafeAreaBackdrop');
+  if (!safeArea) {
+    safeArea = document.createElement('div');
+    safeArea.id = 'scsPrimarySafeAreaBackdrop';
+    safeArea.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(safeArea);
+  }
+  safeArea.style.display = isHome ? 'none' : 'block';
+  safeArea.style.backgroundColor = nonHomeBg;
+
   if (!isHome) {
     document.documentElement.style.backgroundColor = nonHomeBg;
     document.body.style.backgroundColor = nonHomeBg;
@@ -5799,8 +5810,6 @@ function scsSetPrimarySafeArea(surface) {
     var homeOverlay = document.getElementById('homePageOverlay');
     if (homeOverlay) homeOverlay.style.backgroundColor = nonHomeBg;
   } else {
-    // Home owns its existing branded top treatment. Remove only the inline
-    // overlay paint added for non-Home so the approved Home design is unchanged.
     var homeOverlay = document.getElementById('homePageOverlay');
     if (homeOverlay) homeOverlay.style.backgroundColor = '';
   }

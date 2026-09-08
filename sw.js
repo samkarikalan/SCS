@@ -1,6 +1,6 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1067-round-start-safearea-fix';
+const CACHE_NAME = 'scs-app-build-1069-dedicated-safearea-layer';
 const APP_SHELL = './index.html?v=1067';
 
 const ASSETS = [
