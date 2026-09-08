@@ -1,6 +1,6 @@
-// SCS_BUILD_45_HEADER_CONTROLS_TO_SETTINGS
+// SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1061-header-controls-settings';
+const CACHE_NAME = 'scs-app-build-1062-myhub-embedded-clubs-report';
 const APP_SHELL = './index.html?v=1061';
 
 const ASSETS = [

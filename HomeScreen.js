@@ -943,11 +943,54 @@ if (homeEl) homeEl.style.display = 'none';
 document.body.classList.remove('home-open');
 }
 
+var _myHubEmbeddedPages = {};
+
+function _myHubMountExistingPage(view) {
+  var map = {
+    clubs: { pageId: 'joinClubPage', hostId: 'myHubClubsView' },
+    report: { pageId: 'vaultReport2Page', hostId: 'myHubReportView' }
+  };
+  var cfg = map[view];
+  if (!cfg) return null;
+
+  var page = document.getElementById(cfg.pageId);
+  var host = document.getElementById(cfg.hostId);
+  if (!page || !host) return null;
+
+  if (!_myHubEmbeddedPages[cfg.pageId]) {
+    _myHubEmbeddedPages[cfg.pageId] = {
+      parent: page.parentNode,
+      next: page.nextSibling,
+      style: page.getAttribute('style') || '',
+      className: page.className
+    };
+  }
+
+  if (page.parentNode !== host) host.appendChild(page);
+  page.classList.add('myhub-embedded-page');
+  page.style.display = 'block';
+  return page;
+}
+
+function _myHubRestoreEmbeddedPages(exceptView) {
+  var keepId = exceptView === 'clubs' ? 'joinClubPage' : (exceptView === 'report' ? 'vaultReport2Page' : null);
+  ['joinClubPage','vaultReport2Page'].forEach(function(pageId) {
+    if (pageId === keepId) return;
+    var rec = _myHubEmbeddedPages[pageId];
+    var page = document.getElementById(pageId);
+    if (!rec || !page) return;
+    page.classList.remove('myhub-embedded-page');
+    page.setAttribute('style', rec.style);
+    if (rec.next && rec.next.parentNode === rec.parent) rec.parent.insertBefore(page, rec.next);
+    else rec.parent.appendChild(page);
+  });
+}
+
 function setMyHubTopTabView(view) {
-  // My Hub tabs are independent views. Do not toggle individual Home blocks.
-  // This keeps each tab isolated so future upgrades cannot leak content
-  // between Home and Slots. Clubs and Report continue to use their
-  // existing original SCS pages.
+  if (!view) view = 'home';
+  if (view === 'clubs' || view === 'report') _myHubMountExistingPage(view);
+  _myHubRestoreEmbeddedPages(view);
+
   document.querySelectorAll('.myhub-tab-view').forEach(function(panel) {
     var active = panel.getAttribute('data-myhub-view') === view;
     panel.classList.toggle('is-active', active);
@@ -960,12 +1003,23 @@ function setMyHubTopTabView(view) {
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
+
+  if (view === 'clubs' && typeof joinClubPageOpen === 'function') {
+    try { joinClubPageOpen(); } catch(e) { console.warn('My Hub clubs load failed', e); }
+  }
+  if (view === 'report' && typeof r2Init === 'function') {
+    try { r2Init(); } catch(e) { console.warn('My Hub report load failed', e); }
+  }
+}
+
+function homeOpenMyHubTab(view) {
+  if (typeof showHomeScreen === 'function') showHomeScreen();
+  setMyHubTopTabView(view);
 }
 
 /* Open the existing My Hub slot calendar instead of duplicating a slots page. */
 function homeOpenViewerSlots() {
-  if (typeof showHomeScreen === 'function') showHomeScreen();
-  setMyHubTopTabView('slots');
+  homeOpenMyHubTab('slots');
   if (typeof myCardSlotsSetView === 'function') myCardSlotsSetView('upcoming');
   if (typeof renderMyCardSlotsUI === 'function') renderMyCardSlotsUI(false);
 }
@@ -973,6 +1027,8 @@ function homeOpenViewerSlots() {
 /* ── Navigate to an inner page ── */
 function homeGo(pageId, tabId) {
 if (!pageId) return;
+if (pageId === 'joinClubPage') { homeOpenMyHubTab('clubs'); return; }
+if (pageId === 'vaultReport2Page') { homeOpenMyHubTab('report'); return; }
 homeHideScreen();
 _navSource = 'home';
 var tabEl = tabId ? document.getElementById(tabId) : null;
