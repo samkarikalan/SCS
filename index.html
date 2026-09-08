@@ -104,7 +104,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1047" defer></script>
+  <script src="HomeScreen.js?v=1049" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
@@ -1583,7 +1583,23 @@ html,body{overscroll-behavior:none;}
 
   </div><!-- end myCardContent -->
 
-  <!-- ── Viewer Upcoming Slots (handled by slots.js) ── -->
+  <!-- ── My Hub Home feed: new posted slots, today slots and live sessions ── -->
+  <section id="viewerHomeFeed" class="viewer-home-feed" style="display:none;">
+    <div class="viewer-home-feed-card" id="viewerHomeNewCard">
+      <div class="viewer-home-feed-head"><strong>✨ New Posted Slot</strong><span id="viewerHomeNewCount" class="viewer-home-feed-count">0</span></div>
+      <div id="viewerHomeNewList" class="viewer-home-feed-list"></div>
+    </div>
+    <div class="viewer-home-feed-card" id="viewerHomeTodayCard">
+      <div class="viewer-home-feed-head"><strong>📅 Today Slot</strong><span id="viewerHomeTodayCount" class="viewer-home-feed-count">0</span></div>
+      <div id="viewerHomeTodayList" class="viewer-home-feed-list"></div>
+    </div>
+    <div class="viewer-home-feed-card" id="viewerHomeLiveCard">
+      <div class="viewer-home-feed-head"><strong>📡 Live</strong><span id="viewerHomeLiveCount" class="viewer-home-feed-count">0</span></div>
+      <button type="button" id="viewerHomeLiveOpen" class="viewer-home-live-open" onclick="viewerHubTabNavigate('live')">No live sessions</button>
+    </div>
+  </section>
+
+  <!-- ── Viewer Slots tab (existing slot calendar; no redesign) ── -->
   <section id="mcUpcomingSlots" class="mc-slots-card" style="display:none;">
     <div class="mc-slots-head">
       <div>
@@ -1622,7 +1638,7 @@ html,body{overscroll-behavior:none;}
 
 
   <!-- ── Fixed player hub navigation bar ── -->
-  <div id="homeMoreSectionV" class="home-more-section home-more-expanded viewer-fixed-action-section">
+  <div id="homeMoreSectionV" class="home-more-section home-more-expanded viewer-fixed-action-section" style="display:none!important">
 
   <!-- Viewer action bar: replaces the former 2×2 tiles -->
   <nav class="viewer-action-bar" aria-label="Player hub shortcuts">
@@ -1658,10 +1674,10 @@ html,body{overscroll-behavior:none;}
 </div>
 
   <nav id="scsPrimaryBottomNav" class="scs-primary-bottom-nav" aria-label="Main navigation">
-    <button id="scsNavHome" type="button" onclick="scsPrimaryNavigate('viewer')"><span class="scs-primary-nav-icon" aria-hidden="true">⌂</span><span>Home</span></button>
-    <button id="scsNavRound" type="button" onclick="scsPrimaryNavigate('organiser')"><span class="scs-primary-nav-icon" aria-hidden="true">🏸</span><span>Round</span></button>
-    <button id="scsNavSlot" type="button" onclick="scsPrimaryNavigate('vault')"><span class="scs-primary-nav-icon" aria-hidden="true">▣</span><span>Slot</span></button>
-    <button id="scsNavSettings" type="button" onclick="scsPrimaryNavigate('settings')"><span class="scs-primary-nav-icon" aria-hidden="true">⚙</span><span>Settings</span></button>
+    <button id="scsNavHome" type="button" onclick="scsPrimaryNavigate('viewer-home')"><span class="scs-primary-nav-icon" aria-hidden="true">⌂</span><span>Home</span></button>
+    <button id="scsNavRound" type="button" onclick="scsPrimaryNavigate('viewer-slots')"><span class="scs-primary-nav-icon" aria-hidden="true">📅</span><span>Slots</span></button>
+    <button id="scsNavSlot" type="button" onclick="scsPrimaryNavigate('viewer-clubs')"><span class="scs-primary-nav-icon" aria-hidden="true">🏢</span><span>Clubs</span></button>
+    <button id="scsNavSettings" type="button" onclick="scsPrimaryNavigate('viewer-report')"><span class="scs-primary-nav-icon" aria-hidden="true">📊</span><span>Report</span></button>
   </nav>
 
   </div>

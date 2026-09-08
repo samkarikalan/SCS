@@ -34365,3 +34365,16 @@ html.app-light .home-app-tool, html.app-light .home-app-add.scs-home-add-btn { b
   .home-app-tool, .home-app-add.scs-home-add-btn { width:38px; height:38px; border-radius:12px; font-size:1.08rem; }
   .home-app-add.scs-home-add-btn { font-size:1.75rem; }
 }
+
+/* Build 1049 — StepUp-style My Hub tabs + Home feed. */
+.viewer-home-feed{margin:14px 16px 96px;display:grid;gap:12px}
+.viewer-home-feed-card{border:1px solid var(--border,rgba(255,255,255,.10));border-radius:18px;background:var(--surface,#171821);padding:14px;overflow:hidden}
+.viewer-home-feed-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:1rem;color:var(--text,#fff)}
+.viewer-home-feed-count{min-width:28px;height:28px;padding:0 8px;border-radius:14px;display:grid;place-items:center;background:rgba(108,99,255,.18);color:var(--accent,#6c63ff);font-weight:800;font-size:.78rem}
+.viewer-home-feed-list{display:grid;gap:9px}.viewer-home-feed-list:empty:after{content:'No slots';display:block;padding:10px 2px;color:var(--muted,#8e91a0);font-size:.82rem}
+.viewer-home-feed-list .mc-slot-card{margin:0}
+.viewer-home-live-open{width:100%;min-height:46px;border:0;border-radius:13px;background:rgba(255,255,255,.055);color:var(--text,#fff);font:700 .84rem/1.2 inherit;text-align:left;padding:0 13px;cursor:pointer}
+body.app-light .viewer-home-feed-card{background:#fff;border-color:rgba(10,20,35,.10)}
+body.app-light .viewer-home-live-open{background:#f1f3f6;color:#17191f}
+.scs-primary-bottom-nav button.is-active{position:relative}
+.scs-primary-bottom-nav button.is-active:before{content:'';position:absolute;top:2px;width:46px;height:3px;border-radius:3px;background:currentColor}

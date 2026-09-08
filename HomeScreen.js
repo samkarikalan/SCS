@@ -2745,3 +2745,53 @@ document.addEventListener('click', function(event) {
   var button = intro.querySelector('.org-mode-expand');
   if (button) orgToggleModeDetails(button, event);
 });
+
+/* Build 1049 — My Hub StepUp-style tab navigation. */
+window.__viewerHubTab = window.__viewerHubTab || 'home';
+
+function _viewerHubSetNavActive(tab) {
+  window.__viewerHubTab = tab || 'home';
+  var ids = {home:'scsNavHome',slots:'scsNavRound',clubs:'scsNavSlot',report:'scsNavSettings'};
+  Object.keys(ids).forEach(function(k){ var el=document.getElementById(ids[k]); if(el) el.classList.toggle('is-active',k===window.__viewerHubTab); });
+}
+
+async function viewerRenderHomeFeed() {
+  var feed=document.getElementById('viewerHomeFeed');
+  if(!feed) return;
+  feed.style.display='grid';
+  try {
+    if (typeof myCardSlotsRefreshAll === 'function') await myCardSlotsRefreshAll(false);
+  } catch(_) {}
+  var today = typeof _vsTodayStr === 'function' ? _vsTodayStr() : new Date().toISOString().slice(0,10);
+  var all=[];
+  try { Object.keys(_mcsSlotsByDate||{}).sort().forEach(function(d){(_mcsSlotsByDate[d]||[]).forEach(function(x){all.push(x);});}); } catch(_) {}
+  var todaySlots=all.filter(function(x){return String(x.slot_date||'')===today;});
+  var newSlots=all.filter(function(x){return typeof _mcsIsRecentlyPostedSlot==='function' && _mcsIsRecentlyPostedSlot(x);});
+  function paint(id,countId,rows,empty){
+    var box=document.getElementById(id), count=document.getElementById(countId); if(count) count.textContent=String(rows.length); if(!box)return;
+    box.innerHTML=rows.length && typeof _mcsRenderSlotCard==='function' ? rows.map(function(x){return _mcsRenderSlotCard(x,{compact:true});}).join('') : '<div class="mc-slots-empty">'+empty+'</div>';
+  }
+  paint('viewerHomeNewList','viewerHomeNewCount',newSlots,'No new posted slots');
+  paint('viewerHomeTodayList','viewerHomeTodayCount',todaySlots,'No slots today');
+  var live=[]; try { live=typeof dbGetLiveSessions==='function' ? await dbGetLiveSessions() : []; if(typeof _filterActuallyLiveSessions==='function') live=_filterActuallyLiveSessions(live); } catch(_){live=[];}
+  var lc=document.getElementById('viewerHomeLiveCount'), lb=document.getElementById('viewerHomeLiveOpen');
+  if(lc) lc.textContent=String(live.length); if(lb) lb.textContent=live.length ? (live.length+' live session'+(live.length===1?'':'s')+' — View') : 'No live sessions';
+}
+
+async function viewerHubTabNavigate(tab) {
+  tab=tab||'home';
+  if(tab==='live'){ if(typeof homeGo==='function') homeGo('dashboardPage','tabBtnDashboard'); return; }
+  if(tab==='clubs'){ _viewerHubSetNavActive('clubs'); if(typeof homeGo==='function') homeGo('joinClubPage',null); return; }
+  if(tab==='report'){ _viewerHubSetNavActive('report'); if(typeof homeGo==='function') homeGo('vaultReport2Page',null); return; }
+  if(typeof showHomeScreen==='function') showHomeScreen();
+  var slots=document.getElementById('mcUpcomingSlots'), feed=document.getElementById('viewerHomeFeed');
+  if(tab==='slots'){
+    _viewerHubSetNavActive('slots'); if(feed)feed.style.display='none'; if(slots)slots.style.display='';
+    if(typeof myCardSlotsSetView==='function') myCardSlotsSetView('upcoming');
+    if(typeof renderMyCardSlotsUI==='function') await renderMyCardSlotsUI(false);
+    if(slots) slots.scrollIntoView({behavior:'smooth',block:'start'});
+  } else {
+    _viewerHubSetNavActive('home'); if(slots)slots.style.display='none'; if(feed)feed.style.display='grid';
+    await viewerRenderHomeFeed(); window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
