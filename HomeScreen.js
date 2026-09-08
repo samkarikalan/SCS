@@ -1070,6 +1070,7 @@ if (pageId === 'joinClubPage') { homeOpenMyHubTab('clubs'); return; }
 if (pageId === 'vaultReport2Page') { homeOpenMyHubTab('report'); return; }
 homeHideScreen();
 _navSource = 'home';
+if (pageId === 'playersPage') window.__scsPlayersReturnSource = 'home';
 var tabEl = tabId ? document.getElementById(tabId) : null;
 showPage(pageId, tabEl);
 _updateDynamicBackBtns(pageId);
@@ -1580,6 +1581,7 @@ _updateDynamicBackBtns('summaryPage');
 /* ── Players navigation from Rounds ── */
 function roundsGoPlayers() {
 _navSource = 'rounds';
+window.__scsPlayersReturnSource = 'rounds';
 homeHideScreen();
 showPage('playersPage', null);
 _updateDynamicBackBtns('playersPage');
@@ -1599,6 +1601,26 @@ function _updateDynamicBackBtns(pageId) {
 
 /* ── Back navigation -- goes to correct origin ── */
 function navBack() {
+var playersPage = document.getElementById('playersPage');
+var playersVisible = !!(playersPage && getComputedStyle(playersPage).display !== 'none');
+if (playersVisible && window.__scsPlayersReturnSource) {
+  var playerReturn = window.__scsPlayersReturnSource;
+  window.__scsPlayersReturnSource = null;
+  if (playerReturn === 'rounds') {
+    _navSource = 'rounds';
+    showPage('roundsPage', null);
+    if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav('organiser');
+    return;
+  }
+  if (playerReturn === 'settings') {
+    _navSource = 'settings';
+    showPage('settingsPage', null);
+    return;
+  }
+  _navSource = 'home';
+  showHomeScreen();
+  return;
+}
 if (_navSource === 'rounds') {
   showPage('roundsPage', null);
 } else if (_navSource === 'settings') {

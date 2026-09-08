@@ -1513,6 +1513,8 @@ async function scsOpenPlayersManagerWhenRoundManagerEmpty(clubId) {
     if (playerCount > 0) return false;
 
     if (typeof homeHideScreen === 'function') homeHideScreen();
+    if (typeof _navSource !== 'undefined') _navSource = 'rounds';
+    window.__scsPlayersReturnSource = 'rounds';
     if (typeof showPage === 'function') showPage('playersPage', null);
     if (typeof _updateDynamicBackBtns === 'function') _updateDynamicBackBtns('playersPage');
     return true;
@@ -2219,6 +2221,8 @@ function updateRoundsPageAccess() {
   roundsTab.setAttribute('aria-disabled', block);
 
   if (block && isPageVisible('roundsPage')) {
+    if (typeof _navSource !== 'undefined') _navSource = 'rounds';
+    window.__scsPlayersReturnSource = 'rounds';
     showPage('playersPage', null);
   }
 }
@@ -2279,6 +2283,14 @@ function showPage(pageID, el) {
     else if (pageID === 'settingsPage') _navSource = 'settings';
   }
   if (pageID === 'playersPage') {
+    if (!window.__scsPlayersReturnSource) {
+      var roundNav = document.getElementById('scsNavRound');
+      if ((roundNav && roundNav.classList.contains('is-active')) ||
+          (typeof appMode !== 'undefined' && appMode === 'organiser')) {
+        window.__scsPlayersReturnSource = 'rounds';
+        if (typeof _navSource !== 'undefined') _navSource = 'rounds';
+      }
+    }
     selectedPage.scrollTop = 0;
     if (selectedPage.scrollTo) { try { selectedPage.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch (_) { selectedPage.scrollTop = 0; } }
   }
