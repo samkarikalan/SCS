@@ -1502,7 +1502,7 @@ html,body{overscroll-behavior:none;}
 
   <!-- ── My Hub top tabs (StepUp-style; primary bottom navigation is unchanged) ── -->
   <nav class="myhub-top-tabs" role="tablist" aria-label="My Hub sections">
-    <button class="myhub-top-tab is-active" type="button" role="tab" aria-selected="true" onclick="showHomeScreen()">Home</button>
+    <button class="myhub-top-tab is-active" type="button" role="tab" aria-selected="true" onclick="showHomeScreen();var s=document.getElementById('mcUpcomingSlots');if(s)s.style.display='none';document.querySelectorAll('.myhub-top-tab').forEach(function(b){var a=b.textContent.trim()==='Home';b.classList.toggle('is-active',a);b.setAttribute('aria-selected',a?'true':'false');});">Home</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeOpenViewerSlots()">Slots</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeGo('joinClubPage',null)">Clubs</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeGo('vaultReport2Page',null)">Report</button>
