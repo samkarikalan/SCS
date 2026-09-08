@@ -2253,10 +2253,10 @@ window.scsIsRoundManagerVisible = function() {
 };
 
 function showPage(pageID, el) {
-  // Inner pages are never the branded Home surface. Keep the iOS safe area
-  // on the normal dark app background even when Players/Register navigation
-  // temporarily hides the manager home.
-  if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
+  // Build 1076: page-to-page navigation must not repaint the iOS safe area.
+  // Safe-area ownership stays with primary workspace navigation/homeHideScreen.
+  // In particular, Players -> Round now restores the Round page without
+  // touching html/body/theme colours during the return render.
 
   // A workspace page must sit above no launcher layer. Welcome refreshes can
   // complete after navigation and otherwise leave the mode selector catching
