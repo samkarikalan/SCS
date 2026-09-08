@@ -1,6 +1,6 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1079-slot-card-date';
+const CACHE_NAME = 'scs-app-build-1080-slot-date-everywhere';
 const APP_SHELL = './index.html?v=1074';
 
 const ASSETS = [
@@ -12,7 +12,7 @@ const ASSETS = [
   './rounds.js?v=937', './mbm.js?v=856', './players.js?v=906',
   './importPlayers.js?v=985', './settings.js?v=987', './summary.js?v=856',
   './help.js?v=856', './profile.js?v=856', './dashboard.js?v=856',
-  './slots.js?v=896', './notifications.js?v=856', './viewer.js?v=856',
+  './slots.js?v=897', './notifications.js?v=856', './viewer.js?v=856',
   './report.js?v=856', './manifest.json?v=953',
   './male.png?v=856', './female.png?v=856', './win-cup.png?v=856',
   './welcome-default-myhub.png?v=1015', './welcome-default-round-manager.png?v=1015', './welcome-default-slot-manager.png?v=1015',

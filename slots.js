@@ -1091,7 +1091,7 @@ function vaultSlotsOpenDateSheet(dateStr) {
                       '<div class="vs-slot-venue">' + _vsEscape(_vsSlotVisibilityLabel(s)) +
                         ' <span class="vs-status-badge ' + statusClass + '">' + statusLabel + '</span>' +
                       '</div>' +
-                      '<div class="vs-slot-time">' + _vsFormatTime(s.start_time) + ' – ' + _vsFormatTime(s.end_time) + '</div>' +
+                      '<div class="vs-slot-time">' + _vsEscape(_mcsFormatDateTitle(s.slot_date)) + ' · ' + _vsFormatTime(s.start_time) + ' – ' + _vsFormatTime(s.end_time) + '</div>' +
                       _vsSlotVenueHtml(s) +
                       _vsSessionMetaHtml(s) +
                     '</div>' +
@@ -4904,7 +4904,7 @@ function _vhsRenderSlotCard(slot) {
       '</div>' +
       '<div class="mc-slot-main">' +
         '<div>' +
-          '<div class="mc-slot-time">' + _vsFormatTime(slot.start_time) + ' – ' + _vsFormatTime(slot.end_time) + '</div>' +
+          '<div class="mc-slot-time">' + _vsEscape(_mcsFormatDateTitle(slot.slot_date)) + ' · ' + _vsFormatTime(slot.start_time) + ' – ' + _vsFormatTime(slot.end_time) + '</div>' +
           _vsSlotVenueHtml(slot) +
           '<div class="mc-slot-info-row">' +
             _vsSessionMetaHtml(slot) +
