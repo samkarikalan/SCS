@@ -1,11 +1,11 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1072-players-return-layout-fix';
-const APP_SHELL = './index.html?v=1070';
+const CACHE_NAME = 'scs-app-build-1073-ios-status-blue-removed';
+const APP_SHELL = './index.html?v=1073';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1067', './rounds.css?v=1004',
+  './ui.css?v=1073', './rounds.css?v=1004',
   './offline-db.js?v=917', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=936', './auth.js?v=856',
   './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1067',
   './engjap.js?v=864', './main.js?v=1067', './games.js?v=1019',

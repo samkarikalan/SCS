@@ -34467,3 +34467,12 @@ html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background:
 body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
 
 
+
+
+/* Build 1069 — remove Round iMode blue from the iOS status-bar area.
+   Root cause: black-translucent lets the first Round iMode surface (#1257b7)
+   paint behind the standalone iOS status bar. The PWA status bar is now opaque;
+   the normal app/root background owns that area instead. */
+#scsPrimarySafeAreaBackdrop {
+  display:none !important;
+}
