@@ -1,6 +1,6 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1078-players-back-route';
+const CACHE_NAME = 'scs-app-build-1079-slot-card-date';
 const APP_SHELL = './index.html?v=1074';
 
 const ASSETS = [

@@ -4086,7 +4086,7 @@ function _mcsRenderSlotCard(slot, opts) {
       '</div>' +
       '<div class="mc-slot-main">' +
         '<div>' +
-          '<div class="mc-slot-time">' + _vsFormatTime(slot.start_time) + ' – ' + _vsFormatTime(slot.end_time) + '</div>' +
+          '<div class="mc-slot-time">' + _vsEscape(_mcsFormatDateTitle(slot.slot_date)) + ' · ' + _vsFormatTime(slot.start_time) + ' – ' + _vsFormatTime(slot.end_time) + '</div>' +
           _vsSlotVenueHtml(slot) +
           '<div class="mc-slot-info-row">' +
             _vsSessionMetaHtml(slot, true) +
