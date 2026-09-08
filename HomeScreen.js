@@ -1607,6 +1607,10 @@ if (playersVisible && window.__scsPlayersReturnSource) {
   var playerReturn = window.__scsPlayersReturnSource;
   window.__scsPlayersReturnSource = null;
   if (playerReturn === 'rounds') {
+    // Explicitly closing Players must stay closed. Round Manager normally
+    // auto-opens Players again when there are no players; suppress that
+    // one automatic redirect for this user-initiated close.
+    window.__scsSkipEmptyPlayersRedirectOnce = true;
     _navSource = 'rounds';
     showPage('roundsPage', null);
     if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav('organiser');

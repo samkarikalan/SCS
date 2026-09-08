@@ -1488,6 +1488,12 @@ function showOrganiserAccessMenu(clubs, options) {
 
 async function scsOpenPlayersManagerWhenRoundManagerEmpty(clubId) {
   try {
+    // If the user just closed Players, respect that action and let Round
+    // Manager remain visible instead of immediately reopening Players.
+    if (window.__scsSkipEmptyPlayersRedirectOnce) {
+      window.__scsSkipEmptyPlayersRedirectOnce = false;
+      return false;
+    }
     // Never leave an existing online or iMode session, even if its current
     // player data has not finished painting yet.
     var hasOnlineSession = (typeof getMySessionId === 'function') && !!getMySessionId();
