@@ -5785,6 +5785,11 @@ function scsSyncPrimaryBottomNav(active) {
   });
   var add = document.getElementById('scsHomeAddBtn');
   if (add) add.style.display = active === 'viewer' ? '' : 'none';
+
+  // Build 1064: the SCS identity/title header belongs to Home only.
+  // Round Manager, Slot Manager and Settings start directly with their content.
+  var appHeader = document.querySelector('#homePageOverlay .home-app-header');
+  if (appHeader) appHeader.style.display = active === 'viewer' ? '' : 'none';
 }
 
 function scsPrimaryNavigate(target) {
