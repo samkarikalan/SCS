@@ -5786,6 +5786,12 @@ function scsSyncPrimaryBottomNav(active) {
   var add = document.getElementById('scsHomeAddBtn');
   if (add) add.style.display = active === 'viewer' ? '' : 'none';
 
+  // Keep the iOS safe-area/status-bar background blue only on Home.
+  if (document.body) {
+    document.body.classList.toggle('scs-home-active', active === 'viewer');
+    document.body.classList.toggle('scs-nonhome-active', active !== 'viewer');
+  }
+
   // Build 1064: the SCS identity/title header belongs to Home only.
   // Round Manager, Slot Manager and Settings start directly with their content.
   var appHeader = document.querySelector('#homePageOverlay .home-app-header');
