@@ -34331,12 +34331,10 @@ body.app-light .scs-home-quick-panel .scs-home-quick-club {
 #homePageOverlay .home-topbar.home-app-header {
   min-height: 86px;
   padding: 11px 14px;
-  border: 1px solid rgba(74,126,233,.34);
-  border-left: 0;
-  border-right: 0;
+  border: 0;
   border-radius: 0;
   background: linear-gradient(135deg,rgba(16,39,83,.95),rgba(7,18,42,.98));
-  box-shadow: 0 10px 26px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.055);
+  box-shadow: none;
   gap: 10px;
 }
 .home-app-brand { min-width:0; display:flex; align-items:center; gap:11px; flex:1 1 auto; }
