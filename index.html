@@ -329,6 +329,7 @@ html,body{overscroll-behavior:none;}
 .myhub-home-sections{display:grid;gap:9px;margin:12px 16px 14px}
 .myhub-home-card{width:100%;display:grid;grid-template-columns:38px 1fr 18px;align-items:center;gap:10px;text-align:left;border:1px solid var(--border,rgba(255,255,255,.09));border-radius:16px;padding:12px 14px;background:var(--surface,#171821);color:var(--text,#fff);font-family:inherit;cursor:pointer}
 .myhub-home-icon{font-size:1.25rem;text-align:center}.myhub-home-card strong{display:block;font-size:.92rem}.myhub-home-card small{display:block;margin-top:3px;color:var(--text-dim,#92929f);font-size:.72rem;font-weight:500}.myhub-home-chevron{font-size:1.35rem;color:var(--text-dim,#92929f)}
+.myhub-home-group{border:1px solid var(--border,rgba(255,255,255,.09));border-radius:16px;background:var(--surface,#171821);overflow:hidden}.myhub-home-group .myhub-home-card{border:0;border-radius:0;background:transparent;margin:0}.myhub-home-count{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent,#6257f6) 24%,transparent);color:var(--accent,#776cff);font-size:.75rem;font-weight:800;margin-left:7px}.myhub-home-list{display:none;padding:0 10px 10px}.myhub-home-group.is-open .myhub-home-list{display:block}.myhub-home-group.is-open .myhub-home-chevron{transform:rotate(90deg)}.myhub-home-list .mc-slot-card{margin:8px 0}.myhub-home-empty{padding:10px 8px;color:var(--text-dim,#92929f);font-size:.78rem;text-align:center}.myhub-live-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 10px;margin-top:8px;border-radius:12px;background:rgba(255,255,255,.035)}.myhub-live-item strong{font-size:.84rem}.myhub-live-item small{display:block;color:var(--text-dim,#92929f);margin-top:2px}.myhub-live-open{border:0;border-radius:10px;padding:8px 10px;background:var(--accent,#6257f6);color:#fff;font:700 .74rem inherit}
 .myhub-tab-view{display:none}.myhub-tab-view.is-active{display:block}
 
 .myhub-embedded-view{margin:0 0 16px;min-height:0}
@@ -1611,9 +1612,18 @@ html,body{overscroll-behavior:none;}
 
   <!-- ── My Hub Home quick sections ── -->
   <section class="myhub-home-sections" aria-label="Home">
-    <button type="button" class="myhub-home-card" onclick="homeOpenViewerSlots()"><span class="myhub-home-icon">🔔</span><span><strong>New Posted Slot</strong><small>Recently posted slots</small></span><span class="myhub-home-chevron">›</span></button>
-    <button type="button" class="myhub-home-card" onclick="homeOpenViewerSlots()"><span class="myhub-home-icon">📅</span><span><strong>Today Slot</strong><small>Slots for today</small></span><span class="myhub-home-chevron">›</span></button>
-    <button type="button" class="myhub-home-card" onclick="homeGo('dashboardPage','tabBtnDashboard')"><span class="myhub-home-icon">📡</span><span><strong>Live</strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
+    <div class="myhub-home-group" id="myHubNewSlotsGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('new')"><span class="myhub-home-icon">🔔</span><span><strong>New Posted Slot <span class="myhub-home-count" id="myHubNewSlotsCount">0</span></strong><small>New slots you have not joined</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubNewSlotsList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubTodaySlotsGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('today')"><span class="myhub-home-icon">📅</span><span><strong>Today Slot <span class="myhub-home-count" id="myHubTodaySlotsCount">0</span></strong><small>Your slots for today</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubTodaySlotsList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubLiveGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubLiveList"></div>
+    </div>
   </section>
 
   </section><!-- end myHubHomeView -->

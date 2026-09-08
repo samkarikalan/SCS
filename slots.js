@@ -4386,6 +4386,7 @@ async function renderMyCardSlotsUI(loadFresh) {
     if (titleEl) titleEl.textContent = _mcsFormatDateTitle(_mcsSelectedDateStr);
     listEl.innerHTML = '<div class="mc-slots-empty">' + (_mcsSlotView === 'all' ? (t('noSlots') || 'No slots') : (t('noUpcomingSlots') || 'No upcoming slots')) + '</div>';
     _mcsNormalizeSlotActionLabels(listEl);
+    if (typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
     return;
   }
   var focusedIndex = _mcsCarouselSlotId
@@ -4396,6 +4397,7 @@ async function renderMyCardSlotsUI(loadFresh) {
   if (titleEl) titleEl.textContent = _mcsFormatDateTitle(slots[startIndex].__carouselDate);
   listEl.innerHTML = _vsRenderSlotCarousel(slots, function(slot) { return _mcsRenderSlotCard(slot); }, 'mcSlotsCarousel');
   _mcsNormalizeSlotActionLabels(listEl);
+  if (typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
   _vsInitSlotCarousel('mcSlotsCarousel', startIndex, function(index) {
     _mcsCarouselIndex = index;
     if (slots[index] && slots[index].__carouselDate) {
@@ -6122,3 +6124,27 @@ function vaultSlotsUpdateClubPill() {
     return await originalOpen.apply(this, arguments);
   };
 })();
+
+/* Build 51: render actionable slot summaries inside My Hub Home without navigating to Slots. */
+function myHubRenderQuickSlots() {
+  var newList=document.getElementById('myHubNewSlotsList'), todayList=document.getElementById('myHubTodaySlotsList');
+  var newCount=document.getElementById('myHubNewSlotsCount'), todayCount=document.getElementById('myHubTodaySlotsCount');
+  if (!newList || !todayList || !newCount || !todayCount) return;
+  var today=_vsTodayStr();
+  var all=_vsFlattenSlotsByDate(_mcsSlotsByDate || {});
+  var newSlots=all.filter(function(slot){
+    var d=String(slot.slot_date || slot.__carouselDate || '');
+    if (d < today || _mcsIsPlayedSlot(slot)) return false;
+    return !_mcsViewerClaim(slot);
+  });
+  var todaySlots=all.filter(function(slot){
+    var d=String(slot.slot_date || slot.__carouselDate || '');
+    var claim=_mcsViewerClaim(slot);
+    return d===today && !!claim;
+  });
+  newCount.textContent=newSlots.length;
+  todayCount.textContent=todaySlots.length;
+  newList.innerHTML=newSlots.length ? newSlots.map(function(s){return _mcsRenderSlotCard(s,{compact:true});}).join('') : '<div class="myhub-home-empty">No new slots to join</div>';
+  todayList.innerHTML=todaySlots.length ? todaySlots.map(function(s){return _mcsRenderSlotCard(s,{compact:true});}).join('') : '<div class="myhub-home-empty">No joined slots today</div>';
+  _mcsNormalizeSlotActionLabels(newList); _mcsNormalizeSlotActionLabels(todayList);
+}

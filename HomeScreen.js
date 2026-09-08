@@ -2818,3 +2818,33 @@ document.addEventListener('click', function(event) {
   var button = intro.querySelector('.org-mode-expand');
   if (button) orgToggleModeDetails(button, event);
 });
+
+/* Build 51: My Hub quick-action accordions. These are independent from the full Slots tab. */
+function myHubToggleQuickGroup(kind) {
+  var ids = { new:'myHubNewSlotsGroup', today:'myHubTodaySlotsGroup', live:'myHubLiveGroup' };
+  var el = document.getElementById(ids[kind]);
+  if (!el) return;
+  var opening = !el.classList.contains('is-open');
+  Object.keys(ids).forEach(function(k){ var x=document.getElementById(ids[k]); if(x && x!==el) x.classList.remove('is-open'); });
+  el.classList.toggle('is-open', opening);
+  if (opening && kind === 'live') myHubRefreshLiveQuickList();
+  if (opening && (kind === 'new' || kind === 'today') && typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
+}
+
+async function myHubRefreshLiveQuickList() {
+  var list = document.getElementById('myHubLiveList');
+  var count = document.getElementById('myHubLiveCount');
+  if (!list || !count) return;
+  list.innerHTML = '<div class="myhub-home-empty">Loading…</div>';
+  try {
+    var sessions = (typeof dbGetLiveSessions === 'function') ? await dbGetLiveSessions() : [];
+    sessions = (typeof _filterActuallyLiveSessions === 'function') ? _filterActuallyLiveSessions(sessions) : (sessions || []);
+    count.textContent = sessions.length;
+    if (!sessions.length) { list.innerHTML = '<div class="myhub-home-empty">No live sessions right now</div>'; return; }
+    list.innerHTML = sessions.map(function(sess){
+      var club = sess.club_name || sess.clubName || sess.name || 'Live session';
+      var starter = sess.started_by || sess.starter || '';
+      return '<div class="myhub-live-item"><span><strong>'+String(club).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];})+'</strong><small>'+ (starter ? 'Started by '+String(starter).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}) : 'In progress') +'</small></span><button class="myhub-live-open" onclick="homeGo(\'dashboardPage\',\'tabBtnDashboard\')">View</button></div>';
+    }).join('');
+  } catch(e) { count.textContent='0'; list.innerHTML='<div class="myhub-home-empty">Unable to load live sessions</div>'; }
+}
