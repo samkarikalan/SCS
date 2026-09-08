@@ -67,7 +67,8 @@ function setMyCardDetailsOpen(open) {
   _myCardDetailsOpen = !!open;
 
   var panel = document.getElementById('mcDetailsPanel');
-  var arrow = document.getElementById('mcDetailsArrow');
+  var arrow = document.getElementById('homeUserProfileToggle');
+  var header = document.querySelector('#homePageOverlay .home-app-header');
   var ratingBreakdown = document.getElementById('mcRatingBreakdown');
   var pointsBreakdown = document.getElementById('mcPointsBreakdown');
 
@@ -80,6 +81,21 @@ function setMyCardDetailsOpen(open) {
     arrow.setAttribute('aria-expanded', _myCardDetailsOpen ? 'true' : 'false');
     arrow.classList.toggle('open', _myCardDetailsOpen);
   }
+  if (header) header.classList.toggle('profile-open', _myCardDetailsOpen);
+}
+
+function attachMyCardToUserHeader() {
+  var header = document.querySelector('#homePageOverlay .home-app-header');
+  var card = document.getElementById('myCardContent');
+  if (!header || !card || card.parentNode === header) return;
+  header.appendChild(card);
+  setMyCardDetailsOpen(false);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', attachMyCardToUserHeader);
+} else {
+  attachMyCardToUserHeader();
 }
 
 function toggleMyCardDetails() {

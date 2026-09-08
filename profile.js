@@ -641,6 +641,8 @@ setEl('mcLosses',       totalLosses);
 
 const tierEl = document.getElementById('mcTier');
 if (tierEl) { tierEl.textContent = tier.label; tierEl.style.background = tier.color + '22'; tierEl.style.color = tier.color; }
+const headerTierEl = document.getElementById('homeUserHeaderTier');
+if (headerTierEl) { headerTierEl.textContent = tier.label; }
 
 // 5. Period stats from sessions jsonb
 const now       = new Date();

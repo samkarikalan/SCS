@@ -903,12 +903,13 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
 <div class="home-topbar home-app-header" aria-label="User home">
   <div class="home-app-brand">
     <img id="homeUserHeaderAvatar" class="home-app-logo" src="male.png?v=856" alt="User">
-    <div class="home-app-brand-copy"><strong id="homeUserHeaderName">Player</strong><span id="homeUserHeaderSubtitle">Member</span></div>
+    <div class="home-app-brand-copy"><strong id="homeUserHeaderName">Player</strong><span id="homeUserHeaderTier">Member</span></div>
   </div>
   <div class="home-app-tools">
     <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
   </div>
   <button class="scs-topbar-btn home-mode-refresh-btn" id="homeModeRefreshBtn" type="button" onclick="homeModeManualRefresh()" title="Refresh" style="display:none;">↻</button>
+  <button id="homeUserProfileToggle" class="home-user-profile-toggle" type="button" onclick="toggleMyCardDetails()" aria-expanded="false" aria-label="Show profile details" title="Profile details">⌄</button>
 </div>
 
 <div id="scsHomeQuickMenu" class="scs-home-quick-menu" hidden onclick="if(event.target===this)scsCloseHomeQuickMenu()">
@@ -1549,7 +1550,6 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
 
     <!-- Ratings + Points -->
     <div class="mycard-ratings">
-      <button id="mcDetailsArrow" class="mc-details-arrow" type="button" onclick="toggleMyCardDetails()" aria-expanded="false" aria-controls="mcDetailsPanel">⌄</button>
       <div class="mycard-rating-box">
         <div class="mycard-rating-value" id="mcGlobalRating">—</div>
         <div class="mycard-rating-label" data-i18n="globalRating">Global Rating</div>

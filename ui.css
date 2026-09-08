@@ -34501,3 +34501,91 @@ body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
+
+/* Build 1082 — Home user title is the single collapsible profile container.
+   Avoid repeating avatar/name/tier in the profile details. */
+#homePageOverlay .home-topbar.home-app-header {
+  position: relative;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#homePageOverlay .home-user-profile-toggle {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(155,146,255,.46);
+  background: rgba(68,55,150,.34);
+  color: #aaa2ff;
+  font-size: 1.25rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 4px;
+  cursor: pointer;
+}
+#homePageOverlay .home-user-profile-toggle.open {
+  background: rgba(96,76,215,.48);
+}
+
+/* The moved profile content is hidden in the normal compact title state. */
+#homePageOverlay .home-app-header > #myCardContent {
+  display: none !important;
+  width: 100%;
+  flex: 0 0 100%;
+  margin: 8px 0 0 !important;
+  padding: 12px 0 2px !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(255,255,255,.13) !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#homePageOverlay .home-app-header.profile-open > #myCardContent {
+  display: block !important;
+}
+
+/* Identity already lives in the title; never repeat it in expanded details. */
+#homePageOverlay .home-app-header > #myCardContent .mycard-identity {
+  display: none !important;
+}
+#homePageOverlay .home-app-header > #myCardContent .mycard-ratings {
+  margin: 0 !important;
+  padding: 0 0 10px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#homePageOverlay .home-app-header > #myCardContent .mycard-rating-box {
+  padding: 8px 10px !important;
+}
+#homePageOverlay .home-app-header > #myCardContent .mycard-rating-value {
+  font-size: 1.55rem;
+}
+#homePageOverlay .home-app-header > #myCardContent .mc-details-panel {
+  border-top: 1px solid rgba(255,255,255,.13);
+  padding-top: 8px;
+}
+#homePageOverlay .home-app-header > #myCardContent .profile-stats-row {
+  margin: 8px 10px !important;
+}
+#homePageOverlay .home-app-header > #myCardContent .mc-period-list {
+  margin: 8px 10px 2px !important;
+}
+html.app-light #homePageOverlay .home-app-header > #myCardContent {
+  border-top-color: rgba(48,52,96,.13) !important;
+}
+html.app-light #homePageOverlay .home-app-header > #myCardContent .mc-details-panel {
+  border-top-color: rgba(48,52,96,.13);
+}
+
+@media (max-width:390px) {
+  #homePageOverlay .home-user-profile-toggle {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+    font-size: 1.1rem;
+  }
+}
