@@ -1065,6 +1065,7 @@ function homeOpenViewerSlots() {
 /* ── Navigate to an inner page ── */
 function homeGo(pageId, tabId) {
 if (!pageId) return;
+if (pageId === 'settingsPage' && typeof scsCaptureSettingsReturnState === 'function') scsCaptureSettingsReturnState();
 if (pageId === 'joinClubPage') { homeOpenMyHubTab('clubs'); return; }
 if (pageId === 'vaultReport2Page') { homeOpenMyHubTab('report'); return; }
 homeHideScreen();

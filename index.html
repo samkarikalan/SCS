@@ -1874,7 +1874,7 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
       <div class="settings-heading"><span class="sheet-title" data-i18n="settings">Settings</span><span class="settings-subtitle">Personalise your SCS experience</span></div>
       <div class="settings-header-actions">
         <button class="settings-sync-btn" id="settingsHeaderSyncBtn" type="button" onclick="scsRunManualSync('header')" aria-label="Sync now" title="Sync now"><span class="settings-sync-glyph">↻</span><small id="settingsHeaderSyncStatus">Sync</small></button>
-        <button class="sheet-close-btn" onclick="document.getElementById('settingsPage').style.display='none';document.getElementById('homePageOverlay').classList.remove('settings-open');openModeSwitcher()">✕</button>
+        <button class="sheet-close-btn" onclick="scsCloseSettings()">✕</button>
       </div>
     </div>
     <div class="pref-wrap">

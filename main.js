@@ -5851,9 +5851,85 @@ function scsSyncPrimaryBottomNav(active) {
   if (appHeader) appHeader.style.display = active === 'viewer' ? '' : 'none';
 }
 
+// Remember exactly where Settings was opened from so closing it returns there.
+// This applies to Home, Round Manager, Slot Manager and any visible inner page.
+window.__scsSettingsReturnState = window.__scsSettingsReturnState || null;
+
+function scsCaptureSettingsReturnState() {
+  var settings = document.getElementById('settingsPage');
+  if (settings && settings.style.display !== 'none') return;
+
+  var visiblePage = null;
+  document.querySelectorAll('.page').forEach(function(page) {
+    if (!visiblePage && page.id !== 'settingsPage' && getComputedStyle(page).display !== 'none') {
+      visiblePage = page.id;
+    }
+  });
+
+  var home = document.getElementById('homePageOverlay');
+  var homeVisible = !!(home && getComputedStyle(home).display !== 'none');
+  var workspace = (typeof appMode !== 'undefined' && appMode) ? appMode : 'viewer';
+  var activePrimary = 'viewer';
+  if (document.getElementById('scsNavRound') && document.getElementById('scsNavRound').classList.contains('is-active')) activePrimary = 'organiser';
+  else if (document.getElementById('scsNavSlot') && document.getElementById('scsNavSlot').classList.contains('is-active')) activePrimary = 'vault';
+  else if (document.getElementById('scsNavHome') && document.getElementById('scsNavHome').classList.contains('is-active')) activePrimary = 'viewer';
+  else if (workspace === 'organiser' || workspace === 'vault' || workspace === 'viewer') activePrimary = workspace;
+
+  var myHubView = 'home';
+  var activeHubTab = document.querySelector('.myhub-top-tab.is-active');
+  if (activeHubTab) {
+    var txt = (activeHubTab.textContent || '').trim().toLowerCase();
+    if (txt === 'slots' || txt === 'clubs' || txt === 'report' || txt === 'home') myHubView = txt;
+  }
+
+  window.__scsSettingsReturnState = {
+    pageId: visiblePage,
+    homeVisible: homeVisible,
+    workspace: workspace,
+    primary: activePrimary,
+    myHubView: myHubView
+  };
+}
+
+function scsCloseSettings() {
+  var settings = document.getElementById('settingsPage');
+  if (settings) settings.style.display = 'none';
+  var home = document.getElementById('homePageOverlay');
+  if (home) home.classList.remove('settings-open');
+
+  var state = window.__scsSettingsReturnState;
+  window.__scsSettingsReturnState = null;
+  if (!state) {
+    if (typeof showHomeScreen === 'function') showHomeScreen();
+    return;
+  }
+
+  // If Settings was opened from an inner page, restore that exact page.
+  if (state.pageId && document.getElementById(state.pageId)) {
+    if (typeof showPage === 'function') showPage(state.pageId, null);
+    if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav(state.primary || state.workspace || 'viewer');
+    return;
+  }
+
+  // Otherwise restore the exact workspace home and, for My Hub, its selected top tab.
+  if (state.workspace === 'organiser' || state.workspace === 'vault' || state.workspace === 'viewer') {
+    try { appMode = state.workspace; } catch (_) {}
+    try { welcomeSelectedWorkspace = state.workspace; } catch (_) {}
+    try { sessionStorage.setItem('appMode', state.workspace); } catch (_) {}
+    try { localStorage.setItem('kbrr_app_mode', state.workspace); } catch (_) {}
+    if (typeof applyMode === 'function') { try { applyMode(state.workspace); } catch (_) {} }
+  }
+  if (typeof showHomeScreen === 'function') showHomeScreen();
+  if (state.workspace === 'viewer' && state.myHubView && typeof setMyHubTopTabView === 'function') {
+    try { setMyHubTopTabView(state.myHubView); } catch (_) {}
+  }
+  if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav(state.primary || state.workspace || 'viewer');
+}
+
 function scsPrimaryNavigate(target) {
   scsCloseHomeQuickMenu();
   if (target === 'settings') {
+    scsCaptureSettingsReturnState();
     scsSyncPrimaryBottomNav('settings');
     if (typeof homeGo === 'function') homeGo('settingsPage', 'tabBtnSettings');
     return;
