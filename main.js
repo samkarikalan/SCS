@@ -5781,8 +5781,29 @@ async function scsQuickSlotClubAction(event) {
 function scsSetPrimarySafeArea(surface) {
   if (!document.body) return;
   var isHome = surface === 'home' || surface === 'viewer';
+  var isLight = document.body.classList.contains('app-light') || document.documentElement.classList.contains('app-light');
+  var nonHomeBg = isLight ? '#f4f6fb' : '#0f0f13';
+
   document.body.classList.toggle('scs-home-active', isHome);
   document.body.classList.toggle('scs-nonhome-active', !isHome);
+
+  // Build 1067: iOS standalone can keep the previous Home/round-card colour in
+  // the status-bar region after async Round Manager entry (Home > Start a Round,
+  // Players close, or iMode start). Repaint the actual document chrome as well
+  // as the body class so every non-Home route is deterministic.
+  if (!isHome) {
+    document.documentElement.style.backgroundColor = nonHomeBg;
+    document.body.style.backgroundColor = nonHomeBg;
+    var metaTheme = document.getElementById('metaThemeColor');
+    if (metaTheme) metaTheme.setAttribute('content', nonHomeBg);
+    var homeOverlay = document.getElementById('homePageOverlay');
+    if (homeOverlay) homeOverlay.style.backgroundColor = nonHomeBg;
+  } else {
+    // Home owns its existing branded top treatment. Remove only the inline
+    // overlay paint added for non-Home so the approved Home design is unchanged.
+    var homeOverlay = document.getElementById('homePageOverlay');
+    if (homeOverlay) homeOverlay.style.backgroundColor = '';
+  }
 }
 
 function scsSyncPrimaryBottomNav(active) {
@@ -5944,6 +5965,7 @@ function scsHomeQuickAction(action) {
   scsCloseHomeQuickMenu();
   if (action === 'round') {
     welcomeSelectedWorkspace = 'organiser';
+    if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
     switchMode('organiser');
     return;
   }

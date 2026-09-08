@@ -34460,7 +34460,8 @@ body.scs-nonhome-active::before {
   left:0;
   right:0;
   height:env(safe-area-inset-top, 0px);
-  background:var(--bg, #0f0f13);
+  background:#0f0f13;
   pointer-events:none;
 }
+body.app-light.scs-nonhome-active::before { background:#f4f6fb; }
 body.scs-home-active::before { content:none; }
