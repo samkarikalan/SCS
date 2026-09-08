@@ -362,6 +362,11 @@ document.querySelectorAll('.page').forEach(function(page) {
 document.body.classList.add('home-open');
 
 homeEl.style.display = 'flex';
+// Always reopen a workspace at its real top. Players and other child pages can
+// leave homePageOverlay with a previous scrollTop, which made Round Manager
+// reappear clipped under a large blank status-area region after closing Players.
+homeEl.scrollTop = 0;
+if (homeEl.scrollTo) { try { homeEl.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch (_) { homeEl.scrollTop = 0; } }
 if (typeof setMyHubTopTabView === 'function') setMyHubTopTabView('home');
 
 // Build 1068: showHomeScreen() is shared by My Hub, Round Manager and Slot Manager.

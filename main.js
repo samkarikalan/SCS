@@ -2268,7 +2268,12 @@ function showPage(pageID, el) {
   document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
 
   // Show selected page
-  document.getElementById(pageID).style.display = 'block';
+  var selectedPage = document.getElementById(pageID);
+  selectedPage.style.display = 'block';
+  if (pageID === 'playersPage') {
+    selectedPage.scrollTop = 0;
+    if (selectedPage.scrollTo) { try { selectedPage.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch (_) { selectedPage.scrollTop = 0; } }
+  }
 
   // Hide both top bars while inside a page
   document.querySelectorAll('.home-topbar, .top-bar').forEach(b => b.style.display = 'none');
