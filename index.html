@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1074">
+  <link rel="stylesheet" href="ui.css?v=1077">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -1900,26 +1900,13 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
     </div>
   </div>
 
-  <!-- APPEARANCE — Theme + Font + Tile Style merged -->
-
-  <div class="pref-section-label"><span class="pref-section-icon">◫</span><span data-i18n="workspace">Workspace</span></div>
-  <div class="pref-card">
-    <div class="pref-row" style="flex-direction:column;align-items:stretch;gap:10px;">
-      <span class="pref-row-label" data-i18n="availableHubs">Available hubs</span>
-      <div class="pref-pill-group appear-pill-group workspace-visibility-pills" id="experienceModePills">
-        <button class="pref-pill" id="experience_standard" onclick="setExperienceMode('standard')">My Hub</button>
-        <button class="pref-pill" id="experience_intermediate" onclick="setExperienceMode('intermediate')">Round Manager</button>
-        <button class="pref-pill" id="experience_advanced" onclick="setExperienceMode('advanced')">Slot Manager</button>
-      </div>
-      <div id="experienceModeDescription" style="font-size:.74rem;color:var(--text-dim);line-height:1.45;"></div>
-    </div>
-  </div>
+  <!-- APPEARANCE -->
 
   <div class="pref-section-label"><span class="pref-section-icon">✦</span><span data-i18n="appearance">Appearance</span></div>
   <div class="pref-card" id="appearanceCard">
 
 <!-- Language -->
-<div class="pref-row">
+<div class="pref-row settings-language-row">
   <span class="pref-row-label">🌐 <span data-i18n="language">Language</span></span>
   <div class="pref-pill-group appear-pill-group" id="settingsLanguagePills">
     <button class="pref-pill" type="button" onclick="mlSelectLang('en','🇺🇸','English')">🇺🇸 English</button>

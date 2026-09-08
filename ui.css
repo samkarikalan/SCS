@@ -34471,3 +34471,33 @@ body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
 /* Build 1070 — keep the dedicated safe-area backdrop active.
    Build 1069 accidentally forced it hidden with !important, which defeated
    scsSetPrimarySafeArea() after returning from Players. */
+
+
+/* Build 1077 — Settings mobile layout fix.
+   Keep the language selector inside the Appearance card and remove overflow. */
+#settingsPage .settings-language-row {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+}
+#settingsPage #settingsLanguagePills {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+#settingsPage #settingsLanguagePills .pref-pill {
+  min-width: 0 !important;
+  width: 100% !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 600px) {
+  #settingsPage #settingsLanguagePills {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
