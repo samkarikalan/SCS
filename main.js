@@ -5981,24 +5981,3 @@ function scsHomeQuickAction(action) {
     }, 40);
   }
 }
-
-/* Build 1049 — My Hub bottom tabs. Existing Round/Slot/Settings workspaces remain unchanged. */
-(function(){
-  var _oldSync=scsSyncPrimaryBottomNav, _oldNav=scsPrimaryNavigate;
-  scsSyncPrimaryBottomNav=function(active){
-    if(active==='viewer'){
-      var nav=document.getElementById('scsPrimaryBottomNav'); if(nav&&nav.parentElement!==document.body)document.body.appendChild(nav);
-      if(typeof _viewerHubSetNavActive==='function') _viewerHubSetNavActive(window.__viewerHubTab||'home');
-      var add=document.getElementById('scsHomeAddBtn'); if(add)add.style.display=''; return;
-    }
-    _oldSync(active);
-  };
-  scsPrimaryNavigate=function(target){
-    if(target==='viewer-home'||target==='viewer-slots'||target==='viewer-clubs'||target==='viewer-report'){
-      if(typeof switchMode==='function' && appMode!=='viewer') switchMode('viewer');
-      var tab=target.replace('viewer-','');
-      window.setTimeout(function(){ if(typeof viewerHubTabNavigate==='function') viewerHubTabNavigate(tab); },0); return;
-    }
-    _oldNav(target);
-  };
-})();
