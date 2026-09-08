@@ -1607,12 +1607,21 @@ if (playersVisible && window.__scsPlayersReturnSource) {
   var playerReturn = window.__scsPlayersReturnSource;
   window.__scsPlayersReturnSource = null;
   if (playerReturn === 'rounds') {
-    // Explicitly closing Players must stay closed. Round Manager normally
-    // auto-opens Players again when there are no players; suppress that
-    // one automatic redirect for this user-initiated close.
-    window.__scsSkipEmptyPlayersRedirectOnce = true;
+    // Round Manager is a primary workspace on homePageOverlay, not the legacy
+    // roundsPage game screen. Returning Players to roundsPage left the new
+    // workspace hidden and could make the Players sheet appear not to close.
     _navSource = 'rounds';
-    showPage('roundsPage', null);
+    if (playersPage) {
+      playersPage.style.display = 'none';
+      playersPage.classList.remove('scs-assist-child-page');
+    }
+    document.body.classList.remove('scs-guide-child-open');
+    if (typeof appMode !== 'undefined') appMode = 'organiser';
+    try {
+      sessionStorage.setItem('appMode', 'organiser');
+      localStorage.setItem('kbrr_app_mode', 'organiser');
+    } catch (_) {}
+    if (typeof showHomeScreen === 'function') showHomeScreen();
     if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav('organiser');
     return;
   }
