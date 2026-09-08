@@ -5788,6 +5788,8 @@ function scsSetPrimarySafeArea(surface) {
   var isHome = surface === 'home' || surface === 'viewer';
   var isLight = document.body.classList.contains('app-light') || document.documentElement.classList.contains('app-light');
   var nonHomeBg = isLight ? '#f4f6fb' : '#0f0f13';
+  var homeBg = isLight ? '#f4f6fb' : '#1f5fbd';
+  var safeAreaBg = isHome ? homeBg : nonHomeBg;
 
   document.body.classList.toggle('scs-home-active', isHome);
   document.body.classList.toggle('scs-nonhome-active', !isHome);
@@ -5804,20 +5806,19 @@ function scsSetPrimarySafeArea(surface) {
     safeArea.setAttribute('aria-hidden', 'true');
     document.body.appendChild(safeArea);
   }
-  safeArea.style.display = isHome ? 'none' : 'block';
-  safeArea.style.backgroundColor = nonHomeBg;
+  // The PWA uses black-translucent so this element, not iOS' cached theme
+  // colour, owns the status-bar safe area. Home keeps its blue identity;
+  // Round/Slot/Settings and child pages always use the normal app background.
+  safeArea.style.display = 'block';
+  safeArea.style.backgroundColor = safeAreaBg;
 
-  if (!isHome) {
-    document.documentElement.style.backgroundColor = nonHomeBg;
-    document.body.style.backgroundColor = nonHomeBg;
-    var metaTheme = document.getElementById('metaThemeColor');
-    if (metaTheme) metaTheme.setAttribute('content', nonHomeBg);
-    var homeOverlay = document.getElementById('homePageOverlay');
-    if (homeOverlay) homeOverlay.style.backgroundColor = nonHomeBg;
-  } else {
-    var homeOverlay = document.getElementById('homePageOverlay');
-    if (homeOverlay) homeOverlay.style.backgroundColor = '';
-  }
+  document.documentElement.style.backgroundColor = isHome ? homeBg : nonHomeBg;
+  document.body.style.backgroundColor = isHome ? homeBg : nonHomeBg;
+  var metaTheme = document.getElementById('metaThemeColor');
+  if (metaTheme) metaTheme.setAttribute('content', safeAreaBg);
+
+  var homeOverlay = document.getElementById('homePageOverlay');
+  if (homeOverlay) homeOverlay.style.backgroundColor = isHome ? '' : nonHomeBg;
 }
 
 function scsSyncPrimaryBottomNav(active) {
