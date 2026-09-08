@@ -34465,3 +34465,28 @@ html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background:
   display:none;
 }
 body.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
+
+/* Build 1071 — hard-fix the iOS standalone top safe-area on non-Home tabs.
+   Tie the paint to the *actual active bottom-nav tab* rather than a transient
+   workspace return state. This keeps Home branded blue, while Round / Slot /
+   Settings always paint the iOS status region with the normal app background,
+   including after Players/Add Player is closed. */
+body:has(#scsNavRound.is-active)::after,
+body:has(#scsNavSlot.is-active)::after,
+body:has(#scsNavSettings.is-active)::after {
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  height:max(env(safe-area-inset-top, 0px), 42px);
+  background:#0f0f13 !important;
+  z-index:2147483646;
+  pointer-events:none;
+}
+body.app-light:has(#scsNavRound.is-active)::after,
+body.app-light:has(#scsNavSlot.is-active)::after,
+body.app-light:has(#scsNavSettings.is-active)::after {
+  background:#f4f6fb !important;
+}
+body:has(#scsNavHome.is-active)::after { content:none !important; }

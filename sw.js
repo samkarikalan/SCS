@@ -1,6 +1,6 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-app-build-1070-force-statusbar-color';
+const CACHE_NAME = 'scs-app-build-1071-nonhome-safearea-hardfix';
 const APP_SHELL = './index.html?v=1070';
 
 const ASSETS = [
