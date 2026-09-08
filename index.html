@@ -329,6 +329,7 @@ html,body{overscroll-behavior:none;}
 .myhub-home-sections{display:grid;gap:9px;margin:12px 16px 14px}
 .myhub-home-card{width:100%;display:grid;grid-template-columns:38px 1fr 18px;align-items:center;gap:10px;text-align:left;border:1px solid var(--border,rgba(255,255,255,.09));border-radius:16px;padding:12px 14px;background:var(--surface,#171821);color:var(--text,#fff);font-family:inherit;cursor:pointer}
 .myhub-home-icon{font-size:1.25rem;text-align:center}.myhub-home-card strong{display:block;font-size:.92rem}.myhub-home-card small{display:block;margin-top:3px;color:var(--text-dim,#92929f);font-size:.72rem;font-weight:500}.myhub-home-chevron{font-size:1.35rem;color:var(--text-dim,#92929f)}
+.myhub-tab-view{display:none}.myhub-tab-view.is-active{display:block}
 </style>
 </head>
 <body>
@@ -1502,11 +1503,14 @@ html,body{overscroll-behavior:none;}
 
   <!-- ── My Hub top tabs (StepUp-style; primary bottom navigation is unchanged) ── -->
   <nav class="myhub-top-tabs" role="tablist" aria-label="My Hub sections">
-    <button class="myhub-top-tab is-active" type="button" role="tab" aria-selected="true" onclick="showHomeScreen();var s=document.getElementById('mcUpcomingSlots');if(s)s.style.display='none';document.querySelectorAll('.myhub-top-tab').forEach(function(b){var a=b.textContent.trim()==='Home';b.classList.toggle('is-active',a);b.setAttribute('aria-selected',a?'true':'false');});">Home</button>
+    <button class="myhub-top-tab is-active" type="button" role="tab" aria-selected="true" onclick="showHomeScreen();setMyHubTopTabView('home')">Home</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeOpenViewerSlots()">Slots</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeGo('joinClubPage',null)">Clubs</button>
     <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeGo('vaultReport2Page',null)">Report</button>
   </nav>
+
+  <!-- ── My Hub Home: independent tab view ── -->
+  <section id="myHubHomeView" class="myhub-tab-view is-active" data-myhub-view="home">
 
   <!-- ── My Card content inline (no tile, no navigation) ── -->
 
@@ -1607,8 +1611,11 @@ html,body{overscroll-behavior:none;}
     <button type="button" class="myhub-home-card" onclick="homeGo('dashboardPage','tabBtnDashboard')"><span class="myhub-home-icon">📡</span><span><strong>Live</strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
   </section>
 
-  <!-- ── Viewer Upcoming Slots (handled by slots.js) ── -->
-  <section id="mcUpcomingSlots" class="mc-slots-card" style="display:none;">
+  </section><!-- end myHubHomeView -->
+
+  <!-- ── My Hub Slots: independent tab view (handled by slots.js) ── -->
+  <section id="myHubSlotsView" class="myhub-tab-view" data-myhub-view="slots">
+  <section id="mcUpcomingSlots" class="mc-slots-card">
     <div class="mc-slots-head">
       <div>
         <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
@@ -1643,8 +1650,7 @@ html,body{overscroll-behavior:none;}
       <div class="mc-slots-list" id="mcSlotsList"></div>
     </div>
   </section>
-
-
+  </section><!-- end myHubSlotsView -->
 
 </div>
 

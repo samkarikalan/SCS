@@ -362,6 +362,7 @@ document.querySelectorAll('.page').forEach(function(page) {
 document.body.classList.add('home-open');
 
 homeEl.style.display = 'flex';
+if (typeof setMyHubTopTabView === 'function') setMyHubTopTabView('home');
 
 // Restore both top bars when back on home
 document.querySelectorAll('.home-topbar, .top-bar').forEach(function(b) { b.style.display = ''; });
@@ -942,21 +943,31 @@ if (homeEl) homeEl.style.display = 'none';
 document.body.classList.remove('home-open');
 }
 
-/* Open the existing My Hub slot calendar instead of duplicating a slots page. */
-function homeOpenViewerSlots() {
-  if (typeof showHomeScreen === 'function') showHomeScreen();
-  var slots = document.getElementById('mcUpcomingSlots');
-  if (slots) slots.style.display = '';
+function setMyHubTopTabView(view) {
+  // My Hub tabs are independent views. Do not toggle individual Home blocks.
+  // This keeps each tab isolated so future upgrades cannot leak content
+  // between Home and Slots. Clubs and Report continue to use their
+  // existing original SCS pages.
+  document.querySelectorAll('.myhub-tab-view').forEach(function(panel) {
+    var active = panel.getAttribute('data-myhub-view') === view;
+    panel.classList.toggle('is-active', active);
+    panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+  });
+
   document.querySelectorAll('.myhub-top-tab').forEach(function(btn){
-    var active = btn.textContent.trim() === 'Slots';
+    var label = btn.textContent.trim().toLowerCase();
+    var active = label === view;
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
+}
+
+/* Open the existing My Hub slot calendar instead of duplicating a slots page. */
+function homeOpenViewerSlots() {
+  if (typeof showHomeScreen === 'function') showHomeScreen();
+  setMyHubTopTabView('slots');
   if (typeof myCardSlotsSetView === 'function') myCardSlotsSetView('upcoming');
   if (typeof renderMyCardSlotsUI === 'function') renderMyCardSlotsUI(false);
-  window.requestAnimationFrame(function() {
-    if (slots) slots.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
 }
 
 /* ── Navigate to an inner page ── */
