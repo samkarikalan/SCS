@@ -34365,3 +34365,88 @@ html.app-light .home-app-tool, html.app-light .home-app-add.scs-home-add-btn { b
   .home-app-tool, .home-app-add.scs-home-add-btn { width:38px; height:38px; border-radius:12px; font-size:1.08rem; }
   .home-app-add.scs-home-add-btn { font-size:1.75rem; }
 }
+
+/* Build 1050 — My Hub profile: one colorful expandable card.
+   Inner stat areas stay transparent; only the combined outer card carries color. */
+#myHubHomeView #myCardContent {
+  margin: 12px 16px 16px;
+  padding: 0;
+  border: 1px solid rgba(118,108,255,.48);
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(16,86,154,.78) 0%, rgba(39,48,121,.82) 54%, rgba(83,42,132,.78) 100%);
+  box-shadow: 0 14px 30px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.10);
+}
+#myHubHomeView #myCardContent .mycard-identity,
+#myHubHomeView #myCardContent .mycard-ratings,
+#myHubHomeView #myCardContent .profile-stats-row,
+#myHubHomeView #myCardContent .mc-period-list,
+body.tile-style-color:not(.app-light) #myHubHomeView #myCardContent :is(.mycard-identity,.mycard-ratings) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#myHubHomeView #myCardContent .mycard-identity { border: 0 !important; }
+#myHubHomeView #myCardContent .mycard-ratings {
+  border: 0 !important;
+  border-radius: 0;
+}
+#myHubHomeView #myCardContent .mc-period-list {
+  border-color: rgba(255,255,255,.13);
+}
+#myHubHomeView #myCardContent .mc-period-row { border-color: rgba(255,255,255,.12); }
+#myHubHomeView #myCardContent .mycard-rating-divider,
+#myHubHomeView #myCardContent .profile-stat-divider { background: rgba(255,255,255,.16); }
+#myHubHomeView #myCardContent .mc-details-arrow {
+  border-color: rgba(155,146,255,.46);
+  background: rgba(68,55,150,.45);
+  color: #a89fff;
+}
+#myHubHomeView #myCardContent .mc-details-arrow.open { background: rgba(96,76,215,.52); }
+
+/* Collapsed state: identity + headline stats share one compact row. */
+@supports selector(:has(*)) {
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) {
+    display: grid !important;
+    grid-template-columns: minmax(0,1.05fr) minmax(0,1fr);
+    align-items: center;
+  }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-identity {
+    padding: 15px 8px 15px 14px;
+    gap: 10px;
+  }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-avatar {
+    width: 52px; height: 52px;
+  }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-name { font-size: 1.05rem; }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .profile-tier { margin-top: 4px; }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-ratings {
+    margin: 0;
+    padding-right: 42px;
+    min-width: 0;
+    border-left: 1px solid rgba(255,255,255,.14) !important;
+  }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-rating-box {
+    padding: 16px 5px;
+  }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-rating-value { font-size: 1.35rem; }
+  #myHubHomeView #myCardContent:not(:has(.mc-details-arrow.open)) .mycard-rating-label { font-size: .58rem; letter-spacing: .25px; }
+}
+
+/* Expanded state: retain the existing information hierarchy inside the same card. */
+#myHubHomeView #myCardContent:has(.mc-details-arrow.open) .mycard-identity {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.13) !important;
+}
+#myHubHomeView #myCardContent:has(.mc-details-arrow.open) .mycard-ratings {
+  margin: 0;
+  border-bottom: 1px solid rgba(255,255,255,.13) !important;
+}
+#myHubHomeView #myCardContent:has(.mc-details-arrow.open) .profile-stats-row { margin-top: 10px !important; }
+
+html.app-light #myHubHomeView #myCardContent {
+  background: linear-gradient(135deg, rgba(213,235,255,.96) 0%, rgba(224,226,255,.97) 52%, rgba(241,220,255,.96) 100%);
+  border-color: rgba(91,82,190,.25);
+  box-shadow: 0 12px 26px rgba(47,57,110,.13), inset 0 1px 0 rgba(255,255,255,.72);
+}
+html.app-light #myHubHomeView #myCardContent .mycard-rating-divider,
+html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background: rgba(48,52,96,.15); }
