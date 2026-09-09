@@ -2941,6 +2941,8 @@ function myHubRenderLiveCards() {
   list.innerHTML = '';
 
   var sessions = _myHubLiveSessionsCache || [];
+  var countEl = document.getElementById('myHubLiveCount');
+  if (countEl) countEl.textContent = sessions.length;
   if (!sessions.length) {
     list.innerHTML = '<div class="myhub-home-empty">No live sessions right now</div>';
     return;

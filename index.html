@@ -1637,8 +1637,9 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
       <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('today')"><span class="myhub-home-icon">📅</span><span><strong>Today Slot <span class="myhub-home-count" id="myHubTodaySlotsCount">0</span></strong><small>Your slots for today</small></span><span class="myhub-home-chevron">›</span></button>
       <div class="myhub-home-list" id="myHubTodaySlotsList"></div>
     </div>
-    <div class="myhub-live-cards" id="myHubLiveGroup">
-      <div id="myHubLiveList"></div>
+    <div class="myhub-home-group" id="myHubLiveGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubLiveList"></div>
     </div>
     <div class="myhub-home-group" id="myHubApprovePlayersGroup" hidden>
       <button type="button" class="myhub-home-card" onclick="scsHomeQuickAction('approve')"><span class="myhub-home-icon">✓</span><span><strong>Approve Players <span class="myhub-home-count" id="myHubApprovePlayersCount">0</span></strong><small id="myHubApprovePlayersClub"></small></span><span class="myhub-home-chevron">›</span></button>
