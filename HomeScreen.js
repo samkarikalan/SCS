@@ -762,6 +762,8 @@ var vctDot   = document.getElementById('vctDot');
 if (vctName) {
 if (club && club.name) {
 vctName.textContent = club.name;
+var vaultWorkspaceTitle = document.getElementById('vaultWorkspaceTitle');
+if (vaultWorkspaceTitle) vaultWorkspaceTitle.textContent = club.name;
 // Build 1094: on the Manage / Club Slot workspace, the header title is the selected club name.
 if (isVault) {
   var vaultHeaderName = document.getElementById('homeUserHeaderName');
@@ -776,6 +778,8 @@ vctBadge.style.display = '';
 }
 } else {
 vctName.textContent = t('noClubSelected');
+var vaultWorkspaceTitleEmpty = document.getElementById('vaultWorkspaceTitle');
+if (vaultWorkspaceTitleEmpty) vaultWorkspaceTitleEmpty.textContent = t('noClubSelected') || 'No club selected';
 if (vctBadge) vctBadge.style.display = 'none';
 if (vctDot) vctDot.style.background = '#888';
 }

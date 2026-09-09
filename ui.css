@@ -34720,3 +34720,18 @@ html.app-light body.vault-mode #homePageOverlay {
   #mcUpcomingSlots .mc-slots-tools { max-width: none; gap: 8px; }
   #mcUpcomingSlots .mc-slots-filter { width: 100%; min-width: 0; }
 }
+
+
+/* BUILD 1097 — Manage / Club Slot title.
+   Keep the existing manager shell and session cards untouched; only restore
+   the selected club name as the workspace title above them. */
+#homeVaultGrid .vault-workspace-title {
+  margin: 10px 20px 12px;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
