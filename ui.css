@@ -34855,3 +34855,22 @@ html.app-light body.vault-mode #homePageOverlay {
   background:var(--accent,#6c63ff);
   color:#fff;
 }
+
+
+/* Build 1102 — Settings Theme control: immediate full-width selector. */
+#settingsPage .pref-row:has(#themePillGroup) {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+}
+#settingsPage #themePillGroup {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  box-sizing: border-box !important;
+}
+#settingsPage #themePillGroup .pref-pill {
+  width: 100% !important;
+  min-width: 0 !important;
+}

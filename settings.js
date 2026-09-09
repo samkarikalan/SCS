@@ -418,8 +418,14 @@ function appearSelect(type, value, btn) {
   btn.classList.add('appear-pulse');
   setTimeout(() => btn.classList.remove('appear-pulse'), 400);
 
-  // Store pending — do NOT touch the live app
-  _appearPending[type] = value;
+  // Theme is a direct setting: apply it immediately across the whole app.
+  // Other appearance controls keep their existing Apply Changes workflow.
+  if (type === 'theme') {
+    _appearPending.theme = null;
+    applyTheme(value);
+  } else {
+    _appearPending[type] = value;
+  }
 
   // Get current effective values (pending overrides saved)
   const theme = _appearPending.theme || localStorage.getItem('app-theme') || 'light';
