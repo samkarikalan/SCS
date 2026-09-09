@@ -34653,3 +34653,17 @@ html.app-light body.vault-mode #homePageOverlay {
     padding-top: var(--scs-primary-safe-top) !important;
   }
 }
+
+/* BUILD 1091 — Players page iOS safe-area fix.
+   Players is a standalone sheet page and was not included in the primary
+   workspace safe-area contract, so its sticky title bar could sit under the
+   iOS status bar. Keep this change scoped to Players only. */
+#playersPage {
+  padding-top: calc(var(--scs-primary-safe-top) + 8px) !important;
+  scroll-padding-top: calc(var(--scs-primary-safe-top) + 78px) !important;
+  box-sizing: border-box !important;
+}
+#playersPage > .sheet-header {
+  top: var(--scs-primary-safe-top) !important;
+  margin-top: 0 !important;
+}
