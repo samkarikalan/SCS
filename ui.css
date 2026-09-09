@@ -34667,3 +34667,10 @@ html.app-light body.vault-mode #homePageOverlay {
   top: var(--scs-primary-safe-top) !important;
   margin-top: 0 !important;
 }
+
+/* Build 1092: My Slots compact/calendar layout switch. */
+#mcUpcomingSlots .mc-slots-calendar-panel[hidden] { display:none !important; }
+#mcUpcomingSlots .mc-slots-layout-filter { min-width:0; }
+#mcUpcomingSlots .mc-slots-layout-filter .mc-slots-filter-btn { white-space:nowrap; }
+#mcUpcomingSlots .mc-slots-list > .scs-slot-card + .scs-slot-card,
+#mcUpcomingSlots .mc-slots-list > .mc-slot-card + .mc-slot-card { margin-top:12px; }

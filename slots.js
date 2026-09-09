@@ -2824,6 +2824,29 @@ var _mcsSlotView = (function() {
   try { return localStorage.getItem('scs_my_slots_view') === 'all' ? 'all' : 'upcoming'; }
   catch (e) { return 'upcoming'; }
 })();
+var _mcsSlotLayout = (function() {
+  try { return localStorage.getItem('scs_my_slots_layout') === 'calendar' ? 'calendar' : 'compact'; }
+  catch (e) { return 'compact'; }
+})();
+
+function _mcsUpdateLayoutControls() {
+  var compactBtn = document.getElementById('mcSlotsLayoutCompact');
+  var calendarBtn = document.getElementById('mcSlotsLayoutCalendar');
+  var panel = document.querySelector('#mcUpcomingSlots .mc-slots-calendar-panel');
+  var isCalendar = _mcsSlotLayout === 'calendar';
+  if (compactBtn) { compactBtn.classList.toggle('is-active', !isCalendar); compactBtn.setAttribute('aria-selected', isCalendar ? 'false' : 'true'); }
+  if (calendarBtn) { calendarBtn.classList.toggle('is-active', isCalendar); calendarBtn.setAttribute('aria-selected', isCalendar ? 'true' : 'false'); }
+  if (panel) panel.hidden = !isCalendar;
+}
+
+function myCardSlotsSetLayout(layout) {
+  var next = layout === 'calendar' ? 'calendar' : 'compact';
+  if (_mcsSlotLayout === next) return;
+  _mcsSlotLayout = next;
+  try { localStorage.setItem('scs_my_slots_layout', next); } catch (e) {}
+  _mcsUpdateLayoutControls();
+  renderMyCardSlotsUI(false);
+}
 
 function _mcsIsPlayedForViewer(slot) {
   if (!_mcsIsPlayedSlot(slot)) return false;
@@ -4334,6 +4357,7 @@ async function renderMyCardSlotsUI(loadFresh) {
   var countEl = document.getElementById('mcSlotsCount');
   if (!section || !listEl) return;
   _mcsUpdateViewControls();
+  _mcsUpdateLayoutControls();
   _vsRenderWeekdayLabels(section);
 
   var today = new Date();
@@ -4379,7 +4403,7 @@ async function renderMyCardSlotsUI(loadFresh) {
   if (countEl) countEl.textContent = dateCount;
 
 
-  _mcsRenderCalendarGrid();
+  if (_mcsSlotLayout === 'calendar') _mcsRenderCalendarGrid();
 
   var slots = _vsFlattenSlotsByDate(_mcsSlotsByDate);
   if (!slots.length) {
@@ -4394,6 +4418,14 @@ async function renderMyCardSlotsUI(loadFresh) {
     : -1;
   var startIndex = focusedIndex >= 0 ? focusedIndex : _vsFindFirstSlideForDate(slots, _mcsSelectedDateStr);
   _mcsCarouselIndex = startIndex;
+  if (_mcsSlotLayout === 'compact') {
+    if (titleEl) titleEl.textContent = '';
+    listEl.innerHTML = slots.map(function(slot) { return _mcsRenderSlotCard(slot); }).join('');
+    _mcsNormalizeSlotActionLabels(listEl);
+    if (typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
+    return;
+  }
+
   if (titleEl) titleEl.textContent = _mcsFormatDateTitle(slots[startIndex].__carouselDate);
   listEl.innerHTML = _vsRenderSlotCarousel(slots, function(slot) { return _mcsRenderSlotCard(slot); }, 'mcSlotsCarousel');
   _mcsNormalizeSlotActionLabels(listEl);

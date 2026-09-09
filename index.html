@@ -1644,6 +1644,10 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
           <button type="button" id="mcSlotsFilterUpcoming" class="mc-slots-filter-btn is-active" role="tab" aria-selected="true" onclick="myCardSlotsSetView('upcoming')" data-i18n="upcoming">Upcoming</button>
           <button type="button" id="mcSlotsFilterAll" class="mc-slots-filter-btn" role="tab" aria-selected="false" onclick="myCardSlotsSetView('all')" data-i18n="allSlots">All Slots</button>
         </div>
+        <div class="mc-slots-filter mc-slots-layout-filter" role="tablist" aria-label="Slot layout">
+          <button type="button" id="mcSlotsLayoutCompact" class="mc-slots-filter-btn is-active" role="tab" aria-selected="true" onclick="myCardSlotsSetLayout('compact')">Compact</button>
+          <button type="button" id="mcSlotsLayoutCalendar" class="mc-slots-filter-btn" role="tab" aria-selected="false" onclick="myCardSlotsSetLayout('calendar')">Calendar</button>
+        </div>
         <button class="mc-slots-refresh-btn" id="mcSlotsRefreshBtn" type="button" onclick="myCardSlotsManualRefresh()" title="Refresh slots">↻</button>
         <div class="mc-slots-count" id="mcSlotsCount">0</div>
       </div>
