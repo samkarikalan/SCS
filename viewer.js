@@ -15,7 +15,7 @@ var _vRoundsData  = [];
 async function viewerOpen(sessionId) {
   try {
     const rows = await sbGet('sessions',
-      `id=eq.${sessionId}&select=id,rounds_data,started_by,created_at,updated_at,status`
+      `id=eq.${sessionId}&select=id,rounds_data,started_by,created_at,updated_at,status,club_id`
     );
     if (!rows || !rows.length) { alert('Session not found.'); return; }
     const sess = rows[0];
@@ -25,10 +25,18 @@ async function viewerOpen(sessionId) {
     _vSessionId   = sessionId;
     _vLastUpdated = sess.updated_at;
     _vRoundsData  = sess.rounds_data;
+    var viewerClubName = '';
+    try {
+      if (sess.club_id && typeof dbGetClubs === 'function') {
+        var viewerClubs = await dbGetClubs();
+        var viewerClub = (viewerClubs || []).find(function(c){ return c.id === sess.club_id; });
+        viewerClubName = viewerClub ? (viewerClub.name || '') : '';
+      }
+    } catch(_viewerClubErr) {}
     _vMeta = {
       started_by: sess.started_by,
       created_at: sess.created_at,
-      club_name:  (typeof getMyClub === 'function') ? getMyClub().name : '',
+      club_name:  viewerClubName,
       status:     sess.status
     };
     _vShowPage();

@@ -2998,6 +2998,17 @@ async function myHubRefreshLiveQuickList(resetLimit) {
     }
     sessions.sort(function(a, b) { return recentValue(b) - recentValue(a); });
 
+    // Resolve the actual club name for each live card. Live-session rows carry club_id,
+    // so do not fall back to the generic "Club" label when viewing multiple clubs.
+    try {
+      var clubs = (typeof dbGetClubs === 'function') ? await dbGetClubs() : [];
+      var clubNames = {};
+      (clubs || []).forEach(function(c) { if (c && c.id) clubNames[c.id] = c.name || ''; });
+      sessions.forEach(function(sess) {
+        if (sess && !sess.club_name && sess.club_id && clubNames[sess.club_id]) sess.club_name = clubNames[sess.club_id];
+      });
+    } catch(_clubNameErr) {}
+
     _myHubLiveSessionsCache = sessions;
     myHubRenderLiveCards();
   } catch(e) {
