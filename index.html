@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1099';
+      var BUILD = '1100';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.64"; window.SCS_BUILD = "1099"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.65"; window.SCS_BUILD = "1100"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -104,7 +104,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1099" defer></script>
+  <script src="HomeScreen.js?v=1100" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
@@ -339,6 +339,14 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
 .myhub-embedded-view>.page.myhub-embedded-page{display:block!important;position:static!important;inset:auto!important;min-height:0!important;height:auto!important;background:transparent!important;z-index:auto!important;padding-bottom:0!important}
 .myhub-embedded-page .sheet-close-btn{display:none!important}
 .myhub-embedded-page .r2-header{position:static!important;top:auto!important}
+</style>
+
+<style id="scs-build-1100-home-live-cards">
+/* Home Live: show the existing session cards directly; 10 at a time. */
+.myhub-live-cards{margin:0;padding:0;background:transparent;border:0}
+.myhub-live-cards #myHubLiveList{display:block;padding:0}
+.myhub-live-cards .dash-session-card{margin:0 0 10px}
+.myhub-live-more{width:100%;border:1px solid var(--border,rgba(255,255,255,.10));border-radius:12px;padding:11px 14px;background:var(--surface,#171821);color:var(--text,#f5f5f7);font:700 .78rem inherit;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1625,9 +1633,8 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
       <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('today')"><span class="myhub-home-icon">📅</span><span><strong>Today Slot <span class="myhub-home-count" id="myHubTodaySlotsCount">0</span></strong><small>Your slots for today</small></span><span class="myhub-home-chevron">›</span></button>
       <div class="myhub-home-list" id="myHubTodaySlotsList"></div>
     </div>
-    <div class="myhub-home-group" id="myHubLiveGroup">
-      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
-      <div class="myhub-home-list" id="myHubLiveList"></div>
+    <div class="myhub-live-cards" id="myHubLiveGroup">
+      <div id="myHubLiveList"></div>
     </div>
     <div class="myhub-home-group" id="myHubApprovePlayersGroup" hidden>
       <button type="button" class="myhub-home-card" onclick="scsHomeQuickAction('approve')"><span class="myhub-home-icon">✓</span><span><strong>Approve Players <span class="myhub-home-count" id="myHubApprovePlayersCount">0</span></strong><small id="myHubApprovePlayersClub"></small></span><span class="myhub-home-chevron">›</span></button>

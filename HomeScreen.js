@@ -1063,6 +1063,9 @@ function setMyHubTopTabView(view) {
   if (view === 'report' && typeof r2Init === 'function') {
     try { r2Init(); } catch(e) { console.warn('My Hub report load failed', e); }
   }
+  if (view === 'home' && typeof myHubRefreshLiveQuickList === 'function') {
+    try { myHubRefreshLiveQuickList(true); } catch(e) { console.warn('My Hub live load failed', e); }
+  }
 }
 
 function homeOpenMyHubTab(view) {
@@ -2929,20 +2932,76 @@ function myHubToggleQuickGroup(kind) {
   if (opening && (kind === 'new' || kind === 'today') && typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
 }
 
-async function myHubRefreshLiveQuickList() {
+var _myHubLiveVisibleCount = 10;
+var _myHubLiveSessionsCache = [];
+
+function myHubRenderLiveCards() {
   var list = document.getElementById('myHubLiveList');
-  var count = document.getElementById('myHubLiveCount');
-  if (!list || !count) return;
+  if (!list) return;
+  list.innerHTML = '';
+
+  var sessions = _myHubLiveSessionsCache || [];
+  if (!sessions.length) {
+    list.innerHTML = '<div class="myhub-home-empty">No live sessions right now</div>';
+    return;
+  }
+
+  var visible = sessions.slice(0, _myHubLiveVisibleCount);
+  visible.forEach(function(sess) {
+    var clubName = sess.club_name || sess.clubName || sess.name || 'Club';
+    var players = (sess.players && sess.players.length)
+      ? sess.players
+      : (typeof _extractPlayersFromRounds === 'function' ? _extractPlayersFromRounds(sess.rounds_data || []) : []);
+
+    if (typeof _buildSessionCard === 'function') {
+      list.appendChild(_buildSessionCard({
+        clubName: clubName,
+        starter: sess.started_by || sess.starter || '',
+        players: players,
+        totalRounds: (sess.rounds_data || []).length || null,
+        isLive: true,
+        sessionId: sess.id,
+        date: sess.date,
+        updatedAt: sess.updated_at,
+        shuttleData: sess.shuttle_data || null,
+        handoverPin: sess.handover_pin || null
+      }));
+    }
+  });
+
+  if (sessions.length > _myHubLiveVisibleCount) {
+    var more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'myhub-live-more';
+    more.textContent = 'Show 10 more';
+    more.addEventListener('click', function() {
+      _myHubLiveVisibleCount += 10;
+      myHubRenderLiveCards();
+    });
+    list.appendChild(more);
+  }
+}
+
+async function myHubRefreshLiveQuickList(resetLimit) {
+  var list = document.getElementById('myHubLiveList');
+  if (!list) return;
+  if (resetLimit) _myHubLiveVisibleCount = 10;
   list.innerHTML = '<div class="myhub-home-empty">Loading…</div>';
   try {
     var sessions = (typeof dbGetLiveSessions === 'function') ? await dbGetLiveSessions() : [];
     sessions = (typeof _filterActuallyLiveSessions === 'function') ? _filterActuallyLiveSessions(sessions) : (sessions || []);
-    count.textContent = sessions.length;
-    if (!sessions.length) { list.innerHTML = '<div class="myhub-home-empty">No live sessions right now</div>'; return; }
-    list.innerHTML = sessions.map(function(sess){
-      var club = sess.club_name || sess.clubName || sess.name || 'Live session';
-      var starter = sess.started_by || sess.starter || '';
-      return '<div class="myhub-live-item"><span><strong>'+String(club).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];})+'</strong><small>'+ (starter ? 'Started by '+String(starter).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}) : 'In progress') +'</small></span><button class="myhub-live-open" onclick="homeGo(\'dashboardPage\',\'tabBtnDashboard\')">View</button></div>';
-    }).join('');
-  } catch(e) { count.textContent='0'; list.innerHTML='<div class="myhub-home-empty">Unable to load live sessions</div>'; }
+
+    function recentValue(sess) {
+      var raw = sess.updated_at || sess.started_at || sess.created_at || sess.date || '';
+      var n = Date.parse(raw);
+      return Number.isFinite(n) ? n : 0;
+    }
+    sessions.sort(function(a, b) { return recentValue(b) - recentValue(a); });
+
+    _myHubLiveSessionsCache = sessions;
+    myHubRenderLiveCards();
+  } catch(e) {
+    _myHubLiveSessionsCache = [];
+    list.innerHTML = '<div class="myhub-home-empty">Unable to load live sessions</div>';
+  }
 }
