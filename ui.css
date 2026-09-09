@@ -34619,3 +34619,37 @@ html.app-light body.vault-mode #homePageOverlay {
     top: 0 !important;
   }
 }
+
+/* BUILD 1090 — one safe-area contract for every primary workspace.
+   The iOS status-bar layer may be blue on Home and dark on manager pages, but
+   page content must always begin BELOW it.  This is deliberately independent
+   of scs-home-active so first-login/restore timing cannot leave the header
+   underneath the status bar. */
+:root { --scs-primary-safe-top: env(safe-area-inset-top, 0px); }
+
+#homePageOverlay,
+#settingsPage,
+#roundsPage,
+#vaultSlotsPage {
+  padding-top: var(--scs-primary-safe-top) !important;
+  scroll-padding-top: var(--scs-primary-safe-top);
+  box-sizing: border-box !important;
+}
+
+/* Primary headers/toolbars start at the page content origin; none may pull
+   themselves back into the iOS safe area. */
+#homePageOverlay > .home-topbar.home-app-header,
+#settingsPage > .sheet-header,
+#roundsPage > .rounds-top-bar,
+#vaultSlotsPage > .sheet-header {
+  top: auto !important;
+  margin-top: 0 !important;
+}
+
+/* Build 1089 used a Home-only class gate.  Keep the rule harmless so the
+   unconditional primary-shell rule above is the single source of truth. */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body.scs-home-active #homePageOverlay {
+    padding-top: var(--scs-primary-safe-top) !important;
+  }
+}
