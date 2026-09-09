@@ -14,7 +14,7 @@
   'use strict';
 
   const DB_NAME = 'scs_offline_rounds';
-  const DB_VERSION = 3;
+  const DB_VERSION = 4;
   const CURRENT_KEY = 'current';
 
   let _dbPromise = null;
@@ -54,6 +54,11 @@
         }
         if (!db.objectStoreNames.contains('meta')) {
           db.createObjectStore('meta', { keyPath: 'key' });
+        }
+        // Build 1099: local-first Club Manager slots cache. The UI reads this
+        // immediately; Supabase refreshes it in the background.
+        if (!db.objectStoreNames.contains('vaultSlotsCache')) {
+          db.createObjectStore('vaultSlotsCache', { keyPath: 'clubId' });
         }
         // Build 917: keep the Round Template cache encrypted at rest.
         // CryptoKey is non-extractable; normal app code can use it, but it cannot
@@ -278,6 +283,29 @@
     });
   }
 
+  async function saveVaultSlotsCache(clubId, slots) {
+    const id = String(clubId || '');
+    if (!id) return false;
+    return put('vaultSlotsCache', {
+      clubId: id,
+      syncedAt: Date.now(),
+      slots: cloneData(Array.isArray(slots) ? slots : [])
+    });
+  }
+
+  async function getVaultSlotsCache(clubId) {
+    const id = String(clubId || '');
+    if (!id) return null;
+    const row = await get('vaultSlotsCache', id);
+    return row ? cloneData(row) : null;
+  }
+
+  async function clearVaultSlotsCache(clubId) {
+    const id = String(clubId || '');
+    if (!id) return false;
+    return remove('vaultSlotsCache', id);
+  }
+
   async function saveMeta(key, value) {
     return put('meta', { key: String(key), value: cloneData(value), updatedAt: Date.now() });
   }
@@ -337,6 +365,9 @@
     getTempPreparedRounds,
     clearTempPreparedRounds,
     countPreparedRounds,
+    saveVaultSlotsCache,
+    getVaultSlotsCache,
+    clearVaultSlotsCache,
     saveMeta,
     getMeta
   };

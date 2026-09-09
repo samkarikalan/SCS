@@ -4630,6 +4630,13 @@ var _vhsExpandedOverview = null;
 var _vhsCompletedShowAll = false;
 var _vhsCompletedInitialLimit = 10;
 var _vhsCompletedPaymentFilter = 'all';
+// Build 1099: Club Manager slots are local-first. Supabase is the sync source,
+// IndexedDB is the render source, so expanding Completed / changing payment
+// filters never waits on the network.
+var _vhsLocalCache = null;
+var _vhsLocalCacheClubId = '';
+var _vhsSyncPromise = null;
+var _vhsCacheMaxAgeMs = 60 * 1000;
 window._scsVaultAddSlotMode = false;
 
 function _vhsUpdateViewControls() {
@@ -4702,6 +4709,83 @@ function _vhsCompletedSlotHasUnpaid(slot) {
   return claims.some(function(claim) {
     return claim && String(claim.status || '').toLowerCase() === 'confirmed' && !_vsClaimPaid(claim);
   });
+}
+
+function _vhsMergeSlotCollections(a, b) {
+  var map = new Map();
+  ;(a || []).concat(b || []).forEach(function(slot) {
+    if (!slot) return;
+    var key = String(slot.id || '') || [slot.club_id, slot.slot_date, slot.start_time].join('|');
+    map.set(key, slot);
+  });
+  return Array.from(map.values());
+}
+
+async function _vhsReadLocalSlotsCache(clubId) {
+  clubId = String(clubId || '');
+  if (!clubId) return null;
+  if (_vhsLocalCache && _vhsLocalCacheClubId === clubId) return _vhsLocalCache;
+  if (!(window.SCSOfflineDB && typeof SCSOfflineDB.getVaultSlotsCache === 'function')) return null;
+  var row = await SCSOfflineDB.getVaultSlotsCache(clubId).catch(function(){ return null; });
+  if (row) {
+    _vhsLocalCache = row;
+    _vhsLocalCacheClubId = clubId;
+  }
+  return row;
+}
+
+async function _vhsSyncSlotsToLocal(force) {
+  var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+  if (!club || !club.id) return null;
+  var clubId = String(club.id);
+  var cached = await _vhsReadLocalSlotsCache(clubId);
+  if (!force && cached && cached.syncedAt && (Date.now() - Number(cached.syncedAt) < _vhsCacheMaxAgeMs)) return cached;
+  if (_vhsSyncPromise) return _vhsSyncPromise;
+
+  _vhsSyncPromise = (async function() {
+    var now = new Date();
+    var first = new Date(now.getFullYear(), now.getMonth(), 1);
+    var last = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+    var startStr = _vsDateStr(first.getFullYear(), first.getMonth(), first.getDate());
+    var endStr = _vsDateStr(last.getFullYear(), last.getMonth(), last.getDate());
+    var todayStr = _vsTodayStr();
+
+    // History and upcoming are fetched once per sync, in parallel. The UI never
+    // blocks on these calls when a local snapshot already exists.
+    var results = await Promise.all([
+      dbGetSlotsForRange(clubId, '2000-01-01', todayStr).catch(function(){ return []; }),
+      dbGetSlotsForRange(clubId, startStr, endStr).catch(function(){ return []; })
+    ]);
+    var slots = _vhsMergeSlotCollections(results[0], results[1]);
+    var row = { clubId:clubId, syncedAt:Date.now(), slots:slots };
+    _vhsLocalCache = row;
+    _vhsLocalCacheClubId = clubId;
+    if (window.SCSOfflineDB && typeof SCSOfflineDB.saveVaultSlotsCache === 'function') {
+      await SCSOfflineDB.saveVaultSlotsCache(clubId, slots).catch(function(){});
+    }
+    return row;
+  })().finally(function(){ _vhsSyncPromise = null; });
+
+  return _vhsSyncPromise;
+}
+
+function _vhsOverviewFromLocalSlots(allSlots, view) {
+  var slotsByDate = {};
+  var todayStr = _vsTodayStr();
+  ;(allSlots || []).forEach(function(slot) {
+    if (!slot || !slot.slot_date) return;
+    var status = String(slot.status || '').toLowerCase();
+    var isCompleted = status === 'played' || status === 'completed' || status === 'cancelled' || !!slot.played_session_id;
+    if (view === 'completed') {
+      if (!isCompleted) return;
+    } else {
+      if (isCompleted) return;
+      if (!(status === 'draft' || status === 'scheduled' || status === 'posted')) return;
+      if (String(slot.slot_date || '') < todayStr) return;
+    }
+    (slotsByDate[slot.slot_date] = slotsByDate[slot.slot_date] || []).push(slot);
+  });
+  return { dates:Object.keys(slotsByDate).sort(), slotsByDate:slotsByDate };
 }
 
 function homeToggleMoreTilesVault() {
@@ -5028,29 +5112,15 @@ async function renderVaultHomeSlotsUI(loadFresh) {
     return;
   }
 
-  // Keep both collapsed-card counts fresh without exposing the calendar or Add button.
-  async function loadOverview(view) {
-    if (view === 'completed') {
-      var club = (typeof getMyClub === 'function') ? getMyClub() : null;
-      if (!club || !club.id) return { dates:[], slotsByDate:{} };
-      var history = await dbGetSlotsForRange(club.id, '2000-01-01', _vsTodayStr()).catch(function(){ return []; });
-      var completedByDate = {};
-      (history || []).forEach(function(slot) {
-        if (!slot) return;
-        var status = String(slot.status || '').toLowerCase();
-        if (!(status === 'played' || status === 'completed' || status === 'cancelled' || slot.played_session_id)) return;
-        (completedByDate[slot.slot_date] = completedByDate[slot.slot_date] || []).push(slot);
-      });
-      return { dates:Object.keys(completedByDate).sort().reverse(), slotsByDate:completedByDate };
-    }
-    _vhsSlotView = view;
-    _vhsSelectedDateStr = null;
-    await _vhsLoadMonthSlots();
-    return { dates:Object.keys(_vhsSlotsByDate || {}).sort(), slotsByDate:_vhsSlotsByDate };
-  }
+  // Local-first overview: read IndexedDB immediately, then sync Supabase in the
+  // background. Expanding cards and switching All / Not Paid use only this cache.
+  var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+  var cacheRow = club && club.id ? await _vhsReadLocalSlotsCache(club.id) : null;
+  if (!cacheRow) cacheRow = await _vhsSyncSlotsToLocal(true).catch(function(){ return null; });
+  var localSlots = cacheRow && Array.isArray(cacheRow.slots) ? cacheRow.slots : [];
+  var upcoming = _vhsOverviewFromLocalSlots(localSlots, 'upcoming');
+  var completed = _vhsOverviewFromLocalSlots(localSlots, 'completed');
   var wanted = _vhsExpandedOverview || 'upcoming';
-  var upcoming = await loadOverview('upcoming');
-  var completed = await loadOverview('completed');
   var upCount = _vsFlattenSlotsByDate(upcoming.slotsByDate).length;
   var doneCount = _vsFlattenSlotsByDate(completed.slotsByDate).length;
   var upCountEl = document.getElementById('vaultSlotsCount');
@@ -5062,6 +5132,15 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   if (upSummary) upSummary.textContent = upCount ? upCount + ' upcoming session' + (upCount === 1 ? '' : 's') : 'No upcoming sessions';
   if (doneSummary) doneSummary.textContent = doneCount ? doneCount + ' completed session' + (doneCount === 1 ? '' : 's') : 'No completed sessions';
 
+  // Refresh stale data after paint. Do not make the user wait for Supabase.
+  var cacheAge = cacheRow && cacheRow.syncedAt ? Date.now() - Number(cacheRow.syncedAt) : Infinity;
+  if ((loadFresh !== false || cacheAge > _vhsCacheMaxAgeMs) && !_vhsSyncPromise) {
+    _vhsSyncSlotsToLocal(true).then(function(row) {
+      if (!row) return;
+      var page = document.getElementById('vaultSlotsPage');
+      if (page && page.style.display !== 'none') renderVaultHomeSlotsUI(false);
+    }).catch(function(){});
+  }
   var panel = document.getElementById('vaultSlotExpandedPanel');
   var completedCalendar = document.getElementById('vaultCompletedCalendar');
   var upBtn = document.getElementById('vaultUpcomingCollapse');
@@ -6233,3 +6312,18 @@ function myHubRenderQuickSlots() {
   todayList.innerHTML=todaySlots.length ? todaySlots.map(function(s){return _mcsRenderSlotCard(s,{compact:true});}).join('') : '<div class="myhub-home-empty">No joined slots today</div>';
   _mcsNormalizeSlotActionLabels(newList); _mcsNormalizeSlotActionLabels(todayList);
 }
+
+/* Build 1099: warm the Club Manager local slot cache shortly after app load.
+   This runs quietly so the first Manage-page open can render from IndexedDB. */
+document.addEventListener('DOMContentLoaded', function() {
+  function warmVaultSlotCache() {
+    try {
+      var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+      if (club && club.id && typeof _vhsSyncSlotsToLocal === 'function') {
+        _vhsSyncSlotsToLocal(false).catch(function(){});
+      }
+    } catch (e) {}
+  }
+  setTimeout(warmVaultSlotCache, 1200);
+  setTimeout(warmVaultSlotCache, 5000);
+});
