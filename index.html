@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1095';
+      var BUILD = '1099';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.64"; window.SCS_BUILD = "1095"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.64"; window.SCS_BUILD = "1099"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -104,12 +104,12 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1098" defer></script>
+  <script src="HomeScreen.js?v=1099" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1073" defer></script>
+  <script src="main.js?v=1099" defer></script>
 
   <script src="games.js?v=1019" defer></script>
 
@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1098">
+  <link rel="stylesheet" href="ui.css?v=1099">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -1628,6 +1628,9 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
     <div class="myhub-home-group" id="myHubLiveGroup">
       <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
       <div class="myhub-home-list" id="myHubLiveList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubApprovePlayersGroup" hidden>
+      <button type="button" class="myhub-home-card" onclick="scsHomeQuickAction('approve')"><span class="myhub-home-icon">✓</span><span><strong>Approve Players <span class="myhub-home-count" id="myHubApprovePlayersCount">0</span></strong><small id="myHubApprovePlayersClub"></small></span><span class="myhub-home-chevron">›</span></button>
     </div>
   </section>
 

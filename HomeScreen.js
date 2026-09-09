@@ -495,6 +495,9 @@ if (isViewer && typeof renderMyCardSlotsUI === 'function') {
     setTimeout(function() { renderMyCardSlotsUI('quiet'); }, 0);
   }
 }
+if (isViewer && typeof scsRefreshHomeQuickApprovalAction === 'function') {
+  scsRefreshHomeQuickApprovalAction();
+}
 if (isViewer) {
   setMyCardDetailsOpen(false);
   setTimeout(function() { setMyCardDetailsOpen(false); }, 0);
@@ -514,6 +517,7 @@ window.homeModeManualRefresh = async function() {
     if (isViewer) {
       if (typeof renderMyCard === 'function') await renderMyCard();
       if (typeof myCardSlotsManualRefresh === 'function') await myCardSlotsManualRefresh();
+      if (typeof scsRefreshHomeQuickApprovalAction === 'function') await scsRefreshHomeQuickApprovalAction();
     } else if (isVault) {
       if (typeof vaultHomeSlotsManualRefresh === 'function') await vaultHomeSlotsManualRefresh();
       if (typeof vaultSyncStatus === 'function') vaultSyncStatus();

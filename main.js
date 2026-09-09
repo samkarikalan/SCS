@@ -5722,7 +5722,10 @@ async function scsRefreshHomeQuickApprovalAction() {
   var row = document.getElementById('scsQuickApprovePlayers');
   var label = document.getElementById('scsQuickApprovePlayersLabel');
   var clubLine = document.getElementById('scsQuickApproveClubName');
-  if (!row) return;
+  var homeGroup = document.getElementById('myHubApprovePlayersGroup');
+  var homeCount = document.getElementById('myHubApprovePlayersCount');
+  var homeClub = document.getElementById('myHubApprovePlayersClub');
+  if (!row && !homeGroup) return;
 
   var clubId = '';
   var clubName = '';
@@ -5731,10 +5734,12 @@ async function scsRefreshHomeQuickApprovalAction() {
     clubName = localStorage.getItem('kbrr_org_club_name') || '';
   } catch (_) {}
 
-  row.hidden = true;
-  row.style.display = 'none';
+  if (row) { row.hidden = true; row.style.display = 'none'; }
+  if (homeGroup) homeGroup.hidden = true;
   if (label) label.textContent = 'Approve Players';
   if (clubLine) clubLine.textContent = clubName || '';
+  if (homeCount) homeCount.textContent = '0';
+  if (homeClub) homeClub.textContent = clubName || '';
   if (!clubId || typeof sbGet !== 'function') return;
 
   try {
@@ -5743,8 +5748,10 @@ async function scsRefreshHomeQuickApprovalAction() {
     // The quick action is deliberately absent when there is nothing to approve.
     if (count <= 0) return;
     if (label) label.textContent = 'Approve Players (' + count + ')';
-    row.hidden = false;
-    row.style.display = '';
+    if (row) { row.hidden = false; row.style.display = ''; }
+    if (homeCount) homeCount.textContent = String(count);
+    if (homeClub) homeClub.textContent = clubName || 'Pending club membership requests';
+    if (homeGroup) homeGroup.hidden = false;
   } catch (_) {
     // On a temporary network/read failure keep the conditional action hidden.
   }
