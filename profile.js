@@ -46,8 +46,21 @@ const headerSubtitle = document.getElementById('homeUserHeaderSubtitle');
 const headerAccount = (typeof authGetUser === 'function') ? authGetUser() : null;
 const headerDisplayName = (headerAccount && (headerAccount.nickname || headerAccount.displayName || headerAccount.name)) ||
   (player && (player.displayName || player.name || player.nickname)) || 'Player';
-if (headerName) headerName.textContent = headerDisplayName;
-if (headerSubtitle) headerSubtitle.textContent = 'Member';
+// Build 1096: the shared profile refresh runs after HomeScreen in several paths.
+// Do not let it overwrite the Slot Manager header with the player's name.
+// In Vault/Manage mode the page title must always be the selected club name.
+let headerTitle = headerDisplayName;
+let headerTier = 'Member';
+try {
+  const currentMode = (typeof appMode !== 'undefined' && appMode) || localStorage.getItem('kbrr_app_mode') || '';
+  if (currentMode === 'vault') {
+    const selectedClub = (typeof getMyClub === 'function') ? getMyClub() : null;
+    headerTitle = (selectedClub && selectedClub.name) || localStorage.getItem('kbrr_vault_club_name') || headerDisplayName;
+    headerTier = 'Club Manager';
+  }
+} catch (_) {}
+if (headerName) headerName.textContent = headerTitle;
+if (headerSubtitle) headerSubtitle.textContent = headerTier;
 if (headerAvatar) {
   headerAvatar.src = src || ((headerAccount && headerAccount.gender === 'Female') ? 'female.png' : 'male.png');
   headerAvatar.alt = headerDisplayName;
