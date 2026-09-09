@@ -34589,3 +34589,18 @@ html.app-light #homePageOverlay .home-app-header > #myCardContent .mc-details-pa
     font-size: 1.1rem;
   }
 }
+
+
+/* BUILD 1088 — distinguish personal My Slots from club Manage */
+body.my-slots-view:not(.vault-mode) #homePageOverlay {
+  background: linear-gradient(180deg, #071a31 0%, #0b2038 48%, #0b101a 100%) !important;
+}
+body.vault-mode #homePageOverlay {
+  background: linear-gradient(180deg, #062823 0%, #0a2d28 48%, #0b1213 100%) !important;
+}
+html.app-light body.my-slots-view:not(.vault-mode) #homePageOverlay {
+  background: linear-gradient(180deg, #edf6ff 0%, #f6faff 52%, #ffffff 100%) !important;
+}
+html.app-light body.vault-mode #homePageOverlay {
+  background: linear-gradient(180deg, #eafaf6 0%, #f4fcfa 52%, #ffffff 100%) !important;
+}

@@ -1026,6 +1026,8 @@ function _myHubRestoreEmbeddedPages(exceptView) {
 
 function setMyHubTopTabView(view) {
   if (!view) view = 'home';
+  // Personal My Slots gets its own page tint; all other user tabs keep the normal Home background.
+  document.body.classList.toggle('my-slots-view', view === 'slots');
   if (view === 'clubs' || view === 'report') _myHubMountExistingPage(view);
   _myHubRestoreEmbeddedPages(view);
 
