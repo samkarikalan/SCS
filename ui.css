@@ -34604,3 +34604,18 @@ html.app-light body.my-slots-view:not(.vault-mode) #homePageOverlay {
 html.app-light body.vault-mode #homePageOverlay {
   background: linear-gradient(180deg, #eafaf6 0%, #f4fcfa 52%, #ffffff 100%) !important;
 }
+
+/* BUILD 1089 — iOS first-login Home safe-area fix.
+   The dedicated status-bar backdrop sits above the app at a very high z-index.
+   Reserve that exact safe-area height on Home so it never covers the user header
+   during the first PWA render/login transition. Other workspaces keep their
+   existing layout unchanged. */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body.scs-home-active #homePageOverlay {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    box-sizing: border-box !important;
+  }
+  body.scs-home-active #homePageOverlay .home-topbar.home-app-header {
+    top: 0 !important;
+  }
+}
