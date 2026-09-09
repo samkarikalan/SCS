@@ -34829,3 +34829,29 @@ html.app-light body.vault-mode #homePageOverlay {
   min-width: 0;
   padding: 9px 8px;
 }
+
+/* Completed Sessions payment filter — All / Not Paid */
+.vault-completed-payment-filter {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3px;
+  padding:3px;
+  margin:0 0 12px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--surface2);
+}
+.vault-completed-payment-filter button {
+  min-height:38px;
+  border:0;
+  border-radius:11px;
+  background:transparent;
+  color:var(--muted);
+  font:inherit;
+  font-size:.82rem;
+  font-weight:700;
+}
+.vault-completed-payment-filter button.is-active {
+  background:var(--accent,#6c63ff);
+  color:#fff;
+}

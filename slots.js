@@ -4629,6 +4629,7 @@ var _vhsSlotView = 'upcoming';
 var _vhsExpandedOverview = null;
 var _vhsCompletedShowAll = false;
 var _vhsCompletedInitialLimit = 10;
+var _vhsCompletedPaymentFilter = 'all';
 window._scsVaultAddSlotMode = false;
 
 function _vhsUpdateViewControls() {
@@ -4674,7 +4675,7 @@ async function vaultHomeSlotsToggleSection(view) {
   if (done) done.setAttribute('aria-expanded', _vhsExpandedOverview === 'completed' ? 'true' : 'false');
   if (panel) panel.hidden = !_vhsExpandedOverview;
   if (!_vhsExpandedOverview) return;
-  if (next === 'completed') _vhsCompletedShowAll = false;
+  if (next === 'completed') { _vhsCompletedShowAll = false; _vhsCompletedPaymentFilter = 'all'; }
   _vhsSlotView = next;
   _vhsSelectedDateStr = null;
   _vhsCarouselSlotId = null;
@@ -4686,6 +4687,21 @@ function vaultHomeSlotsToggleCompletedHistory() {
   _vhsCompletedShowAll = !_vhsCompletedShowAll;
   _vhsExpandedSlotId = null;
   renderVaultHomeSlotsUI(false);
+}
+
+function vaultHomeSlotsSetCompletedPaymentFilter(filter) {
+  _vhsCompletedPaymentFilter = filter === 'unpaid' ? 'unpaid' : 'all';
+  _vhsCompletedShowAll = false;
+  _vhsExpandedSlotId = null;
+  renderVaultHomeSlotsUI(false);
+}
+
+function _vhsCompletedSlotHasUnpaid(slot) {
+  if (!slot || !_mcsIsPlayedSlot(slot)) return false;
+  var claims = Array.isArray(slot.claims) ? slot.claims : [];
+  return claims.some(function(claim) {
+    return claim && String(claim.status || '').toLowerCase() === 'confirmed' && !_vsClaimPaid(claim);
+  });
 }
 
 function homeToggleMoreTilesVault() {
@@ -5071,13 +5087,22 @@ async function renderVaultHomeSlotsUI(loadFresh) {
     return;
   }
   if (wanted === 'completed') {
+    var paymentFilter = '<div class="vault-completed-payment-filter" role="tablist" aria-label="Completed session payment filter">' +
+      '<button type="button" class="' + (_vhsCompletedPaymentFilter === 'all' ? 'is-active' : '') + '" onclick="vaultHomeSlotsSetCompletedPaymentFilter(\'all\')" aria-selected="' + (_vhsCompletedPaymentFilter === 'all' ? 'true' : 'false') + '">All</button>' +
+      '<button type="button" class="' + (_vhsCompletedPaymentFilter === 'unpaid' ? 'is-active' : '') + '" onclick="vaultHomeSlotsSetCompletedPaymentFilter(\'unpaid\')" aria-selected="' + (_vhsCompletedPaymentFilter === 'unpaid' ? 'true' : 'false') + '">Not Paid</button>' +
+    '</div>';
+    if (_vhsCompletedPaymentFilter === 'unpaid') slots = slots.filter(_vhsCompletedSlotHasUnpaid);
+    if (!slots.length) {
+      listEl.innerHTML = paymentFilter + '<div class="mc-slots-empty">' + (_vhsCompletedPaymentFilter === 'unpaid' ? 'No not paid sessions' : 'No completed sessions') + '</div>';
+      return;
+    }
     var visibleSlots = _vhsCompletedShowAll ? slots : slots.slice(0, _vhsCompletedInitialLimit);
     var historyControl = slots.length > _vhsCompletedInitialLimit
       ? '<button type="button" class="vault-completed-history-toggle" onclick="vaultHomeSlotsToggleCompletedHistory()" aria-expanded="' + (_vhsCompletedShowAll ? 'true' : 'false') + '">' +
           (_vhsCompletedShowAll ? 'Show recent 10' : 'Show all ' + slots.length + ' sessions') +
         '<span aria-hidden="true">' + (_vhsCompletedShowAll ? '⌃' : '⌄') + '</span></button>'
       : '';
-    listEl.innerHTML = visibleSlots.map(_vhsRenderSlotCard).join('') + historyControl;
+    listEl.innerHTML = paymentFilter + visibleSlots.map(_vhsRenderSlotCard).join('') + historyControl;
     return;
   }
   listEl.innerHTML = slots.map(_vhsRenderSlotCard).join('');
