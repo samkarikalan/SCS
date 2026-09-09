@@ -34735,3 +34735,26 @@ html.app-light body.vault-mode #homePageOverlay {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+/* BUILD 1098 — Manage sessions uses the same outer card hierarchy as My Slots.
+   Only the outer UI is changed; existing manager session-card renderer/functions stay intact. */
+#homeVaultGrid #vaultUpcomingSlots.vault-slot-overview {
+  margin: 16px 16px 0;
+  padding: 18px;
+  gap: 12px;
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-overview-title {
+  margin: 0 0 2px;
+  padding: 0 2px;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-collapse-card {
+  margin: 0;
+}
