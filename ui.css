@@ -34674,3 +34674,49 @@ html.app-light body.vault-mode #homePageOverlay {
 #mcUpcomingSlots .mc-slots-layout-filter .mc-slots-filter-btn { white-space:nowrap; }
 #mcUpcomingSlots .mc-slots-list > .scs-slot-card + .scs-slot-card,
 #mcUpcomingSlots .mc-slots-list > .mc-slot-card + .mc-slot-card { margin-top:12px; }
+
+/* BUILD 1093 — My Slots compact header: title stays on one line; each segmented control owns a full row. */
+#mcUpcomingSlots > .mc-slots-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+#mcUpcomingSlots > .mc-slots-head > div:first-child {
+  width: 100%;
+  min-width: 0;
+  padding-right: 96px;
+  box-sizing: border-box;
+}
+#mcUpcomingSlots .mc-slots-title {
+  white-space: nowrap;
+}
+#mcUpcomingSlots .mc-slots-tools {
+  width: 100%;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+#mcUpcomingSlots .mc-slots-filter,
+#mcUpcomingSlots .mc-slots-layout-filter {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+#mcUpcomingSlots .mc-slots-refresh-btn {
+  position: absolute;
+  top: 0;
+  right: 48px;
+}
+#mcUpcomingSlots .mc-slots-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+@media (max-width: 430px) {
+  #mcUpcomingSlots .mc-slots-tools { max-width: none; gap: 8px; }
+  #mcUpcomingSlots .mc-slots-filter { width: 100%; min-width: 0; }
+}
