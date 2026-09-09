@@ -4627,6 +4627,8 @@ var _vhsCarouselSlotId = null;
 var _vhsLoadGeneration = 0;
 var _vhsSlotView = 'upcoming';
 var _vhsExpandedOverview = null;
+var _vhsCompletedShowAll = false;
+var _vhsCompletedInitialLimit = 10;
 window._scsVaultAddSlotMode = false;
 
 function _vhsUpdateViewControls() {
@@ -4672,11 +4674,18 @@ async function vaultHomeSlotsToggleSection(view) {
   if (done) done.setAttribute('aria-expanded', _vhsExpandedOverview === 'completed' ? 'true' : 'false');
   if (panel) panel.hidden = !_vhsExpandedOverview;
   if (!_vhsExpandedOverview) return;
+  if (next === 'completed') _vhsCompletedShowAll = false;
   _vhsSlotView = next;
   _vhsSelectedDateStr = null;
   _vhsCarouselSlotId = null;
   _vhsExpandedSlotId = null;
   await renderVaultHomeSlotsUI(true);
+}
+
+function vaultHomeSlotsToggleCompletedHistory() {
+  _vhsCompletedShowAll = !_vhsCompletedShowAll;
+  _vhsExpandedSlotId = null;
+  renderVaultHomeSlotsUI(false);
 }
 
 function homeToggleMoreTilesVault() {
@@ -5005,6 +5014,19 @@ async function renderVaultHomeSlotsUI(loadFresh) {
 
   // Keep both collapsed-card counts fresh without exposing the calendar or Add button.
   async function loadOverview(view) {
+    if (view === 'completed') {
+      var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+      if (!club || !club.id) return { dates:[], slotsByDate:{} };
+      var history = await dbGetSlotsForRange(club.id, '2000-01-01', _vsTodayStr()).catch(function(){ return []; });
+      var completedByDate = {};
+      (history || []).forEach(function(slot) {
+        if (!slot) return;
+        var status = String(slot.status || '').toLowerCase();
+        if (!(status === 'played' || status === 'completed' || status === 'cancelled' || slot.played_session_id)) return;
+        (completedByDate[slot.slot_date] = completedByDate[slot.slot_date] || []).push(slot);
+      });
+      return { dates:Object.keys(completedByDate).sort().reverse(), slotsByDate:completedByDate };
+    }
     _vhsSlotView = view;
     _vhsSelectedDateStr = null;
     await _vhsLoadMonthSlots();
@@ -5031,25 +5053,31 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   if (upBtn) upBtn.setAttribute('aria-expanded', wanted === 'upcoming' && !!_vhsExpandedOverview ? 'true' : 'false');
   if (doneBtn) doneBtn.setAttribute('aria-expanded', wanted === 'completed' && !!_vhsExpandedOverview ? 'true' : 'false');
   if (panel) panel.hidden = !_vhsExpandedOverview;
-  if (completedCalendar) completedCalendar.hidden = !(!!_vhsExpandedOverview && wanted === 'completed');
+  if (completedCalendar) completedCalendar.hidden = true;
   if (!_vhsExpandedOverview) { listEl.innerHTML = ''; _vhsSlotView = 'upcoming'; _vhsSlotsByDate = upcoming.slotsByDate; return; }
 
   var data = wanted === 'completed' ? completed : upcoming;
   _vhsSlotView = wanted;
   _vhsSlotsByDate = data.slotsByDate;
 
-  if (wanted === 'completed') {
-    if (!_vhsSelectedDateStr) _vhsSelectedDateStr = _vsTodayStr();
-    var completedLabel = document.getElementById('vaultCompletedMonthLabel');
-    if (completedLabel) completedLabel.textContent = _vsMonthLabel(_vhsCalYear, _vhsCalMonth);
-    _vhsRenderCalendarGrid('vaultCompletedCalGrid');
-  }
-
   var slots = wanted === 'completed'
-    ? ((_vhsSlotsByDate[_vhsSelectedDateStr] || []).slice())
+    ? _vsFlattenSlotsByDate(_vhsSlotsByDate).sort(function(a, b) {
+        var dateCompare = String(b.slot_date || '').localeCompare(String(a.slot_date || ''));
+        return dateCompare || String(b.start_time || '').localeCompare(String(a.start_time || ''));
+      })
     : _vsFlattenSlotsByDate(_vhsSlotsByDate);
   if (!slots.length) {
     listEl.innerHTML = '<div class="mc-slots-empty">' + (wanted === 'completed' ? 'No completed sessions' : 'No upcoming sessions') + '</div>';
+    return;
+  }
+  if (wanted === 'completed') {
+    var visibleSlots = _vhsCompletedShowAll ? slots : slots.slice(0, _vhsCompletedInitialLimit);
+    var historyControl = slots.length > _vhsCompletedInitialLimit
+      ? '<button type="button" class="vault-completed-history-toggle" onclick="vaultHomeSlotsToggleCompletedHistory()" aria-expanded="' + (_vhsCompletedShowAll ? 'true' : 'false') + '">' +
+          (_vhsCompletedShowAll ? 'Show recent 10' : 'Show all ' + slots.length + ' sessions') +
+        '<span aria-hidden="true">' + (_vhsCompletedShowAll ? '⌃' : '⌄') + '</span></button>'
+      : '';
+    listEl.innerHTML = visibleSlots.map(_vhsRenderSlotCard).join('') + historyControl;
     return;
   }
   listEl.innerHTML = slots.map(_vhsRenderSlotCard).join('');
