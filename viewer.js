@@ -57,8 +57,23 @@ async function viewerOpen(sessionId) {
 function viewerGoBack() {
   viewerStopPoll();
   _vHidePage();
-  if (typeof showPage === 'function') {
-    showPage('dashboardPage', document.getElementById('tabBtnDashboard'));
+
+  // Live-session detail is opened from My Hub/Home. Closing it must return to
+  // the My Hub Home screen, not the legacy Dashboard page.
+  try { appMode = 'viewer'; } catch (_) {}
+  try { welcomeSelectedWorkspace = 'viewer'; } catch (_) {}
+  try { sessionStorage.setItem('appMode', 'viewer'); } catch (_) {}
+  try { localStorage.setItem('kbrr_app_mode', 'viewer'); } catch (_) {}
+  if (typeof applyMode === 'function') { try { applyMode('viewer'); } catch (_) {} }
+  if (typeof showHomeScreen === 'function') {
+    showHomeScreen();
+    if (typeof setMyHubTopTabView === 'function') {
+      try { setMyHubTopTabView('home'); } catch (_) {}
+    }
+    if (typeof scsSyncPrimaryBottomNav === 'function') {
+      try { scsSyncPrimaryBottomNav('viewer'); } catch (_) {}
+    }
+    return;
   }
 }
 
