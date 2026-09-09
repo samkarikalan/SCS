@@ -5021,8 +5021,8 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   var doneSummary = document.getElementById('vaultCompletedSlotsSummary');
   if (upCountEl) upCountEl.textContent = upCount;
   if (doneCountEl) doneCountEl.textContent = doneCount;
-  if (upSummary) upSummary.textContent = upCount ? upCount + ' upcoming slot' + (upCount === 1 ? '' : 's') : (t('noUpcomingSlots') || 'No upcoming slots');
-  if (doneSummary) doneSummary.textContent = doneCount ? doneCount + ' completed slot' + (doneCount === 1 ? '' : 's') : (t('noCompletedSlots') || 'No completed slots');
+  if (upSummary) upSummary.textContent = upCount ? upCount + ' upcoming session' + (upCount === 1 ? '' : 's') : 'No upcoming sessions';
+  if (doneSummary) doneSummary.textContent = doneCount ? doneCount + ' completed session' + (doneCount === 1 ? '' : 's') : 'No completed sessions';
 
   var panel = document.getElementById('vaultSlotExpandedPanel');
   var completedCalendar = document.getElementById('vaultCompletedCalendar');
@@ -5049,7 +5049,7 @@ async function renderVaultHomeSlotsUI(loadFresh) {
     ? ((_vhsSlotsByDate[_vhsSelectedDateStr] || []).slice())
     : _vsFlattenSlotsByDate(_vhsSlotsByDate);
   if (!slots.length) {
-    listEl.innerHTML = '<div class="mc-slots-empty">' + (wanted === 'completed' ? (t('noCompletedSlots') || 'No completed slots') : (t('noUpcomingSlots') || 'No upcoming slots')) + '</div>';
+    listEl.innerHTML = '<div class="mc-slots-empty">' + (wanted === 'completed' ? 'No completed sessions' : 'No upcoming sessions') + '</div>';
     return;
   }
   listEl.innerHTML = slots.map(_vhsRenderSlotCard).join('');

@@ -762,6 +762,11 @@ var vctDot   = document.getElementById('vctDot');
 if (vctName) {
 if (club && club.name) {
 vctName.textContent = club.name;
+// Build 1094: on the Manage / Club Slot workspace, the header title is the selected club name.
+if (isVault) {
+  var vaultHeaderName = document.getElementById('homeUserHeaderName');
+  if (vaultHeaderName) vaultHeaderName.textContent = club.name;
+}
 if (vctDot) vctDot.style.background = '#2dce89';
 if (vctBadge) {
 vctBadge.textContent = t('adminBadge') || 'ADMIN';
