@@ -342,8 +342,25 @@ html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1
 </style>
 
 <style id="scs-build-1101-live-detail-clean-header">
-#viewerPage > .scs-topbar.scs-topbar-page{display:none !important}
-#viewerPage{padding-top:0 !important}
+/* Live detail: remove the inherited My Hub mode header. Keep only the close control. */
+body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
+#viewerPage{padding-top:0 !important;position:relative}
+#viewerPage > .scs-topbar.scs-topbar-page{
+  display:block !important;
+  position:relative !important;
+  min-height:58px;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+#viewerPage > .scs-topbar.scs-topbar-page .scs-topbar-center{display:none !important}
+#viewerPage > .scs-topbar.scs-topbar-page .scs-topbar-right{
+  position:absolute;
+  right:14px;
+  top:10px;
+  z-index:3;
+}
 </style>
 <style id="scs-build-1100-home-live-cards">
 /* Home Live: show the existing session cards directly; 10 at a time. */

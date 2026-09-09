@@ -65,6 +65,7 @@ function viewerGoBack() {
 /* ── Show/hide viewerPage only ── */
 function _vShowPage() {
   if (typeof homeHideScreen === 'function') homeHideScreen();
+  document.body.classList.add('viewer-detail-open');
   document.querySelectorAll('.page').forEach(function(p) { p.style.display = 'none'; });
   var vPage = document.getElementById('viewerPage');
   if (vPage) vPage.style.display = 'block';
@@ -78,6 +79,7 @@ function _vShowPage() {
 }
 
 function _vHidePage() {
+  document.body.classList.remove('viewer-detail-open');
   var vPage = document.getElementById('viewerPage');
   if (vPage) vPage.style.display = 'none';
   window._vSessionTabPinned = false;
