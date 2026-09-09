@@ -1702,13 +1702,19 @@ async function vaultLoadRequests() {
   }
 
   listEl.innerHTML = result.requests.map(function(req) {
+    var gender = req.gender || '—';
+    var rating = Number(req.requestedRating || 1);
     return '<div class="vault-request-card">' +
       '<div class="vault-request-info">' +
         '<div class="vault-request-name">' + req.nickname + '</div>' +
+        '<div class="vault-request-meta">' +
+          '<span><b>Gender</b> ' + gender + '</span>' +
+          '<span><b>Rating</b> ' + rating + '</span>' +
+        '</div>' +
         '<div class="vault-request-id">' + req.email + '</div>' +
       '</div>' +
       '<div class="vault-request-actions">' +
-        '<button class="vault-request-accept" onclick="vaultAcceptRequest(\'' + req.requestId + '\',\'' + req.userAccountId + '\',\'' + req.nickname.replace(/'/g, "\\'") + '\',' + Number(req.requestedRating || 1) + ',this)">✓ Accept</button>' +
+        '<button class="vault-request-accept" onclick="vaultAcceptRequest(\'' + req.requestId + '\',\'' + req.userAccountId + '\',\'' + req.nickname.replace(/'/g, "\\'") + '\',' + rating + ',this,\'' + gender + '\')">✓ Accept</button>' +
         '<button class="vault-request-reject" onclick="vaultRejectRequest(\'' + req.requestId + '\',this)">✗ Reject</button>' +
       '</div>' +
     '</div>';
@@ -1716,7 +1722,7 @@ async function vaultLoadRequests() {
 }
 
 /* ── Accept request ── */
-async function vaultAcceptRequest(requestId, userAccountId, nickname, requestedRating, btn) {
+async function vaultAcceptRequest(requestId, userAccountId, nickname, requestedRating, btn, gender) {
   var club = (typeof getMyClub === 'function') ? getMyClub() : { id: null };
   if (!club || !club.id) return;
 
@@ -1725,7 +1731,7 @@ async function vaultAcceptRequest(requestId, userAccountId, nickname, requestedR
   var originalText = acceptBtn ? acceptBtn.textContent : '';
   if (acceptBtn) { acceptBtn.disabled = true; acceptBtn.textContent = '⏳ Accepting...'; }
 
-  var result = await authAcceptRequest(requestId, club.id, userAccountId, nickname, null, requestedRating);
+  var result = await authAcceptRequest(requestId, club.id, userAccountId, nickname, gender || null, requestedRating);
 
   if (result.error) {
     if (acceptBtn) { acceptBtn.disabled = false; acceptBtn.textContent = originalText; }

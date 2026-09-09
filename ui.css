@@ -34776,3 +34776,56 @@ html.app-light body.vault-mode #homePageOverlay {
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-collapse-card {
   margin: 0;
 }
+
+/* Join Requests: compact player cards (name, gender, rating, email) */
+.vault-requests-list {
+  padding: 12px 14px 24px;
+}
+.vault-request-card {
+  display: block;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.vault-request-card:last-child { border-bottom: 1px solid var(--border); }
+.vault-request-info { width: 100%; min-width: 0; }
+.vault-request-name {
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-bottom: 7px;
+}
+.vault-request-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.vault-request-meta b {
+  color: var(--text);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.vault-request-id {
+  margin-top: 7px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.vault-request-actions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 10px;
+  width: 100%;
+  margin-top: 14px;
+}
+.vault-request-accept,
+.vault-request-reject {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 8px;
+}

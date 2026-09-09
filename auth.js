@@ -909,7 +909,7 @@ async function authGetJoinRequests(clubId) {
       var req = requests[i];
       try {
         var users = await sbGet('user_accounts',
-          'id=eq.' + req.user_account_id + '&select=id,email');
+          'id=eq.' + req.user_account_id + '&select=id,email,gender');
         if (users && users.length) {
           result.push({
             requestId:     req.id,
@@ -917,7 +917,8 @@ async function authGetJoinRequests(clubId) {
             userAccountId: req.user_account_id,
             nickname:      req.nickname,
             requestedRating:req.requested_rating,
-            email:         users[0].email
+            email:         users[0].email,
+            gender:        users[0].gender || ''
           });
         }
       } catch(e) {}
