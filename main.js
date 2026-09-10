@@ -5825,34 +5825,13 @@ function scsSetPrimarySafeArea(surface) {
   document.body.classList.toggle('scs-home-active', isHome);
   document.body.classList.toggle('scs-nonhome-active', !isHome);
 
-  // Build 1104: the iOS safe area belongs to the app shell, never to a workspace.
-  // Previously Home painted html/body + the fixed safe-area layer blue. Because
-  // HomeScreen is shared by My Hub, Round Manager and Slot Manager, any stale or
-  // transitional appMode could leave that blue shell behind above Round iMode.
-  // Keep workspace colour inside its own overlay/cards and make the outer shell
-  // permanently theme-neutral. This removes the race instead of masking it with
-  // page-specific CSS overrides.
-  var safeArea = document.getElementById('scsPrimarySafeAreaBackdrop');
-  if (!safeArea) {
-    safeArea = document.createElement('div');
-    safeArea.id = 'scsPrimarySafeAreaBackdrop';
-    safeArea.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(safeArea);
-  }
-  safeArea.style.display = 'block';
-  safeArea.style.backgroundColor = shellBg;
-
+  // The iOS status bar is opaque (see apple-mobile-web-app-status-bar-style),
+  // so the document no longer needs a synthetic safe-area overlay. Keep only
+  // the real app shell neutral; workspace colours belong to their own cards.
   document.documentElement.style.backgroundColor = shellBg;
   document.body.style.backgroundColor = shellBg;
   var metaTheme = document.getElementById('metaThemeColor');
   if (metaTheme) metaTheme.setAttribute('content', shellBg);
-
-  // Do not write workspace colours into the shared overlay here. Its CSS owns
-  // Home/My Slots/Slot Manager backgrounds; Round Manager cards keep their own
-  // colour without bleeding into the iOS status-bar region.
-  var homeOverlay = document.getElementById('homePageOverlay');
-  if (homeOverlay && !isHome) homeOverlay.style.backgroundColor = shellBg;
-  else if (homeOverlay) homeOverlay.style.removeProperty('background-color');
 }
 
 function scsSyncPrimaryBottomNav(active) {

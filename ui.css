@@ -34476,30 +34476,6 @@ html.app-light #myHubHomeView #myCardContent .mycard-rating-divider,
 html.app-light #myHubHomeView #myCardContent .profile-stat-divider { background: rgba(48,52,96,.15); }
 
 
-/* Build 1104 — one neutral iOS safe-area shell.
-   The status-bar/safe-area is app chrome, not part of Home, Round iMode or any
-   other workspace. Workspace colours must stay inside their own page/card. */
-#scsPrimarySafeAreaBackdrop {
-  position:fixed;
-  z-index:2147483500;
-  top:0;
-  left:0;
-  right:0;
-  height:env(safe-area-inset-top, 0px);
-  background:#0f0f13;
-  pointer-events:none;
-  display:none;
-}
-body.app-light #scsPrimarySafeAreaBackdrop,
-html.app-light #scsPrimarySafeAreaBackdrop { background:#f4f6fb; }
-
-
-
-/* Build 1070 — keep the dedicated safe-area backdrop active.
-   Build 1069 accidentally forced it hidden with !important, which defeated
-   scsSetPrimarySafeArea() after returning from Players. */
-
-
 /* Build 1077 — Settings mobile layout fix.
    Keep the language selector inside the Appearance card and remove overflow. */
 #settingsPage .settings-language-row {
