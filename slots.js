@@ -4676,7 +4676,7 @@ var _vhsExpandedSlotId = null;
 var _vhsCarouselSlotId = null;
 var _vhsLoadGeneration = 0;
 var _vhsSlotView = 'upcoming';
-var _vhsExpandedOverview = null;
+var _vhsExpandedOverview = 'upcoming';
 var _vhsCompletedShowAll = false;
 var _vhsCompletedInitialLimit = 10;
 var _vhsCompletedPaymentFilter = 'all';
@@ -4723,15 +4723,13 @@ function vaultHomeSlotsSetView(view) {
 
 async function vaultHomeSlotsToggleSection(view) {
   var next = view === 'completed' ? 'completed' : 'upcoming';
-  var same = _vhsExpandedOverview === next;
-  _vhsExpandedOverview = same ? null : next;
+  _vhsExpandedOverview = next;
   var panel = document.getElementById('vaultSlotExpandedPanel');
   var up = document.getElementById('vaultUpcomingCollapse');
   var done = document.getElementById('vaultCompletedCollapse');
-  if (up) up.setAttribute('aria-expanded', _vhsExpandedOverview === 'upcoming' ? 'true' : 'false');
-  if (done) done.setAttribute('aria-expanded', _vhsExpandedOverview === 'completed' ? 'true' : 'false');
-  if (panel) panel.hidden = !_vhsExpandedOverview;
-  if (!_vhsExpandedOverview) return;
+  if (up) { up.setAttribute('aria-expanded', next === 'upcoming' ? 'true' : 'false'); up.setAttribute('aria-selected', next === 'upcoming' ? 'true' : 'false'); up.classList.toggle('is-active', next === 'upcoming'); }
+  if (done) { done.setAttribute('aria-expanded', next === 'completed' ? 'true' : 'false'); done.setAttribute('aria-selected', next === 'completed' ? 'true' : 'false'); done.classList.toggle('is-active', next === 'completed'); }
+  if (panel) panel.hidden = false;
   if (next === 'completed') { _vhsCompletedShowAll = false; _vhsCompletedPaymentFilter = 'all'; }
   _vhsSlotView = next;
   _vhsSelectedDateStr = null;
@@ -5195,9 +5193,9 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   var completedCalendar = document.getElementById('vaultCompletedCalendar');
   var upBtn = document.getElementById('vaultUpcomingCollapse');
   var doneBtn = document.getElementById('vaultCompletedCollapse');
-  if (upBtn) upBtn.setAttribute('aria-expanded', wanted === 'upcoming' && !!_vhsExpandedOverview ? 'true' : 'false');
-  if (doneBtn) doneBtn.setAttribute('aria-expanded', wanted === 'completed' && !!_vhsExpandedOverview ? 'true' : 'false');
-  if (panel) panel.hidden = !_vhsExpandedOverview;
+  if (upBtn) { upBtn.setAttribute('aria-expanded', wanted === 'upcoming' ? 'true' : 'false'); upBtn.setAttribute('aria-selected', wanted === 'upcoming' ? 'true' : 'false'); upBtn.classList.toggle('is-active', wanted === 'upcoming'); }
+  if (doneBtn) { doneBtn.setAttribute('aria-expanded', wanted === 'completed' ? 'true' : 'false'); doneBtn.setAttribute('aria-selected', wanted === 'completed' ? 'true' : 'false'); doneBtn.classList.toggle('is-active', wanted === 'completed'); }
+  if (panel) panel.hidden = false;
   if (completedCalendar) completedCalendar.hidden = true;
   if (!_vhsExpandedOverview) { listEl.innerHTML = ''; _vhsSlotView = 'upcoming'; _vhsSlotsByDate = upcoming.slotsByDate; return; }
 

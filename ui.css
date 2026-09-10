@@ -34905,3 +34905,18 @@ html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse
   text-shadow:none !important;
   opacity:1 !important;
 }
+
+
+/* Build 1125 — Slot Manager: Upcoming / Completed horizontal tabs only. */
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tabs {
+  display:grid; grid-template-columns:1fr 1fr; gap:4px; width:100%; padding:4px;
+  border:1px solid var(--border); border-radius:14px; background:var(--surface2);
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab {
+  min-height:44px; border:0; border-radius:10px; background:transparent; color:var(--text);
+  font:inherit; font-size:.9rem; font-weight:700; cursor:pointer;
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab > span:not(.vault-slot-tab-summary)::before { content:' ('; }
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab > span:not(.vault-slot-tab-summary)::after { content:')'; }
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active { background:var(--accent); color:#fff; }
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab-summary { display:none; }

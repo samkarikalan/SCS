@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1124">
+  <link rel="stylesheet" href="ui.css?v=1125">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -1333,14 +1333,10 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
 <!-- Slot Manager: compact Upcoming / Completed collapsed cards -->
 <section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card vault-slot-overview">
   <div class="vault-workspace-title vault-slot-overview-title" id="vaultWorkspaceTitle" aria-live="polite">Club</div>
-  <button type="button" id="vaultUpcomingCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('upcoming')" aria-expanded="false">
-    <span class="vault-slot-collapse-copy"><strong>📅 Upcoming Sessions</strong><small id="vaultSlotsSummary">No upcoming sessions</small></span>
-    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
-  </button>
-  <button type="button" id="vaultCompletedCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('completed')" aria-expanded="false">
-    <span class="vault-slot-collapse-copy"><strong>📅 Completed Sessions</strong><small id="vaultCompletedSlotsSummary">No completed sessions</small></span>
-    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultCompletedSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
-  </button>
+  <div class="vault-slot-tabs" role="tablist" aria-label="Session status">
+    <button type="button" id="vaultUpcomingCollapse" class="vault-slot-tab is-active" onclick="vaultHomeSlotsToggleSection('upcoming')" role="tab" aria-selected="true" aria-expanded="true">Upcoming <span id="vaultSlotsCount">0</span><span id="vaultSlotsSummary" class="vault-slot-tab-summary" aria-hidden="true">No upcoming sessions</span></button>
+    <button type="button" id="vaultCompletedCollapse" class="vault-slot-tab" onclick="vaultHomeSlotsToggleSection('completed')" role="tab" aria-selected="false" aria-expanded="false">Completed <span id="vaultCompletedSlotsCount">0</span><span id="vaultCompletedSlotsSummary" class="vault-slot-tab-summary" aria-hidden="true">No completed sessions</span></button>
+  </div>
 
   <div id="vaultSlotExpandedPanel" class="vault-slot-expanded-panel" hidden>
     <div id="vaultCompletedCalendar" class="vault-completed-calendar" hidden>
