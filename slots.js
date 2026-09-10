@@ -5305,6 +5305,7 @@ async function renderLauncherStartSessionCard() {
     if (typeof _buildDashboardSlotCard !== 'function') return null;
     var dashboardCard = _buildDashboardSlotCard(slot);
     dashboardCard.classList.add('organiser-dashboard-slot-card');
+    dashboardCard.classList.toggle('is-today-organiser-slot', isTodaySlot);
     var startBtn = dashboardCard.querySelector('.mc-slot-action-btn');
     if (startBtn) {
       var reason = '';
