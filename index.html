@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1131">
+  <link rel="stylesheet" href="ui.css?v=1132">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -2268,13 +2268,24 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
         <div class="vs-post-sample-badge" data-i18n="draftPost">Draft / Post</div>
       </div>
 
-      <div class="vs-create-tabs" role="tablist" aria-label="Create slot sections">
-        <button type="button" class="vs-create-tab vs-create-tab-session is-active" data-tab="session" onclick="vaultSlotsSetCreateTab('session')"><span>1</span> Session</button>
-        <button type="button" class="vs-create-tab vs-create-tab-players" data-tab="players" onclick="vaultSlotsSetCreateTab('players')"><span>2</span> Players · Optional</button>
-        <button type="button" class="vs-create-tab vs-create-tab-post" data-tab="post" onclick="vaultSlotsSetCreateTab('post')"><span>3</span> Post</button>
+      <div class="vs-create-summary" data-panel="summary">
+        <div class="vs-summary-heading">Slot Summary</div>
+        <button type="button" class="vs-summary-card" onclick="vaultSlotsSetCreateTab('session')">
+          <span class="vs-summary-icon">📍</span><span><b>Venue &amp; Time</b><small id="vsSummaryVenueTime">Select venue and time</small></span><em>›</em>
+        </button>
+        <button type="button" class="vs-summary-card" onclick="vaultSlotsSetCreateTab('setup')">
+          <span class="vs-summary-icon">🏸</span><span><b>Session Setup</b><small id="vsSummarySetup">8 players · 1 court · Standard · Both · Any rating</small></span><em>›</em>
+        </button>
+        <button type="button" class="vs-summary-card" onclick="vaultSlotsSetCreateTab('players')">
+          <span class="vs-summary-icon">👥</span><span><b>Players <i>Optional</i></b><small id="vsSummaryPlayers">No players added</small></span><em>›</em>
+        </button>
+        <button type="button" class="vs-summary-card" onclick="vaultSlotsSetCreateTab('post')">
+          <span class="vs-summary-icon">📣</span><span><b>Publish</b><small id="vsSummaryPublish">Private · Post now</small></span><em>›</em>
+        </button>
+        <div class="vs-summary-note" id="vsSummaryNote">Select a venue to continue.</div>
       </div>
 
-      <div class="vs-create-tab-panel is-active" data-panel="session">
+      <div class="vs-create-tab-panel" data-panel="session">
       <section class="vs-sample-card">
         <div class="vs-sample-card-title"><span>📍</span> <span data-i18n="sessionDetails">Session Details</span></div>
         <div class="vs-sample-field">
@@ -2304,6 +2315,10 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
         </div>
       </section>
 
+      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
+      </div>
+
+      <div class="vs-create-tab-panel" data-panel="setup">
       <section class="vs-sample-card">
         <div class="vs-sample-card-title"><span>⚙️</span> <span data-i18n="roundSettings">Session Settings</span></div>
         <div class="vs-sample-two-col">
@@ -2355,6 +2370,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
           </div>
         </div>
       </section>
+      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
       </div>
 
       <div class="vs-create-tab-panel" data-panel="players">
@@ -2365,6 +2381,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
         </div>
         <div id="vsInitialPlayersBox" class="vs-initial-players-box vs-sample-player-box">__INITIAL_PLAYERS__</div>
       </section>
+      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
       </div>
 
       <div class="vs-create-tab-panel" data-panel="post">

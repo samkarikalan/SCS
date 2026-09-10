@@ -1138,31 +1138,44 @@ function _vsCreateSectionsComplete() {
 function vaultSlotsRefreshCreateTabs() {
   var form = document.querySelector('#vsDateSheetContent .vs-post-sample-layout');
   if (!form) return;
-  var state = _vsCreateSectionsComplete();
-  var post = form.querySelector('.vs-create-tab-post');
-  if (post) {
-    post.disabled = !state.post;
-    post.classList.toggle('is-locked', !state.post);
-    post.setAttribute('aria-disabled', state.post ? 'false' : 'true');
-  }
+  vaultSlotsRefreshCreateSummary();
+}
+
+function vaultSlotsRefreshCreateSummary() {
+  var form = document.querySelector('#vsDateSheetContent .vs-post-sample-layout');
+  if (!form) return;
+  var venue = document.getElementById('vsFormVenue');
+  var start = document.getElementById('vsFormStart');
+  var end = document.getElementById('vsFormEnd');
+  var vt = document.getElementById('vsSummaryVenueTime');
+  if (vt) vt.textContent = venue && venue.value ? venue.value + ' · ' + (start?.value || '') + '–' + (end?.value || '') : 'Select venue and time';
+  var max = document.getElementById('vsFormMaxValue')?.textContent || '8';
+  var courts = document.getElementById('vsFormCourtValue')?.textContent || '1';
+  var setup = document.getElementById('vsSummarySetup');
+  if (setup) setup.textContent = max+' players · '+courts+' court'+(courts==='1'?'':'s')+' · '+(_vsFormSessionModeChoice==='balanced'?'Balanced':'Standard')+' · '+(_vsFormGenderChoice==='all'?'Both':_vsFormGenderChoice)+' · '+(_vsFormRatingChoice==='0'?'Any rating':_vsFormRatingChoice+'.0+');
+  var players = document.getElementById('vsSummaryPlayers');
+  if (players) players.textContent = _vsInitialPlayers.length ? _vsInitialPlayers.length+' player'+(_vsInitialPlayers.length===1?'':'s')+' added' : 'No players added';
+  var pub = document.getElementById('vsSummaryPublish');
+  var sched = document.getElementById('vsFormScheduledPostAt');
+  if (pub) pub.textContent = (_vsFormVisibilityChoice==='public'?'Public':'Private')+' · '+(sched && sched.value ? 'Scheduled' : 'Post now');
+  var note = document.getElementById('vsSummaryNote');
+  if (note) { var ok=_vsCreateSectionsComplete().session; note.textContent=ok?'Ready to review and publish.':'Select a venue and valid time to continue.'; note.classList.toggle('is-ready',ok); }
 }
 
 function vaultSlotsSetCreateTab(tab) {
   var form = document.querySelector('#vsDateSheetContent .vs-post-sample-layout');
   if (!form) return;
-  vaultSlotsRefreshCreateTabs();
-  if (tab === 'post' && !_vsCreateSectionsComplete().post) return;
-  var tabs = form.querySelectorAll('.vs-create-tab');
-  var panels = form.querySelectorAll('.vs-create-tab-panel');
-  tabs.forEach(function(btn){ btn.classList.toggle('is-active', btn.getAttribute('data-tab') === tab); });
+  vaultSlotsRefreshCreateSummary();
+  var summary=form.querySelector('.vs-create-summary');
+  var panels=form.querySelectorAll('.vs-create-tab-panel');
+  if (summary) summary.style.display = tab === 'summary' ? '' : 'none';
   panels.forEach(function(panel){ panel.classList.toggle('is-active', panel.getAttribute('data-panel') === tab); });
-  var scroll = document.getElementById('vsDateSheetContent');
-  if (scroll) scroll.scrollTop = 0;
+  var scroll=document.getElementById('vsDateSheetContent'); if(scroll) scroll.scrollTop=0;
 }
 
 function vaultSlotsShowPostForm() {
   const contentEl = document.getElementById('vsDateSheetContent');
-  if (contentEl) contentEl.innerHTML = _vsPostFormHtml();
+  if (contentEl) { contentEl.innerHTML = _vsPostFormHtml(); setTimeout(vaultSlotsRefreshCreateSummary, 0); }
 }
 
 function _vsPostFormHtml() {

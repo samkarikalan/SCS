@@ -35224,7 +35224,7 @@ html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .v
   -webkit-text-fill-color:#fff !important;
 }
 
-/* Build 1131 — Post Slot visual polish only: softer colours + rounded controls. */
+/* Build 1132 — Post Slot visual polish only: softer colours + rounded controls. */
 body.tile-style-color #vsDateSheetOverlay {
   --post-soft-purple:rgba(118,38,213,.14);
   --post-soft-cyan:rgba(22,201,199,.12);
@@ -35274,3 +35274,22 @@ body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-session.is-ac
 body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-players.is-active {background:rgba(22,201,199,.12)!important;color:#087f7c!important;}
 body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-post.is-active {background:rgba(245,29,134,.10)!important;color:#a91d61!important;}
 body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-sample-field>label {color:#263244!important;text-shadow:none!important;}
+
+/* Build 1132 — Create Slot summary-first assistant flow */
+#vsDateSheetOverlay .vs-create-summary{display:grid;gap:12px;padding:14px 0 6px}
+#vsDateSheetOverlay .vs-summary-heading{font-size:15px;font-weight:750;letter-spacing:.04em;color:var(--text-muted,#9aa5b5);padding:0 4px 2px}
+#vsDateSheetOverlay .vs-summary-card{width:100%;display:grid;grid-template-columns:42px 1fr 20px;align-items:center;gap:10px;text-align:left;padding:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:16px;color:inherit;box-shadow:none}
+#vsDateSheetOverlay .vs-summary-card .vs-summary-icon{font-size:23px}
+#vsDateSheetOverlay .vs-summary-card span:nth-child(2){display:grid;gap:5px;min-width:0}
+#vsDateSheetOverlay .vs-summary-card b{font-size:17px;color:#f5f7fb}
+#vsDateSheetOverlay .vs-summary-card b i{font-size:12px;font-style:normal;font-weight:600;opacity:.62;margin-left:5px}
+#vsDateSheetOverlay .vs-summary-card small{font-size:13px;font-weight:550;color:#aeb8c7;white-space:normal}
+#vsDateSheetOverlay .vs-summary-card em{font-style:normal;font-size:26px;color:#8290a4}
+#vsDateSheetOverlay .vs-summary-note{margin:3px 2px 0;padding:11px 13px;border-radius:12px;background:rgba(255,184,77,.08);color:#d8b777;font-size:13px}
+#vsDateSheetOverlay .vs-summary-note.is-ready{background:rgba(47,184,143,.09);color:#7bcbb2}
+#vsDateSheetOverlay .vs-editor-done{display:flex;justify-content:flex-end;padding:14px 0 4px}
+#vsDateSheetOverlay .vs-editor-done button{min-width:110px;padding:11px 18px;border:0;border-radius:12px;background:#287f72;color:white;font-weight:750;font-size:15px}
+body.app-light #vsDateSheetOverlay .vs-summary-card{background:#fff;border-color:#dce2ea}
+body.app-light #vsDateSheetOverlay .vs-summary-card b{color:#1d2939}
+body.app-light #vsDateSheetOverlay .vs-summary-card small{color:#5d6978}
+body.app-light #vsDateSheetOverlay .vs-summary-heading{color:#647184}
