@@ -5820,18 +5820,18 @@ function scsSetPrimarySafeArea(surface) {
   if (!document.body) return;
   var isHome = surface === 'home' || surface === 'viewer';
   var isLight = document.body.classList.contains('app-light') || document.documentElement.classList.contains('app-light');
-  var nonHomeBg = isLight ? '#f4f6fb' : '#0f0f13';
-  var homeBg = isLight ? '#f4f6fb' : '#1f5fbd';
-  var safeAreaBg = isHome ? homeBg : nonHomeBg;
+  var shellBg = isLight ? '#f4f6fb' : '#0f0f13';
 
   document.body.classList.toggle('scs-home-active', isHome);
   document.body.classList.toggle('scs-nonhome-active', !isHome);
 
-  // Build 1068: do not use body::before for the iOS safe area. Assist/Players
-  // already owns body::before while a guided child page is open, which made the
-  // status area inherit/repaint the Round iMode blue after Players was closed.
-  // A dedicated fixed element gives the primary navigation sole ownership of
-  // the status-bar safe area and survives Players/Add Player return flows.
+  // Build 1104: the iOS safe area belongs to the app shell, never to a workspace.
+  // Previously Home painted html/body + the fixed safe-area layer blue. Because
+  // HomeScreen is shared by My Hub, Round Manager and Slot Manager, any stale or
+  // transitional appMode could leave that blue shell behind above Round iMode.
+  // Keep workspace colour inside its own overlay/cards and make the outer shell
+  // permanently theme-neutral. This removes the race instead of masking it with
+  // page-specific CSS overrides.
   var safeArea = document.getElementById('scsPrimarySafeAreaBackdrop');
   if (!safeArea) {
     safeArea = document.createElement('div');
@@ -5839,19 +5839,20 @@ function scsSetPrimarySafeArea(surface) {
     safeArea.setAttribute('aria-hidden', 'true');
     document.body.appendChild(safeArea);
   }
-  // The PWA uses black-translucent so this element, not iOS' cached theme
-  // colour, owns the status-bar safe area. Home keeps its blue identity;
-  // Round/Slot/Settings and child pages always use the normal app background.
   safeArea.style.display = 'block';
-  safeArea.style.backgroundColor = safeAreaBg;
+  safeArea.style.backgroundColor = shellBg;
 
-  document.documentElement.style.backgroundColor = isHome ? homeBg : nonHomeBg;
-  document.body.style.backgroundColor = isHome ? homeBg : nonHomeBg;
+  document.documentElement.style.backgroundColor = shellBg;
+  document.body.style.backgroundColor = shellBg;
   var metaTheme = document.getElementById('metaThemeColor');
-  if (metaTheme) metaTheme.setAttribute('content', safeAreaBg);
+  if (metaTheme) metaTheme.setAttribute('content', shellBg);
 
+  // Do not write workspace colours into the shared overlay here. Its CSS owns
+  // Home/My Slots/Slot Manager backgrounds; Round Manager cards keep their own
+  // colour without bleeding into the iOS status-bar region.
   var homeOverlay = document.getElementById('homePageOverlay');
-  if (homeOverlay) homeOverlay.style.backgroundColor = isHome ? '' : nonHomeBg;
+  if (homeOverlay && !isHome) homeOverlay.style.backgroundColor = shellBg;
+  else if (homeOverlay) homeOverlay.style.removeProperty('background-color');
 }
 
 function scsSyncPrimaryBottomNav(active) {
