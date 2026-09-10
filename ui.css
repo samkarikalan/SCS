@@ -34860,3 +34860,48 @@ body.app-light :is(input,textarea,select)::placeholder {
   color:#64748b;
   opacity:1;
 }
+
+/* Build 1124 — Slot Manager 3-rule fix (light mode only).
+   Rule 1: controls/tiles must not disappear into their parent/page background.
+   Rule 2: text must contrast with its surface.
+   Rule 3: visible Slot Manager tiles use distinct surfaces.
+   Scoped to the Slot Manager home overview; round rendering untouched. */
+html.app-light #homeVaultGrid #vaultUpcomingSlots.vault-slot-overview {
+  background:#eef2ff !important;
+  border:1px solid #d8def5 !important;
+}
+html.app-light #homeVaultGrid #vaultUpcomingSlots .vault-slot-overview-title {
+  color:#17213a !important;
+  text-shadow:none !important;
+}
+html.app-light #homeVaultGrid #vaultUpcomingCollapse {
+  background:#d9f0ec !important;
+  color:#18313b !important;
+  border-color:#b9ddd6 !important;
+}
+html.app-light #homeVaultGrid #vaultCompletedCollapse {
+  background:#e4e9f5 !important;
+  color:#18313b !important;
+  border-color:#cbd5e7 !important;
+}
+html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse) .vault-slot-collapse-copy strong {
+  color:#18313b !important;
+  -webkit-text-fill-color:#18313b !important;
+  text-shadow:none !important;
+  opacity:1 !important;
+}
+html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse) .vault-slot-collapse-copy small {
+  color:#536773 !important;
+  -webkit-text-fill-color:#536773 !important;
+  text-shadow:none !important;
+  opacity:1 !important;
+}
+html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse) :is(.mc-slots-count,.vault-slot-chevron) {
+  background:#f8fafc !important;
+  color:#18313b !important;
+  -webkit-text-fill-color:#18313b !important;
+  border:1px solid #cbd6dc !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  opacity:1 !important;
+}
