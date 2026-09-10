@@ -291,8 +291,7 @@ body.app-light #homeMoreSectionV .viewer-action-label { color: #fff; font-size: 
 }
 
 #homeViewerGrid .mc-slot-card,
-body.tile-style-color #homeViewerGrid .mc-slot-card,
-body.tile-style-glow #homeViewerGrid .mc-slot-card {
+body #homeViewerGrid .mc-slot-card {
   border-radius: 19px !important;
   overflow: hidden !important;
   background: #fff !important;
@@ -300,17 +299,14 @@ body.tile-style-glow #homeViewerGrid .mc-slot-card {
   box-shadow: 0 8px 22px rgba(33,55,95,.10) !important;
 }
 
-body:not(.app-light) #homeViewerGrid .mc-slot-card,
-body:not(.app-light).tile-style-color #homeViewerGrid .mc-slot-card,
-body:not(.app-light).tile-style-glow #homeViewerGrid .mc-slot-card {
+body:not(.app-light) #homeViewerGrid .mc-slot-card {
   background: #1b1e29 !important;
   border-color: rgba(255,255,255,.10) !important;
   box-shadow: 0 10px 24px rgba(0,0,0,.28) !important;
 }
 
 #homeViewerGrid .mc-slot-titlebar,
-body.tile-style-color #homeViewerGrid .mc-slot-titlebar,
-body.tile-style-glow #homeViewerGrid .mc-slot-titlebar {
+body #homeViewerGrid .mc-slot-titlebar {
   min-height: 48px;
   padding: 10px 13px !important;
   border: 0 !important;
@@ -338,14 +334,12 @@ body.tile-style-glow #homeViewerGrid .mc-slot-titlebar {
 }
 
 #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar,
-body.tile-style-color #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar,
-body.tile-style-glow #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar {
+body #homeViewerGrid .mc-slot-card.vs-cal-women .mc-slot-titlebar {
   background: linear-gradient(100deg,#ed477a,#f26793) !important;
 }
 
 #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar,
-body.tile-style-color #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar,
-body.tile-style-glow #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar {
+body #homeViewerGrid .mc-slot-card.vs-cal-all .mc-slot-titlebar {
   background: linear-gradient(100deg,#6d45d8,#875ae5) !important;
 }
 
@@ -362,16 +356,14 @@ body:not(.app-light) #homeViewerGrid .mc-slot-probability-distribution {
 }
 
 #homeViewerGrid .mc-slot-card-head,
-body.tile-style-color #homeViewerGrid .mc-slot-card-head,
-body.tile-style-glow #homeViewerGrid .mc-slot-card-head {
+body #homeViewerGrid .mc-slot-card-head {
   padding: 10px 13px 12px !important;
   background: transparent !important;
   border: 0 !important;
 }
 
 #homeViewerGrid .mc-slot-time-row,
-body.tile-style-color #homeViewerGrid .mc-slot-time-row,
-body.tile-style-glow #homeViewerGrid .mc-slot-time-row {
+body #homeViewerGrid .mc-slot-time-row {
   margin: 0 0 8px !important;
   padding: 0 !important;
   min-height: 34px;
@@ -542,14 +534,12 @@ body:not(.app-light) #homeViewerGrid .mc-slot-footer > span:first-child {
 }
 
 #homeViewerGrid .mc-slot-card.is-player-joined,
-body.tile-style-color #homeViewerGrid .mc-slot-card.is-player-joined,
-body.tile-style-glow #homeViewerGrid .mc-slot-card.is-player-joined {
+body #homeViewerGrid .mc-slot-card.is-player-joined {
   box-shadow: inset 4px 0 0 #20b66f, 0 8px 22px rgba(33,55,95,.10) !important;
 }
 
 #homeViewerGrid .mc-slot-card.is-player-waitlist,
-body.tile-style-color #homeViewerGrid .mc-slot-card.is-player-waitlist,
-body.tile-style-glow #homeViewerGrid .mc-slot-card.is-player-waitlist {
+body #homeViewerGrid .mc-slot-card.is-player-waitlist {
   box-shadow: inset 4px 0 0 #f59e0b, 0 8px 22px rgba(33,55,95,.10) !important;
 }
 
