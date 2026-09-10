@@ -34641,3 +34641,44 @@ html:not(.app-light) #settingsPage #appearanceCard .font-scale-value,
 html:not(.app-light) #settingsPage #appearanceCard .font-scale-a {
   color:#f8fbff!important; text-shadow:none!important;
 }
+
+/* Build 1116 — Settings Language surface follows the 3 colour rules.
+   Language group is a control surface inside Appearance, so it must not reuse
+   the Appearance card colour; its language buttons must also differ from it. */
+html.app-light #settingsPage #appearanceCard .settings-language-row {
+  background:#e7f0ff!important;
+  border:1px solid rgba(64,104,170,.18)!important;
+  border-radius:14px!important;
+  padding:12px!important;
+}
+html.app-light #settingsPage #appearanceCard .settings-language-row .pref-row-label {
+  color:#17213a!important;
+}
+html.app-light #settingsPage #settingsLanguagePills {
+  background:#eef1f7!important;
+  border:1px solid rgba(31,55,96,.12)!important;
+  border-radius:13px!important;
+  padding:5px!important;
+}
+html.app-light #settingsPage #settingsLanguagePills .pref-pill {
+  background:#ffffff!important;
+  color:#17213a!important;
+  border:1px solid rgba(31,55,96,.16)!important;
+}
+html:not(.app-light) #settingsPage #appearanceCard .settings-language-row {
+  background:#253a59!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:14px!important;
+  padding:12px!important;
+}
+html:not(.app-light) #settingsPage #settingsLanguagePills {
+  background:#18263d!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:13px!important;
+  padding:5px!important;
+}
+html:not(.app-light) #settingsPage #settingsLanguagePills .pref-pill {
+  background:#314967!important;
+  color:#f8fbff!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+}
