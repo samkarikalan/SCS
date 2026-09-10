@@ -34929,3 +34929,78 @@ html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse
 html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active { color:#4fd1c5; }
 html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active::after { background:#4fd1c5; }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab-summary { display:none; }
+
+/* Build 1127 — Slot Manager tabs: flat page tabs with active underline (Slot Manager only). */
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tabs {
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:0 !important;
+  width:100% !important;
+  padding:0 !important;
+  margin:0 0 14px !important;
+  background:transparent !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(128,145,180,.24) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+#homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab {
+  position:relative !important;
+  min-height:48px !important;
+  padding:0 10px 12px !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  color:var(--muted) !important;
+  -webkit-text-fill-color:currentColor !important;
+  opacity:1 !important;
+  font:inherit !important;
+  font-size:.92rem !important;
+  font-weight:600 !important;
+  cursor:pointer !important;
+}
+#homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active {
+  background:transparent !important;
+  color:#159b8e !important;
+  -webkit-text-fill-color:#159b8e !important;
+  font-weight:700 !important;
+}
+#homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab::after {
+  content:'' !important;
+  position:absolute !important;
+  left:12% !important;
+  right:12% !important;
+  bottom:-1px !important;
+  height:3px !important;
+  border-radius:3px 3px 0 0 !important;
+  background:transparent !important;
+}
+#homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active::after {
+  background:#159b8e !important;
+}
+html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab {
+  color:#8f96ad !important;
+  -webkit-text-fill-color:#8f96ad !important;
+}
+html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active {
+  color:#4fd1c5 !important;
+  -webkit-text-fill-color:#4fd1c5 !important;
+}
+html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active::after {
+  background:#4fd1c5 !important;
+}
+html.app-light #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab {
+  color:#667085 !important;
+  -webkit-text-fill-color:#667085 !important;
+}
+html.app-light #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active {
+  color:#087f73 !important;
+  -webkit-text-fill-color:#087f73 !important;
+}
+html.app-light #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#vaultCompletedCollapse).vault-slot-tab.is-active::after {
+  background:#087f73 !important;
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab-summary { display:none !important; }
