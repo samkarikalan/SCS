@@ -142,6 +142,73 @@ async function sbUpsert(table, data, onConflict) {
   return res.json();
 }
 
+
+// ─────────────────────────────────────────────────────────────
+//  BUILD 1120 — LOCAL-FIRST CLUB SNAPSHOT
+//  The selected club is small, so keep a complete on-device copy.
+//  Normal UI can paint from local caches; explicit/automatic sync refreshes
+//  this snapshot from the server. Individual table failures never discard the
+//  last good local club copy.
+// ─────────────────────────────────────────────────────────────
+async function scsDownloadClubSnapshot(clubId) {
+  const id = String(clubId || '');
+  if (!id || !window.SCSOfflineDB || typeof SCSOfflineDB.saveClubSnapshot !== 'function') return null;
+
+  const previousRow = await SCSOfflineDB.getClubSnapshot(id).catch(() => null);
+  const previous = previousRow && previousRow.data ? previousRow.data : {};
+  const snapshot = Object.assign({}, previous, { clubId:id, downloadedAt:new Date().toISOString() });
+
+  async function load(name, table, query) {
+    try { snapshot[name] = await sbGet(table, query); }
+    catch (error) { console.warn('Local club download skipped ' + name + ':', error && error.message ? error.message : error); }
+  }
+
+  await Promise.all([
+    load('club', 'clubs', `id=eq.${id}&select=*`),
+    load('memberships', 'memberships', `club_id=eq.${id}&select=*`),
+    load('slots', 'slots', `club_id=eq.${id}&select=*`),
+    load('sessions', 'sessions', `club_id=eq.${id}&select=*`),
+    load('activeSessions', 'active_sessions', `club_id=eq.${id}&select=*`),
+    load('joinRequests', 'club_join_requests', `club_id=eq.${id}&select=*`),
+    load('roles', 'user_club_roles', `club_id=eq.${id}&select=*`),
+    load('broadcasts', 'club_invite_broadcasts', `club_id=eq.${id}&select=*`),
+    load('venues', 'venues', `club_id=eq.${id}&select=*`)
+  ]);
+
+  const playerIds = [...new Set((snapshot.memberships || []).map(r => r && r.player_id).filter(Boolean).map(String))];
+  if (playerIds.length) await load('players', 'players', `id=in.(${playerIds.join(',')})&select=*`);
+
+  const slotIds = [...new Set((snapshot.slots || []).map(r => r && r.id).filter(Boolean).map(String))];
+  if (slotIds.length) await load('slotClaims', 'slot_claims', `slot_id=in.(${slotIds.join(',')})&select=*`);
+
+  const sessionIds = [...new Set([...(snapshot.sessions || []), ...(snapshot.activeSessions || [])].map(r => r && r.id).filter(Boolean).map(String))];
+  if (sessionIds.length) {
+    await Promise.all([
+      load('matches', 'matches', `session_id=in.(${sessionIds.join(',')})&select=*`),
+      load('playerSessions', 'player_sessions', `session_id=in.(${sessionIds.join(',')})&select=*`)
+    ]);
+  }
+
+  snapshot.syncedAt = Date.now();
+  await SCSOfflineDB.saveClubSnapshot(id, snapshot);
+  if (Array.isArray(snapshot.slots) && typeof SCSOfflineDB.saveVaultSlotsCache === 'function') {
+    await SCSOfflineDB.saveVaultSlotsCache(id, snapshot.slots).catch(() => {});
+  }
+  localStorage.setItem('scs_local_club_snapshot_at_' + id, String(snapshot.syncedAt));
+  window.dispatchEvent(new CustomEvent('scs:club-snapshot-updated', { detail:{ clubId:id, at:snapshot.syncedAt } }));
+  return snapshot;
+}
+
+async function scsGetLocalClubSnapshot(clubId) {
+  const id = String(clubId || '');
+  if (!id || !window.SCSOfflineDB || typeof SCSOfflineDB.getClubSnapshot !== 'function') return null;
+  const row = await SCSOfflineDB.getClubSnapshot(id).catch(() => null);
+  return row && row.data ? row.data : null;
+}
+
+window.scsDownloadClubSnapshot = scsDownloadClubSnapshot;
+window.scsGetLocalClubSnapshot = scsGetLocalClubSnapshot;
+
 // ─────────────────────────────────────────────────────────────
 //  CLUB SESSION — which club is active
 // ─────────────────────────────────────────────────────────────
@@ -163,6 +230,11 @@ function setMyClub(id, name) {
   if (typeof updateModePill === 'function') {
     var mode = localStorage.getItem('kbrr_app_mode') || 'organiser';
     updateModePill(mode);
+  }
+  // Keep a full local copy for the selected club. This is non-blocking so a
+  // club switch never waits for the network.
+  if (id && navigator.onLine && typeof scsDownloadClubSnapshot === 'function') {
+    setTimeout(function(){ scsDownloadClubSnapshot(id).catch(function(){}); }, 0);
   }
 }
 
@@ -191,6 +263,31 @@ async function dbGetPlayers(forceFresh = false) {
 
   if (!forceFresh && cached && cachedClubId === currentClubId && (now - lastFetch) < CACHE_TTL_MS) {
     return JSON.parse(cached);
+  }
+
+  // Local-first: after the club has been downloaded, use its on-device roster
+  // immediately. A manual/automatic sync passes forceFresh=true and refreshes
+  // from the server.
+  if (!forceFresh && club.id && typeof scsGetLocalClubSnapshot === 'function') {
+    try {
+      const snap = await scsGetLocalClubSnapshot(club.id);
+      if (snap && Array.isArray(snap.memberships) && snap.memberships.length) {
+        const byId = new Map((snap.players || []).map(p => [String(p.id), p]));
+        const normalized = snap.memberships.map(m => {
+          const p = byId.get(String(m.player_id)) || {};
+          return {
+            id: m.player_id, membershipId:m.id, name:m.nickname,
+            gender:p.gender || 'Male', rating:parseFloat(p.global_rating) || 1.0,
+            clubRating:parseFloat(m.club_rating) || 1.0,
+            activeRating:parseFloat(m.club_rating) || 1.0,
+            wins:p.wins || 0, losses:p.losses || 0, sessions:p.sessions || []
+          };
+        });
+        localStorage.setItem(CACHE_PLAYERS, JSON.stringify(normalized));
+        localStorage.setItem(CACHE_TIMESTAMP, String(Date.now()));
+        return normalized;
+      }
+    } catch (_) {}
   }
 
   try {

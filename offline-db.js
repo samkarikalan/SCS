@@ -14,7 +14,7 @@
   'use strict';
 
   const DB_NAME = 'scs_offline_rounds';
-  const DB_VERSION = 4;
+  const DB_VERSION = 5;
   const CURRENT_KEY = 'current';
 
   let _dbPromise = null;
@@ -59,6 +59,11 @@
         // immediately; Supabase refreshes it in the background.
         if (!db.objectStoreNames.contains('vaultSlotsCache')) {
           db.createObjectStore('vaultSlotsCache', { keyPath: 'clubId' });
+        }
+        // Build 1120: full per-club local snapshot. SCS keeps the selected
+        // club's small dataset on-device and refreshes it only through sync.
+        if (!db.objectStoreNames.contains('clubSnapshots')) {
+          db.createObjectStore('clubSnapshots', { keyPath: 'clubId' });
         }
         // Build 917: keep the Round Template cache encrypted at rest.
         // CryptoKey is non-extractable; normal app code can use it, but it cannot
@@ -283,6 +288,30 @@
     });
   }
 
+
+  async function saveClubSnapshot(clubId, snapshot) {
+    const id = String(clubId || '');
+    if (!id) return false;
+    return put('clubSnapshots', {
+      clubId: id,
+      syncedAt: Date.now(),
+      data: cloneData(snapshot || {})
+    });
+  }
+
+  async function getClubSnapshot(clubId) {
+    const id = String(clubId || '');
+    if (!id) return null;
+    const row = await get('clubSnapshots', id);
+    return row ? cloneData(row) : null;
+  }
+
+  async function clearClubSnapshot(clubId) {
+    const id = String(clubId || '');
+    if (!id) return false;
+    return remove('clubSnapshots', id);
+  }
+
   async function saveVaultSlotsCache(clubId, slots) {
     const id = String(clubId || '');
     if (!id) return false;
@@ -365,6 +394,9 @@
     getTempPreparedRounds,
     clearTempPreparedRounds,
     countPreparedRounds,
+    saveClubSnapshot,
+    getClubSnapshot,
+    clearClubSnapshot,
     saveVaultSlotsCache,
     getVaultSlotsCache,
     clearVaultSlotsCache,

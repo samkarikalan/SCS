@@ -275,18 +275,22 @@ function appearFontSliderInput(value) {
   _appearPending.font = scale;
   const valueEl = document.getElementById('fontScaleValue');
   if (valueEl) valueEl.textContent = Math.round(scale) + '%';
+  const theme = _appearPending.theme || localStorage.getItem('app-theme') || 'light';
+  const style = 'color';
+  _renderPreview(theme, style, scale);
   _appearUpdateApplyBtn();
 }
 
 
 /* ── Appearance panel: pending selections ── */
-var _appearPending = { theme: null, font: null };
+var _appearPending = { theme: null, font: null, tile: null };
 
 function appearSyncFromSaved() {
   _syncFontSliderLimits();
   // Sync pill active states from saved prefs when settings page opens
   const theme = localStorage.getItem('app-theme') || 'light';
   const font  = Number(localStorage.getItem('appFontScale')) || _fontScaleFromValue(localStorage.getItem('appFontSize') || 'xlarge');
+  const tile  = 'color';
 
   // Theme pills
   ['theme_light','theme_dark'].forEach(id => document.getElementById(id)?.classList.remove('active'));
@@ -299,15 +303,117 @@ function appearSyncFromSaved() {
   if (fontValue) fontValue.textContent = Math.round(font) + '%';
 
   // Reset pending state
-  _appearPending = { theme: null, font: null };
+  _appearPending = { theme: null, font: null, tile: null };
 
+  // Render preview showing current saved state
+  _renderPreview(theme, tile, font);
   _appearUpdateApplyBtn();
+}
+
+/* ─── Single preview renderer — composes theme + style + font together ─── */
+function _renderPreview(theme, style, font) {
+  const box  = document.getElementById('stylePreviewBox');
+  const label = box?.querySelector('.style-preview-label');
+  const spts  = box?.querySelectorAll('.spt');
+  const wide  = box?.querySelector('.style-preview-wide');
+  const names = box?.querySelectorAll('.spt-name, .spw-name');
+  const subs  = box?.querySelectorAll('.spt-sub, .spw-sub');
+  if (!box) return;
+
+  // Keep data attrs for glow ::before CSS
+  box.setAttribute('data-style', style);
+
+  // ── Theme colours ──
+  const dark  = { bg: '#1a1a22', tile: '#22222e', border: 'rgba(255,255,255,0.07)', text: '#f0f0f5', sub: '#6060a0', label: '#505080', wide: '#22222e' };
+  const light = { bg: '#eef1f7', tile: '#ffffff',  border: 'rgba(0,0,0,0.08)',       text: '#1a1a2e', sub: '#8888aa', label: '#8888aa', wide: '#ffffff' };
+  const t = theme === 'light' ? light : dark;
+
+  // ── Font sizes ──
+  const previewScale = _fontScaleFromValue(font) / 100;
+  const fs = { name: (0.85 * previewScale).toFixed(3) + 'rem', sub: (0.65 * previewScale).toFixed(3) + 'rem' };
+
+  // ── Tile colours per style ──
+  // Dark Color mode uses deeper accents so white labels remain readable.
+  // Light Color mode is handled separately in the next theme pass.
+  const tileColors = [
+    'linear-gradient(135deg,#16c9c7,#078ed2)',
+    'linear-gradient(135deg,#ff2b91,#f51d86)',
+    'linear-gradient(135deg,#8a35e5,#7626d5)'
+  ];
+  const wideColor = 'linear-gradient(135deg,#e51538,#d50027)';
+
+  // Apply box background
+  box.style.background = (style === 'glow') ? '#0d0d1a' : t.bg;
+  if (label) { label.style.color = (style === 'glow') ? '#555' : t.label; }
+
+  // Apply each spt tile
+  if (spts) {
+    spts.forEach(function(spt, i) {
+      var nameEl = spt.querySelector('.spt-name');
+      var subEl  = spt.querySelector('.spt-sub');
+
+      if (style === 'color') {
+        spt.style.background   = tileColors[i] || tileColors[0];
+        spt.style.border       = '1px solid rgba(255,255,255,.22)';
+        spt.style.boxShadow    = theme === 'dark' ? '0 10px 24px rgba(0,0,0,.24)' : 'none';
+        spt.style.paddingTop   = '10px';
+        if (nameEl) { nameEl.style.color = '#fff'; }
+        if (subEl)  { subEl.style.color  = 'rgba(255,255,255,0.65)'; }
+      } else if (style === 'glow') {
+        spt.style.background   = '#1a1a2e';
+        spt.style.border       = '1px solid #2a2a40';
+        spt.style.boxShadow    = 'none';
+        spt.style.paddingTop   = '12px';
+        if (nameEl) { nameEl.style.color = '#fff'; }
+        if (subEl)  { subEl.style.color  = '#555'; }
+      } else {
+        // flat
+        spt.style.background   = t.tile;
+        spt.style.border       = '1px solid ' + t.border;
+        spt.style.boxShadow    = 'none';
+        spt.style.paddingTop   = '10px';
+        if (nameEl) { nameEl.style.color = t.text; }
+        if (subEl)  { subEl.style.color  = t.sub; }
+      }
+      if (nameEl) nameEl.style.fontSize = fs.name;
+      if (subEl)  subEl.style.fontSize  = fs.sub;
+    });
+  }
+
+  // Apply wide tile
+  if (wide) {
+    var wName = wide.querySelector('.spw-name');
+    var wSub  = wide.querySelector('.spw-sub');
+    var wArr  = wide.querySelector('.spw-arr');
+    if (style === 'color') {
+      wide.style.background = wideColor;
+      wide.style.border     = '1px solid rgba(255,255,255,.22)';
+      wide.style.boxShadow  = theme === 'dark' ? '0 10px 24px rgba(0,0,0,.24)' : 'none';
+      if (wName) { wName.style.color = '#fff'; wName.style.fontSize = fs.name; }
+      if (wSub)  { wSub.style.color  = 'rgba(255,255,255,0.65)'; wSub.style.fontSize = fs.sub; }
+      if (wArr)  { wArr.style.color  = 'rgba(255,255,255,0.5)'; }
+    } else if (style === 'glow') {
+      wide.style.background = '#1a1a2e';
+      wide.style.border     = '1px solid #2a2a40';
+      wide.style.boxShadow  = 'none';
+      if (wName) { wName.style.color = '#fff'; wName.style.fontSize = fs.name; }
+      if (wSub)  { wSub.style.color  = '#555'; wSub.style.fontSize = fs.sub; }
+      if (wArr)  { wArr.style.color  = '#555'; }
+    } else {
+      wide.style.background = t.wide;
+      wide.style.border     = '1px solid ' + t.border;
+      wide.style.boxShadow  = 'none';
+      if (wName) { wName.style.color = t.text; wName.style.fontSize = fs.name; }
+      if (wSub)  { wSub.style.color  = t.sub;  wSub.style.fontSize = fs.sub; }
+      if (wArr)  { wArr.style.color  = t.sub; }
+    }
+  }
 }
 
 function appearSelect(type, value, btn) {
   // Highlight selected pill
-  const group = btn.closest('.appear-pill-group') || btn.parentElement;
-  group.querySelectorAll('.pref-pill').forEach(b => b.classList.remove('active'));
+  const group = btn.closest('.appear-pill-group') || btn.closest('.tile-style-group') || btn.parentElement;
+  group.querySelectorAll('.pref-pill, .tile-style-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   btn.classList.add('appear-pulse');
   setTimeout(() => btn.classList.remove('appear-pulse'), 400);
@@ -317,10 +423,17 @@ function appearSelect(type, value, btn) {
   if (type === 'theme') {
     _appearPending.theme = null;
     applyTheme(value);
-  } else if (type === 'font') {
-    _appearPending.font = value;
+  } else {
+    _appearPending[type] = value;
   }
 
+  // Get current effective values (pending overrides saved)
+  const theme = _appearPending.theme || localStorage.getItem('app-theme') || 'light';
+  const style = 'color';
+  const font  = _appearPending.font  || Number(localStorage.getItem('appFontScale')) || _fontScaleFromValue(localStorage.getItem('appFontSize') || 'xlarge');
+
+  // Re-render preview with all three combined
+  _renderPreview(theme, style, font);
   _appearUpdateApplyBtn();
 }
 
@@ -335,6 +448,7 @@ function _appearUpdateApplyBtn() {
     const parts = [];
     if (_appearPending.theme) parts.push(_appearPending.theme === 'light' ? '☀️ Light' : '🌙 Dark');
     if (_appearPending.font)  parts.push(Math.round(_appearPending.font) + '% font');
+    if (_appearPending.tile)  parts.push(_appearPending.tile.charAt(0).toUpperCase() + _appearPending.tile.slice(1) + ' tiles');
     if (label) label.textContent = parts.join(' · ') + ' — tap Apply';
   } else {
     btn?.classList.remove('appear-apply-ready');
@@ -350,6 +464,7 @@ function appearApply() {
   // Apply all pending to the whole app
   if (_appearPending.theme) applyTheme(_appearPending.theme);
   if (_appearPending.font)  setFontSize(_appearPending.font);
+  if (_appearPending.tile)  setTileStyle(_appearPending.tile);
 
   // Success animation
   if (btn) {
@@ -361,7 +476,7 @@ function appearApply() {
     }, 1500);
   }
 
-  _appearPending = { theme: null, font: null };
+  _appearPending = { theme: null, font: null, tile: null };
   const bar = document.getElementById('appearPreviewBar');
   if (bar) bar.style.display = 'none';
 }
@@ -1672,6 +1787,14 @@ async function scsSyncGateway(source, quiet) {
       // The original server-master player sync remains the authoritative core.
       // It records kbrr_last_sync and emits scs:data-synced on completion.
       if (typeof syncToLocal === 'function') await syncToLocal();
+
+      // Build 1120: refresh the complete selected-club local database during
+      // the one existing sync gateway. No extra page-by-page server polling is
+      // introduced; the full small club dataset is kept on the device.
+      if (typeof scsDownloadClubSnapshot === 'function' && typeof getMyClub === 'function') {
+        var localFirstClub = getMyClub();
+        if (localFirstClub && localFirstClub.id) await scsDownloadClubSnapshot(localFirstClub.id);
+      }
 
       var jobs = [];
       function add(fn) { if (typeof fn === 'function') jobs.push(Promise.resolve().then(fn)); }
