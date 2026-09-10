@@ -34775,3 +34775,27 @@ html:not(.app-light) .scs-primary-bottom-nav button:nth-child(1) .scs-primary-na
 html:not(.app-light) .scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon{background:#1f625b!important;}
 html:not(.app-light) .scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon{background:#765b25!important;}
 html:not(.app-light) .scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{background:#7a3f36!important;}
+
+/* Build 1118 — LOCKED FIX: primary bottom navigation is ONE continuous surface.
+   Preserve the approved per-icon colours and active underline; never tint nav buttons. */
+.scs-primary-bottom-nav,
+html.app-light .scs-primary-bottom-nav,
+body.app-light .scs-primary-bottom-nav {
+  background:#0d0d10!important;
+  background-color:#0d0d10!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.scs-primary-bottom-nav button,
+html.app-light .scs-primary-bottom-nav button,
+body.app-light .scs-primary-bottom-nav button,
+.scs-primary-bottom-nav button.is-active,
+html.app-light .scs-primary-bottom-nav button.is-active,
+body.app-light .scs-primary-bottom-nav button.is-active {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
