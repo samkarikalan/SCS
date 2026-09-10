@@ -34799,3 +34799,19 @@ body.app-light .scs-primary-bottom-nav button.is-active {
   background-image:none!important;
   box-shadow:none!important;
 }
+
+/* Build 1119 — LOCKED FIX: bottom-nav icons are transparent.
+   The bottom bar is the only navigation background surface. */
+.scs-primary-bottom-nav .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon,
+html.app-light .scs-primary-bottom-nav .scs-primary-nav-icon,
+html:not(.app-light) .scs-primary-bottom-nav .scs-primary-nav-icon {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
