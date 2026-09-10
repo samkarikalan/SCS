@@ -611,6 +611,8 @@ function refreshOrganiserLocalNavCounts() {
   } catch (e) {}
   _setOrganiserNavCount('orgNavPlayersCount', playerCount);
   _setOrganiserNavCount('orgNavPairsCount', pairCount);
+  _setOrganiserNavCount('orgIModePlayersCount', playerCount);
+  _setOrganiserNavCount('orgIModePairsCount', pairCount);
 
   // Keep Offline Start eligibility synchronized with the exact same player
   // refresh that drives the green Add Players badge.

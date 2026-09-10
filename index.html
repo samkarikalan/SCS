@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.66"; window.SCS_BUILD = "1101"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.67"; window.SCS_BUILD = "1103"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -1125,13 +1125,19 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
               </div>
               <div class="org-sample-copy"><strong>Round iMode</strong><em data-i18n="roundIModeDescription">Prepared first, live when needed, synced when the session ends.</em></div>
             </div>
-            <div class="org-color-section org-color-format-section org-always-visible-setting">
-              <div class="org-control-label" data-i18n="gameFormat">Game Format</div>
-              <div class="org-game-style org-round-format" role="radiogroup" aria-label="Offline Game Format">
-                <button id="sampleOfflineFormatDoubles" type="button" onclick="SCSOfflineRounds.setGameType('doubles')"><span>◉</span> <b data-i18n="doubles">Doubles</b></button>
-                <button id="sampleOfflineFormatMixed" type="button" onclick="SCSOfflineRounds.setGameType('mixed')"><span>○</span> <b data-i18n="mixed">Mixed</b></button>
-                <button id="sampleOfflineFormatSingles" type="button" onclick="SCSOfflineRounds.setGameType('singles')"><span>○</span> <b data-i18n="singles">Singles</b></button>
-              </div>
+            <div class="org-imode-manager-tiles" aria-label="Round setup shortcuts">
+              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPlayersFromNav()">
+                <span class="org-imode-manager-icon" aria-hidden="true">👥</span>
+                <span data-i18n="players">Players</span>
+                <span class="organiser-nav-count org-imode-count-pill" id="orgIModePlayersCount" style="display:none;">0</span>
+                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
+              </button>
+              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPairsFromNav()">
+                <span class="org-imode-manager-icon" aria-hidden="true">🔗</span>
+                <span data-i18n="fixedPairs">Fixed Pairs</span>
+                <span class="organiser-nav-count org-imode-count-pill" id="orgIModePairsCount" style="display:none;">0</span>
+                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
+              </button>
             </div>
             <div class="org-color-section org-offline-courts-section org-always-visible-setting">
               <div class="org-control-label" data-i18n="numberOfCourts">Number of Courts</div>
@@ -1141,17 +1147,13 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
                 <button id="sampleOfflineCourtsPlus" type="button" aria-label="Increase courts" onclick="SCSOfflineRounds.adjustCourtCount(1)">+</button>
               </div>
             </div>
-            <div class="org-imode-manager-tiles" aria-label="Round setup shortcuts">
-              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPlayersFromNav()">
-                <span class="org-imode-manager-icon" aria-hidden="true">👥</span>
-                <span data-i18n="players">Players</span>
-                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
-              </button>
-              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPairsFromNav()">
-                <span class="org-imode-manager-icon" aria-hidden="true">🔗</span>
-                <span data-i18n="fixedPairs">Fixed Pairs</span>
-                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
-              </button>
+            <div class="org-color-section org-color-format-section org-always-visible-setting">
+              <div class="org-control-label" data-i18n="gameFormat">Game Format</div>
+              <div class="org-game-style org-round-format" role="radiogroup" aria-label="Offline Game Format">
+                <button id="sampleOfflineFormatDoubles" type="button" onclick="SCSOfflineRounds.setGameType('doubles')"><span>◉</span> <b data-i18n="doubles">Doubles</b></button>
+                <button id="sampleOfflineFormatMixed" type="button" onclick="SCSOfflineRounds.setGameType('mixed')"><span>○</span> <b data-i18n="mixed">Mixed</b></button>
+                <button id="sampleOfflineFormatSingles" type="button" onclick="SCSOfflineRounds.setGameType('singles')"><span>○</span> <b data-i18n="singles">Singles</b></button>
+              </div>
             </div>
             <button class="org-mode-summary" id="offlineModeSummary" type="button" aria-label="Show Round iMode settings" aria-expanded="false" onclick="orgToggleModeDetails(this, event)">Doubles · Standard · Random ON · Winner OFF</button>
             <div class="org-round-setup-card">
