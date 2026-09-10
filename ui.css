@@ -34815,3 +34815,48 @@ html:not(.app-light) .scs-primary-bottom-nav .scs-primary-nav-icon {
   border: 0 !important;
   box-shadow: none !important;
 }
+
+/* Build 1123 — Light-mode text contrast fix.
+   Keep typography/weights and dark mode unchanged. This only strengthens
+   light-theme foreground tokens and a few legacy muted labels that were
+   still rendered too pale on light surfaces. Round rendering CSS is untouched. */
+html.app-light body,
+body.app-light {
+  --text:#111827;
+  --text-dim:#334155;
+  --muted:#475569;
+}
+
+html.app-light body :is(
+  .ml-topbar-username,
+  .jc-club-nick,
+  .vt-sub,
+  .min-rounds-hint,
+  .sec,
+  .menu-btn,
+  .lang-menu div,
+  .browse-subtitle,
+  .mc-slots-empty,
+  .mc-slots-empty-state
+),
+body.app-light :is(
+  .ml-topbar-username,
+  .jc-club-nick,
+  .vt-sub,
+  .min-rounds-hint,
+  .sec,
+  .menu-btn,
+  .lang-menu div,
+  .browse-subtitle,
+  .mc-slots-empty,
+  .mc-slots-empty-state
+) {
+  color:#475569 !important;
+  text-shadow:none !important;
+}
+
+html.app-light body :is(input,textarea,select)::placeholder,
+body.app-light :is(input,textarea,select)::placeholder {
+  color:#64748b;
+  opacity:1;
+}
