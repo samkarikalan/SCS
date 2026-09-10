@@ -34682,3 +34682,96 @@ html:not(.app-light) #settingsPage #settingsLanguagePills .pref-pill {
   color:#f8fbff!important;
   border:1px solid rgba(255,255,255,.14)!important;
 }
+
+
+/* ======================================================================
+   BUILD 1117 — PROFESSIONAL COLOUR PALETTE
+   Palette direction: modern Coolors-style navy / teal / gold / coral / blue.
+   Applies only to non-round-rendering UI and preserves the three colour rules.
+   ====================================================================== */
+:root{
+  --scs-dark-tile-1:#264653;
+  --scs-dark-tile-2:#1f625b;
+  --scs-dark-tile-3:#3d4f73;
+  --scs-dark-tile-4:#765b25;
+  --scs-dark-tile-5:#7a3f36;
+  --scs-dark-tile-6:#315b72;
+  --scs-light-tile-1:#dcebf1;
+  --scs-light-tile-2:#d9f0ec;
+  --scs-light-tile-3:#e4e9f5;
+  --scs-light-tile-4:#f8e8b9;
+  --scs-light-tile-5:#f7ddd6;
+  --scs-light-tile-6:#dceaf2;
+  --scs-dark-fg:#f8fafc;
+  --scs-dark-sub:#d8e1e7;
+  --scs-light-fg:#18313b;
+  --scs-light-sub:#536773;
+  --scs-dark-control:#162f3a;
+  --scs-light-control:#f7fafb;
+}
+
+/* Settings: coordinated surfaces; every nested control differs from its parent. */
+html.app-light #settingsPage #appearanceCard .settings-language-row{
+  background:#d9f0ec!important;
+  border-color:#b7dcd5!important;
+}
+html.app-light #settingsPage #settingsLanguagePills{
+  background:#dcebf1!important;
+  border-color:#bfd3dc!important;
+}
+html.app-light #settingsPage #settingsLanguagePills .pref-pill{
+  background:#f8fafc!important;
+  color:#18313b!important;
+  border-color:#c7d4da!important;
+}
+html.app-light #settingsPage #settingsLanguagePills .pref-pill.active{
+  background:#2a9d8f!important;
+  color:#fff!important;
+  border-color:#2a9d8f!important;
+}
+html:not(.app-light) #settingsPage #appearanceCard .settings-language-row{
+  background:#1f625b!important;
+  border-color:#397a73!important;
+}
+html:not(.app-light) #settingsPage #settingsLanguagePills{
+  background:#183e48!important;
+  border-color:#35616b!important;
+}
+html:not(.app-light) #settingsPage #settingsLanguagePills .pref-pill{
+  background:#315b72!important;
+  color:#f8fafc!important;
+  border-color:#4b7185!important;
+}
+html:not(.app-light) #settingsPage #settingsLanguagePills .pref-pill.active{
+  background:#e9c46a!important;
+  color:#28343a!important;
+  border-color:#e9c46a!important;
+}
+
+/* Professional accent states without changing component layout. */
+html.app-light #settingsPage #appearanceCard .pref-pill.active,
+html.app-light #settingsPage .pref-pill.active{background:#2a9d8f!important;color:#fff!important;border-color:#2a9d8f!important;}
+html:not(.app-light) #settingsPage #appearanceCard .pref-pill.active,
+html:not(.app-light) #settingsPage .pref-pill.active{background:#e9c46a!important;color:#28343a!important;border-color:#e9c46a!important;}
+
+/* Navigation keeps one bar, but icons are now real contrasting chips (Rule 1). */
+.scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{
+  min-width:34px!important;
+  height:30px!important;
+  padding:0 7px!important;
+  border-radius:10px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon{background:rgba(69,123,157,.18)!important;}
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon{background:rgba(42,157,143,.18)!important;}
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon{background:rgba(233,196,106,.22)!important;}
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{background:rgba(231,111,81,.18)!important;}
+html:not(.app-light) .scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon{background:#315b72!important;}
+html:not(.app-light) .scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon{background:#1f625b!important;}
+html:not(.app-light) .scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon{background:#765b25!important;}
+html:not(.app-light) .scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{background:#7a3f36!important;}
