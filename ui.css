@@ -35293,3 +35293,192 @@ body.app-light #vsDateSheetOverlay .vs-summary-card{background:#fff;border-color
 body.app-light #vsDateSheetOverlay .vs-summary-card b{color:#1d2939}
 body.app-light #vsDateSheetOverlay .vs-summary-card small{color:#5d6978}
 body.app-light #vsDateSheetOverlay .vs-summary-heading{color:#647184}
+
+/* Build 1133 — Create Slot cards: match approved clean assistant mockup.
+   Flow/handlers unchanged. Styling only inside Create Slot sheet. */
+#vsDateSheetOverlay .vs-post-form-compact{
+  --cs-accent:#2f9b84;
+  --cs-accent-soft:rgba(47,155,132,.15);
+  --cs-card:#182233;
+  --cs-card-2:#1d293a;
+  --cs-border:rgba(184,198,218,.18);
+  --cs-text:#f5f7fb;
+  --cs-muted:#aab6c7;
+}
+
+/* Summary cards — calm, separate panels like the approved mockup. */
+#vsDateSheetOverlay .vs-create-summary{
+  gap:10px !important;
+  padding:12px 0 8px !important;
+}
+#vsDateSheetOverlay .vs-summary-heading{
+  padding:0 2px 4px !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+  letter-spacing:.02em !important;
+  text-transform:none !important;
+  color:var(--cs-muted) !important;
+}
+#vsDateSheetOverlay .vs-summary-card{
+  min-height:76px !important;
+  padding:14px 15px !important;
+  grid-template-columns:38px 1fr 18px !important;
+  gap:10px !important;
+  background:var(--cs-card) !important;
+  border:1px solid var(--cs-border) !important;
+  border-radius:16px !important;
+  box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+}
+#vsDateSheetOverlay .vs-summary-card .vs-summary-icon{
+  width:34px;height:34px;display:grid;place-items:center;
+  border-radius:10px !important;
+  background:var(--cs-accent-soft) !important;
+  font-size:19px !important;
+}
+#vsDateSheetOverlay .vs-summary-card b{
+  font-size:16px !important;
+  font-weight:720 !important;
+  color:var(--cs-text) !important;
+  -webkit-text-fill-color:var(--cs-text) !important;
+}
+#vsDateSheetOverlay .vs-summary-card small{
+  font-size:12.5px !important;
+  line-height:1.35 !important;
+  font-weight:520 !important;
+  color:var(--cs-muted) !important;
+  -webkit-text-fill-color:var(--cs-muted) !important;
+}
+#vsDateSheetOverlay .vs-summary-card em{
+  font-size:22px !important;
+  color:#8190a6 !important;
+}
+#vsDateSheetOverlay .vs-summary-note{
+  background:rgba(255,255,255,.035) !important;
+  border:1px solid var(--cs-border) !important;
+  color:var(--cs-muted) !important;
+  border-radius:12px !important;
+}
+#vsDateSheetOverlay .vs-summary-note.is-ready{
+  background:rgba(47,155,132,.08) !important;
+  border-color:rgba(47,155,132,.20) !important;
+  color:#9bd5c6 !important;
+}
+
+/* Editor pages — one clean card, no bright section blocks. */
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"],
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="setup"],
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"],
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"]{
+  background:transparent !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(1),
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(2),
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"] > .vs-sample-card,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(1),
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(2){
+  background:var(--cs-card) !important;
+  border:1px solid var(--cs-border) !important;
+  border-radius:16px !important;
+  box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+  padding:16px !important;
+  margin-bottom:12px !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card :is(.vs-sample-card-title,.vs-sample-field>label,.vs-create-optional-label){
+  color:var(--cs-text) !important;
+  -webkit-text-fill-color:var(--cs-text) !important;
+  text-shadow:none !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card .vs-sample-hint{
+  color:var(--cs-muted) !important;
+  -webkit-text-fill-color:var(--cs-muted) !important;
+  opacity:1 !important;
+}
+
+/* Inner controls use a quieter second neutral surface. */
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(
+  .vs-sample-input,.vs-sample-time-box,.vs-stepper,.vs-sample-stepper,
+  .vs-segmented,.vs-pill-row,.vs-initial-players-box,.vs-sample-counter-card
+){
+  background:var(--cs-card-2) !important;
+  border-color:var(--cs-border) !important;
+  color:var(--cs-text) !important;
+  border-radius:12px !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(.vs-stepper-btn,.vs-stepper-value,.vs-pill){
+  background:transparent !important;
+  border-color:transparent !important;
+  color:var(--cs-text) !important;
+  -webkit-text-fill-color:var(--cs-text) !important;
+  border-radius:10px !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-pill.vs-pill-active,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-stepper-btn:last-child{
+  background:var(--cs-accent-soft) !important;
+  border:1px solid rgba(71,190,161,.44) !important;
+  color:#bff1e4 !important;
+  -webkit-text-fill-color:#bff1e4 !important;
+}
+#vsDateSheetOverlay .vs-editor-done button{
+  background:var(--cs-accent) !important;
+  color:#fff !important;
+  border-radius:12px !important;
+  box-shadow:none !important;
+}
+
+/* Light mode mirrors the approved clean white-card mockup. */
+body.app-light #vsDateSheetOverlay .vs-post-form-compact,
+html.app-light body #vsDateSheetOverlay .vs-post-form-compact{
+  --cs-accent:#2f9b84;
+  --cs-accent-soft:#e3f4ef;
+  --cs-card:#ffffff;
+  --cs-card-2:#f6f8fb;
+  --cs-border:#dce3ec;
+  --cs-text:#1b2738;
+  --cs-muted:#657286;
+}
+body.app-light #vsDateSheetOverlay .vs-summary-card,
+html.app-light body #vsDateSheetOverlay .vs-summary-card{
+  background:#fff !important;
+  border-color:#dce3ec !important;
+  box-shadow:0 3px 10px rgba(26,39,57,.055) !important;
+}
+body.app-light #vsDateSheetOverlay .vs-summary-card .vs-summary-icon,
+html.app-light body #vsDateSheetOverlay .vs-summary-card .vs-summary-icon{
+  background:#e8f5f1 !important;
+}
+body.app-light #vsDateSheetOverlay .vs-summary-note,
+html.app-light body #vsDateSheetOverlay .vs-summary-note{
+  background:#f6f8fb !important;
+  border-color:#dce3ec !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card,
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(1),
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(2),
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"] > .vs-sample-card,
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(1),
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(2){
+  background:#fff !important;
+  border-color:#dce3ec !important;
+  box-shadow:0 3px 10px rgba(26,39,57,.055) !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel :is(
+  .vs-sample-input,.vs-sample-time-box,.vs-stepper,.vs-sample-stepper,
+  .vs-segmented,.vs-pill-row,.vs-initial-players-box,.vs-sample-counter-card
+){
+  background:#f6f8fb !important;
+  border-color:#dce3ec !important;
+  color:#1b2738 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel :is(.vs-stepper-btn,.vs-stepper-value,.vs-pill){
+  color:#1b2738 !important;
+  -webkit-text-fill-color:#1b2738 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-pill.vs-pill-active,
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-stepper-btn:last-child{
+  background:#e3f4ef !important;
+  border-color:#8bcdbb !important;
+  color:#176b5a !important;
+  -webkit-text-fill-color:#176b5a !important;
+}
