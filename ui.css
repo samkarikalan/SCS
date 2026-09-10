@@ -34475,3 +34475,93 @@ body.app-light .scs-primary-bottom-nav button{background:rgba(31,55,96,.055)!imp
 .scs-primary-bottom-nav button.is-active{background:rgba(108,99,255,.13)!important;}
 body.app-light .scs-primary-bottom-nav button.is-active{background:rgba(108,99,255,.10)!important;}
 
+
+/* Build 1113 — Home typography + single-surface primary navigation.
+   Scope: My Hub quick cards and persistent app navigation only. Round rendering untouched. */
+.myhub-home-sections .myhub-home-card{
+  grid-template-columns:48px minmax(0,1fr) 30px!important;
+  gap:14px!important;
+  padding:15px 16px!important;
+  min-height:92px!important;
+}
+.myhub-home-sections .myhub-home-card strong{
+  font-size:1.02rem!important;
+  font-weight:750!important;
+  line-height:1.18!important;
+  letter-spacing:-.012em!important;
+}
+.myhub-home-sections .myhub-home-card small{
+  margin-top:6px!important;
+  font-size:.78rem!important;
+  font-weight:520!important;
+  line-height:1.28!important;
+  letter-spacing:0!important;
+}
+.myhub-home-sections .myhub-home-count{
+  min-width:26px!important;
+  height:26px!important;
+  padding:0 7px!important;
+  margin-left:8px!important;
+  font-size:.72rem!important;
+  font-weight:800!important;
+  vertical-align:2px!important;
+}
+.myhub-home-sections .myhub-home-icon{
+  min-width:42px!important;
+  width:42px!important;
+  height:42px!important;
+  font-size:1.28rem!important;
+}
+.myhub-home-sections .myhub-home-chevron{
+  width:28px!important;
+  height:28px!important;
+  font-size:1.05rem!important;
+  font-weight:750!important;
+}
+
+/* One navigation surface only: items are no longer cards inside the bar. */
+.scs-primary-bottom-nav{
+  padding-left:18px!important;
+  padding-right:18px!important;
+  column-gap:4px!important;
+}
+.scs-primary-bottom-nav button,
+body.app-light .scs-primary-bottom-nav button,
+.scs-primary-bottom-nav button.is-active,
+body.app-light .scs-primary-bottom-nav button.is-active{
+  margin:0!important;
+  height:60px!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{
+  min-width:34px!important;
+  width:auto!important;
+  padding:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.scs-primary-bottom-nav button{
+  font-size:.72rem!important;
+  font-weight:650!important;
+  letter-spacing:-.005em!important;
+}
+.scs-primary-bottom-nav button.is-active{
+  font-weight:760!important;
+}
+.scs-primary-bottom-nav button.is-active::after{
+  content:"";
+  position:absolute;
+  bottom:2px;
+  width:24px;
+  height:3px;
+  border-radius:999px;
+  background:currentColor;
+}
+.scs-primary-bottom-nav button{position:relative!important;}
