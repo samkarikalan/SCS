@@ -1129,10 +1129,27 @@ function _vsCreateSectionsComplete() {
   var venue = document.getElementById('vsFormVenue');
   var start = document.getElementById('vsFormStart');
   var end = document.getElementById('vsFormEnd');
-  var sessionComplete = !!(venue && String(venue.value || '').trim() && start && end && _vsTimeMinutes(end.value) > _vsTimeMinutes(start.value));
-  var playersComplete = !!(_vsInitialPlayers && _vsInitialPlayers.length);
-  // Adding players before posting is optional. Players can join after the slot is posted.
-  return { session: sessionComplete, players: playersComplete, post: sessionComplete };
+  var startMinutes = _vsTimeMinutes(start && start.value);
+  var endMinutes = _vsTimeMinutes(end && end.value);
+  var sessionComplete = !!(venue && String(venue.value || '').trim() && startMinutes !== null && endMinutes !== null && endMinutes > startMinutes);
+
+  var maxPlayers = parseInt(document.getElementById('vsFormMaxValue')?.textContent || '', 10);
+  var courts = parseInt(document.getElementById('vsFormCourtValue')?.textContent || '', 10);
+  var setupComplete = Number.isFinite(maxPlayers) && maxPlayers >= 2 && Number.isFinite(courts) && courts >= 1 &&
+    !!_vsFormSessionModeChoice && !!_vsFormGenderChoice && _vsFormRatingChoice !== null && _vsFormRatingChoice !== undefined && String(_vsFormRatingChoice) !== '';
+
+  // Players are explicitly optional, so this section is always complete.
+  return { session: sessionComplete, setup: setupComplete, players: true, post: sessionComplete && setupComplete };
+}
+
+function vaultSlotsRefreshCreateDoneButtons() {
+  var complete = _vsCreateSectionsComplete();
+  document.querySelectorAll('#vsDateSheetContent [data-vs-done]').forEach(function(btn) {
+    var key = btn.getAttribute('data-vs-done');
+    var enabled = key === 'players' ? true : !!complete[key];
+    btn.disabled = !enabled;
+    btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+  });
 }
 
 function vaultSlotsRefreshCreateTabs() {
@@ -1160,6 +1177,7 @@ function vaultSlotsRefreshCreateSummary() {
   if (pub) pub.textContent = (_vsFormVisibilityChoice==='public'?'Public':'Private')+' · '+(sched && sched.value ? 'Scheduled' : 'Post now');
   var note = document.getElementById('vsSummaryNote');
   if (note) { var ok=_vsCreateSectionsComplete().session; note.textContent=ok?'Ready to review and publish.':'Select a venue and valid time to continue.'; note.classList.toggle('is-ready',ok); }
+  vaultSlotsRefreshCreateDoneButtons();
 }
 
 function vaultSlotsSetCreateTab(tab) {
@@ -1484,6 +1502,7 @@ function _vsFormSelectGender(val) {
   if (!c) return;
   c.querySelectorAll('.vs-pill').forEach(btn => btn.classList.toggle('vs-pill-active', btn.dataset.val === val));
   _vsPositionSegThumb(c);
+  vaultSlotsRefreshCreateSummary();
 }
 function _vsFormSelectRating(val) {
   _vsFormRatingChoice = val;
@@ -1491,6 +1510,7 @@ function _vsFormSelectRating(val) {
   if (!c) return;
   c.querySelectorAll('.vs-pill').forEach(btn => btn.classList.toggle('vs-pill-active', btn.dataset.val === val));
   _vsPositionSegThumb(c);
+  vaultSlotsRefreshCreateSummary();
 }
 function _vsFormSelectVisibility(val) {
   _vsFormVisibilityChoice = val;
@@ -1500,6 +1520,7 @@ function _vsFormSelectVisibility(val) {
   _vsPositionSegThumb(c);
   var hint = document.getElementById('vsFormVisibilityHint');
   if (hint) hint.textContent = val === 'public' ? (t('publicSlotHint') || 'Anyone can see and join this slot') : (t('privateSlotHint') || 'Only club players can see and join');
+  vaultSlotsRefreshCreateSummary();
 }
 function _vsFormSelectSessionMode(val) {
   _vsFormSessionModeChoice = _vsSlotSessionMode({ session_mode: val });
@@ -1507,6 +1528,7 @@ function _vsFormSelectSessionMode(val) {
   if (!c) return;
   c.querySelectorAll('.vs-pill').forEach(btn => btn.classList.toggle('vs-pill-active', btn.dataset.val === _vsFormSessionModeChoice));
   _vsPositionSegThumb(c);
+  vaultSlotsRefreshCreateSummary();
 }
 
 /* ══════════════════════════════════════════════
@@ -1636,6 +1658,8 @@ function vsTimePickerSelect(t24) {
   if (_vsTimePickerTarget === 'mgStart') _vsKeepEndAfterStart('mgStart', 'mgEnd');
   if (_vsTimePickerTarget === 'mgStart' || _vsTimePickerTarget === 'mgEnd') {
     vaultSlotsDraftFieldChanged();
+  } else if (_vsTimePickerTarget === 'start' || _vsTimePickerTarget === 'end') {
+    vaultSlotsRefreshCreateSummary();
   }
   vsTimePickerClose();
 }
@@ -1653,6 +1677,7 @@ function vaultSlotsAdjustMax(delta) {
   if (val < 2) val = 2;
   if (val > 20) val = 20;
   el.textContent = val;
+  vaultSlotsRefreshCreateSummary();
 }
 
 function vaultSlotsAdjustCourts(delta) {
@@ -1662,6 +1687,7 @@ function vaultSlotsAdjustCourts(delta) {
   if (val < 1) val = 1;
   if (val > 20) val = 20;
   el.textContent = val;
+  vaultSlotsRefreshCreateSummary();
 }
 
 async function vaultSlotsSubmitNewSlot(mode) {
@@ -2910,6 +2936,14 @@ function vaultSlotsCloseDateSheet(e) {
 
   const overlay = document.getElementById('vsDateSheetOverlay');
   if (overlay) overlay.style.display = 'none';
+
+  // Leaving Create Slot returns to the normal Slot Manager overview/menu,
+  // not the temporary Add Slot calendar used to choose a date.
+  window._scsVaultAddSlotMode = false;
+  if (typeof _vhsExpandedOverview !== 'undefined' && !_vhsExpandedOverview) _vhsExpandedOverview = 'upcoming';
+  if (typeof renderVaultHomeSlotsUI === 'function') {
+    Promise.resolve(renderVaultHomeSlotsUI(false)).catch(function(){});
+  }
 }
 
 /* ══════════════════════════════════════════════

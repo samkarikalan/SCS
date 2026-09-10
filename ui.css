@@ -35482,3 +35482,13 @@ body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-ste
   color:#176b5a !important;
   -webkit-text-fill-color:#176b5a !important;
 }
+
+
+/* Build 1134 — Create Slot required-field state only. */
+#vsDateSheetOverlay .vs-editor-done button:disabled {
+  opacity: .42 !important;
+  filter: saturate(.35) !important;
+  cursor: default !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}

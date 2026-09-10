@@ -130,14 +130,14 @@ html,body{overscroll-behavior:none;}
   <script src="profile.js?v=1097" defer></script>
 
   <script src="dashboard.js?v=856" defer></script>
-  <script src="slots.js?v=1121" defer></script>
+  <script src="slots.js?v=1134" defer></script>
   <script src="notifications.js?v=856" defer></script>
 
   <script src="viewer.js?v=857" defer></script>
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1133">
+  <link rel="stylesheet" href="ui.css?v=1134">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -2315,7 +2315,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
         </div>
       </section>
 
-      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
+      <div class="vs-editor-done"><button type="button" data-vs-done="session" onclick="vaultSlotsSetCreateTab('summary')" disabled>Done</button></div>
       </div>
 
       <div class="vs-create-tab-panel" data-panel="setup">
@@ -2370,7 +2370,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
           </div>
         </div>
       </section>
-      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
+      <div class="vs-editor-done"><button type="button" data-vs-done="setup" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
       </div>
 
       <div class="vs-create-tab-panel" data-panel="players">
@@ -2381,7 +2381,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
         </div>
         <div id="vsInitialPlayersBox" class="vs-initial-players-box vs-sample-player-box">__INITIAL_PLAYERS__</div>
       </section>
-      <div class="vs-editor-done"><button type="button" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
+      <div class="vs-editor-done"><button type="button" data-vs-done="players" onclick="vaultSlotsSetCreateTab('summary')">Done</button></div>
       </div>
 
       <div class="vs-create-tab-panel" data-panel="post">
