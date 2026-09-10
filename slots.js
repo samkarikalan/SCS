@@ -5364,7 +5364,14 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   var localSlots = cacheRow && Array.isArray(cacheRow.slots) ? cacheRow.slots : [];
   var upcoming = _vhsOverviewFromLocalSlots(localSlots, 'upcoming');
   var completed = _vhsOverviewFromLocalSlots(localSlots, 'completed');
-  var wanted = _vhsExpandedOverview || 'upcoming';
+  // Build 1138: opening Slot Manager must render the selected tab immediately.
+  // A stale/falsy overview state previously updated the tab counts but cleared
+  // the list until the user tapped Upcoming/Completed. Normalize it here so
+  // the default Upcoming tab and its cards are painted on first entry.
+  if (_vhsExpandedOverview !== 'upcoming' && _vhsExpandedOverview !== 'completed') {
+    _vhsExpandedOverview = 'upcoming';
+  }
+  var wanted = _vhsExpandedOverview;
   var upCount = _vsFlattenSlotsByDate(upcoming.slotsByDate).length;
   var doneCount = _vsFlattenSlotsByDate(completed.slotsByDate).length;
   var upCountEl = document.getElementById('vaultSlotsCount');
@@ -5393,8 +5400,6 @@ async function renderVaultHomeSlotsUI(loadFresh) {
   if (doneBtn) { doneBtn.setAttribute('aria-expanded', wanted === 'completed' ? 'true' : 'false'); doneBtn.setAttribute('aria-selected', wanted === 'completed' ? 'true' : 'false'); doneBtn.classList.toggle('is-active', wanted === 'completed'); }
   if (panel) panel.hidden = false;
   if (completedCalendar) completedCalendar.hidden = true;
-  if (!_vhsExpandedOverview) { listEl.innerHTML = ''; _vhsSlotView = 'upcoming'; _vhsSlotsByDate = upcoming.slotsByDate; return; }
-
   var data = wanted === 'completed' ? completed : upcoming;
   _vhsSlotView = wanted;
   _vhsSlotsByDate = data.slotsByDate;
