@@ -2819,6 +2819,10 @@ var _mcsDebugInfo = null; // temporary diagnostics for club filtering
 var _mcsRefreshQueued = false;
 var _mcsRefreshTimer = null;
 var _mcsDataSignature = '';
+// Build 1121: keep the raw local/server slot collection in memory so the
+// Upcoming / All toggle is a pure local filter + render. It must never trigger
+// a network fetch just because the user changes the view.
+var _mcsRawSlotsCache = [];
 var _mcsManualRefreshBusy = false;
 var _mcsSlotView = (function() {
   try { return localStorage.getItem('scs_my_slots_view') === 'all' ? 'all' : 'upcoming'; }
@@ -2885,7 +2889,10 @@ function myCardSlotsSetView(view) {
   _mcsCarouselSlotId = null;
   _mcsSelectedDateStr = null;
   _mcsUpdateViewControls();
-  renderMyCardSlotsUI(true);
+  // Build 1121: switch views from the already downloaded in-memory/local
+  // dataset. Server sync is handled separately by the existing sync gateway.
+  _mcsApplyCachedSlotView();
+  renderMyCardSlotsUI(false);
 }
 
 
@@ -3696,6 +3703,66 @@ async function dbGetVisibleSlotsForRange(startDateStr, endDateStr) {
   });
 }
 
+function _mcsMergeRawSlots(a, b) {
+  var map = new Map();
+  ;(a || []).concat(b || []).forEach(function(slot) {
+    if (!slot) return;
+    var key = String(slot.id || '') || [slot.club_id, slot.slot_date, slot.start_time].join('|');
+    if (key) map.set(key, slot);
+  });
+  return Array.from(map.values());
+}
+
+function _mcsApplyCachedSlotView() {
+  var clubIds = Object.keys(_mcsCurrentPlayersByClub || {});
+  var filteredSlots = (_mcsRawSlotsCache || []).filter(function(slot) {
+    var cid = String(slot.club_id || slot._viewerClubId || '').trim();
+    var isPrivate = String(slot.visibility || 'private').toLowerCase() !== 'public';
+    var isMyClub = clubIds.indexOf(cid) >= 0;
+    if (isPrivate && !isMyClub) return false;
+
+    var club = _mcsClubsById[cid];
+    if (club) {
+      slot._viewerClubId = cid;
+      slot._viewerClubName = club.name;
+      slot._viewerClubColor = club.color;
+    }
+    slot._clubFilterMatched = isMyClub;
+    if (_mcsIsPostedFutureSlot(slot)) return _mcsIsEligibleSlot(slot, _mcsPlayerForSlot(slot));
+    if (_mcsSlotView === 'all') return _mcsIsPlayedForViewer(slot);
+    return _mcsIsPlayedUnpaidForViewer(slot);
+  });
+
+  _mcsSlotsByDate = _mcsGroupSlotsByDate(filteredSlots);
+  _mcsDataSignature = _mcsBuildSlotsSignature(_mcsSlotsByDate);
+}
+
+async function _mcsReadSelectedClubSnapshotSlots() {
+  try {
+    if (typeof scsGetLocalClubSnapshot !== 'function') return [];
+    var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+    var clubId = String((club && club.id) || localStorage.getItem('kbrr_my_club_id') || '').trim();
+    if (!clubId) return [];
+    var snap = await scsGetLocalClubSnapshot(clubId);
+    if (!snap || !Array.isArray(snap.slots)) return [];
+
+    var claimsBySlot = {};
+    ;(snap.slotClaims || []).forEach(function(claim) {
+      if (!claim || !claim.slot_id) return;
+      var sid = String(claim.slot_id);
+      (claimsBySlot[sid] = claimsBySlot[sid] || []).push(claim);
+    });
+    return snap.slots.map(function(slot) {
+      if (!slot) return slot;
+      var copy = Object.assign({}, slot);
+      if (!Array.isArray(copy.claims)) copy.claims = claimsBySlot[String(copy.id)] || [];
+      return copy;
+    });
+  } catch (e) {
+    return [];
+  }
+}
+
 async function _mcsLoadMonthSlots() {
   var monthFirst = _vsDateStr(_mcsCalYear, _mcsCalMonth, 1);
   var last = _mcsMonthDataEndDateStr(_mcsCalYear, _mcsCalMonth);
@@ -3748,27 +3815,10 @@ async function _mcsLoadMonthSlots() {
     // Important: load visible slots first, then filter in JS by club_id.
     // This avoids PostgREST query differences and proves the calendar/render path
     // is independent from membership lookup.
-    var allSlots = _mcsApplyPendingProbabilities(await dbGetVisibleSlotsForRange(first, last));
-    var filteredSlots = (allSlots || []).filter(function(slot) {
-      var cid = String(slot.club_id || slot._viewerClubId || '').trim();
-      var isPrivate = String(slot.visibility || 'private').toLowerCase() !== 'public';
-      var isMyClub = clubIds.indexOf(cid) >= 0;
-      if (isPrivate && !isMyClub) return false;
-
-      var club = _mcsClubsById[cid];
-      if (club) {
-        slot._viewerClubId = cid;
-        slot._viewerClubName = club.name;
-        slot._viewerClubColor = club.color;
-      }
-      slot._clubFilterMatched = isMyClub;
-      if (_mcsIsPostedFutureSlot(slot)) return _mcsIsEligibleSlot(slot, _mcsPlayerForSlot(slot));
-      if (_mcsSlotView === 'all') return _mcsIsPlayedForViewer(slot);
-      return _mcsIsPlayedUnpaidForViewer(slot);
-    });
-
-    _mcsSlotsByDate = _mcsGroupSlotsByDate(filteredSlots);
-    _mcsDataSignature = _mcsBuildSlotsSignature(_mcsSlotsByDate);
+    var localSnapshotSlots = await _mcsReadSelectedClubSnapshotSlots();
+    var serverSlots = _mcsApplyPendingProbabilities(await dbGetVisibleSlotsForRange(first, last));
+    _mcsRawSlotsCache = _mcsMergeRawSlots(localSnapshotSlots, serverSlots);
+    _mcsApplyCachedSlotView();
     _mcsMaybeShowSlotAnnouncement();
     _mcsFlushProbabilityQueue();
   } catch (e) {
