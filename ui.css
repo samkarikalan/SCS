@@ -34907,16 +34907,25 @@ html.app-light #homeVaultGrid :is(#vaultUpcomingCollapse,#vaultCompletedCollapse
 }
 
 
-/* Build 1125 — Slot Manager: Upcoming / Completed horizontal tabs only. */
+/* Build 1126 — Slot Manager tabs: text + underline style only. */
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tabs {
-  display:grid; grid-template-columns:1fr 1fr; gap:4px; width:100%; padding:4px;
-  border:1px solid var(--border); border-radius:14px; background:var(--surface2);
+  display:grid; grid-template-columns:1fr 1fr; gap:0; width:100%; padding:0;
+  border:0; border-bottom:1px solid var(--border); border-radius:0; background:transparent;
 }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab {
-  min-height:44px; border:0; border-radius:10px; background:transparent; color:var(--text);
-  font:inherit; font-size:.9rem; font-weight:700; cursor:pointer;
+  position:relative; min-height:46px; padding:0 10px 12px; border:0; border-radius:0;
+  background:transparent; color:var(--muted); font:inherit; font-size:.9rem; font-weight:600;
+  cursor:pointer; box-shadow:none;
 }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab > span:not(.vault-slot-tab-summary)::before { content:' ('; }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab > span:not(.vault-slot-tab-summary)::after { content:')'; }
-#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active { background:var(--accent); color:#fff; }
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active {
+  background:transparent; color:#159b8e; font-weight:700;
+}
+#homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active::after {
+  content:''; position:absolute; left:14%; right:14%; bottom:-1px; height:4px;
+  border-radius:4px 4px 0 0; background:#159b8e;
+}
+html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active { color:#4fd1c5; }
+html:not(.app-light) #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab.is-active::after { background:#4fd1c5; }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab-summary { display:none; }
