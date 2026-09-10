@@ -499,7 +499,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
       <!-- Existing welcome elements are retained only as compatibility hooks for unchanged functions. -->
       <div class="welcome-legacy-hooks" aria-hidden="true">
 
-      <button class="welcome-refresh-btn" onclick="welcomeManualRefresh()" type="button" title="Refresh" aria-label="Refresh welcome screen">↻</button>
+      <button class="welcome-refresh-btn" onclick="scsRunManualSync('welcome')" type="button" title="Refresh" aria-label="Refresh welcome screen">↻</button>
       <button class="scs-topbar-btn scs-topbar-theme welcome-theme-toggle" onclick="scsToggleTheme()" id="scsThemeBtnWelcome" type="button" title="Toggle theme" aria-label="Toggle light and dark mode">🌙</button>
       <div class="welcome-badminton-mark" aria-hidden="true">🏸</div>
       <div class="welcome-domain">scs-app.com</div>

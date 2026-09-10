@@ -1775,7 +1775,7 @@ async function scsSyncGateway(source, quiet) {
   // One gateway and one in-flight promise for startup/resume/automatic/manual requests.
   if (_scsSyncGatewayPromise) return _scsSyncGatewayPromise;
 
-  var buttons = [document.getElementById('settingsHeaderSyncBtn'), document.getElementById('settingsSyncNowBtn')].filter(Boolean);
+  var buttons = [document.getElementById('settingsHeaderSyncBtn'), document.getElementById('settingsSyncNowBtn'), document.querySelector('.welcome-refresh-btn')].filter(Boolean);
   buttons.forEach(function(btn){ btn.disabled = true; btn.classList.add('is-syncing'); });
   var message = document.getElementById('settingsSyncMessage');
   if (message && !quiet) message.textContent = (typeof t === 'function' ? t('syncing') : 'Syncing…');
