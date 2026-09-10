@@ -27934,7 +27934,6 @@ body.tile-style-color .vs-create-tab-panel[data-panel="post"] > .vs-sample-card 
 body.tile-style-color .vs-create-tab-panel :is(.vs-sample-card-title,.vs-sample-field > label) { color:#fff !important; }
 
 /* Settings / preference / dashboard colour cards */
-body.tile-style-color :is(.pref-card,.settings-card,.dash-session-card) { background:var(--ct-magenta-grad) !important; border-color:var(--ct-magenta) !important; }
 
 /* Join/invite coloured controls */
 body.tile-style-color .club-invite-join-submit { background:var(--ct-blue-grad) !important; }
@@ -28015,7 +28014,6 @@ body.tile-style-color .vs-slot-card.vs-cal-women .mc-slot-titlebar { background:
 body.tile-style-color .mc-slot-card.vs-cal-all .mc-slot-titlebar,
 body.tile-style-color .vs-slot-card.vs-cal-all .mc-slot-titlebar { background:var(--ct-purple-grad) !important; }
 /* Settings / dashboard cards */
-body.tile-style-color :is(.pref-card,.settings-card,.dash-session-card) { background:var(--ct-deep-purple-grad) !important; border-color:var(--ct-deep-purple) !important; }
 /* White foreground on every coloured tile/card in Color mode. */
 body.tile-style-color :is(
  .home-tile,.vault-tile,.step-card,.rounds-nav-tile,.vcl-tile,
@@ -34300,3 +34298,180 @@ body.app-light #homeOrgGrid .organiser-next-slot-card > .mc-slot-card.is-today-o
   background: linear-gradient(145deg, #eaf2ff, #f5f8ff) !important;
   border-color: rgba(54, 111, 210, .32) !important;
 }
+
+/* ======================================================================
+   BUILD 1112 — SINGLE APP COLOUR CONTRACT (non-round-rendering UI only)
+
+   Rules:
+   1. A tile, icon chip or button never uses the page background colour.
+   2. Foreground text is chosen for contrast and never matches its tile.
+   3. Adjacent tiles cycle through different colours instead of sharing one.
+
+   IMPORTANT: #roundsPage / rounds.css are intentionally not part of this
+   contract. The live round rendering page keeps its existing appearance.
+   ====================================================================== */
+:root {
+  --scs-dark-tile-1:#173a63; --scs-dark-tile-2:#174f4b; --scs-dark-tile-3:#3d2f63;
+  --scs-dark-tile-4:#5a4320; --scs-dark-tile-5:#5a2d3e; --scs-dark-tile-6:#264a36;
+  --scs-light-tile-1:#dceaff; --scs-light-tile-2:#dff5ef; --scs-light-tile-3:#eee3ff;
+  --scs-light-tile-4:#fff0d5; --scs-light-tile-5:#ffe1e9; --scs-light-tile-6:#e1f3de;
+  --scs-dark-fg:#f8fbff; --scs-dark-sub:#d7deeb;
+  --scs-light-fg:#17213a; --scs-light-sub:#56617a;
+  --scs-dark-control:rgba(255,255,255,.13);
+  --scs-light-control:rgba(25,43,78,.10);
+}
+
+/* ---------- Home / My Hub: every quick tile is intentionally different. ---------- */
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+1) .myhub-home-card{background:var(--scs-dark-tile-1)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+2) .myhub-home-card{background:var(--scs-dark-tile-2)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+3) .myhub-home-card{background:var(--scs-dark-tile-3)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+4) .myhub-home-card{background:var(--scs-dark-tile-4)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+5) .myhub-home-card{background:var(--scs-dark-tile-5)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-group:nth-child(6n+0) .myhub-home-card{background:var(--scs-dark-tile-6)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+1) .myhub-home-card{background:var(--scs-light-tile-1)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+2) .myhub-home-card{background:var(--scs-light-tile-2)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+3) .myhub-home-card{background:var(--scs-light-tile-3)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+4) .myhub-home-card{background:var(--scs-light-tile-4)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+5) .myhub-home-card{background:var(--scs-light-tile-5)!important;}
+body.app-light .myhub-home-sections .myhub-home-group:nth-child(6n+0) .myhub-home-card{background:var(--scs-light-tile-6)!important;}
+.myhub-home-sections .myhub-home-card{border-color:rgba(128,145,180,.24)!important;box-shadow:0 7px 18px rgba(0,0,0,.10)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-card{color:var(--scs-dark-fg)!important;}
+body:not(.app-light) .myhub-home-sections .myhub-home-card small{color:var(--scs-dark-sub)!important;}
+body.app-light .myhub-home-sections .myhub-home-card{color:var(--scs-light-fg)!important;}
+body.app-light .myhub-home-sections .myhub-home-card small{color:var(--scs-light-sub)!important;}
+.myhub-home-sections .myhub-home-icon,
+.myhub-home-sections .myhub-home-count,
+.myhub-home-sections .myhub-home-chevron{
+  background:var(--scs-dark-control)!important;border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:999px!important;
+}
+.myhub-home-sections .myhub-home-icon{min-width:42px;height:42px;display:grid;place-items:center;}
+.myhub-home-sections .myhub-home-chevron{width:30px;height:30px;display:grid;place-items:center;}
+body.app-light .myhub-home-sections :is(.myhub-home-icon,.myhub-home-count,.myhub-home-chevron){
+  background:var(--scs-light-control)!important;border-color:rgba(31,55,96,.12)!important;color:var(--scs-light-fg)!important;
+}
+
+/* ---------- Settings: one card family, different card colours. ---------- */
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+1){background:var(--scs-dark-tile-3)!important;}
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+2){background:var(--scs-dark-tile-1)!important;}
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+3){background:var(--scs-dark-tile-2)!important;}
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+4){background:var(--scs-dark-tile-4)!important;}
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+5){background:var(--scs-dark-tile-5)!important;}
+body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+0){background:var(--scs-dark-tile-6)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+1){background:var(--scs-light-tile-3)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+2){background:var(--scs-light-tile-1)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+3){background:var(--scs-light-tile-2)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+4){background:var(--scs-light-tile-4)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+5){background:var(--scs-light-tile-5)!important;}
+body.app-light #settingsPage .pref-card:nth-of-type(6n+0){background:var(--scs-light-tile-6)!important;}
+#settingsPage .pref-card{border-color:rgba(128,145,180,.24)!important;}
+body:not(.app-light) #settingsPage .pref-card :is(h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label){color:var(--scs-dark-fg)!important;}
+body:not(.app-light) #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub){color:var(--scs-dark-sub)!important;}
+body.app-light #settingsPage .pref-card :is(h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label){color:var(--scs-light-fg)!important;}
+body.app-light #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub){color:var(--scs-light-sub)!important;}
+#settingsPage :is(.pref-pill,.btn,.settings-sync-now-btn,.settings-sync-btn){background:var(--scs-dark-control)!important;border-color:rgba(255,255,255,.20)!important;}
+body.app-light #settingsPage :is(.pref-pill,.btn,.settings-sync-now-btn,.settings-sync-btn){background:var(--scs-light-control)!important;border-color:rgba(31,55,96,.15)!important;color:var(--scs-light-fg)!important;}
+#settingsPage :is(.pref-pill.active,.btn.active){background:var(--accent)!important;color:#fff!important;}
+
+/* ---------- Manage / My Slots overview tiles. ---------- */
+body:not(.app-light) :is(#vaultUpcomingCollapse,#mcUpcomingCollapse){background:var(--scs-dark-tile-2)!important;color:var(--scs-dark-fg)!important;}
+body:not(.app-light) :is(#vaultCompletedCollapse,#mcCompletedCollapse){background:var(--scs-dark-tile-3)!important;color:var(--scs-dark-fg)!important;}
+body.app-light :is(#vaultUpcomingCollapse,#mcUpcomingCollapse){background:var(--scs-light-tile-2)!important;color:var(--scs-light-fg)!important;}
+body.app-light :is(#vaultCompletedCollapse,#mcCompletedCollapse){background:var(--scs-light-tile-3)!important;color:var(--scs-light-fg)!important;}
+:is(#vaultUpcomingCollapse,#vaultCompletedCollapse,#mcUpcomingCollapse,#mcCompletedCollapse){border-color:rgba(128,145,180,.24)!important;}
+:is(#vaultUpcomingCollapse,#vaultCompletedCollapse,#mcUpcomingCollapse,#mcCompletedCollapse) :is(.vault-slot-chevron,.mc-slots-count){background:var(--scs-dark-control)!important;border-radius:999px!important;}
+body.app-light :is(#vaultUpcomingCollapse,#vaultCompletedCollapse,#mcUpcomingCollapse,#mcCompletedCollapse) :is(.vault-slot-chevron,.mc-slots-count){background:var(--scs-light-control)!important;color:var(--scs-light-fg)!important;}
+
+/* Completed-session controls may not disappear into their container. */
+.vault-completed-payment-filter{background:rgba(56,70,102,.24)!important;}
+.vault-completed-payment-filter button{background:rgba(255,255,255,.08)!important;}
+body.app-light .vault-completed-payment-filter{background:rgba(36,58,98,.08)!important;}
+body.app-light .vault-completed-payment-filter button{background:rgba(36,58,98,.07)!important;color:var(--scs-light-fg)!important;}
+.vault-completed-payment-filter button.is-active{background:var(--accent)!important;color:#fff!important;}
+
+/* ---------- Create Slot / Venue / Club management cards: cycle colours. ---------- */
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+1),
+body:not(.app-light) .venue-card:nth-of-type(6n+1),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+1),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+1){background:var(--scs-dark-tile-1)!important;}
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+2),
+body:not(.app-light) .venue-card:nth-of-type(6n+2),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+2),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+2){background:var(--scs-dark-tile-2)!important;}
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+3),
+body:not(.app-light) .venue-card:nth-of-type(6n+3),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+3),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+3){background:var(--scs-dark-tile-3)!important;}
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+4),
+body:not(.app-light) .venue-card:nth-of-type(6n+4),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+4),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+4){background:var(--scs-dark-tile-4)!important;}
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+5),
+body:not(.app-light) .venue-card:nth-of-type(6n+5),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+5),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+5){background:var(--scs-dark-tile-5)!important;}
+body:not(.app-light) #vaultSlotsPage .vs-sample-card:nth-of-type(6n+0),
+body:not(.app-light) .venue-card:nth-of-type(6n+0),
+body:not(.app-light) .vault-club-card:nth-of-type(6n+0),
+body:not(.app-light) .club-invite-join-card:nth-of-type(6n+0){background:var(--scs-dark-tile-6)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+1),body.app-light .venue-card:nth-of-type(6n+1),body.app-light .vault-club-card:nth-of-type(6n+1),body.app-light .club-invite-join-card:nth-of-type(6n+1){background:var(--scs-light-tile-1)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+2),body.app-light .venue-card:nth-of-type(6n+2),body.app-light .vault-club-card:nth-of-type(6n+2),body.app-light .club-invite-join-card:nth-of-type(6n+2){background:var(--scs-light-tile-2)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+3),body.app-light .venue-card:nth-of-type(6n+3),body.app-light .vault-club-card:nth-of-type(6n+3),body.app-light .club-invite-join-card:nth-of-type(6n+3){background:var(--scs-light-tile-3)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+4),body.app-light .venue-card:nth-of-type(6n+4),body.app-light .vault-club-card:nth-of-type(6n+4),body.app-light .club-invite-join-card:nth-of-type(6n+4){background:var(--scs-light-tile-4)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+5),body.app-light .venue-card:nth-of-type(6n+5),body.app-light .vault-club-card:nth-of-type(6n+5),body.app-light .club-invite-join-card:nth-of-type(6n+5){background:var(--scs-light-tile-5)!important;}
+body.app-light #vaultSlotsPage .vs-sample-card:nth-of-type(6n+0),body.app-light .venue-card:nth-of-type(6n+0),body.app-light .vault-club-card:nth-of-type(6n+0),body.app-light .club-invite-join-card:nth-of-type(6n+0){background:var(--scs-light-tile-6)!important;}
+body.app-light :is(#vaultSlotsPage .vs-sample-card,.venue-card,.vault-club-card,.club-invite-join-card){color:var(--scs-light-fg)!important;}
+body:not(.app-light) :is(#vaultSlotsPage .vs-sample-card,.venue-card,.vault-club-card,.club-invite-join-card){color:var(--scs-dark-fg)!important;}
+:is(#vaultSlotsPage .vs-sample-card,.venue-card,.vault-club-card,.club-invite-join-card){border-color:rgba(128,145,180,.24)!important;}
+
+/* ---------- Players / Fixed Pairs: tile surfaces are not the page background. ---------- */
+body:not(.app-light) #playersPage #playerListCard{background:var(--scs-dark-tile-3)!important;}
+body:not(.app-light) #fixedPairsPage #fixedPairsCard{background:var(--scs-dark-tile-2)!important;}
+body.app-light #playersPage #playerListCard{background:var(--scs-light-tile-3)!important;color:var(--scs-light-fg)!important;}
+body.app-light #fixedPairsPage #fixedPairsCard{background:var(--scs-light-tile-2)!important;color:var(--scs-light-fg)!important;}
+
+/* ---------- Welcome / workspace launch tiles retain one component style but distinct colours. ---------- */
+body:not(.app-light) .simple-mode-my{--simple-bg:var(--scs-dark-tile-1)!important;}
+body:not(.app-light) .simple-mode-round{--simple-bg:var(--scs-dark-tile-2)!important;}
+body:not(.app-light) .simple-mode-slot{--simple-bg:var(--scs-dark-tile-3)!important;}
+body.app-light .simple-mode-my{--simple-bg:var(--scs-light-tile-1)!important;color:var(--scs-light-fg)!important;}
+body.app-light .simple-mode-round{--simple-bg:var(--scs-light-tile-2)!important;color:var(--scs-light-fg)!important;}
+body.app-light .simple-mode-slot{--simple-bg:var(--scs-light-tile-3)!important;color:var(--scs-light-fg)!important;}
+.simple-mode-card :is(.simple-mode-icon,.simple-my-shortcut-card,.simple-mode-assist,.simple-mode-club-select){background:var(--scs-dark-control)!important;}
+body.app-light .simple-mode-card :is(.simple-mode-icon,.simple-my-shortcut-card,.simple-mode-assist,.simple-mode-club-select){background:var(--scs-light-control)!important;}
+
+/* ---------- Common icon/button contrast outside the live round rendering page. ---------- */
+#homePageOverlay :is(.home-app-add,.home-mode-refresh-btn,.home-user-profile-toggle),
+#settingsPage .sheet-close-btn,
+#vaultSlotsPage :is(.circle-btn,.vs-btn-secondary),
+#playersPage :is(.circle-btn,.players-action-btn),
+#fixedPairsPage :is(.circle-btn,.fp-open-create-btn){
+  background:var(--scs-dark-control)!important;
+  border-color:rgba(255,255,255,.20)!important;
+}
+body.app-light #homePageOverlay :is(.home-app-add,.home-mode-refresh-btn,.home-user-profile-toggle),
+body.app-light #settingsPage .sheet-close-btn,
+body.app-light #vaultSlotsPage :is(.circle-btn,.vs-btn-secondary),
+body.app-light #playersPage :is(.circle-btn,.players-action-btn),
+body.app-light #fixedPairsPage :is(.circle-btn,.fp-open-create-btn){
+  background:var(--scs-light-control)!important;
+  border-color:rgba(31,55,96,.14)!important;
+  color:var(--scs-light-fg)!important;
+}
+
+/* Persistent bottom navigation: controls are visually separate from nav background. */
+.scs-primary-bottom-nav button{
+  margin:2px 4px 3px;
+  height:55px;
+  border-radius:14px;
+  background:rgba(255,255,255,.055)!important;
+}
+body.app-light .scs-primary-bottom-nav button{background:rgba(31,55,96,.055)!important;}
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon{background:rgba(108,99,255,.16);}
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon{background:rgba(45,206,137,.16);}
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon{background:rgba(245,166,35,.17);}
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon{background:rgba(230,55,87,.16);}
+.scs-primary-nav-icon{min-width:34px;padding:0 7px;border-radius:10px;}
+.scs-primary-bottom-nav button.is-active{background:rgba(108,99,255,.13)!important;}
+body.app-light .scs-primary-bottom-nav button.is-active{background:rgba(108,99,255,.10)!important;}
+

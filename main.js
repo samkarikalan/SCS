@@ -3674,7 +3674,7 @@ document.addEventListener("click", function(e) {
 /* ── Tile Style System ── */
 function setTileStyle(style) {
   // Color is now the single app tile style. Migrate any legacy preference.
-  document.body.classList.remove('tile-style-flat','tile-style-glow','tile-style-color');
+  document.body.classList.remove('tile-style-glow','tile-style-color');
   document.body.classList.add('tile-style-color');
   localStorage.setItem('kbrr_tile_style', 'color');
 }
