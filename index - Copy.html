@@ -2,70 +2,373 @@
 <!-- CLUBS v1.7.4 -->
 <html lang="en">
 <head>
-  <script>window.SCS_APP_VERSION = "1.7.9"; window.SCS_BUILD = "179";</script>
+  <script>
+    // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
+    (function () {
+      var BUILD = '1100';
+      var KEY = 'scsPwaCacheRecoveryBuild';
+      try {
+        if (localStorage.getItem(KEY) === BUILD) return;
+        localStorage.setItem(KEY, BUILD);
+        if ('caches' in window) {
+          caches.keys().then(function(keys) {
+            return Promise.all(keys.filter(function(key) {
+              return /^scs-app-build-/i.test(key);
+            }).map(function(key) { return caches.delete(key); }));
+          }).catch(function(){});
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>window.SCS_APP_VERSION = "1.14.67"; window.SCS_BUILD = "1103"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>
+    // Build 416: mode selection and authentication screens remain scrollable in landscape.
+    (function () {
+      function isInstalledPwa() {
+        return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true;
+      }
+
+      async function lockPwaToPortrait() {
+        if (!isInstalledPwa()) return;
+        try {
+          if (window.screen && screen.orientation && typeof screen.orientation.lock === 'function') {
+            await screen.orientation.lock('portrait-primary');
+          }
+        } catch (error) {
+          console.log('Portrait orientation lock unavailable:', error);
+        }
+      }
+
+      window.lockPwaToPortrait = lockPwaToPortrait;
+      window.addEventListener('load', lockPwaToPortrait);
+      window.addEventListener('pageshow', lockPwaToPortrait);
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) lockPwaToPortrait();
+      });
+      // Some browsers allow orientation lock only after a user gesture.
+      document.addEventListener('pointerdown', lockPwaToPortrait, { once: true, passive: true });
+      document.addEventListener('touchstart', lockPwaToPortrait, { once: true, passive: true });
+    })();
+  </script>
+  <script>
+    (function () {
+      var mode = localStorage.getItem('app-theme');
+      if (mode !== 'light' && mode !== 'dark') {
+        mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      var root = document.documentElement;
+      root.classList.add(mode === 'light' ? 'app-light' : 'app-dark');
+      root.style.backgroundColor = mode === 'light' ? '#f4f6fb' : '#0f0f13';
+      root.style.colorScheme = mode;
+    })();
+  </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-<style>html,body{overscroll-behavior:none;}</style>
-  <link rel="apple-touch-icon" href="icon-192.png?v=164">
-  <link rel="manifest" href="manifest.json?v=164">
+<style>
+html,body{overscroll-behavior:none;}
+/* Build 359: Rotational workspace carousel with 1:0.5 tile widths. */
+#modeSelectOverlay.scs-launch-first-paint{
+  display:none!important;
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  width:100%;
+  min-height:100dvh;
+}
+</style>
+  <link rel="apple-touch-icon" href="icon-192.png?v=856">
+  <link rel="manifest" href="manifest.json?v=954">
   <meta name="theme-color" content="#0f0f13" id="metaThemeColor">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="CLUB Scheduler">
   <meta name="mobile-web-app-capable" content="yes">
   <meta charset="UTF-8">
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Sports Club Scheduler</title>
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="offline-db.js?v=1120" defer></script>
+  <script src="snapshot.js?v=892" defer></script>
 
-  <script src="snapshot.js?v=164" defer></script>
+  <script src="supabase.js?v=1120" defer></script>
 
-  <script src="supabase.js?v=165" defer></script>
+  <script src="auth.js?v=856" defer></script>
 
-  <script src="auth.js?v=164" defer></script>
+  <script src="authUI.js?v=1047" defer></script>
 
-  <script src="authUI.js?v=164" defer></script>
+  <script src="subscription.js?v=856" defer></script>
 
-  <script src="subscription.js?v=164" defer></script>
+  <script src="HomeScreen.js?v=1100" defer></script>
 
-  <script src="HomeScreen.js?v=165" defer></script>
+  <script src="engjap.js?v=864" defer></script>
 
-  <script src="main.js?v=169" defer></script>
+  <script src="qrcode-generator.js?v=856" defer></script>
+  <script src="main.js?v=1106" defer></script>
 
-  <script src="engjap.js?v=177" defer></script>
+  <script src="games.js?v=1019" defer></script>
 
-  <script src="games.js?v=164" defer></script>
+  <script src="rounds.js?v=940" defer></script>
+  <script src="offline-rounds.js?v=979" defer></script>
+  <script src="mbm.js?v=856" defer></script>
 
-  <script src="rounds.js?v=164" defer></script>
-  <script src="mbm.js?v=164" defer></script>
+  <script src="players.js?v=906" defer></script>
 
-  <script src="players.js?v=164" defer></script>
+  <script src="importPlayers.js?v=985" defer></script>
 
-  <script src="importPlayers.js?v=164" defer></script>
+  <script src="settings.js?v=1120" defer></script>
 
-  <script src="settings.js?v=175" defer></script>
+  <script src="summary.js?v=856" defer></script>
 
-  <script src="summary.js?v=164" defer></script>
+  <script src="help.js?v=856" defer></script>
 
-  <script src="help.js?v=164" defer></script>
+  <script src="profile.js?v=1097" defer></script>
 
-  <script src="profile.js?v=164" defer></script>
+  <script src="dashboard.js?v=856" defer></script>
+  <script src="slots.js?v=1121" defer></script>
+  <script src="notifications.js?v=856" defer></script>
 
-  <script src="dashboard.js?v=164" defer></script>
-  <script src="slots.js?v=190" defer></script>
-  <script src="notifications.js?v=164" defer></script>
+  <script src="viewer.js?v=857" defer></script>
 
-  <script src="viewer.js?v=164" defer></script>
+  <script src="report.js?v=856" defer></script>
 
-  <script src="report.js?v=164" defer></script>
+  <link rel="stylesheet" href="ui.css?v=1119">
+  <style id="simpleAppBottomBarStyles">
+    /* Flat, theme-aware navigation shared by all three app hubs. */
+    body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
+    body #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-bar,
+    body #homeMoreSectionVault#homeMoreSectionVault .vault-action-bar {
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      max-width: none !important;
+      margin: 0 0 0 calc(50% - 50vw) !important;
+      padding: 6px 8px max(7px, env(safe-area-inset-bottom)) !important;
+      min-height: 0 !important;
+      height: auto !important;
+      border: 0 !important;
+      border-top: 1px solid rgba(255,255,255,.10) !important;
+      border-radius: 0 !important;
+      background: #171719 !important;
+      box-shadow: 0 -5px 16px rgba(0,0,0,.20) !important;
+    }
+    body #homeMoreSectionV#homeMoreSectionV .viewer-action-btn,
+    body #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-btn,
+    body #homeMoreSectionVault#homeMoreSectionVault .vault-action-btn {
+      height: 54px !important;
+      min-height: 54px !important;
+      max-height: 54px !important;
+      padding: 3px 2px !important;
+      gap: 3px !important;
+      border: 0 !important;
+      border-radius: 8px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+    body #homeMoreSectionV#homeMoreSectionV .viewer-action-icon,
+    body #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-icon,
+    body #homeMoreSectionVault#homeMoreSectionVault .vault-action-icon {
+      width: 30px !important;
+      height: 30px !important;
+      min-width: 30px !important;
+      min-height: 30px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      font-size: 1.35rem !important;
+    }
+    body #homeMoreSectionV#homeMoreSectionV .viewer-action-label,
+    body #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-label,
+    body #homeMoreSectionVault#homeMoreSectionVault .vault-action-label {
+      color: #f4f4f6 !important;
+      font-size: .68rem !important;
+      font-weight: 600 !important;
+      line-height: 1.1 !important;
+      text-shadow: none !important;
+    }
+    body #homeMoreSectionV#homeMoreSectionV .viewer-action-meta,
+    body #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-meta,
+    body #homeMoreSectionVault#homeMoreSectionVault .vault-action-meta {
+      display: none !important;
+    }
+    body.app-light #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
+    body.app-light #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-bar,
+    body.app-light #homeMoreSectionVault#homeMoreSectionVault .vault-action-bar {
+      border-top-color: rgba(20,28,45,.12) !important;
+      background: #ffffff !important;
+      box-shadow: 0 -5px 16px rgba(23,35,58,.08) !important;
+    }
+    body.app-light #homeMoreSectionV#homeMoreSectionV .viewer-action-label,
+    body.app-light #homeMoreSectionOrg#homeMoreSectionOrg .organiser-action-label,
+    body.app-light #homeMoreSectionVault#homeMoreSectionVault .vault-action-label {
+      color: #252a34 !important;
+    }
+    body :is(.viewer-action-btn,.organiser-action-btn,.vault-action-btn):active {
+      background: rgba(48,190,211,.12) !important;
+    }
+  </style>
+  <link rel="stylesheet" href="rounds.css?v=1005">
+  <style id="dashboardHistoryLayoutStyles">
+    /* Preserve player names exactly as entered in Dashboard > Rounds. */
+    #roundsPage .dashboard-history-panel .player-history-name {
+      text-transform: none !important;
+    }
 
-  <link rel="stylesheet" href="ui.css?v=982">
-  <link rel="stylesheet" href="rounds.css?v=165">
+    /* Pairing and Opponents use the same evenly distributed five-pill filter. */
+    #roundsPage :is(.dashboard-history-panel-pairing, .dashboard-history-panel-opponents)
+      .relationship-count-filter {
+      display: grid !important;
+      grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+      align-items: center !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      gap: 3px !important;
+      padding: 3px !important;
+      overflow: visible !important;
+      white-space: nowrap !important;
+      box-sizing: border-box !important;
+    }
+    #roundsPage :is(.dashboard-history-panel-pairing, .dashboard-history-panel-opponents)
+      .relationship-count-filter .not-yet-paired-view-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 2px !important;
+      overflow: hidden !important;
+      font-size: clamp(.52rem, 2.15vw, .64rem) !important;
+      text-align: center !important;
+      text-overflow: clip !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Live-round header: centre the status independently and align End with
+       the two 38px utility controls. */
+    #roundsPage .rounds-top-bar {
+      position: relative !important;
+    }
+    #roundsPage .rtb-live {
+      position: absolute !important;
+      inset: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: auto !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      pointer-events: none !important;
+    }
+    #roundsPage .rtb-end {
+      position: absolute !important;
+      top: 50% !important;
+      right: clamp(6px, 2.5vw, 12px) !important;
+      transform: translateY(-50%) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      min-width: 48px !important;
+      margin: 0 !important;
+      padding: 0 12px !important;
+      border-radius: 10px !important;
+      font-size: .72rem !important;
+      pointer-events: auto !important;
+      box-sizing: border-box !important;
+    }
+    #roundsPage .rtb-round-time {
+      min-width: 42px !important;
+      color: var(--text) !important;
+      font-size: .72rem !important;
+      font-weight: 750 !important;
+      line-height: 1 !important;
+      letter-spacing: .03em !important;
+      font-variant-numeric: tabular-nums !important;
+      text-align: left !important;
+    }
+    #roundHistoryContainer .round-header.roundTitle {
+      position: relative !important;
+      padding-right: 72px !important;
+      padding-left: 72px !important;
+      box-sizing: border-box !important;
+    }
+    #roundHistoryContainer .round-duration {
+      position: absolute !important;
+      top: 50% !important;
+      right: 10px !important;
+      transform: translateY(-50%) !important;
+      color: var(--text-dim) !important;
+      font-size: .72rem !important;
+      font-weight: 750 !important;
+      line-height: 1 !important;
+      letter-spacing: .02em !important;
+      font-variant-numeric: tabular-nums !important;
+      white-space: nowrap !important;
+    }
+  </style>
+
+<style id="myhubStepupTopTabsStyles">
+.myhub-top-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 14px;padding:8px 10px 10px;border-radius:0;background:linear-gradient(135deg,rgba(16,39,83,.95),rgba(7,18,42,.98));border:0;box-shadow:none;position:sticky;top:0;z-index:8}
+.myhub-top-tab{min-width:0;border:0;border-radius:12px;padding:11px 4px;background:transparent;color:#c5c9d7;font:650 .86rem/1.1 inherit;cursor:pointer;transition:background .15s ease,color .15s ease}
+.myhub-top-tab.is-active{background:rgba(255,255,255,.15);color:#fff;box-shadow:none}
+html.app-light .myhub-top-tabs{background:linear-gradient(135deg,#eef4ff,#fff);box-shadow:none}
+html.app-light .myhub-top-tab{color:#68748b}
+html.app-light .myhub-top-tab.is-active{background:rgba(74,126,233,.14);color:#1e315d}
+.myhub-home-sections{display:grid;gap:9px;margin:12px 16px 14px}
+.myhub-home-card{width:100%;display:grid;grid-template-columns:38px 1fr 18px;align-items:center;gap:10px;text-align:left;border:1px solid var(--border,rgba(255,255,255,.09));border-radius:16px;padding:12px 14px;background:var(--surface,#171821);color:var(--text,#fff);font-family:inherit;cursor:pointer}
+.myhub-home-icon{font-size:1.25rem;text-align:center}.myhub-home-card strong{display:block;font-size:.92rem}.myhub-home-card small{display:block;margin-top:3px;color:var(--text-dim,#92929f);font-size:.72rem;font-weight:500}.myhub-home-chevron{font-size:1.35rem;color:var(--text-dim,#92929f)}
+.myhub-home-group{border:1px solid var(--border,rgba(255,255,255,.09));border-radius:16px;background:var(--surface,#171821);overflow:hidden}.myhub-home-group .myhub-home-card{border:0;border-radius:0;background:transparent;margin:0}.myhub-home-count{min-width:25px;height:25px;padding:0 7px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent,#6257f6) 24%,transparent);color:var(--accent,#776cff);font-size:.75rem;font-weight:800;margin-left:7px}.myhub-home-list{display:none;padding:0 10px 10px}.myhub-home-group.is-open .myhub-home-list{display:block}.myhub-home-group.is-open .myhub-home-chevron{transform:rotate(90deg)}.myhub-home-list .mc-slot-card{margin:8px 0}.myhub-home-empty{padding:10px 8px;color:var(--text-dim,#92929f);font-size:.78rem;text-align:center}.myhub-live-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 10px;margin-top:8px;border-radius:12px;background:rgba(255,255,255,.035)}.myhub-live-item strong{font-size:.84rem}.myhub-live-item small{display:block;color:var(--text-dim,#92929f);margin-top:2px}.myhub-live-open{border:0;border-radius:10px;padding:8px 10px;background:var(--accent,#6257f6);color:#fff;font:700 .74rem inherit}
+.myhub-tab-view{display:none}.myhub-tab-view.is-active{display:block}
+
+.myhub-embedded-view{margin:0 0 16px;min-height:0}
+.myhub-embedded-view>.page.myhub-embedded-page{display:block!important;position:static!important;inset:auto!important;min-height:0!important;height:auto!important;background:transparent!important;z-index:auto!important;padding-bottom:0!important}
+.myhub-embedded-page .sheet-close-btn{display:none!important}
+.myhub-embedded-page .r2-header{position:static!important;top:auto!important}
+</style>
+
+<style id="scs-build-1101-live-detail-clean-header">
+/* Live detail: remove the inherited My Hub mode header. Keep only the close control. */
+body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
+#viewerPage{padding-top:0 !important;position:relative}
+#viewerPage > .scs-topbar.scs-topbar-page{
+  display:block !important;
+  position:relative !important;
+  min-height:58px;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+#viewerPage > .scs-topbar.scs-topbar-page .scs-topbar-center{display:none !important}
+#viewerPage > .scs-topbar.scs-topbar-page .scs-topbar-right{
+  position:absolute;
+  right:14px;
+  top:10px;
+  z-index:3;
+}
+</style>
+<style id="scs-build-1100-home-live-cards">
+/* Home Live: show the existing session cards directly; 10 at a time. */
+.myhub-live-cards{margin:0;padding:0;background:transparent;border:0}
+.myhub-live-cards #myHubLiveList{display:block;padding:0}
+.myhub-live-cards .dash-session-card{margin:0 0 10px}
+.myhub-live-more{width:100%;border:1px solid var(--border,rgba(255,255,255,.10));border-radius:12px;padding:11px 14px;background:var(--surface,#171821);color:var(--text,#f5f5f7);font:700 .78rem inherit;cursor:pointer}
+</style>
 </head>
 <body>
 
@@ -77,75 +380,299 @@
 
   <!-- Keep ghost for compatibility  -->
 
-  <div id="modeSelectOverlay" class="mode-launcher-fullscreen" style="display:none;">
-    <!-- iOS-style header for mode selection -->
-    <div class="scs-topbar scs-topbar-standalone ml-topbar-home">
-      <div class="ml-topbar-approw">
-        <div class="ml-topbar-appicon">🏸</div>
-        <div class="ml-topbar-appinfo">
-          <div class="ml-topbar-appname">Sports Club Scheduler</div>
-          <div class="ml-topbar-username" id="welcomeTopbarSub">Welcome</div>
-        </div>
-      </div>
-      <div class="ml-topbar-actions">
-        <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtnML" title="Toggle theme">🌙</button>
-        <button class="scs-topbar-btn scs-topbar-power" onclick="authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
-      </div>
+  <div id="scsStartupSplash" class="scs-startup-splash" aria-label="SCS is loading" role="status">
+    <div class="scs-startup-spinner" aria-hidden="true">
+      <img src="icon-512.png?v=856" alt="" class="scs-startup-icon">
+      <span class="scs-startup-ring"></span>
     </div>
-    <div class="ml-inner">
-      <div class="ml-modes">
-        <div class="ml-section-label ml-section-first">
-          <span class="ml-section-icon">👤</span> <span data-i18n="forYou">For You</span>
+  </div>
+
+  <div id="modeSelectOverlay" class="mode-launcher-fullscreen welcome-launcher scs-launch-first-paint" style="display:none;">
+    <div class="welcome-shell">
+      <div class="simple-welcome" aria-label="Choose SCS mode">
+        <div class="simple-welcome-header">
+          <div class="simple-welcome-brand" aria-label="SCS, scs-app.com">
+            <img class="simple-welcome-logo" src="clubs-brand.png?v=856" alt="SCS Clubs">
+            <div class="simple-welcome-brand-copy">
+              <strong>SCS</strong>
+              <span>scs-app.com</span>
+            </div>
+          </div>
+          <div class="simple-welcome-tools">
+            <button class="simple-tool-btn" type="button" aria-label="Settings" title="Settings" onclick="closeModeSheet();homeGo('settingsPage','tabBtnSettings')">⚙</button>
+            <button class="simple-tool-btn scs-topbar-theme" id="simpleThemeToggle" type="button" aria-label="Toggle light and dark mode" title="Toggle theme" onclick="scsToggleTheme()">🌙</button>
+            <div class="simple-lang-wrap">
+              <button class="simple-tool-btn" type="button" aria-label="Language" title="Language" onclick="mlToggleLang()">🌐</button>
+              <div class="ml-lang-picker simple-lang-picker" id="mlLangPicker" style="display:none;" onclick="event.stopPropagation()">
+                <button type="button" class="ml-lang-opt" onclick="mlSelectLang('en','🇺🇸','English')"><span>🇺🇸</span><b>English</b></button>
+                <button type="button" class="ml-lang-opt" onclick="mlSelectLang('jp','🇯🇵','日本語')"><span>🇯🇵</span><b>日本語</b></button>
+                <button type="button" class="ml-lang-opt" onclick="mlSelectLang('kr','🇰🇷','한국어')"><span>🇰🇷</span><b>한국어</b></button>
+                <button type="button" class="ml-lang-opt" onclick="mlSelectLang('vi','🇻🇳','Tiếng Việt')"><span>🇻🇳</span><b>Tiếng Việt</b></button>
+                <button type="button" class="ml-lang-opt" onclick="mlSelectLang('zh','🇨🇳','中文')"><span>🇨🇳</span><b>中文</b></button>
+              </div>
+            </div>
+          </div>
         </div>
-        <button class="ml-mode viewer" id="experienceModeViewer" onclick="switchMode('viewer')">
-          <div class="ml-mode-icon-circle viewer">👁</div>
-          <div class="ml-mode-info">
-            <div class="ml-mode-name" data-i18n="viewer">Player Hub</div>
-            <div class="ml-mode-desc" data-i18n="watchLiveDesc">Watch live rounds &amp; scores</div>
+
+        <div class="simple-mode-list">
+          <div class="welcome-add-mode-wrap welcome-hub-switcher-wrap" id="welcomeAddModeWrap">
+            <div class="welcome-hub-switcher" role="tablist" aria-label="Welcome hub">
+              <button id="welcomeAddViewer" class="welcome-hub-switcher-btn" type="button" role="tab" aria-selected="false" onclick="welcomeAddMode('viewer',event)" data-i18n="myHub">My Hub</button>
+              <button id="welcomeAddRound" class="welcome-hub-switcher-btn" type="button" role="tab" aria-selected="false" onclick="welcomeAddMode('organiser',event)" data-i18n="roundManager">Round Manager</button>
+              <button id="welcomeAddSlot" class="welcome-hub-switcher-btn" type="button" role="tab" aria-selected="false" onclick="welcomeAddMode('vault',event)" data-i18n="slotManager">Slot Manager</button>
+            </div>
           </div>
-          <span class="ml-arr-circle">›</span>
-        </button>
-        <div class="ml-section-label" id="experienceOrganiserSection">
-          <span class="ml-section-icon">🏅</span> <span data-i18n="forOrganisers">For Organisers</span>
+          <div class="simple-mode-card simple-mode-my" hidden aria-hidden="true" role="button" tabindex="0" onclick="if(window.scsNotificationsMarkWelcomeViewed)window.scsNotificationsMarkWelcomeViewed();welcomeSelectWorkspace('viewer');welcomeContinueWorkspace()" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();if(window.scsNotificationsMarkWelcomeViewed)window.scsNotificationsMarkWelcomeViewed();welcomeSelectWorkspace('viewer');welcomeContinueWorkspace()}">
+            <span class="simple-mode-assist" role="button" tabindex="0" aria-label="Open My Hub Assist" onclick="event.stopPropagation(); scsOpenGuidedFunctions('viewer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('viewer')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span><span data-i18n="assist">Assist</span></span>
+            <span class="simple-mode-icon simple-mode-photo-picker" role="button" tabindex="0" aria-label="Set My Hub picture" title="Set My Hub picture" onclick="event.stopPropagation(); welcomeChooseRolePhoto('viewer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeChooseRolePhoto('viewer')}"><img id="simpleViewerPhoto" class="simple-mode-photo" alt=""><span class="simple-mode-icon-fallback" aria-hidden="true">♙</span></span>
+            <span class="simple-mode-copy">
+              <span class="simple-mode-label" data-i18n="myHub">My Hub</span>
+              <span class="simple-mode-detail-row">
+                <span class="simple-mode-subtitle" id="simpleMyNickname">Player</span>
+                <span class="simple-inline-logout approved-logout-pill" id="simplePlayerLogout" role="button" tabindex="0" title="Logout Player" aria-label="Logout Player" hidden onclick="event.stopPropagation(); welcomeLogoutWorkspace('viewer')">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M14 8l4 4-4 4M18 12H9"/></svg><span>Log out</span>
+                </span>
+              </span>
+              <span class="simple-new-slots-info" id="simpleNewSlotsInfo" hidden aria-live="polite">
+                <span class="simple-new-slots-bell" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+                  <span class="simple-new-slots-dot"></span>
+                </span>
+                <span id="simpleNewSlotsText" data-i18n="newSlotsPosted">New slots posted</span>
+              </span>
+            </span>
+            <span class="simple-mode-description" data-i18n="myHubDescription">View your profile, slots, payments and your activity overview.</span>
+            <span class="simple-my-shortcuts" aria-label="My Hub shortcuts">
+              <span class="simple-my-shortcut-card" role="button" tabindex="0" onclick="event.stopPropagation(); welcomeOpenViewerSlots()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenViewerSlots()}">
+                <span class="simple-my-shortcut-icon" aria-hidden="true">📅</span>
+                <span class="simple-my-shortcut-label" data-i18n="slots">Slots</span>
+              </span>
+              <span class="simple-my-shortcut-card" role="button" tabindex="0" onclick="event.stopPropagation(); welcomeOpenViewerShortcut('joinClubPage', null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenViewerShortcut('joinClubPage',null)}">
+                <span class="simple-my-shortcut-icon" aria-hidden="true">🏢</span>
+                <span class="simple-my-shortcut-label" data-i18n="myClubs">Clubs</span>
+              </span>
+              <span class="simple-my-shortcut-card" role="button" tabindex="0" onclick="event.stopPropagation(); welcomeOpenViewerShortcut('dashboardPage', 'tabBtnDashboard')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenViewerShortcut('dashboardPage','tabBtnDashboard')}">
+                <span class="simple-my-shortcut-icon" aria-hidden="true">📡</span>
+                <span class="simple-my-shortcut-label" data-i18n="dashboard">Dashboard</span>
+              </span>
+              <span class="simple-my-shortcut-card" role="button" tabindex="0" onclick="event.stopPropagation(); welcomeOpenViewerShortcut('vaultReport2Page', null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenViewerShortcut('vaultReport2Page',null)}">
+                <span class="simple-my-shortcut-icon" aria-hidden="true">📊</span>
+                <span class="simple-my-shortcut-label" data-i18n="report">Report</span>
+              </span>
+            </span>
+          </div>
+          <div id="welcomeClubBroadcastInvite" class="welcome-club-broadcast" hidden>
+            <div class="welcome-club-broadcast-copy"><small>CLUB INVITATION</small><strong id="welcomeClubBroadcastName">Club</strong><span>is inviting new members</span></div>
+            <button type="button" onclick="event.stopPropagation();welcomeOpenClubBroadcastInvite()">Request to Join</button>
+            <span id="welcomeClubBroadcastTime" class="welcome-club-broadcast-time"></span>
+          </div>
+          <div class="simple-mode-card simple-mode-round" role="button" tabindex="0" onclick="welcomeSelectWorkspace('organiser');welcomeContinueWorkspace()" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();welcomeSelectWorkspace('organiser');welcomeContinueWorkspace()}">
+            <span class="simple-mode-assist" role="button" tabindex="0" aria-label="Open Round Manager Assist" onclick="event.stopPropagation(); scsOpenGuidedFunctions('organiser')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('organiser')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span><span data-i18n="assist">Assist</span></span>
+            <span class="simple-mode-icon simple-mode-photo-picker" role="button" tabindex="0" aria-label="Set Round Manager picture" title="Set Round Manager picture" onclick="event.stopPropagation(); welcomeChooseRolePhoto('organiser')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeChooseRolePhoto('organiser')}"><img id="simpleOrganiserPhoto" class="simple-mode-photo" alt=""><span class="simple-mode-icon-fallback" aria-hidden="true">▣</span></span>
+            <span class="simple-mode-copy">
+              <span class="simple-mode-label" data-i18n="roundManager">Round Manager</span>
+              <span class="welcome-organiser-club-pills simple-round-club-pills" id="simpleRoundClubPills" aria-label="Select club" onclick="event.stopPropagation()"></span>
+            </span>
+            <span class="simple-mode-description" data-i18n="roundManagerDescription">Manage rounds, players, pairings and match progress.</span>
+          </div>
+          <div class="simple-mode-card simple-mode-slot" hidden aria-hidden="true" role="button" tabindex="0" onclick="welcomeSelectWorkspace('vault');welcomeContinueWorkspace()" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();welcomeSelectWorkspace('vault');welcomeContinueWorkspace()}">
+            <span class="simple-mode-assist" role="button" tabindex="0" aria-label="Open Slot Manager Assist" onclick="event.stopPropagation(); scsOpenGuidedFunctions('vault')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('vault')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span><span data-i18n="assist">Assist</span></span>
+            <span class="simple-mode-icon simple-mode-photo-picker" role="button" tabindex="0" aria-label="Set Club Manager picture" title="Set Club Manager picture" onclick="event.stopPropagation(); welcomeChooseRolePhoto('vault')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeChooseRolePhoto('vault')}"><img id="simpleVaultPhoto" class="simple-mode-photo" alt=""><span class="simple-mode-icon-fallback" aria-hidden="true">▦</span></span>
+            <span class="simple-mode-copy">
+              <span class="simple-mode-label" data-i18n="slotManager">Slot Manager</span>
+              <span class="simple-mode-detail-row">
+                <span class="simple-mode-subtitle" id="simpleSlotClubName">Club</span>
+                <span class="simple-inline-logout approved-logout-pill" id="simpleVaultLogout" role="button" tabindex="0" title="Logout Club Manager" aria-label="Logout Club Manager" hidden onclick="event.stopPropagation(); welcomeLogoutWorkspace('vault')">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M14 8l4 4-4 4M18 12H9"/></svg><span>Log out</span>
+                </span>
+              </span>
+              <span class="simple-slot-status" id="simpleSlotStatus" hidden>
+                <span class="simple-slot-next" id="simpleSlotNext" role="button" tabindex="0" onclick="event.stopPropagation();welcomeOpenVaultSlot(this.dataset.slotId)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenVaultSlot(this.dataset.slotId)}"></span>
+                <span class="simple-slot-pending" id="simpleSlotPending" role="button" tabindex="0" hidden onclick="event.stopPropagation();welcomeOpenVaultApprovals()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenVaultApprovals()}"></span>
+              </span>
+            </span>
+            <span class="simple-mode-description" data-i18n="slotManagerDescription">Create slots, manage players and club activities.</span>
+          </div>
         </div>
-        <button class="ml-mode organiser" id="experienceModeOrganiser" onclick="switchMode('organiser')">
-          <div class="ml-mode-icon-circle organiser">🏆</div>
-          <div class="ml-mode-info">
-            <div class="ml-mode-name" data-i18n="roundOrganiser">Round Organiser</div>
-            <div class="ml-mode-desc" data-i18n="roundOrganiserDesc">Run session, score games, manage players</div>
-          </div>
-          <span class="ml-arr-circle">›</span>
-        </button>
-        <button class="ml-mode vault" id="experienceModeVault" onclick="isDemoMode()?showDemoVaultBlock():switchMode('vault')">
-          <div class="ml-mode-icon-circle vault">🔑</div>
-          <div class="ml-mode-info">
-            <div class="ml-mode-name" data-i18n="vaultManager">Vault Manager</div>
-            <div class="ml-mode-desc" data-i18n="vaultManagerDesc">Club admin — players, requests, management</div>
-          </div>
-          <span class="ml-arr-circle">›</span>
-        </button>
       </div>
-      <div class="ml-experience-switch" aria-label="Experience mode">
-        <div class="ml-experience-track" id="mlExperienceTrack">
-          <span class="ml-experience-thumb" id="mlExperienceThumb"></span>
-          <button id="mlExperienceStandard" type="button" onclick="setExperienceMode('standard')">Standard</button>
-          <button id="mlExperienceIntermediate" type="button" onclick="setExperienceMode('intermediate')">Intermediate</button>
-          <button id="mlExperienceAdvanced" type="button" onclick="setExperienceMode('advanced')">Advanced</button>
-        </div>
-        <div class="ml-experience-caption" id="mlExperienceCaption">All hubs</div>
+
+      <!-- Existing welcome elements are retained only as compatibility hooks for unchanged functions. -->
+      <div class="welcome-legacy-hooks" aria-hidden="true">
+
+      <button class="welcome-refresh-btn" onclick="scsRunManualSync('welcome')" type="button" title="Refresh" aria-label="Refresh welcome screen">↻</button>
+      <button class="scs-topbar-btn scs-topbar-theme welcome-theme-toggle" onclick="scsToggleTheme()" id="scsThemeBtnWelcome" type="button" title="Toggle theme" aria-label="Toggle light and dark mode">🌙</button>
+      <div class="welcome-badminton-mark" aria-hidden="true">🏸</div>
+      <div class="welcome-domain">scs-app.com</div>
+      <h1 class="welcome-title" data-i18n="welcomeTitle">Welcome to SCS</h1>
+      <p class="welcome-subtitle" data-i18n="welcomeSubtitle">Your all-in-one platform for players, organisers and club managers.</p>
+
+      <div class="welcome-section-title"><span></span><b id="welcomeHubHeading">Choose your hub</b><span></span></div>
+
+      <div class="welcome-card-frame">
+      <div class="welcome-workspaces" id="welcomeWorkspaceCarousel" role="radiogroup" aria-label="Choose your workspace">
+        <button class="welcome-carousel-arrow welcome-carousel-prev" type="button" aria-label="Previous workspace" onclick="event.stopPropagation(); welcomeCycleWorkspace(-1)">‹</button>
+        <button class="welcome-workspace viewer" id="experienceModeViewer" type="button" role="radio" aria-checked="true" onclick="welcomeSelectWorkspace('viewer')">
+          <span class="welcome-tile-assist" role="button" tabindex="0" onclick="event.stopPropagation(); scsOpenGuidedFunctions('viewer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('viewer')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span> <span data-i18n="assist">Assist</span></span>
+          <span class="welcome-tile-logout" id="welcomePlayerLogout" role="button" tabindex="0" title="Logout Player" aria-label="Logout Player" hidden onclick="event.stopPropagation(); welcomeLogoutWorkspace('viewer')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg>
+          </span>
+          <span class="welcome-player-hub welcome-role-hub">
+            <span class="welcome-player-profile welcome-role-profile">
+              <span class="welcome-player-photo-wrap welcome-role-photo-wrap">
+                <img id="welcomePlayerPhoto" class="welcome-player-photo welcome-role-photo" src="male.png" alt="Player profile">
+                <span class="welcome-player-edit" role="button" tabindex="0" aria-label="Change profile photo" title="Change profile photo" onclick="event.stopPropagation(); welcomeOpenPhotoMenu('viewer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();welcomeOpenPhotoMenu('viewer')}">✎</span>
+              </span>
+              <span class="welcome-player-copy welcome-role-copy">
+                <span class="welcome-player-kicker">My</span>
+                <span class="welcome-workspace-label">My</span>
+                <span class="welcome-player-name welcome-role-name" id="welcomePlayerName">Player</span>
+                <span class="welcome-player-description">Find and join slots,<br>play and improve.</span>
+              </span>
+            </span>
+            <span class="welcome-player-stats welcome-metric-grid welcome-metric-grid-four">
+              <span class="welcome-player-stat welcome-metric">
+                <span class="welcome-player-stat-icon" aria-hidden="true">♣</span>
+                <strong id="welcomePlayerClubs">0</strong>
+                <small data-i18n="hubClubs">Clubs</small>
+              </span>
+              <span class="welcome-player-stat welcome-metric">
+                <span class="welcome-player-stat-icon" aria-hidden="true">▣</span>
+                <strong id="welcomePlayerBookedSlots">0</strong>
+                <small data-i18n="hubBookedSlots">Booked Slots</small>
+              </span>
+              <span class="welcome-player-stat welcome-metric">
+                <span class="welcome-player-stat-icon" aria-hidden="true">★</span>
+                <strong id="welcomePlayerRating">0.0</strong>
+                <small data-i18n="hubRating">Rating</small>
+              </span>
+              <span class="welcome-player-stat welcome-metric">
+                <span class="welcome-player-stat-icon" aria-hidden="true">♛</span>
+                <strong id="welcomePlayerPoints">0.0</strong>
+                <small data-i18n="hubPoints">Points</small>
+              </span>
+            </span>
+          </span>
+        </button>
+        <button class="welcome-workspace organiser" id="experienceModeOrganiser" type="button" role="radio" aria-checked="false" onclick="welcomeSelectWorkspace('organiser')">
+          <span class="welcome-tile-assist" role="button" tabindex="0" onclick="event.stopPropagation(); scsOpenGuidedFunctions('organiser')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('organiser')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span> <span data-i18n="assist">Assist</span></span>
+          <span class="welcome-tile-logout" id="welcomeOrganiserLogout" role="button" tabindex="0" title="Logout Organiser" aria-label="Logout Organiser" hidden onclick="event.stopPropagation(); welcomeLogoutWorkspace('organiser')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg>
+          </span>
+          <span class="welcome-role-hub">
+            <span class="welcome-role-profile">
+              <span class="welcome-role-photo-wrap">
+                <img id="welcomeOrganiserPhoto" class="welcome-role-photo" src="male.png" alt="Organiser team">
+                <span class="welcome-role-edit" role="button" tabindex="0" aria-label="Change organiser team photo" title="Change team photo" onclick="event.stopPropagation(); welcomeOpenPhotoMenu('organiser')">✎</span>
+              </span>
+              <span class="welcome-role-copy">
+                <span class="welcome-workspace-label">Rounds</span>
+                <span class="welcome-role-name" id="welcomeOrganiserName">Organiser</span>
+                <span class="welcome-organiser-club-pills" id="welcomeOrganiserClubPills" aria-label="Select club"></span>
+              </span>
+            </span>
+            <span class="welcome-next-slot-host" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
+              <span id="launcherStartSessionCard" class="launcher-start-session-card welcome-launcher-start-card" style="display:none;"></span>
+            </span>
+          </span>
+        </button>
+        <button class="welcome-workspace vault" id="experienceModeVault" type="button" role="radio" aria-checked="false" onclick="welcomeSelectWorkspace('vault')">
+          <span class="welcome-tile-assist" role="button" tabindex="0" onclick="event.stopPropagation(); scsOpenGuidedFunctions('vault')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsOpenGuidedFunctions('vault')}"><span class="assist-headphone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1z"/></svg></span> <span data-i18n="assist">Assist</span></span>
+          <span class="welcome-tile-logout" id="welcomeVaultLogout" role="button" tabindex="0" title="Logout Club Manager" aria-label="Logout Club Manager" hidden onclick="event.stopPropagation(); welcomeLogoutWorkspace('vault')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg>
+          </span>
+          <span class="welcome-role-hub">
+            <span class="welcome-role-profile">
+              <span class="welcome-role-photo-wrap">
+                <img id="welcomeVaultPhoto" class="welcome-role-photo" src="male.png" alt="Club team">
+                <span class="welcome-role-edit" role="button" tabindex="0" aria-label="Change club team photo" title="Change team photo" onclick="event.stopPropagation(); welcomeOpenPhotoMenu('vault')">✎</span>
+              </span>
+              <span class="welcome-role-copy">
+                <span class="welcome-workspace-label">Club</span>
+                <span class="welcome-role-name" id="welcomeVaultName">Club</span>
+              </span>
+            </span>
+            <span class="welcome-role-stats welcome-metric-grid welcome-metric-grid-four">
+              <span class="welcome-role-stat welcome-metric">
+                <span class="welcome-role-stat-icon" aria-hidden="true">●</span>
+                <strong id="welcomeVaultPostedSlots">0</strong>
+                <small data-i18n="hubPosted">Posted</small>
+              </span>
+              <span class="welcome-role-stat welcome-metric">
+                <span class="welcome-role-stat-icon" aria-hidden="true">◇</span>
+                <strong id="welcomeVaultDraftSlots">0</strong>
+                <small data-i18n="hubDraft">Draft</small>
+              </span>
+              <span class="welcome-role-stat welcome-metric">
+                <span class="welcome-role-stat-icon" aria-hidden="true">¥</span>
+                <strong id="welcomeVaultUnpaid">0</strong>
+                <small data-i18n="hubUnpaid">Unpaid</small>
+              </span>
+              <span class="welcome-role-stat welcome-metric">
+                <span class="welcome-role-stat-icon" aria-hidden="true">♟</span>
+                <strong id="welcomeVaultMembers">0</strong>
+                <small data-i18n="hubMembers">Members</small>
+              </span>
+            </span>
+          </span>
+        </button>
+        <button class="welcome-carousel-arrow welcome-carousel-next" type="button" aria-label="Next workspace" onclick="event.stopPropagation(); welcomeCycleWorkspace(1)">›</button>
       </div>
-      <div class="ml-footer">
-        <button class="ml-settings-btn" onclick="closeModeSheet();homeGo('settingsPage','tabBtnSettings')">⚙️ <span data-i18n="settings">Settings</span></button>
-        <div class="ml-lang-row" id="mlLangRow">
-          <span class="ml-lang-current" id="mlLangCurrent" onclick="mlToggleLang()">🇺🇸 English ▾</span>
-          <div class="ml-lang-picker" id="mlLangPicker" style="display:none;" onclick="event.stopPropagation()">
+      <button class="welcome-continue" type="button" onclick="welcomeContinueWorkspace()">
+        <span id="welcomeContinueLabel">Enter My Hub</span><span aria-hidden="true">→</span>
+      </button>
+      </div>
+
+      <div class="welcome-carousel-dots" role="tablist" aria-label="Workspace position">
+        <button class="welcome-carousel-dot active" type="button" aria-label="Player" aria-selected="true" onclick="welcomeSelectWorkspace('viewer')"></button>
+        <button class="welcome-carousel-dot" type="button" aria-label="Organiser" aria-selected="false" onclick="welcomeSelectWorkspace('organiser')"></button>
+        <button class="welcome-carousel-dot" type="button" aria-label="Club Manager" aria-selected="false" onclick="welcomeSelectWorkspace('vault')"></button>
+      </div>
+      <div class="welcome-workspace-caption" id="mlExperienceCaption" data-i18n="playerWorkspace">Player workspace</div>
+
+      <div class="welcome-next-steps">
+        <span class="welcome-next-actions">
+          <span id="welcomeNextAction1" data-i18n="playerCardAction1">Book Slots</span>
+          <span aria-hidden="true">·</span>
+          <span id="welcomeNextAction2" data-i18n="playerCardAction2">View Ranks</span>
+        </span>
+      </div>
+
+      <div id="welcomePhotoSheet" class="welcome-photo-sheet" hidden onclick="if(event.target===this) welcomeClosePhotoMenu()">
+        <div class="welcome-photo-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="welcomePhotoSheetTitle">
+          <div class="welcome-photo-sheet-title" id="welcomePhotoSheetTitle">Profile Photo</div>
+          <button type="button" onclick="welcomeChooseProfilePhoto('camera')">📷 <span data-i18n="takePhoto">Take Photo</span></button>
+          <button type="button" onclick="welcomeChooseProfilePhoto('library')">🖼️ <span data-i18n="chooseFromPhotos">Choose from Photos</span></button>
+          <button type="button" class="welcome-photo-remove" onclick="welcomeRemoveProfilePhoto()">🗑️ <span data-i18n="removePhoto">Remove Photo</span></button>
+          <button type="button" class="welcome-photo-cancel" onclick="welcomeClosePhotoMenu()">Cancel</button>
+        </div>
+      </div>
+      <input id="welcomeProfileCameraInput" class="welcome-photo-input" type="file" accept="image/*" capture="user" onchange="welcomeHandleProfilePhoto(this)">
+      <input id="welcomeProfileLibraryInput" class="welcome-photo-input" type="file" accept="image/*" onchange="welcomeHandleProfilePhoto(this)">
+
+      <div class="welcome-footer">
+        <button class="welcome-utility" onclick="closeModeSheet();homeGo('settingsPage','tabBtnSettings')">
+          <span class="welcome-utility-icon">⚙</span><span data-i18n="settings">Settings</span>
+        </button>
+        <div class="welcome-utility welcome-language ml-lang-row" id="mlLangRow">
+          <span class="welcome-utility-icon">◎</span>
+          <span class="ml-lang-current" id="mlLangCurrent" onclick="event.stopPropagation();mlToggleLang()">English ▾</span>
+          <div class="ml-lang-picker" id="mlLangPickerLegacy" style="display:none;" onclick="event.stopPropagation()">
             <div class="ml-lang-opt" onclick="mlSelectLang('en','🇺🇸','English')">🇺🇸 English</div>
             <div class="ml-lang-opt" onclick="mlSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</div>
-            <!-- kr, zh, vi hidden for now — translation files kept for future use -->
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Compatibility hooks retained for the existing experience/settings logic. -->
+      <div class="welcome-compat" aria-hidden="true">
+        <div id="experienceOrganiserSection"></div>
+        <div id="mlExperienceTrack"></div>
+        <button id="mlExperienceStandard" type="button"></button>
+        <button id="mlExperienceIntermediate" type="button"></button>
+        <button id="mlExperienceAdvanced" type="button"></button>
+      </div>
+
+      </div>    </div>
   </div>
 
   <!-- ============================= -->
@@ -156,28 +683,64 @@
 
   <div id="authOverlay" class="auth-overlay" style="display:none;">
 
+  <header class="auth-app-header" aria-label="SCS">
+    <div class="auth-app-brand">
+      <img src="clubs-brand.png?v=856" alt="SCS Clubs">
+      <span><strong>SCS</strong><small>scs-app.com</small></span>
+    </div>
+    <div class="auth-app-tools">
+      <button type="button" class="auth-app-tool" aria-label="Settings" title="Settings" onclick="authOpenSettingsFromHeader()">⚙</button>
+      <button type="button" class="auth-app-tool" id="authHeaderThemeToggle" aria-label="Toggle light and dark mode" title="Toggle theme" onclick="scsToggleTheme();authSyncHeaderTheme()">☀️</button>
+      <div class="auth-app-language">
+        <button type="button" class="auth-app-tool" aria-label="Language" title="Language" onclick="authHeaderToggleLanguage(event)">🌐</button>
+        <div class="auth-app-language-picker" id="authHeaderLanguagePicker" hidden onclick="event.stopPropagation()">
+          <button type="button" onclick="authHeaderSelectLanguage('en','🇺🇸','English')"><span>🇺🇸</span><b>English</b></button>
+          <button type="button" onclick="authHeaderSelectLanguage('jp','🇯🇵','日本語')"><span>🇯🇵</span><b>日本語</b></button>
+          <button type="button" onclick="authHeaderSelectLanguage('kr','🇰🇷','한국어')"><span>🇰🇷</span><b>한국어</b></button>
+          <button type="button" onclick="authHeaderSelectLanguage('vi','🇻🇳','Tiếng Việt')"><span>🇻🇳</span><b>Tiếng Việt</b></button>
+          <button type="button" onclick="authHeaderSelectLanguage('zh','🇨🇳','中文')"><span>🇨🇳</span><b>中文</b></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
 <!-- WELCOME screen -->
 
 <div id="authWelcome" class="auth-screen">
-  <div class="auth-logo">🏸</div>
-  <div class="auth-app-name" data-i18n="appTitle">Sports Club Scheduler</div>
-  <div class="auth-tagline" data-i18n="tagline">Badminton &amp; Pickleball</div>
+  <div class="auth-welcome-brand">
+    <h1 data-i18n="welcomeTitle">Welcome to SCS</h1>
+    <p data-i18n="welcomeSubtitle">Your all-in-one platform for players, organisers and club managers.</p>
+  </div>
+  <div class="auth-tagline" data-i18n="tagline" hidden aria-hidden="true" style="display:none!important;">Badminton &amp; Pickleball</div>
   <div class="auth-welcome-btns">
-    <button class="auth-btn-primary" onclick="authShowScreen('login')" data-i18n="login">Login</button>
-    <button class="auth-btn-secondary" onclick="authShowScreen('signup')" data-i18n="createAccount">Create Account</button>
-    <div class="auth-demo-divider"><span>or</span></div>
-    <button class="auth-btn-demo" onclick="authStartDemo()" id="demoBtnWelcome">
+    <!-- LINE Login temporarily hidden. Keep markup and auth code intact for future re-enable. -->
+    <button class="auth-btn-line" type="button" onclick="authStartLineLogin(this)" hidden aria-hidden="true" tabindex="-1" style="display:none!important;">
+      <span class="auth-line-mark" aria-hidden="true">LINE</span>
+      <span data-i18n="continueWithLine">Continue with LINE</span>
+    </button>
+    <button class="auth-btn-google" type="button" onclick="authStartGoogleLogin(this)">
+      <img class="auth-google-mark" src="google-g.svg?v=856" alt="" aria-hidden="true">
+      <span data-i18n="continueWithGoogle">Continue with Google</span>
+    </button>
+    <button id="authOtherMethodBtn" class="auth-btn-secondary auth-btn-other" type="button"
+      aria-expanded="false" aria-controls="authOtherMethods" onclick="authToggleOtherMethods()">
+      <span aria-hidden="true">✉</span>
+      <span data-i18n="otherSignInMethod">Other sign-in method</span>
+      <span id="authOtherMethodChevron" aria-hidden="true">⌄</span>
+    </button>
+    <div id="authOtherMethods" class="auth-other-methods" hidden>
+      <div class="auth-other-methods-title" data-i18n="continueWithEmail">Continue with email</div>
+      <div class="auth-other-methods-copy" data-i18n="emailAccountChoice">Use an existing account or create a new one.</div>
+      <div class="auth-other-methods-actions">
+        <button class="auth-btn-primary" onclick="authShowScreen('login')" data-i18n="loginWithEmail">Login with Email</button>
+        <button class="auth-btn-secondary" onclick="authShowScreen('signup')" data-i18n="createAccountWithEmail">Create Account with Email</button>
+      </div>
+    </div>
+    <div class="auth-demo-divider" hidden aria-hidden="true" style="display:none!important;"><span data-i18n="orLabel">or</span></div>
+    <button class="auth-btn-demo" onclick="authStartDemo()" id="demoBtnWelcome" hidden aria-hidden="true" tabindex="-1" style="display:none!important;">
       🎮 <span data-i18n="tryDemo">Try Demo</span>
     </button>
 
-  <div class="ml-lang-row" style="margin-top:24px;justify-content:center;">
-    <span class="ml-lang-current" id="authLangCurrent" onclick="authToggleLang()" style="font-size:0.9rem;">🇺🇸 English ▾</span>
-    <div class="ml-lang-picker" id="authLangPicker" style="display:none;" onclick="event.stopPropagation()">
-      <div class="ml-lang-opt" onclick="authSelectLang('en','🇺🇸','English')">🇺🇸 English</div>
-      <div class="ml-lang-opt" onclick="authSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</div>
-      <!-- kr, zh, vi hidden — translation files kept for future use -->
-    </div>
-  </div>
   </div>
 </div>
 
@@ -290,7 +853,7 @@
       </select>
     </div>
     <div class="auth-field">
-      <label class="auth-label">Nickname <span class="auth-hint" data-i18n="asRegisteredByAdmin">as registered by admin</span></label>
+      <label class="auth-label"><span data-i18n="nickname">Nickname</span> <span class="auth-hint" data-i18n="asRegisteredByAdmin">as registered by admin</span></label>
       <input type="text" id="claimNickname" class="auth-input" placeholder="Your nickname">
     </div>
     <div class="auth-field">
@@ -359,74 +922,39 @@
   <div class="demo-banner-inner">
     <span class="demo-banner-label">🎮 Demo</span>
     <span class="demo-banner-timer" id="demoTimerDisplay">10:00</span>
-    <button class="demo-banner-signup" onclick="authDemoSignupPrompt()">Sign Up Free →</button>
+    <button class="demo-banner-signup" onclick="authDemoSignupPrompt()"><span data-i18n="signUpFree">Sign Up Free</span> →</button>
     <button class="demo-banner-exit" onclick="authExitDemo()">✕</button>
   </div>
 </div>
 
 <!-- Top bar -->
 
-<div class="home-topbar">
-  <div class="scs-topbar-center" id="modePillBtn" onclick="openModeSwitcher()" style="cursor:pointer;justify-content:flex-start;margin:0;">
-    <div class="scs-topbar-icon-wrap"><span id="modePillIcon">🏸</span></div>
-    <div class="scs-topbar-text">
-      <div class="scs-topbar-title" id="modePillLabel"></div>
-      <div class="scs-topbar-sub" id="modePillSub"></div>
-    </div>
+<div class="home-topbar home-app-header" aria-label="User home">
+  <div class="home-app-brand">
+    <img id="homeUserHeaderAvatar" class="home-app-logo" src="male.png?v=856" alt="User">
+    <div class="home-app-brand-copy"><strong id="homeUserHeaderName">Player</strong><span id="homeUserHeaderTier">Member</span></div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtnHome" title="Toggle theme">🌙</button>
-    <button class="scs-topbar-btn scs-topbar-power" onclick="appMode==='vault'?vaultLogoutClub():appMode==='organiser'?organiserLogoutClub():authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
-    <button class="scs-topbar-x" onclick="openModeSwitcher()">✕</button>
+  <div class="home-app-tools">
+    <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
+  </div>
+  <button class="scs-topbar-btn home-mode-refresh-btn" id="homeModeRefreshBtn" type="button" onclick="homeModeManualRefresh()" title="Refresh" style="display:none;">↻</button>
+  <button id="homeUserProfileToggle" class="home-user-profile-toggle" type="button" onclick="toggleMyCardDetails()" aria-expanded="false" aria-label="Show profile details" title="Profile details">⌄</button>
+</div>
+
+<div id="scsHomeQuickMenu" class="scs-home-quick-menu" hidden onclick="if(event.target===this)scsCloseHomeQuickMenu()">
+  <div class="scs-home-quick-panel" role="dialog" aria-modal="true" aria-label="Quick actions">
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-round-row" onclick="scsHomeQuickAction('round')"><span class="scs-home-quick-icon" aria-hidden="true">🏸</span><span class="scs-home-quick-copy"><strong>Start a Round</strong><span id="scsQuickRoundClubName" class="scs-home-quick-subtitle"></span></span><span id="scsQuickRoundClub" class="scs-home-quick-club" role="button" tabindex="0" aria-label="Change Round Manager club" onclick="event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)}"></span></button>
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-slot-row" onclick="scsHomeQuickAction('slot')"><span class="scs-home-quick-icon" aria-hidden="true">📅</span><span class="scs-home-quick-slot-copy"><strong>Post a Slot</strong><span id="scsQuickSlotClubName" class="scs-home-quick-slot-club-name">Login to a club</span></span><span id="scsQuickSlotClub" class="scs-home-quick-club scs-home-quick-slot-auth" role="button" tabindex="0" aria-label="Slot Manager login" onclick="event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)}"></span></button>
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-register-row" onclick="scsHomeQuickAction('register')"><span class="scs-home-quick-icon" aria-hidden="true">📋</span><span class="scs-home-quick-copy"><strong>Register Players</strong><span id="scsQuickRegisterClubName" class="scs-home-quick-subtitle"></span></span></button>
+    <button type="button" id="scsQuickApprovePlayers" class="scs-home-quick-action-row scs-home-quick-approve-row" hidden onclick="scsHomeQuickAction('approve')"><span class="scs-home-quick-icon" aria-hidden="true">✓</span><span class="scs-home-quick-copy"><strong id="scsQuickApprovePlayersLabel">Approve Players</strong><span id="scsQuickApproveClubName" class="scs-home-quick-subtitle"></span></span></button>
+    <button type="button" onclick="scsHomeQuickAction('club')"><span aria-hidden="true">🏢</span><strong>Join a Club</strong></button>
+    <button class="scs-home-quick-cancel" type="button" onclick="scsCloseHomeQuickMenu()">Cancel</button>
   </div>
 </div>
 
 <!-- Trial banner moved to Settings page -->
 
 <div id="trialBanner" style="display:none;"></div>
-
-<!-- SESSION STEPPER (organiser) -->
-
-<div id="homeOrganizerFlow" style="display:none;">
-
-  <div class="session-stepper">
-    <div class="stepper-step" id="stepDot0">
-      <div class="stepper-dot"><span class="sn">1</span></div>
-      <div class="stepper-label" data-i18n="players">Players</div>
-    </div>
-    <div class="stepper-line" id="stepLine0"></div>
-    <div class="stepper-step" id="stepDot1">
-      <div class="stepper-dot"><span class="sn">2</span></div>
-      <div class="stepper-label" data-i18n="pairsLabel">Pairs</div>
-    </div>
-    <div class="stepper-line" id="stepLine1"></div>
-    <div class="stepper-step" id="stepDot2">
-      <div class="stepper-dot"><span class="sn">3</span></div>
-      <div class="stepper-label" data-i18n="courtsLabel">Courts</div>
-    </div>
-    <div class="stepper-line" id="stepLine2"></div>
-    <div class="stepper-step" id="stepDot3">
-      <div class="stepper-dot"><span class="sn">4</span></div>
-      <div class="stepper-label" data-i18n="roundsLabel">Rounds</div>
-    </div>
-  </div>
-
-  <!-- Step card kept hidden: JS references these IDs but card is no longer shown -->
-  <div class="step-card" id="stepCard" style="display:none;">
-    <div class="step-card-icon" id="stepCardIcon">👥</div>
-    <div class="step-card-body">
-      <div class="step-card-title" id="stepCardTitle">Select Players</div>
-      <div class="step-card-sub"   id="stepCardSub">Add at least 4 players</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
-      <button class="step-card-btn" id="stepCardBtn" onclick="stepAction()">Go ›</button>
-      <button class="step-card-skip" id="stepSkipBtn" onclick="stepSkip()" style="display:none;" data-i18n="skipBtn">Skip</button>
-    </div>
-  </div>
-
-  <!-- stepCourtsPanel stub removed: stepNumCourts/stepModeToggle live in homeOrgGrid rounds tile -->
-
-</div>
 
 <!-- VIEWER FLOW - removed (dashboard tile covers this) -->
 
@@ -440,137 +968,338 @@
   <div style="display:none;">
     <div id="orgTileIcon">🏢</div>
     <div id="orgVctName">Club</div>
-    <div id="orgVctBadge">Tap to connect</div>
-  </div>
-
-  <!-- ── Row 1: Players + Fixed Pairs (2 columns) ── -->
-  <div class="home-grid org-top-row">
-    <div class="home-tile" data-tile-color="2" onclick="homeGo('playersPage','tabBtnPlayers')">
-      <div class="home-tile-icon tile-players">👥</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="players">Players</div>
-        <div class="home-tile-sub" id="tileSubPlayers" data-i18n="addRemove">Add · Remove</div>
-      </div>
-    </div>
-    <div class="home-tile" data-tile-color="3" onclick="homeGo('fixedPairsPage','tabBtnFixedPairs')">
-      <div class="home-tile-icon tile-pairs">🤝</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="fixedPairs">Fixed Pairs</div>
-        <div class="home-tile-sub" id="tileSubPairs" data-i18n="optional">Optional</div>
-      </div>
-    </div>
+        <div id="orgVctBadge" data-i18n="tapConnect">Tap to connect</div>
   </div>
 
   <!-- ── Row 2: Round Scheduler + Match Flow cards ── -->
-  <div class="home-tile org-rounds-tile" data-tile-color="1" style="cursor:default;">
-    <!-- Courts stepper + competitive toggle (compact row) -->
-    <div class="org-rounds-row">
-      <span class="org-rounds-label" data-i18n="courtsLabel">Courts</span>
-      <div class="counter">
-        <button class="circle-btn" onclick="stepCourtAdj(-1)">−</button>
-        <span id="stepNumCourts">1</span>
-        <button class="circle-btn" onclick="stepCourtAdj(1)">+</button>
+  <div class="home-tile org-rounds-tile org-round-settings-card is-collapsed" id="organiserCourtsCard" data-tile-color="1" style="cursor:default;">
+    <!-- Build 530: compact expandable Round Settings card. -->
+    <button class="org-round-settings-header" id="orgRoundSettingsHeader" type="button"
+            aria-expanded="false" aria-controls="orgRoundSettingsBody"
+            onclick="toggleOrgRoundSettings()">
+      <span class="org-round-settings-title" data-i18n="roundSettings">Round Settings</span>
+      <span class="org-round-settings-chevron" aria-hidden="true">⌄</span>
+    </button>
+    <div class="org-round-settings-body" id="orgRoundSettingsBody" aria-hidden="true">
+      <div class="org-rounds-row org-mark-winner-row">
+        <span class="org-rounds-label" data-i18n="markWinner">Mark Winner</span>
+        <label class="switch">
+          <input type="checkbox" id="stepModeToggle" onchange="stepSyncMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="game-generation-block">
+        <div class="game-generation-title">Games Generate</div>
+        <div class="game-generation-row" role="radiogroup" aria-label="Games Generate">
+          <label class="game-mode-radio-row game-mode-standard" for="homeGameModeStandard">
+            <input id="homeGameModeStandard" type="radio" name="homeGameGenerationMode" value="standard" onchange="stepSyncGameGeneration(this.value)">
+            <span class="game-mode-name">Standard</span>
+            <span class="game-mode-indicator" aria-hidden="true"></span>
+          </label>
+          <label class="game-mode-radio-row game-mode-balanced" for="homeGameModeBalanced">
+            <input id="homeGameModeBalanced" type="radio" name="homeGameGenerationMode" value="balanced" onchange="stepSyncGameGeneration(this.value)">
+            <span class="game-mode-name">Balanced</span>
+            <span class="game-mode-indicator" aria-hidden="true"></span>
+          </label>
+        </div>
       </div>
     </div>
-    <div class="org-rounds-row">
-      <span class="org-rounds-label" data-i18n="markWinner">Mark Winner</span>
-      <label class="switch">
-        <input type="checkbox" id="stepModeToggle" onchange="stepSyncMode()">
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="game-generation-block">
-      <div class="game-generation-title" data-i18n="gameGeneration">Game Generation</div>
-      <label class="game-mode-radio-row">
-        <input type="radio" name="homeGameGenerationMode" value="standard" onchange="stepSyncGameGeneration(this.value)">
-        <span data-i18n="standardGames">Standard Games</span>
-      </label>
-      <label class="game-mode-radio-row">
-        <input type="radio" name="homeGameGenerationMode" value="unique" onchange="stepSyncGameGeneration(this.value)">
-        <span data-i18n="uniqueGamesPlain">Unique Games</span>
-      </label>
-      <label class="game-mode-radio-row">
-        <input type="radio" name="homeGameGenerationMode" value="balanced" onchange="stepSyncGameGeneration(this.value)">
-        <span data-i18n="balancedGames">Balanced Games</span>
-      </label>
-    </div>
-    <!-- Two launch cards -->
+  </div>
+
+  <!-- Scheduling Mode remains in its own card. -->
+  <div class="home-tile org-rounds-tile org-scheduling-tile" data-tile-color="1" style="cursor:default;">
+    <!-- Scheduling modes: synchronized rounds / sequential rolling across selected courts -->
+    <div class="org-mode-heading" data-i18n="schedulingMode">Scheduling Mode</div>
     <div class="org-launch-cards">
       <button class="org-launch-card org-launch-rounds" id="gotoRoundsBtn" onclick="stepCourtsDone()" disabled>
-        <div class="org-launch-bg-art org-launch-bg-rounds"></div>
+        <div class="org-launch-visual" aria-hidden="true">
+          <svg class="org-mode-svg org-mode-svg-multi" viewBox="0 0 120 120" role="img">
+            <g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round">
+              <rect x="10" y="10" width="44" height="44" rx="5"/><path d="M10 32h44M32 10v44"/>
+              <rect x="66" y="10" width="44" height="44" rx="5"/><path d="M66 32h44M88 10v44"/>
+              <rect x="10" y="66" width="44" height="44" rx="5"/><path d="M10 88h44M32 66v44"/>
+              <rect x="66" y="66" width="44" height="44" rx="5"/><path d="M66 88h44M88 66v44"/>
+            </g>
+          </svg>
+        </div>
         <div class="org-launch-text">
           <div class="org-launch-title" data-i18n="roundModeTitle">Round Mode</div>
-          <div class="org-launch-desc" data-i18n="roundModeDesc">Create and manage multiple rounds across all courts.</div>
+          <div class="org-launch-subtitle" data-i18n="roundModeSubtitle">Multi-Court Session</div>
+          <div class="org-launch-desc" data-i18n="roundModeDesc">All courts are filled at the same time.</div>
         </div>
-        <div class="org-launch-actions">
-          <div class="org-launch-enter org-launch-enter-btn">
-            <span data-i18n="enter">Enter</span>
-            <span class="org-launch-arr">›</span>
-          </div>
-          <div class="org-launch-end-btn" id="roundsEndBtn" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
-        </div>
+        <span class="org-launch-arrow" aria-hidden="true">›</span>
+        <div class="org-launch-end-btn" id="roundsEndBtn" role="button" aria-label="Close Round Mode" title="Close Round Mode" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
       </button>
       <button class="org-launch-card org-launch-mbm" id="gotoMbmBtn" onclick="mbmGo()" disabled>
-        <div class="org-launch-bg-art org-launch-bg-mbm"></div>
+        <div class="org-launch-visual" aria-hidden="true">
+          <svg class="org-mode-svg org-mode-svg-single" viewBox="0 0 120 120" role="img">
+            <g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M38 12h58l10 34H48z" opacity=".38"/>
+              <path d="M29 39h65l12 39H39z" opacity=".65"/>
+              <path d="M18 68h72l14 42H32z"/>
+              <path d="M24 89h73M43 68l-5 42M76 68l8 42"/>
+              <path d="M15 55C5 63 5 80 15 88"/>
+              <path d="M10 84l5 4 5-5"/>
+              <circle cx="63" cy="88" r="13" fill="currentColor" stroke="none"/>
+              <path d="M59 81l10 7-10 7z" fill="#fff" stroke="none"/>
+            </g>
+          </svg>
+        </div>
         <div class="org-launch-text">
           <div class="org-launch-title" data-i18n="rollingModeTitle">Rolling Mode</div>
-          <div class="org-launch-desc" data-i18n="rollingModeDesc">Continuous auto-scheduling of matches one after another.</div>
+          <div class="org-launch-subtitle" data-i18n="rollingModeSubtitle">Continuous Play</div>
+          <div class="org-launch-desc" data-i18n="rollingModeDesc">Courts are filled sequentially as they become available.</div>
         </div>
-        <div class="org-launch-actions">
-          <div class="org-launch-enter org-launch-enter-btn">
-            <span data-i18n="enter">Enter</span>
-            <span class="org-launch-arr">›</span>
-          </div>
-          <div class="org-launch-end-btn" id="mbmEndBtn2" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
-        </div>
+        <span class="org-launch-arrow" aria-hidden="true">›</span>
+        <div class="org-launch-end-btn" id="mbmEndBtn2" role="button" aria-label="Close Rolling Mode" title="Close Rolling Mode" onclick="event.stopPropagation(); endSession()" style="display:none;">✕</div>
       </button>
     </div>
   </div>
 
-  <!-- ── More toggle ── -->
-  <button class="home-show-more-btn" id="homeShowMoreBtn" onclick="homeToggleMoreTiles()">
-    <span id="homeShowMoreLabel">More ›</span>
-  </button>
-
-  <!-- ── Collapsible: Dashboard, Release Players, Requests, Help ── -->
-  <div id="homeMoreSection" class="home-more-section home-more-collapsed">
-    <div class="home-grid-3col">
-      <div class="home-tile" data-tile-color="4" onclick="homeGo('dashboardPage','tabBtnDashboard')">
-        <div class="home-tile-icon">📡</div>
-        <div class="home-tile-text">
-          <div class="home-tile-name" data-i18n="dashboard">Dashboard</div>
-          <div class="home-tile-sub" id="tileSubDashboard">Live sessions</div>
+  <!-- Build 552: focused mobile Scheduling Mode carousel. Existing controls above
+       remain as the state source and are visually replaced by this presentation. -->
+  <section class="org-scheduling-screen" id="orgSchedulingScreen" aria-label="Scheduling modes">
+    <div class="org-mode-carousel" id="orgModeCarousel" data-active-slide="0">
+      <button class="org-carousel-arrow org-carousel-prev" type="button" aria-label="Previous scheduling mode" onclick="orgSetSchedulingSlide(_orgSchedulingSlide - 1)">‹</button>
+      <div class="org-mode-viewport">
+        <div class="org-mode-track">
+          <article class="org-mode-panel org-mode-panel-round" aria-label="Round Mode">
+            <div class="org-mode-intro">
+              <div class="org-sample-mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 120 120"><g fill="none" stroke="currentColor" stroke-width="5"><rect x="14" y="14" width="38" height="38" rx="5"/><rect x="68" y="14" width="38" height="38" rx="5"/><rect x="14" y="68" width="38" height="38" rx="5"/><rect x="68" y="68" width="38" height="38" rx="5"/></g></svg>
+              </div>
+              <div class="org-sample-copy"><strong data-i18n="roundModeTitle">Round Mode</strong><em>All courts play together in each round.</em></div>
+            </div>
+            <div class="org-color-section org-color-format-section org-always-visible-setting">
+              <div class="org-control-label">Game Format</div>
+              <div class="org-game-style org-round-format" role="radiogroup" aria-label="Game Format">
+                <button id="sampleRoundFormatDoubles" type="button" onclick="orgSelectRoundFormat('doubles')"><span>○</span> <b data-i18n="doubles">Doubles</b></button>
+                <button id="sampleRoundFormatSingles" type="button" onclick="orgSelectRoundFormat('singles')"><span>○</span> <b data-i18n="singles">Singles</b></button>
+                <button id="sampleRoundFormatBoth" type="button" onclick="orgSelectRoundFormat('both')"><span>◉</span> <b data-i18n="both">Both</b></button>
+              </div>
+            </div>
+            <div class="org-color-section org-courts-section org-always-visible-setting">
+              <div class="org-control-label">Number of Courts</div>
+              <div class="org-mode-court-stepper" role="group" aria-label="Number of Courts">
+                <button id="sampleRoundCourtsMinus" type="button" aria-label="Decrease courts" onclick="orgAdjustCourtCount(-1)">−</button>
+                <strong id="sampleRoundCourtsValue">2</strong>
+                <button id="sampleRoundCourtsPlus" type="button" aria-label="Increase courts" onclick="orgAdjustCourtCount(1)">+</button>
+              </div>
+            </div>
+            <button class="org-mode-summary" id="roundModeSummary" type="button" aria-label="Show Round Mode settings" aria-expanded="false" onclick="orgToggleModeDetails(this, event)">Both · Standard · Random ON · Winner OFF</button>
+            <div class="org-round-setup-card">
+            <div class="org-mode-options">
+              <div class="org-color-section org-color-algorithm-section">
+                <div class="org-control-label">Game Algorithm</div>
+                <div class="org-game-style" role="radiogroup" aria-label="Game Algorithm">
+                  <button id="sampleGameModeStandard" type="button" onclick="orgSelectGameStyle('standard')"><span>◉</span> <b data-i18n="standardMode">Standard</b></button>
+                  <button id="sampleGameModeBalanced" type="button" onclick="orgSelectGameStyle('balanced')"><span>○</span> <b data-i18n="balancedMode">Balanced</b></button>
+                </div>
+                <div class="org-unique-pair-setting">
+                  <span><strong>Unique Pair Mode</strong><small>Avoid repeated pairs when a unique pairing is available.</small></span>
+                  <label class="switch"><input id="sampleUniquePairMode" type="checkbox" checked onchange="orgSetUniquePairMode(this.checked)"><span class="slider"></span></label>
+                </div>
+              </div>
+              <div class="org-sample-winner-row org-player-order-toggle-row">
+                <span class="org-winner-icon" aria-hidden="true">↝</span>
+                <span><strong>Random Players Order</strong><small>Shuffle once before the first game.</small></span>
+                <label class="switch"><input id="sampleRoundPlayerOrderToggle" type="checkbox" onchange="orgSetRandomPlayerOrder(this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="org-sample-winner-row">
+              <span class="org-winner-icon" aria-hidden="true"><img src="win-cup.png?v=856" alt=""></span>
+              <span><strong data-i18n="markWinner">Mark Winner</strong><small data-i18n="markWinnerDesc">Enable winner selection after each game.</small></span>
+              <label class="switch"><input id="sampleRoundWinner" type="checkbox" onchange="orgSetWinnerMode(this.checked)"><span class="slider"></span></label>
+            </div>
+            </div>
+            <button class="org-start-mode-btn" id="sampleStartRound" type="button" onclick="orgStartOnlineRound()">
+              <span class="org-start-play" aria-hidden="true">▶</span>
+              <span class="org-start-label" data-i18n="startRound">Start Round</span>
+              <span class="org-start-arrow" aria-hidden="true">›</span>
+            </button>
+          </article>
+          <article class="org-mode-panel org-mode-panel-round org-mode-panel-offline" aria-label="Round iMode">
+            <div class="org-mode-intro">
+              <div class="org-sample-mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 120 120"><g fill="none" stroke="currentColor" stroke-width="5"><rect x="14" y="14" width="38" height="38" rx="5"/><rect x="68" y="14" width="38" height="38" rx="5"/><rect x="14" y="68" width="38" height="38" rx="5"/><rect x="68" y="68" width="38" height="38" rx="5"/><path d="M24 24L96 96M96 24L24 96" opacity=".55"/></g></svg>
+              </div>
+              <div class="org-sample-copy"><strong>Round iMode</strong><em data-i18n="roundIModeDescription">Prepared first, live when needed, synced when the session ends.</em></div>
+            </div>
+            <div class="org-imode-manager-tiles" aria-label="Round setup shortcuts">
+              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPlayersFromNav()">
+                <span class="org-imode-manager-icon" aria-hidden="true">👥</span>
+                <span data-i18n="players">Players</span>
+                <span class="organiser-nav-count org-imode-count-pill" id="orgIModePlayersCount" style="display:none;">0</span>
+                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
+              </button>
+              <button type="button" class="org-imode-manager-tile" onclick="homeGuideOpenPairsFromNav()">
+                <span class="org-imode-manager-icon" aria-hidden="true">🔗</span>
+                <span data-i18n="fixedPairs">Fixed Pairs</span>
+                <span class="organiser-nav-count org-imode-count-pill" id="orgIModePairsCount" style="display:none;">0</span>
+                <span class="org-imode-manager-arrow" aria-hidden="true">›</span>
+              </button>
+            </div>
+            <div class="org-color-section org-offline-courts-section org-always-visible-setting">
+              <div class="org-control-label" data-i18n="numberOfCourts">Number of Courts</div>
+              <div class="org-mode-court-stepper org-imode-court-stepper" role="group" aria-label="Number of Courts">
+                <button id="sampleOfflineCourtsMinus" type="button" aria-label="Decrease courts" onclick="SCSOfflineRounds.adjustCourtCount(-1)">−</button>
+                <strong id="sampleOfflineCourtsValue">2</strong>
+                <button id="sampleOfflineCourtsPlus" type="button" aria-label="Increase courts" onclick="SCSOfflineRounds.adjustCourtCount(1)">+</button>
+              </div>
+            </div>
+            <div class="org-color-section org-color-format-section org-always-visible-setting">
+              <div class="org-control-label" data-i18n="gameFormat">Game Format</div>
+              <div class="org-game-style org-round-format" role="radiogroup" aria-label="Offline Game Format">
+                <button id="sampleOfflineFormatDoubles" type="button" onclick="SCSOfflineRounds.setGameType('doubles')"><span>◉</span> <b data-i18n="doubles">Doubles</b></button>
+                <button id="sampleOfflineFormatMixed" type="button" onclick="SCSOfflineRounds.setGameType('mixed')"><span>○</span> <b data-i18n="mixed">Mixed</b></button>
+                <button id="sampleOfflineFormatSingles" type="button" onclick="SCSOfflineRounds.setGameType('singles')"><span>○</span> <b data-i18n="singles">Singles</b></button>
+              </div>
+            </div>
+            <button class="org-mode-summary" id="offlineModeSummary" type="button" aria-label="Show Round iMode settings" aria-expanded="false" onclick="orgToggleModeDetails(this, event)">Doubles · Standard · Random ON · Winner OFF</button>
+            <div class="org-round-setup-card">
+              <div class="org-mode-options">
+                <div class="org-color-section org-color-algorithm-section">
+                  <div class="org-control-label" data-i18n="gameAlgorithm">Game Algorithm</div>
+                  <div class="org-game-style" role="radiogroup" aria-label="Offline Game Algorithm">
+                    <button id="sampleOfflineGameModeStandard" type="button" onclick="SCSOfflineRounds.setAlgorithm('standard')"><span>◉</span> <b data-i18n="standardMode">Standard</b></button>
+                    <button id="sampleOfflineGameModeBalanced" type="button" onclick="SCSOfflineRounds.setAlgorithm('balanced')"><span>○</span> <b data-i18n="balancedMode">Balanced</b></button>
+                  </div>
+                  <div class="org-unique-pair-setting">
+                    <span><strong data-i18n="uniquePairMode">Unique Pair Mode</strong><small data-i18n="uniquePairModeDesc">Avoid repeated pairs when a unique pairing is available.</small></span>
+                    <label class="switch"><input id="sampleOfflineUniquePairMode" type="checkbox" checked onchange="SCSOfflineRounds.setOfflineUniquePairMode(this.checked)"><span class="slider"></span></label>
+                  </div>
+                </div>
+                <div class="org-sample-winner-row org-player-order-toggle-row">
+                  <span class="org-winner-icon" aria-hidden="true">▦</span>
+                  <span><strong data-i18n="useTemplates">Use Templates</strong><small data-i18n="useTemplatesDesc">Use a matching prepared template when available.</small></span>
+                  <label class="switch"><input id="sampleOfflineUseTemplates" type="checkbox" onchange="SCSOfflineRounds.setUseTemplates(this.checked)"><span class="slider"></span></label>
+                </div>
+                <div class="org-sample-winner-row org-player-order-toggle-row">
+                  <span class="org-winner-icon" aria-hidden="true">↝</span>
+                  <span><strong data-i18n="randomPlayersOrder">Random Players Order</strong><small data-i18n="randomPlayersOrderDesc">Shuffle once before the first game.</small></span>
+                  <label class="switch"><input id="sampleOfflinePlayerOrderToggle" type="checkbox" checked onchange="SCSOfflineRounds.setRandomOrder(this.checked)"><span class="slider"></span></label>
+                </div>
+              </div>
+              <div class="org-sample-winner-row">
+                <span class="org-winner-icon" aria-hidden="true"><img src="win-cup.png?v=856" alt=""></span>
+                <span><strong data-i18n="markWinner">Mark Winner</strong><small data-i18n="markWinnerDesc">Enable winner selection after each game.</small></span>
+                <label class="switch"><input id="sampleOfflineWinner" type="checkbox" onchange="SCSOfflineRounds.setWinner(this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="org-offline-template-match" id="offlineTemplateMatch" aria-live="polite" data-i18n="checkingTemplate">Checking template…</div>
+            <button class="org-start-mode-btn is-live-round-start" id="sampleStartOfflineRound" type="button" onclick="SCSOfflineRounds.start()">
+              <span class="org-start-play" aria-hidden="true">▶</span>
+              <span class="org-start-label" data-i18n="startRounds">Start Rounds</span>
+              <span class="org-start-arrow" aria-hidden="true">›</span>
+            </button>
+          </article>
+          <article class="org-mode-panel org-mode-panel-rolling" aria-label="Rolling Mode">
+            <div class="org-mode-intro">
+              <div class="org-sample-mode-icon org-rolling-icon" aria-hidden="true">↻</div>
+              <div class="org-sample-copy"><strong data-i18n="rollingModeTitle">Rolling Mode</strong><em>Courts start one by one as they become available.</em></div>
+            </div>
+            <div class="org-color-section org-color-format-section org-always-visible-setting">
+              <div class="org-control-label">Game Format</div>
+              <div class="org-game-style org-round-format" role="radiogroup" aria-label="Game Format">
+                <button id="sampleRollingFormatDoubles" type="button" onclick="orgSelectRoundFormat('doubles')"><span>○</span> <b data-i18n="doubles">Doubles</b></button>
+                <button id="sampleRollingFormatSingles" type="button" onclick="orgSelectRoundFormat('singles')"><span>○</span> <b data-i18n="singles">Singles</b></button>
+                <button id="sampleRollingFormatBoth" type="button" onclick="orgSelectRoundFormat('both')"><span>◉</span> <b data-i18n="both">Both</b></button>
+              </div>
+            </div>
+            <div class="org-color-section org-courts-section org-always-visible-setting">
+              <div class="org-control-label">Number of Courts</div>
+              <div class="org-mode-court-stepper" role="group" aria-label="Number of Courts">
+                <button id="sampleRollingCourtsMinus" type="button" aria-label="Decrease courts" onclick="orgAdjustCourtCount(-1)">−</button>
+                <strong id="sampleRollingCourtsValue">2</strong>
+                <button id="sampleRollingCourtsPlus" type="button" aria-label="Increase courts" onclick="orgAdjustCourtCount(1)">+</button>
+              </div>
+            </div>
+            <button class="org-mode-summary" id="rollingModeSummary" type="button" aria-label="Show Rolling Mode settings" aria-expanded="false" onclick="orgToggleModeDetails(this, event)">Both · Standard · Random ON · Winner OFF</button>
+            <div class="org-round-setup-card org-rolling-setup-card">
+            <div class="org-mode-options">
+              <div class="org-color-section org-color-algorithm-section">
+                <div class="org-control-label">Game Algorithm</div>
+                <div class="org-game-style" role="radiogroup" aria-label="Game Algorithm">
+                  <button id="sampleRollingGameModeStandard" type="button" onclick="orgSelectGameStyle('standard')"><span>◉</span> <b data-i18n="standardMode">Standard</b></button>
+                  <button id="sampleRollingGameModeBalanced" type="button" onclick="orgSelectGameStyle('balanced')"><span>○</span> <b data-i18n="balancedMode">Balanced</b></button>
+                </div>
+              </div>
+              <div class="org-sample-winner-row org-player-order-toggle-row">
+                <span class="org-winner-icon" aria-hidden="true">↝</span>
+                <span><strong>Random Players Order</strong><small>Shuffle once before the first game.</small></span>
+                <label class="switch"><input id="sampleRollingPlayerOrderToggle" type="checkbox" onchange="orgSetRandomPlayerOrder(this.checked)"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="org-sample-winner-row">
+              <span class="org-winner-icon" aria-hidden="true"><img src="win-cup.png?v=856" alt=""></span>
+              <span><strong data-i18n="markWinner">Mark Winner</strong><small data-i18n="markWinnerDesc">Enable winner selection after each game.</small></span>
+              <label class="switch"><input id="sampleRollingWinner" type="checkbox" onchange="orgSetWinnerMode(this.checked)"><span class="slider"></span></label>
+            </div>
+            </div>
+            <button class="org-start-mode-btn" id="sampleStartRolling" type="button" onclick="orgStartRollingMode()">
+              <span class="org-start-play" aria-hidden="true">▶</span>
+              <span class="org-start-label" data-i18n="startRolling">Start Rolling</span>
+              <span class="org-start-arrow" aria-hidden="true">›</span>
+            </button>
+          </article>
         </div>
       </div>
-      <div class="home-tile" data-tile-color="5" onclick="homeGo('vaultPlayingPage',null)">
-        <div class="home-tile-icon" style="position:relative;">
-          ⚡
-          <div class="vt-badge" id="vtBadgePlaying" style="display:none;position:absolute;top:-6px;right:-6px;">LIVE</div>
-        </div>
-        <div class="home-tile-text">
-          <div class="home-tile-name">Release Players</div>
-          <div class="home-tile-sub" id="tileSubPlaying">—</div>
-        </div>
-      </div>
-      <div class="home-tile" data-tile-color="3" onclick="homeGo('vaultRequestsPage',null)">
-        <div class="home-tile-icon" style="position:relative;">
-          🔔
-          <div class="vt-badge" id="vtBadgeRequestsOrg" style="display:none;position:absolute;top:-6px;right:-6px;">NEW</div>
-        </div>
-        <div class="home-tile-text">
-          <div class="home-tile-name" data-i18n="requests">Requests</div>
-          <div class="home-tile-sub" id="tileSubRequestsOrg">Join requests</div>
-        </div>
-      </div>
+      <button class="org-carousel-arrow org-carousel-next" type="button" aria-label="Next scheduling mode" onclick="orgSetSchedulingSlide(_orgSchedulingSlide + 1)">›</button>
     </div>
-    <button class="home-help-btn" onclick="homeGo('helpPage',null)" data-i18n="helpGuide">❓ Help & Guide</button>
-  </div><!-- end homeMoreSection -->
+    <div class="org-carousel-dots" role="tablist" aria-label="Scheduling modes">
+      <button class="is-active" type="button" aria-label="Show Round Mode" onclick="orgSetSchedulingSlide(0)"></button>
+      <button type="button" aria-label="Show Round iMode" onclick="orgSetSchedulingSlide(1)"></button>
+      <button type="button" aria-label="Show Rolling Mode" onclick="orgSetSchedulingSlide(2)"></button>
+    </div>
+    <p class="org-swipe-hint" data-i18n="swipeSchedulingMode">Swipe left or right to change mode</p>
+  </section>
+
+  <!-- Existing organiser next-slot card, restored in the original empty area. -->
+  <span id="organiserNextSlotCard" class="launcher-start-session-card organiser-next-slot-card" style="display:none;"></span>
+
+  <!-- Extra tools moved to the workspace selection screen. -->
+
 
 </div><!-- end homeOrgGrid -->
+
+
+<!-- ── Fixed Organiser navigation bar ── -->
+<div id="homeMoreSectionOrg" class="organiser-fixed-action-section" style="display:none;">
+  <nav class="organiser-action-bar" aria-label="Organiser shortcuts">
+    <button class="organiser-action-btn" id="orgNavAddPlayers" data-action-color="1" type="button" onclick="homeGuideOpenPlayersFromNav()">
+      <span class="organiser-action-icon" aria-hidden="true">＋
+        <span class="organiser-nav-count" id="orgNavPlayersCount" style="display:none;">0</span>
+      </span>
+      <span class="organiser-action-label" data-i18n="addPlayers">Add Players</span>
+    </button>
+    <button class="organiser-action-btn" id="orgNavFixedPairs" data-action-color="2" type="button" onclick="homeGuideOpenPairsFromNav()">
+      <span class="organiser-action-icon organiser-action-icon-fixed-pairs" aria-hidden="true">🔗
+        <span class="organiser-nav-count" id="orgNavPairsCount" style="display:none;">0</span>
+      </span>
+      <span class="organiser-action-label" data-i18n="fixedPairs">Fixed Pairs</span>
+    </button>
+    <button class="organiser-action-btn" data-action-color="3" type="button" onclick="homeGo('dashboardPage','tabBtnDashboard')">
+      <span class="organiser-action-icon" aria-hidden="true">▦
+        <span class="organiser-nav-count" id="orgNavLiveCount" style="display:none;">0</span>
+      </span>
+      <span class="organiser-action-label" data-i18n="dashboard">Dashboard</span>
+      <span id="tileSubDashboard" class="organiser-action-meta" data-i18n="liveSessions">Live sessions</span>
+    </button>
+    <button class="organiser-action-btn" data-action-color="4" type="button" onclick="homeGo('vaultRequestsPage',null)">
+      <span class="organiser-action-icon organiser-action-icon-badge" aria-hidden="true">✓
+        <span class="organiser-nav-count organiser-nav-count-alert" id="orgNavApprovalCount" style="display:none;">0</span>
+        <span class="vt-badge" id="vtBadgeRequestsOrg" style="display:none;">NEW</span>
+      </span>
+      <span class="organiser-action-label" data-i18n="approvePlayers">Approve Players</span>
+      <span id="tileSubRequestsOrg" class="organiser-action-meta" data-i18n="joinRequests">Join requests</span>
+    </button>
+  </nav>
+</div>
 
 <!-- ── VAULT MANAGER GRID (new) ── -->
 
 <div id="homeVaultGrid" style="display:none;">
+
 
   <!-- Club status tile — hidden -->
   <div class="vault-club-tile" id="vaultClubStatusTile" style="display:none;height:0;overflow:hidden;margin:0;padding:0;">
@@ -593,7 +1322,6 @@
     </div>
     <div class="pref-card" style="padding:14px;">
       <input type="text" id="vaultQuickClubName" class="auth-input" placeholder="Club name" style="width:100%;margin-bottom:8px;">
-      <input type="password" id="vaultQuickMemberPw" class="auth-input" data-i18n-placeholder="organiserPasswordPh" placeholder="Organiser password" style="width:100%;margin-bottom:8px;">
       <input type="password" id="vaultQuickAdminPw" class="auth-input" data-i18n-placeholder="enterAdminPasswordPh" placeholder="Admin password" style="width:100%;margin-bottom:8px;">
       <button onclick="vaultQuickCreateClub()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;" data-i18n="createClub">Create Club</button>
       <div id="vaultQuickFeedback" style="font-size:0.78rem;margin-top:8px;text-align:center;"></div>
@@ -602,99 +1330,154 @@
 
   <div id="vaultTileGrid" class="vault-tile-grid">
 
-<!-- Vault Upcoming Slots — same layout/style as Viewer page -->
-<section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card">
-  <div class="mc-slots-head">
-    <div>
-      <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
-      <div class="mc-slots-sub" id="vaultSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</div>
+<!-- Slot Manager: compact Upcoming / Completed collapsed cards -->
+<section id="vaultUpcomingSlots" class="mc-slots-card vault-home-slots-card vault-slot-overview">
+  <div class="vault-workspace-title vault-slot-overview-title" id="vaultWorkspaceTitle" aria-live="polite">Club</div>
+  <button type="button" id="vaultUpcomingCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('upcoming')" aria-expanded="false">
+    <span class="vault-slot-collapse-copy"><strong>📅 Upcoming Sessions</strong><small id="vaultSlotsSummary">No upcoming sessions</small></span>
+    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
+  </button>
+  <button type="button" id="vaultCompletedCollapse" class="vault-slot-collapse-card" onclick="vaultHomeSlotsToggleSection('completed')" aria-expanded="false">
+    <span class="vault-slot-collapse-copy"><strong>📅 Completed Sessions</strong><small id="vaultCompletedSlotsSummary">No completed sessions</small></span>
+    <span class="vault-slot-collapse-side"><span class="mc-slots-count" id="vaultCompletedSlotsCount">0</span><span class="vault-slot-chevron">⌄</span></span>
+  </button>
+
+  <div id="vaultSlotExpandedPanel" class="vault-slot-expanded-panel" hidden>
+    <div id="vaultCompletedCalendar" class="vault-completed-calendar" hidden>
+      <div class="mc-slots-calendar-panel">
+        <div class="mc-slots-cal-nav">
+          <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
+          <div class="vs-cal-month-label mc-slots-month-label" id="vaultCompletedMonthLabel">—</div>
+          <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
+        </div>
+        <div class="vs-cal-weekdays mc-slots-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+        <div class="vs-cal-grid mc-slots-cal-grid" id="vaultCompletedCalGrid"></div>
+      </div>
     </div>
-    <div class="mc-slots-count" id="vaultSlotsCount">0</div>
+    <div class="mc-slots-results-panel">
+      <div class="mc-slots-list" id="vaultSlotsList"></div>
+    </div>
   </div>
 
-  <div class="mc-slots-cal-nav">
-    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
-    <div class="vs-cal-month-label mc-slots-month-label" id="vaultSlotsMonthLabel">—</div>
-    <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
+  <!-- Home + > Add a Slot uses only this calendar and the Add Slot button. -->
+  <div id="vaultAddSlotCalendar" class="vault-add-slot-calendar" hidden>
+    <div class="mc-slots-calendar-panel">
+      <div class="mc-slots-cal-nav">
+        <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(-1)">‹</button>
+        <div class="vs-cal-month-label mc-slots-month-label" id="vaultSlotsMonthLabel">—</div>
+        <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="vaultHomeSlotsChangeMonth(1)">›</button>
+      </div>
+      <div class="vs-cal-weekdays mc-slots-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+      <div class="vs-cal-grid mc-slots-cal-grid" id="vaultSlotsCalGrid"></div>
+    </div>
+    <button id="vaultAddSlotOnlyBtn" class="vault-inline-add-slot-btn" type="button" onclick="vaultHomeSlotsAddSlot(_vhsSelectedDateStr)">+ Add Slot</button>
   </div>
-
-  <div class="vs-cal-weekdays mc-slots-weekdays">
-    <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
-  </div>
-  <div class="vs-cal-grid mc-slots-cal-grid" id="vaultSlotsCalGrid"></div>
-
-  <div class="mc-slots-selected-title" id="vaultSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
-  <div class="mc-slots-list" id="vaultSlotsList"></div>
 </section>
 
-<button class="home-show-more-btn" id="homeShowMoreBtnVault" onclick="homeToggleMoreTilesVault()">
-  <span id="homeShowMoreLabelVault">More ›</span>
-</button>
-
-<div id="homeMoreSectionVault" class="home-more-section home-more-collapsed">
-
-<div class="vault-tile vt-register" data-tile-color="1" onclick="homeGo('vaultRegisterPage',null)">
-  <div class="vt-icon">📋</div>
-  <div class="vt-text">
-    <div class="vt-stat" id="vtStatRegister">—</div>
-    <div class="vt-name" data-i18n="registerPlayers">Register Players</div>
-    <div class="vt-sub" data-i18n="playersInClub">players in club</div>
-  </div>
-</div>
-
-<div class="vault-tile vt-modify" data-tile-color="2" onclick="homeGo('vaultModifyPage',null)">
-  <div class="vt-icon">✏️</div>
-  <div class="vt-text">
-    <div class="vt-stat" id="vtStatModify">—</div>
-    <div class="vt-name" data-i18n="modifyPlayers">Modify Players</div>
-    <div class="vt-sub" data-i18n="tapToEdit">tap to edit</div>
-  </div>
-</div>
-
-<div class="vault-tile vt-requests" data-tile-color="3" onclick="homeGo('vaultRequestsPage',null)">
-  <div class="vt-badge" id="vtBadgeRequests" style="display:none">NEW</div>
-  <div class="vt-icon">🔔</div>
-  <div class="vt-text">
-    <div class="vt-stat" id="vtStatRequests">—</div>
-    <div class="vt-name" data-i18n="requests">Requests</div>
-    <div class="vt-sub" data-i18n="pendingApproval">pending approval</div>
-  </div>
-</div>
-
-<div class="vault-tile vt-venues" data-tile-color="5" onclick="homeGo('vaultVenuesPage',null)">
-  <div class="vt-icon">📍</div>
-  <div class="vt-text">
-    <div class="vt-name" data-i18n="venues">Venues</div>
-    <div class="vt-sub" data-i18n="savedMapLocations">saved map locations</div>
-  </div>
-</div>
-
-<div class="vault-tile vt-requests" data-tile-color="4" onclick="vaultOpenDeleteOnly()">
-  <div class="vt-icon">🗑️</div>
-  <div class="vt-text">
-    <div class="vt-name" data-i18n="deleteClub">Delete Club</div>
-    <div class="vt-sub" data-i18n="removeClub">remove club</div>
-  </div>
-</div>
-
-  </div><!-- end homeMoreSectionVault -->
   </div><!-- end vaultTileGrid -->
 </div><!-- end homeVaultGrid -->
+
+<!-- ── Fixed Vault navigation bar ── -->
+<div id="homeMoreSectionVault" class="home-more-section home-more-expanded vault-fixed-action-section">
+  <nav class="vault-action-bar" aria-label="Vault shortcuts">
+
+    <button class="vault-action-btn" data-action-color="1" type="button" onclick="homeGo('vaultVenuesPage',null)" hidden>
+      <span class="vault-action-icon" aria-hidden="true">📍</span>
+      <span class="vault-action-label" data-i18n="venues">Venues</span>
+    </button>
+
+    <button class="vault-action-btn" data-action-color="2" type="button" onclick="homeGo('vaultRegisterPage',null)">
+      <span class="vault-action-icon" aria-hidden="true">📋</span>
+      <span class="vault-action-label" data-i18n="registerPlayers">Register Players</span>
+      <span class="vault-action-meta" id="vtStatRegister">—</span>
+    </button>
+
+    <button class="vault-action-btn" data-action-color="3" type="button" onclick="homeGo('vaultModifyPage',null)">
+      <span class="vault-action-icon" aria-hidden="true">✏️</span>
+      <span class="vault-action-label" data-i18n="modifyPlayers">Modify Players</span>
+      <span class="vault-action-meta" id="vtStatModify">—</span>
+    </button>
+
+    <button class="vault-action-btn vault-action-invite" data-action-color="4" type="button" onclick="scsOpenClubInvite()">
+      <span class="vault-action-icon" aria-hidden="true">🔗</span>
+      <span class="vault-action-label" data-i18n="invite">Invite</span>
+      <span class="vault-action-meta" data-i18n="broadcast30Min">30 min broadcast</span>
+    </button>
+
+    <button class="vault-action-btn vault-action-template" data-action-color="5" type="button" onclick="SCSOfflineRounds.openTemplateEditorPicker()">
+      <span class="vault-action-icon" aria-hidden="true">🗂️</span>
+      <span class="vault-action-label" data-i18n="roundsTemplate">Rounds Template</span>
+    </button>
+
+    <button class="vault-action-btn vault-action-danger" data-action-color="6" type="button" onclick="vaultOpenDeleteOnly()">
+      <span class="vault-action-icon" aria-hidden="true">🗑️</span>
+      <span class="vault-action-label" data-i18n="deleteClub">Delete Club</span>
+    </button>
+
+    <!-- Kept for existing request-count logic; requests are not part of the visible Vault bar. -->
+    <span id="vtStatRequests" class="vault-action-meta">—</span>
+    <span id="vtBadgeRequests" class="vault-action-meta" style="display:none">NEW</span>
+  </nav>
+</div><!-- end homeMoreSectionVault -->
+
+<!-- Club invitation: simple three-option layout. -->
+<div id="scsClubInviteSheet" class="club-invite-sheet" hidden onclick="if(event.target===this)scsCloseClubInvite()">
+  <section class="club-invite-panel club-invite-simple" role="dialog" aria-modal="true" aria-labelledby="clubInviteTitle">
+    <header class="club-invite-head">
+      <span class="club-invite-mark" aria-hidden="true">👥</span>
+      <span><strong id="clubInviteTitle" data-i18n="invitePlayers">Invite Players</strong><small data-i18n="invitePlayersDesc">Invite new players to your club</small></span>
+      <button type="button" aria-label="Close invite" onclick="scsCloseClubInvite()">✕</button>
+    </header>
+
+    <div class="club-invite-options">
+      <button class="club-invite-option option-link" type="button" onclick="scsShareClubInviteLink()">
+        <span class="club-invite-option-icon" aria-hidden="true">🔗</span>
+        <span class="club-invite-option-copy"><strong data-i18n="shareLinkStep">1. Share link</strong><small data-i18n="shareInviteLinkDesc">Copy and share the invite link with anyone.</small><em>♢ &nbsp; <span data-i18n="adminApprovalRequired">Admin approval required</span></em></span>
+        <span class="club-invite-chevron" aria-hidden="true">›</span>
+      </button>
+
+      <button class="club-invite-option option-qr" type="button" onclick="scsShowClubInviteQr()">
+        <span class="club-invite-option-icon qr-glyph" aria-hidden="true">▦</span>
+        <span class="club-invite-option-copy"><strong data-i18n="showQrStep">2. Show QR</strong><small data-i18n="showQrDesc">Let others scan the QR code to send a join request.</small><em>♢ &nbsp; <span data-i18n="adminApprovalRequired">Admin approval required</span></em></span>
+        <span class="club-invite-chevron" aria-hidden="true">›</span>
+      </button>
+
+      <button id="clubInviteBroadcastBtn" class="club-invite-option option-public" type="button" onclick="scsStartClubInviteBroadcast()">
+        <span class="club-invite-option-icon" aria-hidden="true">📣</span>
+        <span class="club-invite-option-copy"><strong data-i18n="invitePublicStep">3. Invite Public</strong><small id="clubInviteBroadcastState" data-i18n="broadcastInviteDesc">Broadcast to SCS users for 30 minutes.</small><em>♙ &nbsp; <span data-i18n="directJoinNoApproval">Direct join (no approval)</span></em></span>
+        <span class="club-invite-chevron" aria-hidden="true">›</span>
+      </button>
+      <button id="clubInviteBroadcastStopBtn" class="club-invite-broadcast-stop" type="button" onclick="scsStopClubInviteBroadcast()" hidden data-i18n="stopPublicInvite">Stop public invite</button>
+    </div>
+
+    <div id="clubInviteQrOverlay" class="club-invite-qr-overlay" hidden onclick="if(event.target===this)scsHideClubInviteQr()">
+      <div class="club-invite-qr-card">
+        <button class="club-invite-qr-close" type="button" aria-label="Close QR" onclick="scsHideClubInviteQr()">✕</button>
+        <div id="clubInviteQrCode" class="club-invite-qr" aria-label="Club join QR code"></div>
+        <strong id="clubInviteQrClub">Your club</strong>
+        <small data-i18n="scanToJoinRequest">Scan to send a join request</small>
+        <em data-i18n="adminApprovalRequired">Admin approval required</em>
+      </div>
+    </div>
+    <span id="clubInviteLinkText" hidden></span>
+    <div id="clubInvitePrototypeToast" class="club-invite-toast" hidden></div>
+  </section>
+</div>
 
 <!-- ── VIEWER GRID ── -->
 
 <div id="homeViewerGrid" style="display:none;">
 
   <!-- Viewer no-club full-screen overlay — shown only when viewer has no club yet -->
-  <div id="viewerNoClubBanner" style="display:none;position:fixed;inset:0;z-index:9990;background:var(--bg,#12121a);overflow-y:auto;">
+  <div id="viewerNoClubBanner" hidden inert aria-hidden="true" style="display:none!important;position:fixed;inset:0;z-index:9990;background:var(--bg,#12131a);overflow-y:auto;">
 
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="width:40px;height:40px;border-radius:12px;background:rgba(108,99,255,0.18);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🏢</div>
         <div>
-          <div style="font-size:1rem;font-weight:800;color:var(--text);letter-spacing:-0.3px;">Find a Club</div>
-          <div style="font-size:0.72rem;color:var(--muted);">Viewer mode setup</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--text);letter-spacing:-0.3px;" data-i18n="findAClub">Find a Club</div>
+          <div style="font-size:0.72rem;color:var(--muted);" data-i18n="playerModeSetup">Player mode setup</div>
         </div>
       </div>
       <button class="sheet-close-btn" onclick="document.getElementById('viewerNoClubBanner').style.display='none';openModeSwitcher();">✕</button>
@@ -702,16 +1485,16 @@
 
     <!-- Welcome card -->
     <div style="margin:16px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-      <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px;">👋 Welcome to Viewer mode</div>
-      <div style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;">Search for your club below and send a join request. Once approved by your organiser, you can watch live sessions and view your monthly stats.</div>
+      <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px;">👋 <span data-i18n="welcomePlayerMode">Welcome to Player mode</span></div>
+      <div style="font-size:0.8rem;color:var(--text-dim);line-height:1.55;" data-i18n="searchClubJoinHelp">Search for your club below and send a join request. Once approved by your organiser, you can watch live sessions and view your monthly stats.</div>
     </div>
 
     <!-- Search section -->
     <div style="margin:14px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Search Club</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;" data-i18n="searchClub">Search Club</div>
       <div style="position:relative;">
         <input type="text" id="vncbSearch" class="auth-input"
-          placeholder="Type club name..."
+          placeholder="Type club name..." data-i18n-placeholder="typeClubName"
           style="width:100%;box-sizing:border-box;padding-right:42px;"
           oninput="vncbSearchUI(this.value)">
         <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:1rem;">🔍</span>
@@ -724,30 +1507,30 @@
     <div id="vncbNicknameSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
       <div id="vncbNicknameMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
       <input type="text" id="vncbNicknameInput" class="auth-input"
-        placeholder="Your nickname in this club"
+        placeholder="Your nickname in this club" data-i18n-placeholder="nicknameInThisClub"
         style="width:100%;box-sizing:border-box;margin-bottom:10px;"
         onkeydown="if(event.key==='Enter') vncbSubmitNickname()">
-      <button onclick="vncbSubmitNickname()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">Continue →</button>
+      <button onclick="vncbSubmitNickname()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;"><span data-i18n="continueBtn">Continue</span> →</button>
     </div>
 
     <!-- Step: password claim -->
     <div id="vncbPasswordSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
       <div id="vncbPasswordMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
       <input type="password" id="vncbPasswordInput" class="auth-input"
-        placeholder="Default password"
+        placeholder="Default password" data-i18n-placeholder="defaultPassword"
         style="width:100%;box-sizing:border-box;margin-bottom:10px;"
         onkeydown="if(event.key==='Enter') vncbSubmitPassword()">
-      <button onclick="vncbSubmitPassword()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">🔑 Claim &amp; Join</button>
+      <button onclick="vncbSubmitPassword()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">🔑 <span data-i18n="claimAndJoin">Claim &amp; Join</span></button>
     </div>
 
     <!-- Step: nickname conflict -->
     <div id="vncbNicknameAltSection" style="display:none;margin:10px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);">
       <div id="vncbNicknameAltMsg" style="font-size:0.83rem;color:var(--text);margin-bottom:12px;line-height:1.5;"></div>
       <input type="text" id="vncbNicknameAltInput" class="auth-input"
-        placeholder="Choose a different nickname"
+        placeholder="Choose a different nickname" data-i18n-placeholder="chooseDifferentNickname"
         style="width:100%;box-sizing:border-box;margin-bottom:10px;"
         onkeydown="if(event.key==='Enter') vncbSubmitNicknameAlt()">
-      <button onclick="vncbSubmitNicknameAlt()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;">Submit Request</button>
+      <button onclick="vncbSubmitNicknameAlt()" style="width:100%;padding:12px;background:var(--accent,#6c63ff);color:#fff;border:none;border-radius:12px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;" data-i18n="submitRequest">Submit Request</button>
     </div>
 
     <!-- Feedback card -->
@@ -760,6 +1543,17 @@
     <!-- Bottom safe area -->
     <div style="height:32px;"></div>
   </div>
+
+  <!-- ── My Hub top tabs (StepUp-style; primary bottom navigation is unchanged) ── -->
+  <nav class="myhub-top-tabs" role="tablist" aria-label="My Hub sections">
+    <button class="myhub-top-tab is-active" type="button" role="tab" aria-selected="true" onclick="showHomeScreen();setMyHubTopTabView('home')">Home</button>
+    <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeOpenViewerSlots()">My Slots</button>
+    <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeOpenMyHubTab('clubs')">Clubs</button>
+    <button class="myhub-top-tab" type="button" role="tab" aria-selected="false" onclick="homeOpenMyHubTab('report')">Report</button>
+  </nav>
+
+  <!-- ── My Hub Home: independent tab view ── -->
+  <section id="myHubHomeView" class="myhub-tab-view is-active" data-myhub-view="home">
 
   <!-- ── My Card content inline (no tile, no navigation) ── -->
 
@@ -776,17 +1570,19 @@
 
     <!-- Identity -->
     <div class="mycard-identity">
-      <img id="mcAvatar" src="male.png?v=164" class="mycard-avatar">
+      <img id="mcAvatar" src="male.png?v=856" class="mycard-avatar">
       <div class="mycard-identity-info">
-        <div class="mycard-name" id="mcName"></div>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="mycard-name" id="mcName"></div>
+          <button id="mcEditNicknameBtn" type="button" onclick="authOpenNicknameEditor()" aria-label="Change nickname" title="Change nickname" style="display:none;border:0;background:transparent;color:var(--accent);font-size:1rem;line-height:1;padding:4px;cursor:pointer;">✎</button>
+        </div>
         <div id="mcTier" class="profile-tier"></div>
       </div>
-      <button id="mcLogoutBtn" style="display:none!important" onclick="if(typeof authLogout==='function')authLogout()" data-i18n="logout">Logout</button>
+      <button id="mcLogoutBtn" style="display:none!important" onclick="if(typeof authDoLogout==='function')authDoLogout()" data-i18n="logout">Logout</button>
     </div>
 
     <!-- Ratings + Points -->
     <div class="mycard-ratings">
-      <button id="mcDetailsArrow" class="mc-details-arrow" type="button" onclick="toggleMyCardDetails()" aria-expanded="false" aria-controls="mcDetailsPanel">⌄</button>
       <div class="mycard-rating-box">
         <div class="mycard-rating-value" id="mcGlobalRating">—</div>
         <div class="mycard-rating-label" data-i18n="globalRating">Global Rating</div>
@@ -850,19 +1646,50 @@
 
   </div><!-- end myCardContent -->
 
-  <!-- ── Viewer Upcoming Slots (handled by slots.js) ── -->
-  <section id="mcUpcomingSlots" class="mc-slots-card" style="display:none;">
+  <!-- ── My Hub Home quick sections ── -->
+  <section class="myhub-home-sections" aria-label="Home">
+    <div class="myhub-home-group" id="myHubNewSlotsGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('new')"><span class="myhub-home-icon">🔔</span><span><strong>New Posted Slot <span class="myhub-home-count" id="myHubNewSlotsCount">0</span></strong><small>New slots you have not joined</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubNewSlotsList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubTodaySlotsGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('today')"><span class="myhub-home-icon">📅</span><span><strong>Today Slot <span class="myhub-home-count" id="myHubTodaySlotsCount">0</span></strong><small>Your slots for today</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubTodaySlotsList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubLiveGroup">
+      <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
+      <div class="myhub-home-list" id="myHubLiveList"></div>
+    </div>
+    <div class="myhub-home-group" id="myHubApprovePlayersGroup" hidden>
+      <button type="button" class="myhub-home-card" onclick="scsHomeQuickAction('approve')"><span class="myhub-home-icon">✓</span><span><strong>Approve Players <span class="myhub-home-count" id="myHubApprovePlayersCount">0</span></strong><small id="myHubApprovePlayersClub"></small></span><span class="myhub-home-chevron">›</span></button>
+    </div>
+  </section>
+
+  </section><!-- end myHubHomeView -->
+
+  <!-- ── My Hub Slots: independent tab view (handled by slots.js) ── -->
+  <section id="myHubSlotsView" class="myhub-tab-view" data-myhub-view="slots">
+  <section id="mcUpcomingSlots" class="mc-slots-card">
     <div class="mc-slots-head">
       <div>
         <div class="mc-slots-title" data-i18n="upcomingSlotsTitle">📅 Upcoming Slots</div>
         <div class="mc-slots-sub" id="mcSlotsSummary" data-i18n="noUpcomingSlots">No upcoming slots</div>
       </div>
       <div class="mc-slots-tools">
+        <div class="mc-slots-filter" role="tablist" aria-label="Slot view">
+          <button type="button" id="mcSlotsFilterUpcoming" class="mc-slots-filter-btn is-active" role="tab" aria-selected="true" onclick="myCardSlotsSetView('upcoming')" data-i18n="upcoming">Upcoming</button>
+          <button type="button" id="mcSlotsFilterAll" class="mc-slots-filter-btn" role="tab" aria-selected="false" onclick="myCardSlotsSetView('all')" data-i18n="allSlots">All Slots</button>
+        </div>
+        <div class="mc-slots-filter mc-slots-layout-filter" role="tablist" aria-label="Slot layout">
+          <button type="button" id="mcSlotsLayoutCompact" class="mc-slots-filter-btn is-active" role="tab" aria-selected="true" onclick="myCardSlotsSetLayout('compact')">Compact</button>
+          <button type="button" id="mcSlotsLayoutCalendar" class="mc-slots-filter-btn" role="tab" aria-selected="false" onclick="myCardSlotsSetLayout('calendar')">Calendar</button>
+        </div>
         <button class="mc-slots-refresh-btn" id="mcSlotsRefreshBtn" type="button" onclick="myCardSlotsManualRefresh()" title="Refresh slots">↻</button>
         <div class="mc-slots-count" id="mcSlotsCount">0</div>
       </div>
     </div>
 
+    <div class="mc-slots-calendar-panel">
     <div class="mc-slots-cal-nav">
       <button class="vs-cal-nav-btn mc-slots-nav-btn" type="button" onclick="myCardSlotsChangeMonth(-1)">‹</button>
       <div class="vs-cal-month-label mc-slots-month-label" id="mcSlotsMonthLabel">—</div>
@@ -874,63 +1701,27 @@
     </div>
     <div class="vs-cal-grid mc-slots-cal-grid" id="mcSlotsCalGrid"></div>
 
-    <div class="mc-slots-selected-title" id="mcSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
-    <div class="mc-slots-list" id="mcSlotsList"></div>
+    </div><!-- end calendar panel -->
+
+    <div class="mc-slots-results-panel">
+      <div class="mc-slots-selected-title" id="mcSlotsSelectedTitle" data-i18n="selectedDate">Selected date</div>
+      <div class="mc-slots-list" id="mcSlotsList"></div>
+    </div>
   </section>
+  </section><!-- end myHubSlotsView -->
 
-
-  <!-- ── Show More toggle (viewer) — above all tiles ── -->
-  <button class="home-show-more-btn" id="homeShowMoreBtnV" onclick="homeToggleMoreTilesV()" style="display:none;">
-    <span id="homeShowMoreLabelV">More ›</span>
-  </button>
-
-  <!-- ── Collapsible: all tiles ── -->
-  <div id="homeMoreSectionV" class="home-more-section home-more-collapsed">
-
-  <!-- Two-column tile grid: My Clubs | Dashboard / Recent Matches | Report -->
-  <div class="home-grid" style="margin-top:10px;">
-
-    <!-- My Clubs -->
-    <div class="home-tile" data-tile-color="1" id="tileJoinClub" onclick="homeGo('joinClubPage',null)">
-      <div class="home-tile-icon vcl-icon">🏢</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="myClubs">My Clubs</div>
-        <div class="home-tile-sub" id="tileSubJoinClub">Find &amp; request</div>
-      </div>
-    </div>
-
-    <!-- Dashboard -->
-    <div class="home-tile" data-tile-color="2" onclick="homeGo('dashboardPage','tabBtnDashboard')">
-      <div class="home-tile-icon">📡</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="dashboard">Dashboard</div>
-        <div class="home-tile-sub" id="tileSubDashboardV">Live sessions</div>
-      </div>
-    </div>
-
-    <!-- Recent Matches -->
-    <div class="home-tile" data-tile-color="3" onclick="homeGo('recentMatchesPage',null)">
-      <div class="home-tile-icon">🏸</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name">Recent Matches</div>
-        <div class="home-tile-sub" id="tileSubRecentMatches">Tap to view</div>
-      </div>
-    </div>
-
-    <!-- Report -->
-    <div class="home-tile" data-tile-color="4" onclick="homeGo('vaultReport2Page',null)">
-      <div class="home-tile-icon">📊</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="report">Report</div>
-        <div class="home-tile-sub">monthly stats</div>
-      </div>
-    </div>
-
-  </div><!-- end home-grid -->
-
-  </div><!-- end homeMoreSectionV -->
+  <!-- Clubs and Report mount their existing original SCS pages here while active. -->
+  <section id="myHubClubsView" class="myhub-tab-view myhub-embedded-view" data-myhub-view="clubs"></section>
+  <section id="myHubReportView" class="myhub-tab-view myhub-embedded-view" data-myhub-view="report"></section>
 
 </div>
+
+  <nav id="scsPrimaryBottomNav" class="scs-primary-bottom-nav" aria-label="Main navigation">
+    <button id="scsNavHome" type="button" onclick="scsPrimaryNavigate('viewer')"><span class="scs-primary-nav-icon" aria-hidden="true">⌂</span><span>Home</span></button>
+    <button id="scsNavRound" type="button" onclick="scsPrimaryNavigate('organiser')"><span class="scs-primary-nav-icon" aria-hidden="true">🏸</span><span>Round</span></button>
+    <button id="scsNavSlot" type="button" onclick="scsPrimaryNavigate('vault')"><span class="scs-primary-nav-icon" aria-hidden="true">▣</span><span>Manage</span></button>
+    <button id="scsNavSettings" type="button" onclick="scsPrimaryNavigate('settings')"><span class="scs-primary-nav-icon" aria-hidden="true">⚙</span><span>Settings</span></button>
+  </nav>
 
   </div>
 
@@ -949,8 +1740,6 @@
       </div>
     </div>
     <div class="scs-topbar-right">
-      <button class="scs-topbar-btn scs-topbar-theme" onclick="scsToggleTheme()" id="scsThemeBtn" title="Toggle theme">🌙</button>
-      <button class="scs-topbar-btn scs-topbar-power" onclick="appMode==='vault'?vaultLogoutClub():appMode==='organiser'?organiserLogoutClub():authDoLogout()" title="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:inline-block;vertical-align:middle"><path d="M12 3v9"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg></button>
       <button class="scs-topbar-x" onclick="openModeSwitcher()">✕</button>
     </div>
   </div>
@@ -979,19 +1768,64 @@
 
   <!-- ============================= -->
 
+  <div id="clubInviteJoinPage" class="page club-invite-join-page" style="display:none;">
+    <div class="sheet-header">
+      <div class="sheet-header-spacer"></div>
+      <span class="sheet-title">Club invitation</span>
+      <button class="sheet-close-btn" onclick="clubInviteJoinClose()">✕</button>
+    </div>
+    <main class="club-invite-join-main">
+      <section class="club-invite-join-card">
+        <div class="club-invite-join-kicker">YOU'RE INVITED TO JOIN</div>
+        <h1 id="clubInviteJoinClubName">Club</h1>
+        <p id="clubInviteJoinIntro" class="club-invite-join-intro" hidden></p>
+
+        <div id="clubInviteJoinForm">
+          <label class="club-invite-field-label" for="clubInviteJoinNickname">Nickname</label>
+          <div id="clubInviteJoinChoices" class="jc-nickname-choices"></div>
+          <div class="jc-nickname-divider"><span>or enter another nickname</span></div>
+          <input id="clubInviteJoinNickname" class="auth-input" type="text" placeholder="Your nickname in this club" autocomplete="nickname" onkeydown="if(event.key==='Enter')clubInviteJoinSubmit()">
+          <fieldset class="club-invite-gender">
+            <legend>Gender</legend>
+            <label><input type="radio" name="clubInviteJoinGender" value="Male"><span>♂ Male</span></label>
+            <label><input type="radio" name="clubInviteJoinGender" value="Female"><span>♀ Female</span></label>
+          </fieldset>
+          <div class="club-invite-rating-block">
+            <div class="club-invite-rating-head">
+              <label class="club-invite-rating-label" for="clubInviteJoinRating">Rating</label>
+              <output id="clubInviteJoinRatingValue" for="clubInviteJoinRating">1.0</output>
+            </div>
+            <input id="clubInviteJoinRating" class="club-invite-rating-slider" type="range" value="1" min="1" max="5" step="0.5" aria-label="Player rating" style="--rating-fill:0%" oninput="document.getElementById('clubInviteJoinRatingValue').textContent=Number(this.value).toFixed(1);this.style.setProperty('--rating-fill',((Number(this.value)-1)/4*100)+'%')">
+            <div class="club-invite-rating-ends"><span>1 = Beginner</span><span>5 = Advanced</span></div>
+          </div>
+          <button id="clubInviteJoinSubmitBtn" class="club-invite-join-submit" type="button" onclick="clubInviteJoinSubmit()">Request to join →</button>
+        </div>
+
+        <div id="clubInviteJoinPassword" hidden>
+          <p id="clubInviteJoinPasswordMsg"></p>
+          <input id="clubInviteJoinPasswordInput" class="auth-input" type="password" placeholder="Default player password" onkeydown="if(event.key==='Enter')clubInviteJoinClaim()">
+          <button class="club-invite-join-submit" type="button" onclick="clubInviteJoinClaim()">Verify and join →</button>
+          <button class="club-invite-join-secondary" type="button" onclick="clubInviteJoinBackToNickname()">Choose another nickname</button>
+        </div>
+
+        <div id="clubInviteJoinFeedback" class="club-invite-join-feedback" hidden></div>
+      </section>
+    </main>
+  </div>
+
   <div id="joinClubPage" class="page" style="display:none;">
     <div class="sheet-header">
       <div class="sheet-header-spacer"></div>
-      <span class="sheet-title" data-i18n="myClubs">🏢 My Clubs</span>
-      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+      <span class="sheet-title" data-i18n="myClubs">Clubs</span>
+      <button class="sheet-close-btn" onclick="scsGuideReturnFromJoinClub()">✕</button>
     </div>
 
-<div style="padding:14px;">
+<div class="clubs-page-shell" style="padding:14px;">
 
   <!-- My Clubs list -->
 
   <div id="myClubsList" style="margin-bottom:14px;">
-    <div class="jc-section-title" data-i18n="myClubs">My Clubs</div>
+    <div class="jc-section-title" data-i18n="myClubs">Clubs</div>
     <div id="myClubsListInner">
       <div class="jc-empty" data-i18n="loading">Loading...</div>
     </div>
@@ -1000,6 +1834,13 @@
   <!-- Divider -->
 
   <div class="jc-divider"></div>
+
+  <!-- Quick club buttons -->
+  <div class="jc-quick-clubs" aria-label="Quick club search">
+    <button type="button" class="jc-quick-club-btn" onclick="joinClubQuickSearch('JTSC')">JTSC</button>
+    <button type="button" class="jc-quick-club-btn" onclick="joinClubQuickSearch('PB')">PB</button>
+    <button type="button" class="jc-quick-club-btn" onclick="joinClubQuickSearch('Test-1')">Test-1</button>
+  </div>
 
   <!-- Search section -->
 
@@ -1017,11 +1858,13 @@
   <!-- Step 1: Nickname entry (shown after tapping Request to Join) -->
   <div id="joinClubNicknameEntrySection" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-top:10px;">
     <div id="joinClubNicknameEntryMsg" style="font-size:0.85rem; color:var(--text); margin-bottom:12px; line-height:1.5;"></div>
+    <div id="joinClubNicknameChoices" class="jc-nickname-choices"></div>
+    <div class="jc-nickname-divider"><span data-i18n="orEnterAnotherNickname">or enter another nickname</span></div>
     <input type="text" id="joinClubNicknameEntryInput" class="auth-input"
       placeholder="Your nickname in this club"
       style="width:100%; box-sizing:border-box; margin-bottom:10px;"
       onkeydown="if(event.key==='Enter') joinClubSubmitNicknameEntry()">
-    <button onclick="joinClubSubmitNicknameEntry()" style="width:100%; padding:12px; background:var(--accent,#6c63ff); color:#fff; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;">Continue →</button>
+    <button onclick="joinClubSubmitNicknameEntry()" style="width:100%; padding:12px; background:var(--accent,#6c63ff); color:#fff; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;"><span data-i18n="continueBtn">Continue</span> →</button>
   </div>
 
   <!-- Password claim section (unclaimed player found) -->
@@ -1068,25 +1911,28 @@
   <div id="settingsPage" class="page" style="display:none;">
     <div class="sheet-header">
       <div class="sheet-header-spacer"></div>
-      <span class="sheet-title" data-i18n="settings">⚙️ Settings</span>
-      <button class="sheet-close-btn" onclick="document.getElementById('settingsPage').style.display='none';document.getElementById('homePageOverlay').classList.remove('settings-open');openModeSwitcher()">✕</button>
+      <div class="settings-heading"><span class="sheet-title" data-i18n="settings">Settings</span><span class="settings-subtitle">Personalise your SCS experience</span></div>
+      <div class="settings-header-actions">
+        <button class="settings-sync-btn" id="settingsHeaderSyncBtn" type="button" onclick="scsRunManualSync('header')" aria-label="Sync now" title="Sync now"><span class="settings-sync-glyph">↻</span><small id="settingsHeaderSyncStatus">Sync</small></button>
+        <button class="sheet-close-btn" onclick="scsCloseSettings()">✕</button>
+      </div>
     </div>
     <div class="pref-wrap">
 
   <!-- SUBSCRIPTION -->
 
-  <div class="pref-section-label" data-i18n="subscription">Subscription</div>
+  <div class="pref-section-label"><span class="pref-section-icon">◇</span><span data-i18n="subscription">Subscription</span></div>
   <div class="pref-card" id="settingsTrialCard">
     <!-- Plan status -->
     <div class="pref-row" style="margin-bottom:12px;">
-      <span class="pref-row-label" id="settingsTrialLabel">Free Trial</span>
+      <span class="pref-row-label" id="settingsTrialLabel" data-i18n="freeTrial">Free Trial</span>
       <span class="pref-row-value" id="settingsTrialValue">—</span>
     </div>
     <!-- Subscribe + Key — hidden when Pro active -->
     <div id="settingsSubActions">
       <button onclick="if(typeof showUpgradeScreen==='function')showUpgradeScreen()"
         style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#7c3aed,#6c63ff);color:#fff;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;">
-        ⭐ Subscribe / Upgrade
+        ⭐ <span data-i18n="subscribeUpgrade">Subscribe / Upgrade</span>
       </button>
       
       
@@ -1094,23 +1940,23 @@
     </div>
   </div>
 
-  <!-- APPEARANCE — Theme + Font + Tile Style merged -->
+  <!-- APPEARANCE -->
 
-  <div class="pref-section-label">Experience Mode</div>
-  <div class="pref-card">
-    <div class="pref-row" style="flex-direction:column;align-items:stretch;gap:10px;">
-      <span class="pref-row-label">Available hubs</span>
-      <div class="pref-pill-group appear-pill-group" id="experienceModePills">
-        <button class="pref-pill" id="experience_standard" onclick="setExperienceMode('standard')">Standard</button>
-        <button class="pref-pill" id="experience_intermediate" onclick="setExperienceMode('intermediate')">Intermediate</button>
-        <button class="pref-pill" id="experience_advanced" onclick="setExperienceMode('advanced')">Advanced</button>
-      </div>
-      <div id="experienceModeDescription" style="font-size:.74rem;color:var(--text-dim);line-height:1.45;"></div>
-    </div>
-  </div>
-
-  <div class="pref-section-label" data-i18n="appearance">Appearance</div>
+  <div class="pref-section-label"><span class="pref-section-icon">✦</span><span data-i18n="appearance">Appearance</span></div>
   <div class="pref-card" id="appearanceCard">
+
+<!-- Language -->
+<div class="pref-row settings-language-row">
+  <span class="pref-row-label">🌐 <span data-i18n="language">Language</span></span>
+  <div class="pref-pill-group appear-pill-group" id="settingsLanguagePills">
+    <button class="pref-pill" type="button" onclick="mlSelectLang('en','🇺🇸','English')">🇺🇸 English</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('jp','🇯🇵','日本語')">🇯🇵 日本語</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('kr','🇰🇷','한국어')">🇰🇷 한국어</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('vi','🇻🇳','Tiếng Việt')">🇻🇳 Tiếng Việt</button>
+    <button class="pref-pill" type="button" onclick="mlSelectLang('zh','🇨🇳','中文')">🇨🇳 中文</button>
+  </div>
+</div>
+<div class="pref-divider"></div>
 
 <!-- Theme -->
 
@@ -1125,63 +1971,58 @@
 
 <!-- Font Size -->
 
-<div class="pref-row">
-  <span class="pref-row-label" data-i18n="fontSize">Font Size</span>
-  <div class="pref-pill-group appear-pill-group" id="fontPillGroup">
-    <button class="pref-pill" id="font_small"  onclick="appearSelect('font','small',this)"  data-i18n="small">Small</button>
-    <button class="pref-pill" id="font_medium" onclick="appearSelect('font','medium',this)" data-i18n="medium">Medium</button>
-    <button class="pref-pill" id="font_large"  onclick="appearSelect('font','large',this)"  data-i18n="large">Large</button>
-    <button class="pref-pill" id="font_xlarge" onclick="appearSelect('font','xlarge',this)">X-Large</button>
+<div class="pref-row font-scale-row">
+  <div class="font-scale-heading">
+    <span class="pref-row-label" data-i18n="fontSize">Font Size</span>
+    <span class="font-scale-value" id="fontScaleValue">100%</span>
+  </div>
+  <div class="ios-font-scale" id="fontScaleControl">
+    <span class="font-scale-a font-scale-a-small" aria-hidden="true">A</span>
+    <div class="font-scale-track-wrap">
+      <input id="fontScaleSlider" class="font-scale-slider" type="range" min="88" max="100" step="1" value="100"
+        aria-label="Font size" oninput="appearFontSliderInput(this.value)">
+      <div class="font-scale-dots" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+    <span class="font-scale-a font-scale-a-large" aria-hidden="true">A</span>
   </div>
 </div>
-<div class="pref-divider"></div>
-
-<!-- Tile Style -->
-
-<div class="pref-row" style="flex-direction:column;align-items:stretch;gap:10px;">
-  <span class="pref-row-label" data-i18n="tileStyle">Tile Style</span>
-  <div style="display:flex;gap:8px;">
-    <button id="styleBtn1" onclick="appearSelect('tile','flat',this)"  class="tile-style-btn" data-i18n="flat">Flat</button>
-    <button id="styleBtn2" onclick="appearSelect('tile','glow',this)"  class="tile-style-btn" data-i18n="glow">Glow</button>
-    <button id="styleBtn3" onclick="appearSelect('tile','color',this)" class="tile-style-btn" data-i18n="color">Color</button>
-  </div>
-  <!-- Live Preview -->
-  <div class="style-preview-box" id="stylePreviewBox">
-    <div class="style-preview-label" data-i18n="preview">Preview</div>
-    <div class="style-preview-grid">
-      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
-      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
-      <div class="spt"><div class="spt-icon">◆</div><div class="spt-name" data-i18n="tile">Tile</div><div class="spt-sub" data-i18n="info">Info</div></div>
-    </div>
-    <div class="style-preview-wide">
-      <span class="spw-icon">◆</span>
-      <div class="spw-info"><div class="spw-name" data-i18n="wideTile">Wide Tile</div><div class="spw-sub" data-i18n="description">Description</div></div>
-      <span class="spw-arr">›</span>
-    </div>
-  </div>
-</div>
-
-<!-- Live preview bar -->
-
 <div class="pref-divider"></div>
 <div class="appear-preview-bar" id="appearPreviewBar" style="display:none;">
   <span class="appear-preview-label" id="appearPreviewLabel"></span>
-  <div id="appearFontPreview" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:10px;color:var(--text);transition:font-size 0.3s ease;">Aa — Font Preview</div>
+  <div id="appearFontPreview" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:10px;color:var(--text);transition:font-size 0.3s ease;">Aa — <span data-i18n="fontPreview">Font Preview</span></div>
 </div>
 
-<!-- Apply Button -->
+  </div>
 
-<div style="padding:14px 0 4px;">
-  <button class="appear-apply-btn" id="appearApplyBtn" onclick="appearApply()">
-    <span id="appearApplyIcon">✦</span> Apply Changes
-  </button>
-</div>
+  <!-- DATA & SYNC -->
 
+  <div class="pref-section-label"><span class="pref-section-icon">↻</span><span data-i18n="dataSync">Data &amp; Sync</span></div>
+  <div class="pref-card sync-settings-card">
+    <div class="pref-row sync-interval-row">
+      <span class="pref-row-label" data-i18n="syncInterval">Sync Interval</span>
+      <select id="settingsSyncInterval" class="settings-sync-select" onchange="scsSetSyncInterval(this.value)">
+        <option value="0" data-i18n="manualOnly">Manual only</option>
+        <option value="1" data-i18n="every1Minute">Every 1 minute</option>
+        <option value="5" data-i18n="every5Minutes">Every 5 minutes</option>
+        <option value="15" data-i18n="every15Minutes">Every 15 minutes</option>
+        <option value="30" data-i18n="every30Minutes">Every 30 minutes</option>
+        <option value="60" data-i18n="every60Minutes">Every 60 minutes</option>
+      </select>
+    </div>
+    <div class="pref-divider"></div>
+    <div class="pref-row">
+      <span class="pref-row-label" data-i18n="lastSync">Last Sync</span>
+      <span class="pref-row-value settings-last-sync"><span id="settingsLastSync">Never</span><span class="sync-ok-dot" id="settingsSyncOkDot">✓</span></span>
+    </div>
+    <button class="settings-sync-now-btn" id="settingsSyncNowBtn" type="button" onclick="scsRunManualSync('card')"><span class="settings-sync-glyph">↻</span><span data-i18n="syncNow">Sync Now</span></button>
+    <div class="settings-sync-message" id="settingsSyncMessage" aria-live="polite"></div>
   </div>
 
   <!-- RESET -->
 
-  <div class="pref-section-label" data-i18n="reset">Reset</div>
+  <div class="pref-section-label"><span class="pref-section-icon">↻</span><span data-i18n="reset">Reset</span></div>
   <div class="pref-card">
     <div class="pref-row pref-row-tap pref-row-danger" onclick="showConfirm('confirmResetAll', ResetAll)">
       <span class="pref-row-label" data-i18n="resetAll">Reset All</span>
@@ -1192,6 +2033,12 @@
       <span class="pref-row-label" data-i18n="resetExcept">Reset Rounds Only</span>
       <span class="pref-row-chevron">›</span>
     </div>
+  </div>
+
+  <div class="settings-apply-wrap">
+    <button class="appear-apply-btn" id="appearApplyBtn" onclick="appearApply()">
+      <span id="appearApplyIcon">✦</span> Apply Changes
+    </button>
   </div>
 
 </div>
@@ -1305,7 +2152,7 @@
     <div class="vault-wrap venue-wrap">
       <div class="venue-card venue-form-card venue-form-hidden" id="vaultVenueFormCard">
         <div class="venue-card-title" data-i18n="masterVenue">Master Venue</div>
-        <div class="venue-card-subtitle">Save the physical location once. Tap ☆ to make it a favorite for this club.</div>
+        <div class="venue-card-subtitle" data-i18n="masterVenueHint">Save the physical location once. Tap ☆ to make it a favorite for this club.</div>
         <div class="venue-grid">
           <div class="venue-field venue-field-full">
             <label data-i18n="englishVenueName">English Venue Name</label>
@@ -1382,6 +2229,7 @@
     <div class="sheet-header">
       <div class="sheet-header-spacer"></div>
       <span class="sheet-title" data-i18n="slots">🗓️ Slots</span>
+      <button id="vaultSlotsClubPill" type="button" class="welcome-club-pill welcome-club-menu-pill selected" onclick="vaultSlotsChangeClub()" title="Change club" aria-label="Change club"><span class="welcome-club-pill-name">Club</span><span class="welcome-club-pill-arrow" aria-hidden="true">⌄</span></button>
       <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
     </div>
     <div class="vault-wrap">
@@ -1418,16 +2266,23 @@
     <div class="vs-post-form-compact vs-post-sample-layout">
       <div class="vs-post-sample-hero">
         <div>
-          <div class="vs-post-sample-kicker">CREATE SLOT</div>
+          <div class="vs-post-sample-kicker" data-i18n="createSlot">CREATE SLOT</div>
           <div class="vs-post-sample-title">__SLOT_DATE__</div>
         </div>
-        <div class="vs-post-sample-badge">Draft / Post</div>
+        <div class="vs-post-sample-badge" data-i18n="draftPost">Draft / Post</div>
       </div>
 
+      <div class="vs-create-tabs" role="tablist" aria-label="Create slot sections">
+        <button type="button" class="vs-create-tab vs-create-tab-session is-active" data-tab="session" onclick="vaultSlotsSetCreateTab('session')"><span>1</span> Session</button>
+        <button type="button" class="vs-create-tab vs-create-tab-players" data-tab="players" onclick="vaultSlotsSetCreateTab('players')"><span>2</span> Players · Optional</button>
+        <button type="button" class="vs-create-tab vs-create-tab-post" data-tab="post" onclick="vaultSlotsSetCreateTab('post')"><span>3</span> Post</button>
+      </div>
+
+      <div class="vs-create-tab-panel is-active" data-panel="session">
       <section class="vs-sample-card">
-        <div class="vs-sample-card-title"><span>📍</span> Session Details</div>
+        <div class="vs-sample-card-title"><span>📍</span> <span data-i18n="sessionDetails">Session Details</span></div>
         <div class="vs-sample-field">
-          <label>Venue</label>
+          <label data-i18n="venue">Venue</label>
           <input type="hidden" id="vsFormVenue" value="">
           <input type="hidden" id="vsFormVenueId" value="">
           <button type="button" id="vsVenuePickerBtn" class="vs-sample-input vs-venue-picker-btn" onclick="vaultSlotsOpenVenuePicker()">
@@ -1436,28 +2291,28 @@
           </button>
           <div class="vs-venue-inline" id="vsFormVenueInfo" style="display:none;">
             <span id="vsFormVenueAddress"></span>
-            <button type="button" id="vsFormVenueMapBtn" onclick="vaultSlotsOpenSelectedVenueMap()">Open Map</button>
+            <button type="button" id="vsFormVenueMapBtn" onclick="vaultSlotsOpenSelectedVenueMap()" data-i18n="openMap">Open Map</button>
           </div>
-          <p class="vs-sample-hint">Favorites appear first. Manage them from Vault → Venues.</p>
+          <p class="vs-sample-hint" data-i18n="venuePickerHint">Favorites appear first. Manage them from Vault → Venues.</p>
         </div>
         <div class="vs-sample-time-row">
           <button type="button" class="vs-sample-time-box" id="vsFormStartField" onclick="vsTimePickerOpen('start')">
-            <small>Start</small><strong><span id="vsFormStartLabel">9:00 AM</span></strong><em>▾</em>
+            <small data-i18n="start">Start</small><strong><span id="vsFormStartLabel">__START_LABEL__</span></strong><em>▾</em>
           </button>
           <div class="vs-sample-time-arrow">→</div>
           <button type="button" class="vs-sample-time-box" id="vsFormEndField" onclick="vsTimePickerOpen('end')">
-            <small>End</small><strong><span id="vsFormEndLabel">11:00 AM</span></strong><em>▾</em>
+            <small data-i18n="end">End</small><strong><span id="vsFormEndLabel">__END_LABEL__</span></strong><em>▾</em>
           </button>
-          <input type="hidden" id="vsFormStart" value="09:00">
-          <input type="hidden" id="vsFormEnd" value="11:00">
+          <input type="hidden" id="vsFormStart" value="__START_TIME__">
+          <input type="hidden" id="vsFormEnd" value="__END_TIME__">
         </div>
       </section>
 
       <section class="vs-sample-card">
-        <div class="vs-sample-card-title"><span>⚙️</span> Session Settings</div>
+        <div class="vs-sample-card-title"><span>⚙️</span> <span data-i18n="roundSettings">Session Settings</span></div>
         <div class="vs-sample-two-col">
           <div class="vs-sample-counter-card">
-            <div class="vs-sample-counter-label">Players <small>2–20</small></div>
+            <div class="vs-sample-counter-label"><span data-i18n="players">Players</span> <small>2–20</small></div>
             <div class="vs-stepper vs-sample-stepper">
               <button class="vs-stepper-btn" onclick="vaultSlotsAdjustMax(-1)">−</button>
               <div class="vs-stepper-value" id="vsFormMaxValue">8</div>
@@ -1465,7 +2320,7 @@
             </div>
           </div>
           <div class="vs-sample-counter-card">
-            <div class="vs-sample-counter-label">Courts <small>Session</small></div>
+            <div class="vs-sample-counter-label"><span data-i18n="courtsLabel">Courts</span> <small data-i18n="session">Session</small></div>
             <div class="vs-stepper vs-sample-stepper">
               <button class="vs-stepper-btn" onclick="vaultSlotsAdjustCourts(-1)">−</button>
               <div class="vs-stepper-value" id="vsFormCourtValue">1</div>
@@ -1475,16 +2330,16 @@
         </div>
 
         <div class="vs-sample-field">
-          <label>Mode</label>
+          <label data-i18n="gameAlgorithm">Game Algorithm</label>
           <div class="vs-segmented vs-sample-segment" id="vsFormSessionModePills">
             <div class="vs-segmented-thumb"></div>
-            <button class="vs-pill vs-pill-active" data-val="round" onclick="_vsFormSelectSessionMode('round')">Round</button>
-            <button class="vs-pill" data-val="rolling" onclick="_vsFormSelectSessionMode('rolling')">Rolling</button>
+            <button class="vs-pill vs-pill-active" data-val="standard" onclick="_vsFormSelectSessionMode('standard')" data-i18n="standardMode">Standard</button>
+            <button class="vs-pill" data-val="balanced" onclick="_vsFormSelectSessionMode('balanced')" data-i18n="balancedMode">Balanced</button>
           </div>
         </div>
 
         <div class="vs-sample-field">
-          <label>Gender</label>
+          <label data-i18n="gender">Gender</label>
           <div class="vs-segmented vs-sample-segment vs-sample-three" id="vsFormGenderPills">
             <div class="vs-segmented-thumb"></div>
             <button class="vs-pill" data-val="Male" onclick="_vsFormSelectGender('Male')">♂ Male</button>
@@ -1494,38 +2349,42 @@
         </div>
 
         <div class="vs-sample-field vs-sample-last">
-          <label>Minimum Rating</label>
+          <label data-i18n="minimumRating">Minimum Rating</label>
           <div class="vs-segmented vs-sample-segment vs-sample-four" id="vsFormRatingPills">
             <div class="vs-segmented-thumb"></div>
-            <button class="vs-pill vs-pill-active" data-val="0" onclick="_vsFormSelectRating('0')">Any</button>
+            <button class="vs-pill vs-pill-active" data-val="0" onclick="_vsFormSelectRating('0')" data-i18n="any">Any</button>
             <button class="vs-pill" data-val="2" onclick="_vsFormSelectRating('2')">2.0+</button>
             <button class="vs-pill" data-val="3" onclick="_vsFormSelectRating('3')">3.0+</button>
             <button class="vs-pill" data-val="4" onclick="_vsFormSelectRating('4')">4.0+</button>
           </div>
         </div>
       </section>
+      </div>
 
+      <div class="vs-create-tab-panel" data-panel="players">
       <section class="vs-sample-card">
         <div class="vs-sample-card-title-row">
-          <div class="vs-sample-card-title"><span>👥</span> Players</div>
+          <div class="vs-sample-card-title"><span>👥</span> <span data-i18n="players">Players</span> <small class="vs-create-optional-label">· Optional</small></div>
           <button type="button" class="vs-sample-add-btn" onclick="vaultSlotsAddPlayersBeforePosting()">+ Add</button>
         </div>
         <div id="vsInitialPlayersBox" class="vs-initial-players-box vs-sample-player-box">__INITIAL_PLAYERS__</div>
       </section>
+      </div>
 
+      <div class="vs-create-tab-panel" data-panel="post">
       <section class="vs-sample-card vs-sample-schedule-card">
-        <div class="vs-sample-card-title"><span>⏰</span> Schedule</div>
+        <div class="vs-sample-card-title"><span>⏰</span> <span data-i18n="schedule">Schedule</span></div>
         <div class="vs-sample-field vs-sample-last">
-          <label>Schedule Post At</label>
+          <label data-i18n="schedulePostAt">Schedule Post At</label>
           <input type="datetime-local" id="vsFormScheduledPostAt" class="vs-sample-input" value="__SCHEDULE_VALUE__">
-          <p class="vs-sample-hint">Players can see and join only after this time.</p>
+          <p class="vs-sample-hint" data-i18n="scheduledPostHint">Players can see and join only after this time.</p>
         </div>
       </section>
 
       <section class="vs-sample-card">
-        <div class="vs-sample-card-title"><span>📢</span> Publish</div>
+        <div class="vs-sample-card-title"><span>📢</span> <span data-i18n="publish">Publish</span></div>
         <div class="vs-sample-field vs-sample-last">
-          <label>Visibility</label>
+          <label data-i18n="visibility">Visibility</label>
           <div class="vs-segmented vs-sample-segment" id="vsFormVisibilityCards">
             <div class="vs-segmented-thumb"></div>
             <button class="vs-pill" data-val="public" onclick="_vsFormSelectVisibility('public')">🌐 Public</button>
@@ -1534,12 +2393,12 @@
           <p class="vs-sample-hint" id="vsFormVisibilityHint">Only club players can see and join</p>
         </div>
       </section>
-
       <div id="vsFormFeedback" class="vs-form-feedback"></div>
-      <div class="vs-post-actions-sticky vs-sample-actions">
-        <button class="vs-btn vs-btn-primary vs-btn-schedule" onclick="vaultSlotsSubmitNewSlot('scheduled')">Schedule</button>
-        <button class="vs-btn vs-btn-post" onclick="vaultSlotsSubmitNewSlot('posted')">Post Now</button>
-        <button class="vs-btn vs-btn-primary vs-btn-save" onclick="vaultSlotsSubmitNewSlot()">Save</button>
+      <div class="vs-sample-actions vs-post-section-actions">
+        <button class="vs-btn vs-btn-primary vs-btn-schedule" onclick="vaultSlotsSubmitNewSlot('scheduled')" data-i18n="schedulePost">Schedule</button>
+        <button class="vs-btn vs-btn-post" onclick="vaultSlotsSubmitNewSlot('posted')" data-i18n="postNow">Post Now</button>
+        <button class="vs-btn vs-btn-primary vs-btn-save" onclick="vaultSlotsSubmitNewSlot()" data-i18n="save">Save</button>
+      </div>
       </div>
     </div>
   </template>
@@ -1719,7 +2578,7 @@
         <div class="vault-section-label" data-i18n="connectToClub">&#127970; Connect to Club</div>
         <div class="club-row">
           <select id="sbClubSelectViewer" class="club-select" style="flex:1">
-            <option value="">&#8212; Select club &#8212;</option>
+            <option value="">&#8213; Select club &#8213;</option>
           </select>
         </div>
         <div class="club-row" style="margin-top:8px">
@@ -1744,9 +2603,6 @@
       <div class="manage-section-title" data-i18n="createNewClub">Create New Club</div>
       <div class="club-row">
         <input type="text" id="sbNewClubName" class="club-input" placeholder="Club name">
-      </div>
-      <div class="club-row" style="margin-top:6px">
-        <input type="password" id="sbNewClubSelectPw" class="club-input" data-i18n-placeholder="organiserPasswordPh" placeholder="Organiser password">
       </div>
       <div class="club-row" style="margin-top:6px">
         <input type="password" id="sbNewClubAdminPw" class="club-input" data-i18n-placeholder="enterAdminPasswordPh" placeholder="Admin password">
@@ -1808,7 +2664,7 @@
       <div class="vault-section-label" data-i18n="connectToClubBadminton">🏸 Connect to Club</div>
       <div class="club-row">
         <select id="orgClubSelect" class="club-select" style="flex:1">
-          <option value="">&#8212; Select club &#8212;</option>
+          <option value="">&#8213; Select club &#8213;</option>
         </select>
       </div>
       <div class="club-row" style="margin-top:8px">
@@ -1842,30 +2698,24 @@
 
  <div id="playersPage" class="page" style="display:none">
   <div class="sheet-header">
-      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true">Done</button>
+      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true" data-i18n="done">Done</button>
       <span class="sheet-title" data-i18n="players">👥 Players</span>
-      <button class="sheet-done-btn" id="playersBackBtn" onclick="navBack()">Done</button>
+      <button class="sheet-done-btn" id="playersBackBtn" onclick="navBack()" data-i18n="done">Done</button>
     </div>
 
-  <!-- ── Player action cards ── -->
-  <div class="players-action-row">
+  <!-- Compact player actions: existing workflows, simplified presentation -->
+  <div class="players-action-row" role="group" aria-label="Player actions">
+    <button class="players-action-btn players-action-select" type="button" onclick="newImportShowModal()">
+      <span class="players-action-icon players-action-select-icon" aria-hidden="true">☑</span>
+      <span class="players-action-label" data-i18n="selectPlayers">Select Players</span>
+      <span class="players-action-arrow" aria-hidden="true">›</span>
+    </button>
 
-    <div class="home-tile" data-tile-color="2" onclick="newImportShowModal()">
-      <div class="home-tile-icon tile-players">👥</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" data-i18n="addPlayers">Add Players</div>
-        <div class="home-tile-sub" data-i18n="selectFromSaved">From saved list</div>
-      </div>
-    </div>
-
-    <div class="home-tile" data-tile-color="1" onclick="window._regNavSource='playersPage';homeGo('vaultRegisterPage',null);">
-      <div class="home-tile-icon" style="background:rgba(45,206,137,0.15);">✨</div>
-      <div class="home-tile-text">
-        <div class="home-tile-name" style="color:#2dce89;" data-i18n="newPlayer">New Player</div>
-        <div class="home-tile-sub" data-i18n="registerToClub">Register to club</div>
-      </div>
-    </div>
-
+    <button class="players-action-btn players-action-new" type="button" onclick="scsPlayersOpenNewPlayer()">
+      <span class="players-action-icon players-action-plus" aria-hidden="true">＋</span>
+      <span class="players-action-label" data-i18n="newPlayer">New Player</span>
+      <span class="players-action-arrow" aria-hidden="true">›</span>
+    </button>
   </div>
 
   <div class="card" id="playerListCard">
@@ -1878,12 +2728,14 @@
 
 <div id="fixedPairsPage" class="page" style="display:none;">
   <div class="sheet-header">
-      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true">Done</button>
+      <button class="sheet-done-btn" style="visibility:hidden;" aria-hidden="true" data-i18n="done">Done</button>
       <span class="sheet-title" data-i18n="fixedPairs">🤝 Fixed Pairs</span>
-      <button class="sheet-done-btn" id="fixedPairsBackBtn" onclick="navBack()">Done</button>
+      <button class="sheet-done-btn" id="fixedPairsBackBtn" onclick="navBack()" data-i18n="done">Done</button>
     </div>
 
   <div class="card" id="fixedPairsCard">
+
+<div id="fpCreatePanel" class="fp-create-panel" hidden>
 
 <div class="fp-picker-row">
   <div class="fp-picker-field" id="fpField1" onclick="fpTogglePicker(1)">
@@ -1900,9 +2752,13 @@
 <div id="fpDropdown1" class="fp-dropdown" style="display:none"></div>
 <div id="fpDropdown2" class="fp-dropdown" style="display:none"></div>
 
-<button id="fpAddBtn" class="schedule-btn disabled-btn" onclick="modifyFixedPair()" data-i18n="add" disabled>Add</button>
+</div>
 
 <div id="fixed-pair-list" class="fixed-pairs-list"></div>
+
+<button id="fpOpenCreateBtn" class="fp-open-create-btn" type="button" onclick="fpToggleCreatePanel(true)" aria-label="Add fixed pair" title="Add fixed pair">
+  <span aria-hidden="true">+</span>
+</button>
 
   </div>
 </div>
@@ -1918,32 +2774,39 @@
 <!-- Single tight top bar -->
 
 <div class="rounds-top-bar">
-  <button class="rtb-back" onclick="showHomeScreen()" data-i18n="backHome">‹ Home</button>
-  <button class="rtb-settings" onclick="toggleRoundSettings()" aria-label="Settings" style="display:none;">⚙️</button>
+  <button class="rtb-settings" onclick="toggleRoundSettings()" aria-label="Settings">⚙️</button>
   <button class="rtb-settings" onclick="showRoundHistory()" aria-label="Past Rounds">🕓</button>
   <div class="rtb-spacer"></div>
   <div class="rtb-live" id="sessionLiveBar" style="display:none;">
     <div class="rtb-dot"></div>
     <span class="rtb-live-txt">LIVE</span>
+    <span class="rtb-round-time" id="roundElapsedTime" aria-label="Round elapsed time">00:00</span>
     <button class="rtb-end" id="endBtn" onclick="endSession()" data-i18n="endBtn">End</button>
   </div>
 </div>
 
 <div class="title-card">
-  <div style="display:flex;align-items:center;gap:10px;">
-    <div id="roundTitle">R</div>
-    <button class="rtb-shuffle" id="roundShufle" onclick="RefreshRound()" aria-label="Mix round" disabled>🎲</button>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="roundTitle">R</div>
+      <button class="rtb-shuffle" id="roundShufle" onclick="RefreshRound()" aria-label="Mix round" disabled>🎲</button>
+    </div>
+    <div class="round-court-counter" aria-label="Number of courts">
+      <button class="mbm-court-adj" id="courtMinus" aria-label="Remove court" onclick="roundAdjCourts(-1)">−</button>
+      <span id="num-courts">1</span>
+      <button class="mbm-court-adj" id="courtPlus" aria-label="Add court" onclick="roundAdjCourts(1)">+</button>
+    </div>
   </div>
   <!-- pills hidden but functions kept -->
   <span class="mode-banner-badge ready-mode" id="roundModeBadge" style="display:none;">READY</span>
-  <img id="lockToggleBtn" class="lock-icon" src="lock.png?v=164" alt="Lock" style="display:none;" />
+  <img id="lockToggleBtn" class="lock-icon" src="lock.png?v=856" alt="Lock" style="display:none;" />
 </div>
 
 <div id="game-results"></div>
 
 <div class="action-card">
   <button id="nextBtn" class="action right primary start-state" onclick="toggleRound()">
-    <span id="btnText">Start</span>
+    <span id="btnText" data-i18n="start">Start</span>
     <span class="icon"> ▶</span>
   </button>
   <button id="stopRoundBtn" class="stop-round-btn" onclick="undoStartRound()" style="display:none;">⏹</button>
@@ -1962,19 +2825,6 @@
     </div>
   <div id="roundSettingsBody">
 
-<!-- Courts Row -->
-
-<div class="setting-row">
-  <label class="setting-label" data-i18n="courts">Courts</label>
-  <div class="counter">
-    <button class="circle-btn" id="courtMinus">−</button>
-    <span id="num-courts">1</span>
-    <button class="circle-btn" id="courtPlus">+</button>
-  </div>
-</div>
-
-<div class="setting-divider"></div>
-
 <!-- Mode Toggle Row -->
 
 <div class="setting-row">
@@ -1984,22 +2834,6 @@
   <label class="switch">
     <input type="checkbox" id="modeToggle">
     <span class="slider"></span>
-  </label>
-</div>
-
-<div class="game-generation-block round-settings-game-generation">
-  <div class="game-generation-title" data-i18n="gameGeneration">Game Generation</div>
-  <label class="game-mode-radio-row">
-    <input type="radio" name="roundGameGenerationMode" value="standard" onchange="setGameGenerationMode(this.value, true)">
-    <span data-i18n="standardGames">Standard Games</span>
-  </label>
-  <label class="game-mode-radio-row">
-    <input type="radio" name="roundGameGenerationMode" value="unique" onchange="setGameGenerationMode(this.value, true)">
-    <span data-i18n="uniqueGamesPlain">Unique Games</span>
-  </label>
-  <label class="game-mode-radio-row">
-    <input type="radio" name="roundGameGenerationMode" value="balanced" onchange="setGameGenerationMode(this.value, true)">
-    <span data-i18n="balancedGames">Balanced Games</span>
   </label>
 </div>
 
@@ -2124,7 +2958,7 @@
       <div class="scs-topbar-center">
         <div class="scs-topbar-icon-wrap">📡</div>
         <div class="scs-topbar-text">
-          <div class="scs-topbar-title" id="viewerHeaderTitle">Viewer</div>
+          <div class="scs-topbar-title" id="viewerHeaderTitle" data-i18n="liveSession">Live Session</div>
           <div class="scs-topbar-sub" id="viewerHeaderNickname">Live Session</div>
         </div>
       </div>
@@ -2163,7 +2997,7 @@
 
 <div id="myCardContent_page" style="display:none;padding:20px 16px;text-align:center;">
   <div style="font-size:2rem;margin-bottom:10px;">👤</div>
-  <div style="font-size:0.9rem;color:var(--muted);">Your stats are shown on the home screen.</div>
+  <div style="font-size:0.9rem;color:var(--muted);" data-i18n="statsShownHome">Your stats are shown on the home screen.</div>
   <button class="btn-save" style="margin-top:16px" onclick="showHomeScreen()">← Back to Home</button>
 </div>
 
@@ -2176,7 +3010,7 @@
   <div id="recentMatchesPage" class="page" style="display:none;">
     <div class="sheet-header">
       <div class="sheet-header-spacer"></div>
-      <span class="sheet-title">🏸 Recent Matches</span>
+      <span class="sheet-title">🏸 <span data-i18n="recentMatches">Recent Matches</span></span>
       <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
     </div>
     <div id="mcMatches" style="padding:0 16px 32px;">
@@ -2194,7 +3028,7 @@
   <div class="sheet-header">
       <div class="sheet-header-spacer"></div>
       <span class="sheet-title" data-i18n="help">❓ Help</span>
-      <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
+      <button class="sheet-close-btn" onclick="closeHelpToModeSelection()">✕</button>
     </div>
 
 <!-- Search bar -->
@@ -2230,7 +3064,7 @@
 
   <div class="newImport-selected-section">
     <div class="newImport-selected-header">
-      <strong>Selected (<span id="newImportSelectedCount">0</span>)</strong>
+      <strong><span data-i18n="selectedLabel">Selected</span> (<span id="newImportSelectedCount">0</span>)</strong>
     </div>
     <div id="newImportSelectedCards"
          class="newImport-cards-container newImport-selected-container">
@@ -2239,7 +3073,7 @@
       <button class="newImport-clear-btn" onclick="newImportClearSelected()" data-i18n="clearBtn">Clear</button>
     </div>
     <div class="newImport-footer">
-      <button class="newImport-ok-btn" id="newImportAddBtn" onclick="addPlayersFromInputUI(false)" data-i18n="add">Add</button>
+      <button class="newImport-ok-btn" id="newImportAddBtn" onclick="addPlayersFromInputUI(false)" data-i18n="add" disabled aria-disabled="true">Add</button>
       <button class="newImport-replace-btn" id="newImportReplaceBtn" onclick="addPlayersFromInputUI(true)" style="display:none;" data-i18n="replaceBtn">Replace</button>
       <button class="newImport-cancel-btn" onclick="newImportHideModal()" data-i18n="cancel">Cancel</button>
     </div>
@@ -2368,7 +3202,7 @@
 <!-- Avatar + Name + Ratings -->
 
 <div class="profile-identity">
-  <img id="pcAvatar" src="male.png?v=164" class="profile-avatar">
+  <img id="pcAvatar" src="male.png?v=856" class="profile-avatar">
   <div class="profile-identity-info">
     <div class="profile-name-row">
       <div id="pcName" class="profile-name"></div>
@@ -2403,17 +3237,6 @@
 
   </div>
 
-  <!-- ONBOARDING OVERLAY -->
-
-  <div id="onboardingOverlay" class="onboarding-overlay" style="display:none;">
-    <div class="onboarding-card">
-      <div class="onboarding-icon">🏸</div>
-      <div class="onboarding-title" id="onboardingTitle" data-i18n="welcomeTitle">Welcome</div>
-      <div class="onboarding-msg" id="onboardingMsg"></div>
-      <button class="onboarding-btn" id="onboardingBtn" data-i18n="getStarted">Get Started</button>
-    </div>
-  </div>
-
   <!-- PAYWALL OVERLAY -->
 
   <div id="paywallOverlay" class="paywall-overlay" style="display:none;">
@@ -2427,7 +3250,7 @@
     <div class="paywall-feature" data-i18n="subFeature4">✓ Players &amp; Fixed Pairs management</div>
     <div class="paywall-feature" data-i18n="subFeature2">✓ Live rounds &amp; scoring</div>
     <div class="paywall-feature" data-i18n="subFeature1">✓ Full stats &amp; session history</div>
-    <div class="paywall-feature" data-i18n="subFeature5">✓ Viewer mode — watch live scores</div>
+    <div class="paywall-feature" data-i18n="subFeature5">✓ Player mode — view slots and live scores</div>
   </div>
 
   <div class="paywall-price">¥500 <span>/ year</span></div>
@@ -2443,12 +3266,16 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=168')
+        navigator.serviceWorker.register('./sw.js?v=1091', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen
             reg.update();
             setInterval(function() { reg.update(); }, 15 * 60 * 1000);
+            document.addEventListener('visibilitychange', function() {
+              if (document.visibilityState === 'visible') reg.update();
+            });
+            window.addEventListener('pageshow', function() { reg.update(); });
             // When a new SW is waiting, activate it for the next clean app open
             reg.addEventListener('updatefound', function() {
               var newWorker = reg.installing;
@@ -2461,9 +3288,12 @@
           })
           .catch(function(err) { console.log('SW failed:', err); });
 
-        // Avoid forced reloads while the user is active; fresh assets load next open.
+        // Reload once when the new worker takes control. This is required for
+        // already-installed standalone shortcuts that retain old CSS in memory.
         navigator.serviceWorker.addEventListener('controllerchange', function() {
-          window.__scsUpdateReady = true;
+          if (window.__scsControllerReloaded) return;
+          window.__scsControllerReloaded = true;
+          window.location.reload();
         });
       });
     }
@@ -2525,7 +3355,7 @@ style="display:none;font-size:0.72rem;color:var(--accent);word-break:break-all;m
     <!-- Sticky report header -->
     <div class="r2-header">
       <div class="r2-header-top">
-        <span class="r2-title">📊 Report</span>
+        <span class="r2-title">📊 <span data-i18n="report">Report</span></span>
         <button class="sheet-close-btn" onclick="showHomeScreen()">✕</button>
       </div>
 
@@ -2603,5 +3433,161 @@ style="display:none;font-size:0.72rem;color:var(--accent);word-break:break-all;m
     </div>
   </div>
 
+  <!-- Build 358: independent first-time Guided Functions for Player, Organiser and Club Manager. -->
+  <div id="scsGuidedFunctions" class="scs-guide-overlay" hidden aria-hidden="true">
+    <section class="scs-guide-page" role="dialog" aria-modal="true" aria-labelledby="scsGuideTitle">
+      <header class="scs-guide-header">
+        <button type="button" class="scs-guide-close" onclick="scsCloseGuidedFunctions(false)" aria-label="Close">✕</button>
+      </header>
+      <div class="scs-guide-hero">
+        <div class="scs-guide-role-icon" id="scsGuideRoleIcon">🏸</div>
+        <div class="scs-guide-kicker" id="scsGuideKicker">GUIDED FUNCTIONS</div>
+        <h2 id="scsGuideTitle">Let’s get you ready</h2>
+        <p id="scsGuideSubtitle">Complete only what you need. Your existing app remains unchanged.</p>
+      </div>
+      <div class="scs-guide-progress"><span id="scsGuideProgressBar"></span></div>
+      <div id="scsGuideSteps" class="scs-guide-steps"></div>
+    </section>
+  </div>
+
+  <div id="roundsTemplateActionOverlay" class="offline-prepare-overlay" hidden onclick="if(event.target===this)SCSOfflineRounds.closeTemplateActions()">
+    <section class="offline-prepare-sheet rounds-template-action-sheet" role="dialog" aria-modal="true" aria-labelledby="roundsTemplateActionTitle">
+      <button class="offline-prepare-close" type="button" aria-label="Close" onclick="SCSOfflineRounds.closeTemplateActions()">×</button>
+      <div class="offline-prepare-head">
+        <strong id="roundsTemplateActionTitle">Rounds Template</strong>
+        <small>Create a new prepared-round template or edit an existing template.</small>
+      </div>
+      <div class="rounds-template-action-grid">
+        <button class="rounds-template-action-btn is-create" type="button" onclick="SCSOfflineRounds.openTemplateCreatePicker()">
+          <span class="rounds-template-action-icon" aria-hidden="true">＋</span>
+          <span><strong>Create Template</strong><small>Choose the round configuration and create a new template.</small></span>
+          <span class="rounds-template-action-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="rounds-template-action-btn is-edit" type="button" onclick="SCSOfflineRounds.openTemplateEditPicker()">
+          <span class="rounds-template-action-icon" aria-hidden="true">✎</span>
+          <span><strong>Edit Template</strong><small>Choose a saved configuration, then open and fine-tune its rounds.</small></span>
+          <span class="rounds-template-action-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div id="offlinePrepareOverlay" class="offline-prepare-overlay" hidden>
+    <section class="offline-prepare-sheet offline-prepare-auto" role="dialog" aria-modal="true" aria-labelledby="offlinePrepareTitle">
+      <button class="offline-prepare-close" type="button" aria-label="Close" onclick="SCSOfflineRounds.closePrepare()">×</button>
+      <div class="offline-prepare-head">
+        <strong id="offlinePrepareTitle">Prepare Round iMode</strong>
+        <small>Settings start from Round Mode. Adjust them to find an exact shared-library match.</small>
+      </div>
+
+      <div class="offline-requirements-card" aria-live="polite">
+        <div class="offline-requirements-head">
+          <span><strong>Selected Setup</strong><small>Matched by settings and player count</small></span>
+          <span id="offlineRequirementBadge" class="offline-requirement-badge">Checking</span>
+        </div>
+        <div class="offline-requirements-grid">
+          <div><small>Players</small><strong id="offlineRequirementPlayers">—</strong></div>
+          <div><small>Courts</small><strong id="offlineRequirementCourts">—</strong></div>
+          <div><small>Format</small><strong id="offlineRequirementFormat">Doubles</strong></div>
+          <div><small>Algorithm</small><strong id="offlineRequirementAlgorithm">—</strong></div>
+          <div id="offlineRequirementTopWrap" hidden><small>Top Rated</small><strong id="offlineRequirementTop">—</strong></div>
+          <div id="offlineRequirementBottomWrap" hidden><small>Bottom Rated</small><strong id="offlineRequirementBottom">—</strong></div>
+          <div><small>Player Order</small><strong id="offlineRequirementOrder">—</strong></div>
+          <div><small>Unique Pair</small><strong id="offlineRequirementUnique">—</strong></div>
+        </div>
+        <div id="offlineRequirementMessage" class="offline-requirement-message">Checking current setup…</div>
+      </div>
+
+      <div class="offline-prepare-field offline-prepare-manual-field">
+        <label>Game Format</label>
+        <div class="offline-prepare-segment offline-prepare-format-segment">
+          <button id="offlinePrepareDoubles" type="button" onclick="SCSOfflineRounds.setGameType('doubles')">Doubles</button>
+          <button id="offlinePrepareMixed" type="button" onclick="SCSOfflineRounds.setGameType('mixed')">Mixed</button>
+          <button type="button" disabled title="Shared Singles libraries are not available yet">Singles</button>
+          <button type="button" disabled title="Shared Both-format libraries are not available yet">Both</button>
+        </div>
+      </div>
+      <div class="offline-prepare-field offline-prepare-manual-field">
+        <label>Algorithm</label>
+        <div class="offline-prepare-segment">
+          <button id="offlinePrepareStandard" type="button" onclick="SCSOfflineRounds.setAlgorithm('standard')">Standard</button>
+          <button id="offlinePrepareBalanced" type="button" onclick="SCSOfflineRounds.setAlgorithm('balanced')">Balanced</button>
+        </div>
+      </div>
+      <div id="offlinePrepareBalancedCounts" class="offline-prepare-capacity-row offline-prepare-manual-field" hidden>
+        <label class="offline-prepare-control"><span>Top Rated Players</span><input id="offlinePrepareTopRated" type="number" inputmode="numeric" min="0" max="100" step="1" value="8" aria-label="Number of top rated players"></label>
+        <label class="offline-prepare-control"><span>Bottom Rated Players</span><input id="offlinePrepareBottomRated" type="number" inputmode="numeric" min="0" max="100" step="1" value="7" aria-label="Number of bottom rated players"></label>
+      </div>
+      <div class="offline-prepare-random-row offline-prepare-manual-field">
+        <span>
+          <strong>Random Player Order</strong>
+          <small>Shuffle once before generating Round 1.</small>
+        </span>
+        <label class="switch">
+          <input id="offlinePreparePlayerOrderToggle" type="checkbox" onchange="SCSOfflineRounds.setRandomOrder(this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="offline-prepare-random-row offline-prepare-manual-field">
+        <span>
+          <strong>Unique Pair Mode</strong>
+          <small>Avoid repeated pairs when an unused pairing is available.</small>
+        </span>
+        <label class="switch">
+          <input id="offlinePrepareUniqueToggle" type="checkbox" onchange="SCSOfflineRounds.setOfflineUniquePairMode(this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="offline-prepare-capacity-row offline-prepare-manual-field">
+        <label class="offline-prepare-control">
+          <span>Players</span>
+          <input id="offlinePreparePlayers" type="number" inputmode="numeric" min="4" max="100" step="1" value="10" aria-label="Number of players">
+        </label>
+        <label class="offline-prepare-control offline-prepare-courts-control">
+          <span>Courts</span>
+          <div class="offline-prepare-court-stepper" role="group" aria-label="Number of courts">
+            <button id="offlineCourtsMinus" type="button" aria-label="Remove court" onclick="SCSOfflineRounds.adjustPrepareCourts(-1)">−</button>
+            <strong id="offlineCourtsValue">1</strong>
+            <button id="offlineCourtsPlus" type="button" aria-label="Add court" onclick="SCSOfflineRounds.adjustPrepareCourts(1)">+</button>
+          </div>
+          <select id="offlineCourtsCount" hidden aria-hidden="true" tabindex="-1"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option></select>
+        </label>
+      </div>
+      <div class="offline-prepare-grid offline-prepare-rounds-row offline-prepare-manual-field">
+        <label>Fixed Pairs
+          <select id="offlinePrepareFixedPairs" onchange="SCSOfflineRounds.setFixedPairCount(this.value)">
+            <option value="0">None</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          </select>
+        </label>
+      </div>
+      <div id="offlinePrepareMixedCounts" class="offline-prepare-capacity-row offline-prepare-mixed-counts offline-prepare-manual-field" hidden>
+        <label class="offline-prepare-control">
+          <span>Men</span>
+          <input id="offlinePrepareMen" type="number" inputmode="numeric" min="0" max="60" step="1" value="5" aria-label="Number of men">
+        </label>
+        <label class="offline-prepare-control">
+          <span>Women</span>
+          <input id="offlinePrepareWomen" type="number" inputmode="numeric" min="0" max="60" step="1" value="5" aria-label="Number of women">
+        </label>
+      </div>
+      <div id="offlineRoundsCountRow" class="offline-prepare-grid offline-prepare-rounds-row offline-prepare-manual-field">
+        <label>Rounds
+          <select id="offlineRoundsCount"><option>5</option><option>10</option><option>20</option><option selected>30</option><option>50</option></select>
+        </label>
+      </div>
+      <div id="offlineRoundsProgress" class="offline-rounds-progress" hidden aria-live="polite">
+        <div class="offline-rounds-progress-head">
+          <strong id="offlineRoundsProgressTitle">Generating rounds…</strong>
+          <span id="offlineRoundsProgressCount">0 / 25</span>
+        </div>
+        <div class="offline-rounds-progress-track" aria-hidden="true"><span id="offlineRoundsProgressBar"></span></div>
+        <div id="offlineRoundsProgressDetail" class="offline-rounds-progress-detail">Preparing…</div>
+      </div>
+      <div id="offlineRoundsResult" class="offline-rounds-result" hidden></div>
+      <div id="offlineRoundsStatus" class="offline-prepare-status">Checking…</div>
+      <button id="prepareOfflineRoundsBtn" class="offline-prepare-action" type="button">Use Round iMode</button>
+    </section>
+  </div>
 </body>
 </html>

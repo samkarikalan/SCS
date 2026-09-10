@@ -35223,3 +35223,54 @@ html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .v
   color:#fff !important;
   -webkit-text-fill-color:#fff !important;
 }
+
+/* Build 1131 — Post Slot visual polish only: softer colours + rounded controls. */
+body.tile-style-color #vsDateSheetOverlay {
+  --post-soft-purple:rgba(118,38,213,.14);
+  --post-soft-cyan:rgba(22,201,199,.12);
+  --post-soft-pink:rgba(245,29,134,.11);
+  --post-soft-border:rgba(255,255,255,.12);
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"],
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"],
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] {
+  background:rgba(19,22,31,.96) !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"]>.vs-sample-card {background:var(--post-soft-purple)!important;}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"]>.vs-sample-card {background:var(--post-soft-cyan)!important;}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"]>.vs-sample-card {background:var(--post-soft-pink)!important;}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel>.vs-sample-card+.vs-sample-card {border-top:1px solid var(--post-soft-border)!important;}
+
+body.tile-style-color #vsDateSheetOverlay .vs-create-tabs {
+  gap:7px!important;padding:7px!important;background:rgba(18,22,31,.82)!important;
+  border-radius:16px!important;overflow:hidden;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab:first-child,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab:last-child {
+  border-radius:12px!important;background:rgba(255,255,255,.055)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-session.is-active {background:rgba(118,38,213,.28)!important;border-color:rgba(139,124,255,.42)!important;}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-players.is-active {background:rgba(22,201,199,.24)!important;border-color:rgba(62,214,210,.38)!important;}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-post.is-active {background:rgba(245,29,134,.22)!important;border-color:rgba(245,95,164,.36)!important;}
+
+body.tile-style-color #vsDateSheetOverlay :is(button,.vs-btn,.vs-stepper-btn,.vs-pill,.vs-sample-add-btn,.vs-sample-input,.vs-sample-time-box,.vs-sample-counter-card,.vs-sample-segment) {
+  border-radius:12px!important;
+}
+
+body.tile-style-color.app-light #vsDateSheetOverlay {
+  --post-soft-purple:rgba(118,38,213,.065);
+  --post-soft-cyan:rgba(22,201,199,.065);
+  --post-soft-pink:rgba(245,29,134,.055);
+  --post-soft-border:rgba(23,31,45,.09);
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"],
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"],
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] {background:#f6f7f9!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tabs {background:#eef1f5!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab {background:rgba(255,255,255,.78)!important;border-color:rgba(23,31,45,.09)!important;color:#526071!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-session.is-active {background:rgba(118,38,213,.12)!important;color:#5f2aa7!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-players.is-active {background:rgba(22,201,199,.12)!important;color:#087f7c!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-post.is-active {background:rgba(245,29,134,.10)!important;color:#a91d61!important;}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-sample-field>label {color:#263244!important;text-shadow:none!important;}
