@@ -2919,6 +2919,18 @@ async function vaultSlotsRefresh() {
 function vaultSlotsCloseDateSheet(e) {
   if (e && e.target !== document.getElementById('vsDateSheetOverlay')) return;
 
+  // Build 1135: the title-bar X acts as Back while editing a Create Slot
+  // section.  Return to the Summary menu instead of closing the entire
+  // composer.  Clicking the dimmed overlay still performs a full close.
+  if (!e) {
+    var createForm = document.querySelector('#vsDateSheetContent .vs-post-sample-layout');
+    var summary = createForm && createForm.querySelector('.vs-create-summary');
+    if (createForm && summary && getComputedStyle(summary).display === 'none') {
+      if (typeof vaultSlotsSetCreateTab === 'function') vaultSlotsSetCreateTab('summary');
+      return;
+    }
+  }
+
   // Create Slot is a child sheet of Slot Manager.  Closing this sheet must
   // always return to Slot Manager, including when Slot Manager itself was
   // opened from Assist.  The Slot Manager close button is responsible for
