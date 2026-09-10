@@ -35004,3 +35004,15 @@ html.app-light #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#va
   background:#087f73 !important;
 }
 #homeVaultGrid #vaultUpcomingSlots .vault-slot-tab-summary { display:none !important; }
+
+/* Build 1128: Slot Manager payment badges are direct Paid/Unpaid toggles. */
+.vs-payment-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  line-height: 1.2;
+  margin: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.vs-payment-toggle:disabled { cursor: default; opacity: .65; }

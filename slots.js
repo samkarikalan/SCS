@@ -1832,9 +1832,9 @@ function vaultSlotsManagePlayersHtml(draft) {
       const name = claimDisplayName(c);
       const isGuest = !!(c.player && (c.player.guest || c.player.unrated)) || /\(guest(?:\s+[a-z0-9]+)?\)$/i.test(String(name || ''));
       const ratingNum = Number(c.player && c.player.clubRating);
-      const paidHtml = _vsClaimPaid(c)
-        ? '<span class="mc-slot-paid-badge">' + _vsEscape(t('paid') || 'Paid') + '</span>'
-        : (rowKind === 'confirmed' && _vsSlotCostPerPlayer(slot) ? '<span class="mc-slot-unpaid-badge">' + _vsEscape(t('unpaid') || 'Unpaid') + '</span>' : '');
+      const paidHtml = rowKind === 'confirmed' && _vsSlotCostPerPlayer(slot)
+        ? '<button type="button" class="vs-payment-toggle ' + (_vsClaimPaid(c) ? 'mc-slot-paid-badge' : 'mc-slot-unpaid-badge') + '" onclick="vaultSlotsToggleClaimPaid(\'' + _vsEscape(c.id) + '\',\'' + _vsEscape(slotId) + '\')" aria-pressed="' + (_vsClaimPaid(c) ? 'true' : 'false') + '" title="Toggle paid / unpaid">' + _vsEscape(_vsClaimPaid(c) ? (t('paid') || 'Paid') : (t('unpaid') || 'Unpaid')) + '</button>'
+        : '';
       const ratingHtml = (!isGuest && Number.isFinite(ratingNum)) ? '<span class="mc-slot-rating-badge">' + ratingNum.toFixed(1) + '</span>' : '';
       const prefix = rowKind === 'waitlist'
         ? '<span class="mc-slot-wait-num">⏳' + (i + 1) + '</span>'
@@ -2007,9 +2007,9 @@ function vaultSlotsRenderManageDraft(draft) {
       const isGuest = !!(c.player && (c.player.guest || c.player.unrated)) || /\(guest(?:\s+[a-z0-9]+)?\)$/i.test(String(name || ''));
       const ratingRaw = c.player && c.player.clubRating;
       const ratingNum = Number(ratingRaw);
-      const paidHtml = _vsClaimPaid(c)
-        ? `<span class="mc-slot-paid-badge">${_vsEscape(t('paid') || 'Paid')}</span>`
-        : (rowKind === 'confirmed' && _vsSlotCostPerPlayer(slot) ? `<span class="mc-slot-unpaid-badge">${_vsEscape(t('unpaid') || 'Unpaid')}</span>` : '');
+      const paidHtml = rowKind === 'confirmed' && _vsSlotCostPerPlayer(slot)
+        ? `<button type="button" class="vs-payment-toggle ${_vsClaimPaid(c) ? 'mc-slot-paid-badge' : 'mc-slot-unpaid-badge'}" onclick="vaultSlotsToggleClaimPaid('${_vsEscape(c.id)}','${_vsEscape(slotId)}')" aria-pressed="${_vsClaimPaid(c) ? 'true' : 'false'}" title="Toggle paid / unpaid">${_vsEscape(_vsClaimPaid(c) ? (t('paid') || 'Paid') : (t('unpaid') || 'Unpaid'))}</button>`
+        : '';
       const ratingHtml = (!isGuest && isFinite(ratingNum)) ? `<span class="mc-slot-rating-badge">${ratingNum.toFixed(1)}</span>` : '';
       const prefix = rowKind === 'waitlist'
         ? `<span class="mc-slot-wait-num">⏳${i + 1}</span>`
@@ -2482,6 +2482,54 @@ async function vaultSlotsDeleteFromManage(slotId) {
     await vaultSlotsRefresh();
   } catch (e) {
     alert(e.message || (t('somethingWentWrong') || 'Something went wrong'));
+  }
+}
+
+var _vsPaymentToggleBusy = new Set();
+async function vaultSlotsToggleClaimPaid(claimId, slotId) {
+  if (!claimId || !slotId || _vsPaymentToggleBusy.has(String(claimId))) return;
+  if (typeof sbPatch !== 'function') return;
+
+  const draft = _vsManageDraft && String(_vsManageDraft.slotId) === String(slotId) ? _vsManageDraft : null;
+  const claim = draft && draft.slot && Array.isArray(draft.slot.claims)
+    ? draft.slot.claims.find(c => String(c.id) === String(claimId))
+    : null;
+  if (!claim || claim._draftAdded || String(claim.status || '').toLowerCase() !== 'confirmed') return;
+
+  const wasPaid = _vsClaimPaid(claim);
+  const nextPaidAt = wasPaid ? null : new Date().toISOString();
+  _vsPaymentToggleBusy.add(String(claimId));
+
+  // Optimistic update keeps the Slot Manager sheet in place while the server write runs.
+  claim.paid_at = nextPaidAt;
+  vaultSlotsRefreshManagePlayers(draft);
+
+  try {
+    await sbPatch('slot_claims', `id=eq.${claimId}`, { paid_at: nextPaidAt });
+    if (draft.originalSlot && Array.isArray(draft.originalSlot.claims)) {
+      const originalClaim = draft.originalSlot.claims.find(c => String(c.id) === String(claimId));
+      if (originalClaim) originalClaim.paid_at = nextPaidAt;
+    }
+    vaultSlotsScheduleSoftRefresh(slotId);
+    if (typeof myCardSlotsScheduleRefresh === 'function') myCardSlotsScheduleRefresh(true);
+    if (typeof showToast === 'function') showToast(nextPaidAt ? (t('paymentMarkedPaid') || 'Payment marked paid') : (t('unpaid') || 'Unpaid'));
+  } catch (e) {
+    claim.paid_at = wasPaid ? (claim.paid_at || new Date().toISOString()) : null;
+    // Reload the authoritative value after a failed server write.
+    const refreshedSlot = await vaultSlotsLoadOne(slotId).catch(() => null);
+    if (refreshedSlot && _vsManageDraft && String(_vsManageDraft.slotId) === String(slotId)) {
+      const preserveDirty = !!_vsManageDraft.dirty;
+      const preserveRemoved = _vsManageDraft.removedClaimIds;
+      _vsManageDraft.slot.claims = vaultSlotsCreateManageDraft(refreshedSlot).slot.claims;
+      _vsManageDraft.dirty = preserveDirty;
+      _vsManageDraft.removedClaimIds = preserveRemoved;
+    }
+    vaultSlotsRefreshManagePlayers(_vsManageDraft);
+    if (typeof showToast === 'function') showToast(e.message || 'Unable to update payment');
+    else alert(e.message || 'Unable to update payment');
+  } finally {
+    _vsPaymentToggleBusy.delete(String(claimId));
+    if (_vsManageDraft) vaultSlotsRefreshManagePlayers(_vsManageDraft);
   }
 }
 
