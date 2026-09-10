@@ -34351,28 +34351,81 @@ body.app-light .myhub-home-sections :is(.myhub-home-icon,.myhub-home-count,.myhu
   background:var(--scs-light-control)!important;border-color:rgba(31,55,96,.12)!important;color:var(--scs-light-fg)!important;
 }
 
-/* ---------- Settings: one card family, different card colours. ---------- */
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+1){background:var(--scs-dark-tile-3)!important;}
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+2){background:var(--scs-dark-tile-1)!important;}
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+3){background:var(--scs-dark-tile-2)!important;}
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+4){background:var(--scs-dark-tile-4)!important;}
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+5){background:var(--scs-dark-tile-5)!important;}
-body:not(.app-light) #settingsPage .pref-card:nth-of-type(6n+0){background:var(--scs-dark-tile-6)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+1){background:var(--scs-light-tile-3)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+2){background:var(--scs-light-tile-1)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+3){background:var(--scs-light-tile-2)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+4){background:var(--scs-light-tile-4)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+5){background:var(--scs-light-tile-5)!important;}
-body.app-light #settingsPage .pref-card:nth-of-type(6n+0){background:var(--scs-light-tile-6)!important;}
-#settingsPage .pref-card{border-color:rgba(128,145,180,.24)!important;}
-body:not(.app-light) #settingsPage .pref-card :is(h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label){color:var(--scs-dark-fg)!important;}
-body:not(.app-light) #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub){color:var(--scs-dark-sub)!important;}
-body.app-light #settingsPage .pref-card :is(h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label){color:var(--scs-light-fg)!important;}
-body.app-light #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub){color:var(--scs-light-sub)!important;}
-#settingsPage :is(.pref-pill,.btn,.settings-sync-now-btn,.settings-sync-btn){background:var(--scs-dark-control)!important;border-color:rgba(255,255,255,.20)!important;}
-body.app-light #settingsPage :is(.pref-pill,.btn,.settings-sync-now-btn,.settings-sync-btn){background:var(--scs-light-control)!important;border-color:rgba(31,55,96,.15)!important;color:var(--scs-light-fg)!important;}
-#settingsPage :is(.pref-pill.active,.btn.active){background:var(--accent)!important;color:#fff!important;}
+/* ---------- Settings: one component family, four deliberate surfaces. ----------
+   Use html.app-light as the source of truth because the theme class is applied
+   to <html> before <body> exists during PWA startup. This prevents a light
+   card from inheriting dark-mode white text during navigation/repaint. ---------- */
+#settingsPage #settingsTrialCard,
+#settingsPage #appearanceCard,
+#settingsPage .sync-settings-card,
+#settingsPage .pref-card:last-of-type {
+  border-color: rgba(128,145,180,.24) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.10) !important;
+}
 
+/* Dark theme: every settings card is distinct from the page and from its neighbours. */
+html:not(.app-light) #settingsPage #settingsTrialCard { background: var(--scs-dark-tile-1) !important; }
+html:not(.app-light) #settingsPage #appearanceCard { background: var(--scs-dark-tile-4) !important; }
+html:not(.app-light) #settingsPage .sync-settings-card { background: var(--scs-dark-tile-2) !important; }
+html:not(.app-light) #settingsPage .pref-card:last-of-type { background: var(--scs-dark-tile-3) !important; }
+
+/* Light theme: same identities, tuned for dark readable text. */
+html.app-light #settingsPage #settingsTrialCard { background: var(--scs-light-tile-1) !important; }
+html.app-light #settingsPage #appearanceCard { background: var(--scs-light-tile-4) !important; }
+html.app-light #settingsPage .sync-settings-card { background: var(--scs-light-tile-2) !important; }
+html.app-light #settingsPage .pref-card:last-of-type { background: var(--scs-light-tile-3) !important; }
+
+html:not(.app-light) #settingsPage .pref-card :is(
+  h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label,.pref-row-value,
+  .font-scale-value,.font-scale-a,.settings-last-sync
+) { color: var(--scs-dark-fg) !important; text-shadow: none !important; }
+html:not(.app-light) #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub) {
+  color: var(--scs-dark-sub) !important; text-shadow: none !important;
+}
+html.app-light #settingsPage .pref-card :is(
+  h1,h2,h3,h4,strong,label,.pref-row-title,.pref-row-label,.pref-row-value,
+  .font-scale-value,.font-scale-a,.settings-last-sync
+) { color: var(--scs-light-fg) !important; text-shadow: none !important; }
+html.app-light #settingsPage .pref-card :is(p,small,.pref-hint,.pref-row-sub) {
+  color: var(--scs-light-sub) !important; text-shadow: none !important;
+}
+
+/* Controls must be visibly separate from their parent card, never the page colour. */
+html:not(.app-light) #settingsPage :is(
+  .pref-pill,.settings-sync-now-btn,.settings-sync-btn,.settings-sync-select,.ios-font-scale
+) {
+  background: rgba(8,14,28,.34) !important;
+  border-color: rgba(255,255,255,.20) !important;
+  color: var(--scs-dark-fg) !important;
+  text-shadow: none !important;
+}
+html.app-light #settingsPage :is(
+  .pref-pill,.settings-sync-now-btn,.settings-sync-btn,.settings-sync-select,.ios-font-scale
+) {
+  background: rgba(255,255,255,.72) !important;
+  border-color: rgba(31,55,96,.15) !important;
+  color: var(--scs-light-fg) !important;
+  text-shadow: none !important;
+}
+#settingsPage .pref-pill.active,
+#settingsPage :is(.settings-sync-now-btn,.settings-sync-btn):active {
+  background: var(--accent) !important;
+  color: #fff !important;
+}
+#settingsPage .pref-pill-group {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#settingsPage .settings-sync-now-btn {
+  min-height: 48px;
+  font-weight: 800 !important;
+}
+#settingsPage .settings-sync-select {
+  font-weight: 750 !important;
+}
+#settingsPage .pref-divider {
+  opacity: .55;
+}
 /* ---------- Manage / My Slots overview tiles. ---------- */
 body:not(.app-light) :is(#vaultUpcomingCollapse,#mcUpcomingCollapse){background:var(--scs-dark-tile-2)!important;color:var(--scs-dark-fg)!important;}
 body:not(.app-light) :is(#vaultCompletedCollapse,#mcCompletedCollapse){background:var(--scs-dark-tile-3)!important;color:var(--scs-dark-fg)!important;}
