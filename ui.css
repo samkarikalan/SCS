@@ -35016,3 +35016,210 @@ html.app-light #homeVaultGrid #vaultUpcomingSlots :is(#vaultUpcomingCollapse,#va
   touch-action: manipulation;
 }
 .vs-payment-toggle:disabled { cursor: default; opacity: .65; }
+
+/* ==========================================================================\n   BUILD 1130 — Add/Post Slot follows the Home page colour system\n   Scope: create/post slot sheet only. Functional markup/handlers unchanged.\n   The sheet itself stays a neutral page surface; individual sections carry\n   distinct palette colours, matching the Home page's card hierarchy.\n   ========================================================================== */
+body.tile-style-color #vsDateSheetOverlay .bottom-sheet-panel {
+  background: linear-gradient(180deg,#111827 0%,#0f172a 100%) !important;
+  color:#f8fafc !important;
+}
+body.tile-style-color #vsDateSheetOverlay #vsDateSheetContent,
+body.tile-style-color #vsDateSheetOverlay .vs-post-form-compact,
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel {
+  background:transparent !important;
+}
+
+/* Header/date card: neutral like Home page container, not a saturated step colour. */
+body.tile-style-color #vsDateSheetOverlay .vs-post-sample-hero {
+  background:linear-gradient(145deg,#1f2937,#182234) !important;
+  border:1px solid rgba(148,163,184,.22) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.18) !important;
+  color:#f8fafc !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-post-sample-hero :is(.vs-post-sample-kicker,.vs-post-sample-title,.vs-post-sample-badge) {
+  color:#f8fafc !important;
+  -webkit-text-fill-color:#f8fafc !important;
+  text-shadow:none !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-post-sample-badge {
+  background:#334155 !important;
+  border-color:#64748b !important;
+}
+
+/* Three steps: same page strip, distinct accents; no single colour floods the page. */
+body.tile-style-color #vsDateSheetOverlay .vs-create-tabs {
+  background:#182234 !important;
+  border:1px solid rgba(148,163,184,.20) !important;
+  border-bottom:1px solid rgba(148,163,184,.20) !important;
+  border-radius:14px !important;
+  overflow:hidden !important;
+  margin-bottom:14px !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab {
+  background:transparent !important;
+  border:0 !important;
+  color:#94a3b8 !important;
+  -webkit-text-fill-color:#94a3b8 !important;
+  text-shadow:none !important;
+  box-shadow:none !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab.is-active {
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-session.is-active { background:#5b4fd6 !important; box-shadow:inset 0 -3px 0 #a5b4fc !important; }
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-players.is-active { background:#087f73 !important; box-shadow:inset 0 -3px 0 #5eead4 !important; }
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-post.is-active { background:#b45309 !important; box-shadow:inset 0 -3px 0 #fcd34d !important; }
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel { margin-top:0 !important; }
+
+/* Home-style section cards: each card has its own colour identity. */
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card {
+  border-radius:18px !important;
+  border-width:1px !important;
+  margin:0 0 14px !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.16) !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(1) {
+  background:linear-gradient(145deg,#155e75,#164e63) !important;
+  border-color:#22d3ee !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(2) {
+  background:linear-gradient(145deg,#3730a3,#312e81) !important;
+  border-color:#818cf8 !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"] > .vs-sample-card {
+  background:linear-gradient(145deg,#0f766e,#115e59) !important;
+  border-color:#2dd4bf !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(1) {
+  background:linear-gradient(145deg,#9a3412,#7c2d12) !important;
+  border-color:#fb923c !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(2) {
+  background:linear-gradient(145deg,#9d174d,#831843) !important;
+  border-color:#f472b6 !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card :is(
+  .vs-sample-card-title,.vs-sample-field>label,.vs-sample-hint,.vs-create-optional-label
+) {
+  color:#f8fafc !important;
+  -webkit-text-fill-color:#f8fafc !important;
+  text-shadow:none !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-sample-hint { opacity:.86 !important; }
+
+/* Inputs/segmented controls remain neutral, readable surfaces inside coloured cards. */
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(
+  .vs-sample-input,.vs-sample-time-box,.vs-stepper,.vs-sample-stepper,
+  .vs-segmented,.vs-pill-row,.vs-initial-players-box
+) {
+  background:#172033 !important;
+  border-color:#53627b !important;
+  color:#f8fafc !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(.vs-stepper-btn,.vs-stepper-value,.vs-pill) {
+  background:#22304a !important;
+  border-color:#53627b !important;
+  color:#f8fafc !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-pill.vs-pill-active {
+  background:#4f46e5 !important;
+  border-color:#818cf8 !important;
+}
+body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-stepper-btn:last-child {
+  background:#2563eb !important;
+  border-color:#60a5fa !important;
+}
+
+/* Light mode: same card identities using pastel counterparts and solid dark text. */
+body.tile-style-color.app-light #vsDateSheetOverlay .bottom-sheet-panel,
+html.app-light body.tile-style-color #vsDateSheetOverlay .bottom-sheet-panel {
+  background:#f5f7fb !important;
+  color:#172033 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-post-sample-hero,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-post-sample-hero {
+  background:#ffffff !important;
+  border-color:#d8deea !important;
+  color:#172033 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-post-sample-hero :is(.vs-post-sample-kicker,.vs-post-sample-title),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-post-sample-hero :is(.vs-post-sample-kicker,.vs-post-sample-title) {
+  color:#172033 !important;
+  -webkit-text-fill-color:#172033 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-post-sample-badge,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-post-sample-badge {
+  background:#e8edf5 !important;
+  border-color:#c7d0df !important;
+  color:#334155 !important;
+  -webkit-text-fill-color:#334155 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tabs,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tabs {
+  background:#fff !important;
+  border-color:#d8deea !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab {
+  color:#667085 !important;
+  -webkit-text-fill-color:#667085 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab.is-active,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab.is-active {
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(1),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(1) {
+  background:#d9f1f4 !important; border-color:#7bcbd2 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(2),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="session"] > .vs-sample-card:nth-of-type(2) {
+  background:#e5e7fb !important; border-color:#a9afe8 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"] > .vs-sample-card,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="players"] > .vs-sample-card {
+  background:#d9f0e9 !important; border-color:#86cdbb !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(1),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(1) {
+  background:#f8e4d5 !important; border-color:#e5aa7b !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(2),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel[data-panel="post"] > .vs-sample-card:nth-of-type(2) {
+  background:#f6dfe9 !important; border-color:#dda0bb !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card :is(
+  .vs-sample-card-title,.vs-sample-field>label,.vs-sample-hint,.vs-create-optional-label
+),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel > .vs-sample-card :is(
+  .vs-sample-card-title,.vs-sample-field>label,.vs-sample-hint,.vs-create-optional-label
+) {
+  color:#172033 !important;
+  -webkit-text-fill-color:#172033 !important;
+  text-shadow:none !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel :is(
+  .vs-sample-input,.vs-sample-time-box,.vs-stepper,.vs-sample-stepper,.vs-segmented,.vs-pill-row,.vs-initial-players-box
+),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(
+  .vs-sample-input,.vs-sample-time-box,.vs-stepper,.vs-sample-stepper,.vs-segmented,.vs-pill-row,.vs-initial-players-box
+) {
+  background:#fff !important;
+  border-color:#b8c3d4 !important;
+  color:#172033 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel :is(.vs-stepper-btn,.vs-stepper-value,.vs-pill),
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel :is(.vs-stepper-btn,.vs-stepper-value,.vs-pill) {
+  background:#edf1f7 !important;
+  border-color:#c4cedd !important;
+  color:#172033 !important;
+  -webkit-text-fill-color:#172033 !important;
+}
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-pill.vs-pill-active,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-pill.vs-pill-active,
+body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-stepper-btn:last-child,
+html.app-light body.tile-style-color #vsDateSheetOverlay .vs-create-tab-panel .vs-stepper-btn:last-child {
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+}
