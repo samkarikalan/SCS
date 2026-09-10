@@ -2949,10 +2949,10 @@ function vaultSlotsCloseDateSheet(e) {
   const overlay = document.getElementById('vsDateSheetOverlay');
   if (overlay) overlay.style.display = 'none';
 
-  // Leaving Create Slot returns to the normal Slot Manager overview/menu,
-  // not the temporary Add Slot calendar used to choose a date.
-  window._scsVaultAddSlotMode = false;
-  if (typeof _vhsExpandedOverview !== 'undefined' && !_vhsExpandedOverview) _vhsExpandedOverview = 'upcoming';
+  // Build 1136: Create Slot was launched from the Add Slot calendar.
+  // Closing the composer from its Summary returns to that same Add Slot page,
+  // not to the normal Upcoming/Completed overview.
+  window._scsVaultAddSlotMode = true;
   if (typeof renderVaultHomeSlotsUI === 'function') {
     Promise.resolve(renderVaultHomeSlotsUI(false)).catch(function(){});
   }
