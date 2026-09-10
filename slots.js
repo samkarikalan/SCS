@@ -2486,6 +2486,97 @@ async function vaultSlotsDeleteFromManage(slotId) {
 }
 
 var _vsPaymentToggleBusy = new Set();
+
+function _vsSetClaimPaidInSlotList(slots, claimId, slotId, paidAt) {
+  if (!Array.isArray(slots)) return false;
+  var changed = false;
+  slots.forEach(function(slot) {
+    if (!slot || String(slot.id || '') !== String(slotId)) return;
+    var claims = Array.isArray(slot.claims) ? slot.claims : [];
+    claims.forEach(function(c) {
+      if (c && String(c.id || '') === String(claimId)) {
+        c.paid_at = paidAt;
+        changed = true;
+      }
+    });
+  });
+  return changed;
+}
+
+async function _vsApplyClaimPaidLocal(claimId, slotId, paidAt) {
+  claimId = String(claimId || '');
+  slotId = String(slotId || '');
+  if (!claimId || !slotId) return;
+
+  // 1) Update every live in-memory view first so all pages see the same value
+  // immediately, without waiting for Supabase or a manual refresh.
+  if (_vsManageDraft && String(_vsManageDraft.slotId) === slotId) {
+    _vsSetClaimPaidInSlotList([_vsManageDraft.slot], claimId, slotId, paidAt);
+    _vsSetClaimPaidInSlotList([_vsManageDraft.originalSlot], claimId, slotId, paidAt);
+  }
+  _vsSetClaimPaidInSlotList(_mcsRawSlotsCache, claimId, slotId, paidAt);
+  if (_vhsLocalCache && Array.isArray(_vhsLocalCache.slots)) {
+    _vsSetClaimPaidInSlotList(_vhsLocalCache.slots, claimId, slotId, paidAt);
+    _vhsLocalCache.syncedAt = Date.now();
+  }
+
+  // 2) Persist the same mutation into both local slot stores.
+  var clubId = '';
+  try {
+    var club = (typeof getMyClub === 'function') ? getMyClub() : null;
+    clubId = String((club && club.id) || localStorage.getItem('kbrr_my_club_id') || '');
+  } catch (_) {}
+
+  if (clubId && window.SCSOfflineDB) {
+    try {
+      var vaultRow = await SCSOfflineDB.getVaultSlotsCache(clubId).catch(function(){ return null; });
+      if (vaultRow && Array.isArray(vaultRow.slots)) {
+        _vsSetClaimPaidInSlotList(vaultRow.slots, claimId, slotId, paidAt);
+        await SCSOfflineDB.saveVaultSlotsCache(clubId, vaultRow.slots).catch(function(){});
+        _vhsLocalCache = { clubId:clubId, syncedAt:Date.now(), slots:vaultRow.slots };
+        _vhsLocalCacheClubId = clubId;
+      }
+    } catch (_) {}
+
+    try {
+      var snapRow = await SCSOfflineDB.getClubSnapshot(clubId).catch(function(){ return null; });
+      var snap = snapRow && snapRow.data ? snapRow.data : null;
+      if (snap) {
+        if (Array.isArray(snap.slotClaims)) {
+          snap.slotClaims.forEach(function(c) {
+            if (c && String(c.id || '') === claimId) c.paid_at = paidAt;
+          });
+        }
+        _vsSetClaimPaidInSlotList(snap.slots, claimId, slotId, paidAt);
+        snap.syncedAt = Date.now();
+        await SCSOfflineDB.saveClubSnapshot(clubId, snap).catch(function(){});
+      }
+    } catch (_) {}
+  }
+
+  // 3) Repaint any already-mounted local views from the updated cache only.
+  try {
+    if (Array.isArray(_mcsRawSlotsCache) && _mcsRawSlotsCache.length) {
+      _mcsApplyCachedSlotView();
+      var mcSection = document.getElementById('mcUpcomingSlots');
+      if (mcSection) renderMyCardSlotsUI(false);
+    }
+  } catch (_) {}
+  try {
+    var vaultPage = document.getElementById('vaultSlotsPage');
+    if (vaultPage) renderVaultHomeSlotsUI(false);
+  } catch (_) {}
+  try {
+    if (typeof myHubRenderQuickSlots === 'function') myHubRenderQuickSlots();
+  } catch (_) {}
+
+  try {
+    window.dispatchEvent(new CustomEvent('scs:local-claim-updated', {
+      detail:{ claimId:claimId, slotId:slotId, paid_at:paidAt, clubId:clubId }
+    }));
+  } catch (_) {}
+}
+
 async function vaultSlotsToggleClaimPaid(claimId, slotId) {
   if (!claimId || !slotId || _vsPaymentToggleBusy.has(String(claimId))) return;
   if (typeof sbPatch !== 'function') return;
@@ -2500,21 +2591,19 @@ async function vaultSlotsToggleClaimPaid(claimId, slotId) {
   const nextPaidAt = wasPaid ? null : new Date().toISOString();
   _vsPaymentToggleBusy.add(String(claimId));
 
-  // Optimistic update keeps the Slot Manager sheet in place while the server write runs.
+  // Local-first: change the app's local source of truth and repaint all views
+  // immediately. The server is synchronized only after the local state is visible.
   claim.paid_at = nextPaidAt;
   vaultSlotsRefreshManagePlayers(draft);
+  await _vsApplyClaimPaidLocal(claimId, slotId, nextPaidAt);
 
   try {
     await sbPatch('slot_claims', `id=eq.${claimId}`, { paid_at: nextPaidAt });
-    if (draft.originalSlot && Array.isArray(draft.originalSlot.claims)) {
-      const originalClaim = draft.originalSlot.claims.find(c => String(c.id) === String(claimId));
-      if (originalClaim) originalClaim.paid_at = nextPaidAt;
-    }
-    vaultSlotsScheduleSoftRefresh(slotId);
-    if (typeof myCardSlotsScheduleRefresh === 'function') myCardSlotsScheduleRefresh(true);
     if (typeof showToast === 'function') showToast(nextPaidAt ? (t('paymentMarkedPaid') || 'Payment marked paid') : (t('unpaid') || 'Unpaid'));
   } catch (e) {
-    claim.paid_at = wasPaid ? (claim.paid_at || new Date().toISOString()) : null;
+    var rollbackPaidAt = wasPaid ? (claim.paid_at || new Date().toISOString()) : null;
+    claim.paid_at = rollbackPaidAt;
+    await _vsApplyClaimPaidLocal(claimId, slotId, rollbackPaidAt);
     // Reload the authoritative value after a failed server write.
     const refreshedSlot = await vaultSlotsLoadOne(slotId).catch(() => null);
     if (refreshedSlot && _vsManageDraft && String(_vsManageDraft.slotId) === String(slotId)) {
