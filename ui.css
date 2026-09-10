@@ -35492,3 +35492,188 @@ body.tile-style-color.app-light #vsDateSheetOverlay .vs-create-tab-panel .vs-ste
   pointer-events: none !important;
   box-shadow: none !important;
 }
+
+/* Build 1137 — Manage/Edit Slot clean assistant cards.
+   Styling only: preserve all edit/save/delete/payment/player handlers. */
+#vsManageOverlay .vs-manage-sheet{
+  --me-accent:#2f9b84;
+  --me-accent-soft:rgba(47,155,132,.14);
+  --me-card:#182233;
+  --me-control:#1d293a;
+  --me-border:rgba(184,198,218,.18);
+  --me-text:#f5f7fb;
+  --me-muted:#aab6c7;
+  background:#101827 !important;
+}
+#vsManageOverlay .vs-manage-header{
+  background:transparent !important;
+  border-bottom:1px solid var(--me-border) !important;
+}
+#vsManageOverlay .vs-manage-title{
+  color:var(--me-text) !important;
+  -webkit-text-fill-color:var(--me-text) !important;
+}
+#vsManageOverlay .vs-manage-close{
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid var(--me-border) !important;
+  color:var(--me-muted) !important;
+  border-radius:14px !important;
+  box-shadow:none !important;
+}
+#vsManageOverlay .vs-manage-scroll > .vs-section,
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section,
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section:nth-child(1),
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section:nth-child(2),
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section:nth-child(3),
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section:nth-child(4),
+body.tile-style-color #vsManageOverlay .vs-manage-scroll > .vs-section:nth-child(5){
+  background:var(--me-card) !important;
+  background-image:none !important;
+  border:1px solid var(--me-border) !important;
+  border-radius:16px !important;
+  color:var(--me-text) !important;
+  box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+  padding:16px !important;
+  margin-bottom:12px !important;
+}
+#vsManageOverlay .vs-section-head{margin-bottom:14px !important;}
+#vsManageOverlay .vs-section-icon,
+body.tile-style-color #vsManageOverlay .vs-section .vs-section-icon{
+  width:34px !important;height:34px !important;
+  border-radius:10px !important;
+  background:var(--me-accent-soft) !important;
+  border:0 !important;
+  color:var(--me-text) !important;
+}
+#vsManageOverlay .vs-section-title,
+#vsManageOverlay .vs-form-label,
+#vsManageOverlay .vs-manage-section-label,
+body.tile-style-color #vsManageOverlay .vs-section :is(.vs-section-title,.vs-form-label,.vs-manage-section-label){
+  color:var(--me-text) !important;
+  -webkit-text-fill-color:var(--me-text) !important;
+  text-shadow:none !important;
+}
+#vsManageOverlay .vs-section-title{
+  font-size:16px !important;
+  font-weight:720 !important;
+  letter-spacing:0 !important;
+  text-transform:none !important;
+}
+#vsManageOverlay .vs-form-label,
+#vsManageOverlay .vs-manage-section-label{
+  font-size:12px !important;
+  font-weight:700 !important;
+  letter-spacing:.04em !important;
+}
+#vsManageOverlay .vs-form-hint,
+#vsManageOverlay .vs-form-hint-inline,
+body.tile-style-color #vsManageOverlay .vs-section :is(.vs-form-hint,.vs-form-hint-inline,small){
+  color:var(--me-muted) !important;
+  -webkit-text-fill-color:var(--me-muted) !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+}
+#vsManageOverlay .vs-section :is(
+  .vs-time-picker-field,.vs-stepper,.vs-stepper-wide,.vs-segmented,
+  .vs-venue-picker-btn,.vs-venue-inline,.vs-form-input,.vs-initial-players-box,.vs-datetime-shell
+),
+body.tile-style-color #vsManageOverlay .vs-section :is(
+  .vs-time-picker-field,.vs-stepper,.vs-stepper-wide,.vs-segmented,
+  .vs-venue-picker-btn,.vs-venue-inline,.vs-form-input,.vs-initial-players-box
+){
+  background:var(--me-control) !important;
+  background-image:none !important;
+  border:1px solid var(--me-border) !important;
+  color:var(--me-text) !important;
+  border-radius:12px !important;
+  box-shadow:none !important;
+}
+#vsManageOverlay .vs-section :is(.vs-stepper-btn,.vs-pill),
+body.tile-style-color #vsManageOverlay .vs-section :is(.vs-stepper-btn,.vs-pill){
+  background:transparent !important;
+  border-color:transparent !important;
+  color:var(--me-text) !important;
+  -webkit-text-fill-color:var(--me-text) !important;
+  border-radius:10px !important;
+  box-shadow:none !important;
+}
+#vsManageOverlay .vs-section :is(.vs-pill.vs-pill-active,.vs-stepper-btn:last-child),
+body.tile-style-color #vsManageOverlay .vs-section :is(.vs-pill.vs-pill-active,.vs-stepper-btn:last-child){
+  background:var(--me-accent-soft) !important;
+  border:1px solid rgba(71,190,161,.42) !important;
+  color:#bff1e4 !important;
+  -webkit-text-fill-color:#bff1e4 !important;
+}
+#vsManageOverlay .vs-manage-actions{
+  gap:10px !important;
+  margin:14px 0 !important;
+}
+#vsManageOverlay .vs-manage-actions .vs-btn{
+  border-radius:12px !important;
+  box-shadow:none !important;
+}
+#vsManageOverlay .vs-manage-actions .vs-btn-primary,
+#vsManageOverlay .vs-manage-actions .vs-btn-post{
+  background:var(--me-accent) !important;
+  border-color:var(--me-accent) !important;
+  color:#fff !important;
+}
+#vsManageOverlay .vs-manage-actions .vs-btn-secondary{
+  background:var(--me-control) !important;
+  border:1px solid var(--me-border) !important;
+  color:var(--me-text) !important;
+}
+#vsManageOverlay .vs-manage-actions .vs-btn-danger{
+  background:rgba(225,74,100,.10) !important;
+  border:1px solid rgba(225,74,100,.24) !important;
+  color:#ff8da2 !important;
+}
+#vsManageOverlay .vs-manage-player-row.mc-slot-player-row{
+  background:var(--me-card) !important;
+  border:1px solid var(--me-border) !important;
+  border-radius:12px !important;
+  box-shadow:none !important;
+}
+
+body.app-light #vsManageOverlay .vs-manage-sheet,
+html.app-light body #vsManageOverlay .vs-manage-sheet{
+  --me-accent:#2f9b84;
+  --me-accent-soft:#e3f4ef;
+  --me-card:#ffffff;
+  --me-control:#f6f8fb;
+  --me-border:#dce3ec;
+  --me-text:#1b2738;
+  --me-muted:#657286;
+  background:#f4f7fa !important;
+}
+body.app-light #vsManageOverlay .vs-manage-scroll > .vs-section,
+html.app-light body #vsManageOverlay .vs-manage-scroll > .vs-section,
+body.tile-style-color.app-light #vsManageOverlay .vs-manage-scroll > .vs-section{
+  background:#fff !important;
+  border-color:#dce3ec !important;
+  color:#1b2738 !important;
+  box-shadow:0 3px 10px rgba(26,39,57,.055) !important;
+}
+body.app-light #vsManageOverlay .vs-section :is(
+ .vs-time-picker-field,.vs-stepper,.vs-stepper-wide,.vs-segmented,
+ .vs-venue-picker-btn,.vs-venue-inline,.vs-form-input,.vs-initial-players-box,.vs-datetime-shell
+){
+  background:#f6f8fb !important;
+  border-color:#dce3ec !important;
+  color:#1b2738 !important;
+}
+body.app-light #vsManageOverlay .vs-section :is(.vs-stepper-btn,.vs-pill){
+  color:#1b2738 !important;
+  -webkit-text-fill-color:#1b2738 !important;
+}
+body.app-light #vsManageOverlay .vs-section :is(.vs-pill.vs-pill-active,.vs-stepper-btn:last-child){
+  background:#e3f4ef !important;
+  border-color:#8bcdbb !important;
+  color:#176b5a !important;
+  -webkit-text-fill-color:#176b5a !important;
+}
+body.app-light #vsManageOverlay .vs-manage-close{
+  background:#fff !important;
+  border-color:#dce3ec !important;
+  color:#657286 !important;
+}
