@@ -1,18 +1,18 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-cache-1155';
-const APP_SHELL = './index.html?v=1155';
+const CACHE_NAME = 'scs-cache-1156';
+const APP_SHELL = './index.html?v=1156';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1141', './rounds.css?v=1155',
+  './ui.css?v=1141', './rounds.css?v=1156',
   './offline-db.js?v=1120', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=1120', './auth.js?v=856',
   './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1103',
   './engjap.js?v=864', './main.js?v=1150', './games.js?v=1019',
   './rounds.js?v=937', './mbm.js?v=856', './players.js?v=906',
   './importPlayers.js?v=985', './settings.js?v=1120', './summary.js?v=856',
   './help.js?v=856', './profile.js?v=1097', './dashboard.js?v=856',
-  './slots.js?v=1136', './notifications.js?v=856', './viewer.js?v=1155',
+  './slots.js?v=1136', './notifications.js?v=856', './viewer.js?v=1156',
   './report.js?v=856', './manifest.json?v=953',
   './male.png?v=856', './female.png?v=856', './win-cup.png?v=856',
   './welcome-default-myhub.png?v=1015', './welcome-default-round-manager.png?v=1015', './welcome-default-slot-manager.png?v=1015',

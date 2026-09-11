@@ -6368,3 +6368,76 @@ body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-
 #viewerPage .viewer-dashboard-group .not-yet-paired-box { display:block !important; }
 #viewerPage .viewer-dashboard-group .player-history-scroll,
 #viewerPage .viewer-dashboard-group .not-yet-paired-scroll { overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+
+/* Build 1156 — Live Watch dashboard filter strip: match Round Manager geometry.
+   Keep all Pairing/Opponent bucket buttons on one row with no overlap/wrap. */
+#viewerPage .dashboard-history-panel .relationship-history-controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  min-height: 38px !important;
+  height: auto !important;
+  padding: 5px 8px !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel .pairing-header-toggle {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 2px !important;
+  gap: 0 !important;
+  border: 1px solid rgba(130,145,160,.30) !important;
+  border-radius: 999px !important;
+  background: rgba(0,0,0,.16) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  flex-wrap: nowrap !important;
+}
+#viewerPage .dashboard-history-panel .pairing-header-toggle .not-yet-paired-view-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  min-height: 24px !important;
+  margin: 0 !important;
+  padding: 3px 4px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--muted,#9299a8) !important;
+  font-size: .54rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .15px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel-pairing .pairing-header-toggle .not-yet-paired-view-btn.active {
+  color: #fff !important;
+  background: rgba(188,128,5,.72) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .pairing-header-toggle .not-yet-paired-view-btn.active {
+  color: #fff !important;
+  background: rgba(12,126,112,.78) !important;
+}
+@media (max-width: 390px) {
+  #viewerPage .dashboard-history-panel .relationship-history-controls {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  #viewerPage .dashboard-history-panel .pairing-header-toggle .not-yet-paired-view-btn {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    font-size: .50rem !important;
+    letter-spacing: 0 !important;
+  }
+}
