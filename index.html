@@ -380,14 +380,7 @@ body.viewer-detail-open > .top-bar.scs-topbar{display:none !important}
 body.light-mode .myhub-club-card{background:color-mix(in srgb,#fff 92%,#6f42c1 8%)}
 </style>
 
-<style id="scs-build-1141-home-club-card">
-#scsHomeAddBtn{display:none!important}
-.myhub-club-card{margin-top:26px;border:1px solid var(--border,rgba(255,255,255,.10));border-radius:18px;padding:18px 20px;background:color-mix(in srgb,var(--surface,#171821) 86%,#6f42c1 14%);display:flex;align-items:center;gap:14px}
-.myhub-club-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,#6f42c1 24%,transparent);font-size:1.35rem;flex:0 0 auto}
-.myhub-club-card-copy{min-width:0;flex:1}.myhub-club-card-copy strong{display:block;color:var(--text,#fff);font-size:1rem}.myhub-club-card-copy small{display:block;margin-top:4px;color:var(--text-dim,#92929f);font-size:.74rem;font-weight:500}
-.myhub-club-add{width:48px;height:48px;flex:0 0 48px;border:1px solid var(--border,rgba(255,255,255,.14));border-radius:14px;background:var(--surface-2,#202331);color:var(--accent,#776cff);font:400 2rem/1 system-ui;display:flex;align-items:center;justify-content:center;cursor:pointer}
-body.light-mode .myhub-club-card{background:color-mix(in srgb,#fff 92%,#6f42c1 8%)}
-</style>
+
 </head>
 <body>
 
@@ -1674,11 +1667,6 @@ body.light-mode .myhub-club-card{background:color-mix(in srgb,#fff 92%,#6f42c1 8
     <div class="myhub-home-group" id="myHubLiveGroup">
       <button type="button" class="myhub-home-card" onclick="myHubToggleQuickGroup('live')"><span class="myhub-home-icon">📡</span><span><strong>Live <span class="myhub-home-count" id="myHubLiveCount">0</span></strong><small>Live sessions</small></span><span class="myhub-home-chevron">›</span></button>
       <div class="myhub-home-list" id="myHubLiveList"></div>
-    </div>
-    <div class="myhub-club-card" id="myHubClubCard">
-      <span class="myhub-club-card-icon" aria-hidden="true">👥</span>
-      <span class="myhub-club-card-copy"><strong id="myHubHomeClubName">Club</strong><small>Club actions</small></span>
-      <button type="button" class="myhub-club-add" aria-label="Club quick actions" title="Club quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>
     </div>
     <div class="myhub-club-card" id="myHubClubCard">
       <span class="myhub-club-card-icon" aria-hidden="true">👥</span>
