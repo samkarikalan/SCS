@@ -267,6 +267,19 @@ async function getOrganiserEligibleClubs(userOverride) {
     return { id: String(club.id), name: club.name || '', source: 'membership' };
   });
 
+  // A signed-in user may explicitly choose the Demo club for Round Manager.
+  // This is deliberately separate from global isDemoMode(), so their account,
+  // Home profile and My Card remain the real signed-in user.
+  if (typeof isRoundManagerDemoMode === 'function' && isRoundManagerDemoMode() &&
+      typeof DEMO_CLUB_ID !== 'undefined' && DEMO_CLUB_ID &&
+      !options.some(function(club) { return club.id === String(DEMO_CLUB_ID); })) {
+    options.unshift({
+      id: String(DEMO_CLUB_ID),
+      name: (typeof DEMO_CLUB_NAME !== 'undefined' && DEMO_CLUB_NAME) ? DEMO_CLUB_NAME : 'Demo',
+      source: 'demo'
+    });
+  }
+
   // A verified Club Manager can also use Round Manager for that club.
   // If the account is not yet a club member, login restoration will create
   // the player's membership automatically so the two roles stay aligned.
@@ -1539,7 +1552,8 @@ async function openOrganiserWorkspaceForMember(selectedClubId) {
   _organiserWorkspaceOpening = true;
   try {
     var clubs = await getOrganiserEligibleClubs();
-    var demoSession = typeof isDemoMode === 'function' && isDemoMode();
+    var demoSession = (typeof isDemoMode === 'function' && isDemoMode()) ||
+      (typeof isRoundManagerDemoMode === 'function' && isRoundManagerDemoMode());
     var realClubs = demoSession ? clubs : clubs.filter(function(club) { return club.source !== 'demo'; });
     if (!realClubs.length) {
       showRoundManagerSignedOutChoice({ signedInNoClub: true });
@@ -1681,13 +1695,33 @@ function switchMode(mode) {
   }
 }
 
+function isRoundManagerDemoMode() {
+  return sessionStorage.getItem('scs_round_manager_demo') === '1';
+}
+
 async function roundManagerStartDemo() {
+  var currentUser = (typeof authGetUser === 'function') ? authGetUser() : null;
+  var demoClubId = (typeof DEMO_CLUB_ID !== 'undefined') ? String(DEMO_CLUB_ID || '') : '';
+
+  // IMPORTANT: Round Manager's Demo is a club/workspace choice, not an
+  // authentication choice. If a real user is already signed in, never call
+  // authStartDemo(): that function intentionally signs in as the shared Demo
+  // account and overwrites auth_user/_authUser, which made Home/My Card become
+  // "Demo". Keep the real login untouched and mark only this Round Manager
+  // entry as using the Demo club.
+  if (currentUser && currentUser.id) {
+    sessionStorage.setItem('scs_round_manager_demo', '1');
+    await openOrganiserWorkspaceForMember(demoClubId);
+    return;
+  }
+
+  // Signed-out visitors still use the existing shared Demo account flow.
   if (!(typeof isDemoMode === 'function' && isDemoMode())) {
     if (typeof authStartDemo !== 'function') return;
     await authStartDemo();
   }
   if (typeof isDemoMode === 'function' && isDemoMode()) {
-    await openOrganiserWorkspaceForMember(typeof DEMO_CLUB_ID !== 'undefined' ? DEMO_CLUB_ID : '');
+    await openOrganiserWorkspaceForMember(demoClubId);
   }
 }
 
@@ -1747,7 +1781,8 @@ async function scsChangeRoundManagerClub() {
   if (typeof appMode === 'undefined' || appMode !== 'organiser') return;
   try {
     var clubs = await getOrganiserEligibleClubs();
-    var demoSession = typeof isDemoMode === 'function' && isDemoMode();
+    var demoSession = (typeof isDemoMode === 'function' && isDemoMode()) ||
+      (typeof isRoundManagerDemoMode === 'function' && isRoundManagerDemoMode());
     var choices = demoSession ? clubs : clubs.filter(function(club) { return club.source !== 'demo'; });
     if (!choices.length) {
       if (typeof showToast === 'function') showToast('No organiser clubs are available.');
@@ -1767,6 +1802,9 @@ async function scsChangeRoundManagerClub() {
       await _scsGuideResetOrganiserSessionForClubChange();
     }
     var club = selected;
+    if (selected.source !== 'demo' && typeof isRoundManagerDemoMode === 'function' && isRoundManagerDemoMode()) {
+      sessionStorage.removeItem('scs_round_manager_demo');
+    }
     if (navigator.onLine !== false && typeof syncOrganiserMembershipAccess === 'function') {
       club = await syncOrganiserMembershipAccess(null, selected.id) || selected;
     }
