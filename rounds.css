@@ -5175,3 +5175,1196 @@ body.app-light #roundsPage .player-history-group.dashboard-tabs-group > .player-
   margin-right: 0 !important;
   box-sizing: border-box !important;
 }
+
+
+/* Build 1154 — Live Watch Summary reuses the approved Round Manager Dashboard styling. */
+/* Build 988 — Dashboard uses one tabbed history card: Rounds | Pairing | Opponents. */
+#viewerPage .dashboard-tabs-body {
+  padding: 0 !important;
+  overflow: hidden;
+}
+#viewerPage .dashboard-history-tabs {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(125,135,160,.18);
+  background: rgba(10,12,19,.24);
+  box-sizing: border-box;
+}
+#viewerPage .dashboard-history-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(210,214,235,.55);
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+}
+#viewerPage .dashboard-history-tab.active {
+  color: #7567ff;
+}
+#viewerPage .dashboard-history-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: currentColor;
+}
+#viewerPage .dashboard-history-panel { display: none; }
+#viewerPage .dashboard-history-panel.active { display: block; }
+
+/* Tabs replace the old blue/orange history title bars. */
+#viewerPage .dashboard-history-panel .dashboard-inner-history-title {
+  display: none !important;
+}
+#viewerPage .dashboard-history-panel .player-history-section,
+#viewerPage .dashboard-history-panel .not-yet-paired-section {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#viewerPage .dashboard-history-panel .player-history-box,
+#viewerPage .dashboard-history-panel .not-yet-paired-box {
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+/* Pairing/Opponent keep only their Not paired/Not played vs All control. */
+#viewerPage .dashboard-history-panel .relationship-history-controls {
+  justify-content: flex-end !important;
+  min-height: 42px !important;
+  padding: 6px 10px !important;
+  background: transparent !important;
+}
+
+body.app-light #viewerPage .dashboard-history-tabs {
+  background: rgba(245,247,252,.72);
+  border-bottom-color: rgba(70,85,110,.16);
+}
+body.app-light #viewerPage .dashboard-history-tab {
+  color: rgba(60,70,95,.58);
+}
+body.app-light #viewerPage .dashboard-history-tab.active {
+  color: #5f54e8;
+}
+
+@media (max-width: 390px) {
+  #viewerPage .dashboard-history-tabs { padding: 0 4px; }
+  #viewerPage .dashboard-history-tab { font-size: .8rem; padding: 0 4px; }
+}
+
+/* Build 989 — Dashboard history tabs refinement.
+   Keep the Dashboard outer card/border. Remove only the inner history-panel outlines.
+   The table surface, not the tab button, carries the Rounds/Pairing/Opponents color.
+   Pairing/Opponents follow Round History row rhythm; all three use zebra rows. */
+#viewerPage .dashboard-history-tabs {
+  border-bottom: 0 !important;
+  background: transparent !important;
+}
+#viewerPage .dashboard-history-tab {
+  background: transparent !important;
+}
+#viewerPage .dashboard-history-panel .player-history-section,
+#viewerPage .dashboard-history-panel .not-yet-paired-section,
+#viewerPage .dashboard-history-panel .player-history-box,
+#viewerPage .dashboard-history-panel .not-yet-paired-box,
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll,
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Distinct table surfaces for each tab. */
+#viewerPage .dashboard-history-panel-rounds {
+  background: linear-gradient(145deg, rgba(18,42,72,.98), rgba(12,25,43,.99)) !important;
+}
+#viewerPage .dashboard-history-panel-pairing {
+  background: linear-gradient(145deg, rgba(73,50,13,.98), rgba(42,29,10,.99)) !important;
+}
+#viewerPage .dashboard-history-panel-opponents {
+  background: linear-gradient(145deg, rgba(15,52,50,.98), rgba(10,29,30,.99)) !important;
+}
+
+/* Pairing and Opponents use the same table geometry as Round History. */
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  font-size: max(.82rem, calc(var(--player-font-size, 1rem) * .72)) !important;
+  line-height: 1.25 !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th {
+  font-size: max(.72rem, calc(var(--player-font-size, 1rem) * .64)) !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th,
+#viewerPage .dashboard-history-panel .not-yet-paired-table td {
+  padding: 6px 7px !important;
+  vertical-align: middle !important;
+}
+
+/* Zebra rows: same pattern and rhythm in all three views. */
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.025) !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.075) !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.085) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(0,0,0,.085) !important;
+}
+
+/* The sticky first column must use the same zebra surface as the rest of its row. */
+#viewerPage .dashboard-history-panel .player-history-table tbody tr:nth-child(odd) > td:first-child,
+#viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background-color: rgba(255,255,255,.026) !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table tbody tr:nth-child(even) > td:first-child,
+#viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background-color: rgba(0,0,0,.085) !important;
+}
+
+/* Keep table-header color tied to the active table surface. */
+#viewerPage .dashboard-history-panel-rounds thead th { background: rgba(23,55,91,.72) !important; }
+#viewerPage .dashboard-history-panel-pairing thead th { background: rgba(84,57,16,.72) !important; }
+#viewerPage .dashboard-history-panel-opponents thead th { background: rgba(18,63,59,.72) !important; }
+
+body.app-light #viewerPage .dashboard-history-panel-rounds {
+  background: #eef5ff !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-pairing {
+  background: #fff7e8 !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-opponents {
+  background: #ecfaf7 !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-rounds thead th { background: #e2edfb !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing thead th { background: #f9ecd0 !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents thead th { background: #def2ed !important; }
+body.app-light #viewerPage .dashboard-history-panel .player-history-table tbody tr:nth-child(odd) > td,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background-color: rgba(255,255,255,.58) !important;
+}
+body.app-light #viewerPage .dashboard-history-panel .player-history-table tbody tr:nth-child(even) > td,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background-color: rgba(60,80,110,.045) !important;
+}
+
+@media (max-width: 480px) {
+  #viewerPage .dashboard-history-panel .not-yet-paired-table {
+    font-size: max(.78rem, calc(var(--player-font-size, 1rem) * .70)) !important;
+  }
+  #viewerPage .dashboard-history-panel .not-yet-paired-table th {
+    font-size: max(.7rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  }
+  #viewerPage .dashboard-history-panel .not-yet-paired-table th,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table td {
+    padding: 5px 6px !important;
+  }
+}
+
+/* Build 990 — Portrait dashboard design approved by user.
+   Keep the Dashboard card/border. The three tab panels are borderless colour
+   surfaces with matching geometry and zebra rows. */
+#viewerPage .dashboard-tabs-body {
+  background: #0b1019 !important;
+}
+#viewerPage .dashboard-history-tabs {
+  min-height: 58px !important;
+  padding: 0 14px !important;
+  background: #0b1019 !important;
+  border: 0 !important;
+}
+#viewerPage .dashboard-history-tab {
+  min-height: 58px !important;
+  padding: 0 6px !important;
+  background: transparent !important;
+  color: rgba(196,201,217,.66) !important;
+  font-size: .92rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .01em !important;
+}
+#viewerPage .dashboard-history-tab.active {
+  color: #7567ff !important;
+}
+#viewerPage .dashboard-history-tab.active::after {
+  left: 18% !important;
+  right: 18% !important;
+  height: 4px !important;
+  background: #7567ff !important;
+  border-radius: 5px 5px 0 0 !important;
+}
+
+/* No Rounds / Pairing / Opponents panel outline. */
+#viewerPage .dashboard-history-panel,
+#viewerPage .dashboard-history-panel .player-history-section,
+#viewerPage .dashboard-history-panel .not-yet-paired-section,
+#viewerPage .dashboard-history-panel .player-history-box,
+#viewerPage .dashboard-history-panel .not-yet-paired-box,
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll,
+#viewerPage .dashboard-history-panel table {
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Each tab colours the TABLE surface, not the tab itself. */
+#viewerPage .dashboard-history-panel-rounds {
+  background: linear-gradient(135deg, #123664 0%, #0b2343 100%) !important;
+}
+#viewerPage .dashboard-history-panel-pairing {
+  background: linear-gradient(135deg, #60420d 0%, #382706 100%) !important;
+}
+#viewerPage .dashboard-history-panel-opponents {
+  background: linear-gradient(135deg, #075149 0%, #06342f 100%) !important;
+}
+
+/* Pairing/Opponent filter bar belongs to the colour surface. */
+#viewerPage .dashboard-history-panel .relationship-history-controls {
+  box-sizing: border-box !important;
+  min-height: 48px !important;
+  padding: 8px 14px !important;
+  background: rgba(0,0,0,.08) !important;
+  border: 0 !important;
+}
+#viewerPage .dashboard-history-panel .pairing-header-toggle {
+  padding: 3px !important;
+  border: 1px solid rgba(213,219,230,.25) !important;
+  background: rgba(4,11,18,.30) !important;
+}
+#viewerPage .dashboard-history-panel-pairing .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background: rgba(188,128,5,.72) !important;
+  color: #fff !important;
+}
+#viewerPage .dashboard-history-panel-opponents .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background: rgba(12,126,112,.78) !important;
+  color: #fff !important;
+}
+
+/* Identical table rhythm across Rounds, Pairing and Opponents. */
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  width: 100% !important;
+  font-size: max(.80rem, calc(var(--player-font-size, 1rem) * .71)) !important;
+  line-height: 1.2 !important;
+  border-collapse: collapse !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table thead tr,
+#viewerPage .dashboard-history-panel .not-yet-paired-table thead tr {
+  height: 38px !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table tbody tr,
+#viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr {
+  height: 43px !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table th,
+#viewerPage .dashboard-history-panel .not-yet-paired-table th {
+  box-sizing: border-box !important;
+  padding: 7px 10px !important;
+  font-size: max(.70rem, calc(var(--player-font-size, 1rem) * .62)) !important;
+  font-weight: 800 !important;
+  letter-spacing: .45px !important;
+  color: rgba(178,187,207,.72) !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid rgba(255,255,255,.075) !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table td,
+#viewerPage .dashboard-history-panel .not-yet-paired-table td {
+  box-sizing: border-box !important;
+  padding: 7px 10px !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid rgba(255,255,255,.065) !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table tbody tr:last-child td,
+#viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+/* Strong but clean zebra pattern, colour matched per table. */
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background: rgba(39,91,151,.20) !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background: rgba(2,16,35,.18) !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: rgba(177,121,15,.16) !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: rgba(31,20,2,.18) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: rgba(31,136,122,.16) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: rgba(2,24,22,.18) !important;
+}
+
+/* Sticky player column follows the zebra row exactly. */
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: rgba(39,91,151,.20) !important; }
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: rgba(2,16,35,.18) !important; }
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: rgba(177,121,15,.16) !important; }
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: rgba(31,20,2,.18) !important; }
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: rgba(31,136,122,.16) !important; }
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: rgba(2,24,22,.18) !important; }
+
+/* Header belongs to the same surface. */
+#viewerPage .dashboard-history-panel-rounds thead th { background: rgba(20,55,96,.88) !important; }
+#viewerPage .dashboard-history-panel-pairing thead th { background: rgba(92,62,11,.88) !important; }
+#viewerPage .dashboard-history-panel-opponents thead th { background: rgba(7,68,62,.88) !important; }
+
+/* Keep names/counts compact like the approved portrait. */
+#viewerPage .dashboard-history-panel .not-yet-paired-name,
+#viewerPage .dashboard-history-panel .player-history-table td:first-child {
+  font-size: inherit !important;
+  font-weight: 650 !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-count {
+  color: #ffc34a !important;
+  font-weight: 800 !important;
+}
+
+/* Light mode equivalents keep the same three identities. */
+body.app-light #viewerPage .dashboard-tabs-body,
+body.app-light #viewerPage .dashboard-history-tabs { background: #f8f9fc !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds { background: linear-gradient(135deg,#e8f2ff,#dceaff) !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing { background: linear-gradient(135deg,#fff4d8,#f9e9bd) !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents { background: linear-gradient(135deg,#e4f8f4,#d8f1ec) !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds thead th { background:#d8e9fb !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing thead th { background:#f4dfad !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents thead th { background:#ccebe5 !important; }
+
+@media (max-width: 390px) {
+  #viewerPage .dashboard-history-tabs { padding: 0 6px !important; }
+  #viewerPage .dashboard-history-tab { font-size: .82rem !important; }
+  #viewerPage .dashboard-history-panel .player-history-table th,
+  #viewerPage .dashboard-history-panel .player-history-table td,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table th,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table td {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+}
+
+/* Build 991 — compact Dashboard tables.
+   Dashboard text is intentionally smaller than the court/player cards.
+   Rounds, Pairing and Opponents share exactly the same header/row rhythm. */
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  font-size: clamp(.68rem, calc(var(--player-font-size, 1rem) * .60), .76rem) !important;
+  line-height: 1.08 !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table thead tr,
+#viewerPage .dashboard-history-panel .not-yet-paired-table thead tr {
+  height: 30px !important;
+  min-height: 30px !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table tbody tr,
+#viewerPage .dashboard-history-panel .not-yet-paired-table tbody tr {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table th,
+#viewerPage .dashboard-history-panel .not-yet-paired-table th {
+  height: 30px !important;
+  padding: 4px 6px !important;
+  font-size: clamp(.60rem, calc(var(--player-font-size, 1rem) * .52), .67rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: .25px !important;
+  white-space: nowrap !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table td,
+#viewerPage .dashboard-history-panel .not-yet-paired-table td {
+  height: 34px !important;
+  padding: 4px 6px !important;
+  line-height: 1.08 !important;
+}
+
+/* Pairing/Opponent rows must stay the same height as Rounds regardless of chips/icons. */
+#viewerPage .dashboard-history-panel .not-yet-paired-name,
+#viewerPage .dashboard-history-panel .not-yet-paired-count,
+#viewerPage .dashboard-history-panel .not-yet-paired-with,
+#viewerPage .dashboard-history-panel .not-yet-paired-chip {
+  font-size: inherit !important;
+  line-height: 1.05 !important;
+}
+#viewerPage .dashboard-history-panel .pairing-gender-icon {
+  width: .82rem !important;
+  height: .82rem !important;
+  min-width: .82rem !important;
+}
+#viewerPage .dashboard-history-panel .pairing-gender-icon-chip {
+  width: .72rem !important;
+  height: .72rem !important;
+  min-width: .72rem !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-chip {
+  min-height: 20px !important;
+  height: 20px !important;
+  padding: 1px 5px !important;
+  margin: 0 3px 0 0 !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-with {
+  gap: 3px !important;
+  min-height: 20px !important;
+}
+
+/* Compact filter strip so it does not dominate the table. */
+#viewerPage .dashboard-history-panel .relationship-history-controls {
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 4px 8px !important;
+}
+#viewerPage .dashboard-history-panel .pairing-header-toggle {
+  min-height: 28px !important;
+  padding: 2px !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-view-btn {
+  min-height: 24px !important;
+  padding: 3px 9px !important;
+  font-size: .62rem !important;
+  line-height: 1 !important;
+}
+
+/* Keep all three views aligned to the exact same visible width and geometry. */
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll {
+  width: 100% !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  min-width: 100% !important;
+}
+
+@media (max-width: 390px) {
+  #viewerPage .dashboard-history-panel .player-history-table,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table {
+    font-size: .66rem !important;
+  }
+  #viewerPage .dashboard-history-panel .player-history-table th,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table th {
+    font-size: .58rem !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+  #viewerPage .dashboard-history-panel .player-history-table td,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table td {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+}
+
+/* Build 991 — Dashboard table cleanup: borderless compact tables, no cross-tab overflow. */
+#viewerPage .dashboard-history-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel .player-history-section,
+#viewerPage .dashboard-history-panel .not-yet-paired-section,
+#viewerPage .dashboard-history-panel .player-history-box,
+#viewerPage .dashboard-history-panel .not-yet-paired-box,
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Zebra replaces grid lines completely. */
+#viewerPage .dashboard-history-panel table,
+#viewerPage .dashboard-history-panel th,
+#viewerPage .dashboard-history-panel td,
+#viewerPage .dashboard-history-panel tr {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table th:first-child,
+#viewerPage .dashboard-history-panel .player-history-table td:first-child,
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:first-child,
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:first-child {
+  box-shadow: none !important;
+}
+
+/* All three tabs occupy exactly the Dashboard width. */
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+  width: 42% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(2),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(2) {
+  width: 18% !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(3),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(3) {
+  width: 40% !important;
+  overflow: hidden !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-name,
+#viewerPage .dashboard-history-panel .not-yet-paired-with {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Keep relationship control inside its own panel; it must never overlay the table. */
+#viewerPage .dashboard-history-panel .relationship-history-controls {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 40px !important;
+  padding: 5px 10px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel .pairing-header-toggle {
+  max-width: 100% !important;
+  flex: 0 0 auto !important;
+}
+
+/* Chips stay on one compact line; render shows one name + remainder badge. */
+#viewerPage .dashboard-history-panel .not-yet-paired-chip {
+  max-width: calc(100% - 2.25rem) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+#viewerPage .dashboard-history-panel .relationship-more-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 1.85rem !important;
+  margin-left: 2px !important;
+  padding: 1px 5px !important;
+  border: 1px solid rgba(255,90,90,.58) !important;
+  border-radius: 999px !important;
+  color: #ff7474 !important;
+  font-size: .62rem !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  vertical-align: middle !important;
+}
+
+/* Build 992 — relationship history count cards.
+   Replace +N summaries with compact rectangular player cards and an adjacent
+   count pill showing the exact pair/opponent encounter count in ALL view. */
+#viewerPage .dashboard-history-panel .not-yet-paired-with {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-with::-webkit-scrollbar {
+  display: none !important;
+}
+#viewerPage .dashboard-history-panel .relationship-player-card {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-height: 20px !important;
+  height: 20px !important;
+  padding: 1px 3px 1px 5px !important;
+  margin: 0 !important;
+  gap: 3px !important;
+  border-radius: 6px !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .dashboard-history-panel-pairing .relationship-player-card {
+  background: rgba(118,78,16,.42) !important;
+  border: 1px solid rgba(243,180,70,.34) !important;
+}
+#viewerPage .dashboard-history-panel-opponents .relationship-player-card {
+  background: rgba(9,82,73,.46) !important;
+  border: 1px solid rgba(62,199,181,.30) !important;
+}
+#viewerPage .dashboard-history-panel .relationship-count-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  min-width: 17px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  margin-left: 1px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: rgba(255,102,102,.22) !important;
+  color: #ff8b8b !important;
+  font-size: .58rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-pairing .relationship-player-card {
+  background: rgba(255,242,207,.92) !important;
+  border-color: rgba(182,126,24,.30) !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-opponents .relationship-player-card {
+  background: rgba(220,244,239,.94) !important;
+  border-color: rgba(33,135,122,.26) !important;
+}
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill {
+  background: rgba(224,75,75,.12) !important;
+  color: #c83c3c !important;
+}
+#viewerPage .dashboard-history-panel .relationship-more-chip {
+  display: none !important;
+}
+
+/* Build 993 — player names are non-negotiable: never truncate them.
+   Preserve the sticky/full player-name column and let data/history scroll instead. */
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  table-layout: auto !important;
+  max-width: none !important;
+}
+/* Rounds: keep full names; round columns may extend horizontally. */
+#viewerPage .dashboard-history-panel-rounds .player-history-table {
+  width: max-content !important;
+  min-width: 100% !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table th:first-child,
+#viewerPage .dashboard-history-panel-rounds .player-history-table td:first-child {
+  min-width: 138px !important;
+  width: 138px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table th:nth-child(2),
+#viewerPage .dashboard-history-panel-rounds .player-history-table td:nth-child(2),
+#viewerPage .dashboard-history-panel-rounds .player-history-table th:nth-child(3),
+#viewerPage .dashboard-history-panel-rounds .player-history-table td:nth-child(3) {
+  min-width: 62px !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table th:nth-child(n+4),
+#viewerPage .dashboard-history-panel-rounds .player-history-table td:nth-child(n+4) {
+  min-width: 46px !important;
+}
+/* Pairing/Opponents: first column always shows the complete player name.
+   The relationship column gets the remaining width and scrolls its cards internally. */
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table,
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+  width: auto !important;
+  min-width: 138px !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(2),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(2) {
+  width: 64px !important;
+  min-width: 64px !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(3),
+#viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(3) {
+  width: auto !important;
+  min-width: 150px !important;
+  overflow: hidden !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-name {
+  display: inline-flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+#viewerPage .dashboard-history-panel .not-yet-paired-with {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  text-overflow: clip !important;
+}
+@media (max-width: 390px) {
+  #viewerPage .dashboard-history-panel-rounds .player-history-table th:first-child,
+  #viewerPage .dashboard-history-panel-rounds .player-history-table td:first-child,
+  #viewerPage .dashboard-history-panel .not-yet-paired-table th:nth-child(1),
+  #viewerPage .dashboard-history-panel .not-yet-paired-table td:nth-child(1) {
+    min-width: 128px !important;
+    width: 128px !important;
+  }
+}
+
+/* Build 994 — Dashboard table surface cleanup.
+   Keep the Dashboard outer rounded card. Remove only the inner table/frame
+   and use opaque row surfaces so iOS sticky-column compositing cannot create
+   mixed/patchy colours while horizontally scrolling. */
+#viewerPage .dashboard-history-panel,
+#viewerPage .dashboard-history-panel .player-history-section,
+#viewerPage .dashboard-history-panel .not-yet-paired-section,
+#viewerPage .dashboard-history-panel .player-history-box,
+#viewerPage .dashboard-history-panel .not-yet-paired-box,
+#viewerPage .dashboard-history-panel .player-history-scroll,
+#viewerPage .dashboard-history-panel .not-yet-paired-scroll,
+#viewerPage .dashboard-history-panel .player-history-table,
+#viewerPage .dashboard-history-panel .not-yet-paired-table {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Opaque cells prevent the panel gradient / sticky layer from bleeding through. */
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: #4b350d !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: #3b2a0b !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td {
+  background: #0b443f !important;
+}
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td {
+  background: #093732 !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td {
+  background: #153d6b !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td {
+  background: #102f54 !important;
+}
+
+/* Do not let older gender/sticky rules recolour only the Player cell. */
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #4b350d !important; }
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #3b2a0b !important; }
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #0b443f !important; }
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #093732 !important; }
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: #153d6b !important; }
+#viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: #102f54 !important; }
+
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td { background: #fff4d8 !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td { background: #f9e9bd !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td { background: #e4f8f4 !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td { background: #d8f1ec !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td { background: #e8f2ff !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td { background: #dceaff !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #fff4d8 !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #f9e9bd !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background: #e4f8f4 !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background: #d8f1ec !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(odd) > td:first-child { background: #e8f2ff !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table tbody tr:nth-child(even) > td:first-child { background: #dceaff !important; }
+
+/* Build 995 — Dashboard must read as active content, never a disabled layer. */
+#viewerPage .dashboard-tabs-group,
+#viewerPage .dashboard-tabs-body,
+#viewerPage .dashboard-history-tabs,
+#viewerPage .dashboard-history-panel,
+#viewerPage .dashboard-history-panel table,
+#viewerPage .dashboard-history-panel th,
+#viewerPage .dashboard-history-panel td {
+  opacity:1 !important;
+  filter:none !important;
+}
+#viewerPage .dashboard-tabs-body { background:#0b1019 !important; }
+#viewerPage .dashboard-history-tabs { background:#151b27 !important; }
+#viewerPage .dashboard-history-tab { color:#d9deea !important; }
+#viewerPage .dashboard-history-tab.active { color:#8f82ff !important; }
+#viewerPage .dashboard-history-panel-rounds { background:#102a46 !important; }
+#viewerPage .dashboard-history-panel-pairing { background:#30260c !important; }
+#viewerPage .dashboard-history-panel-opponents { background:#0b302d !important; }
+#viewerPage .dashboard-history-panel .player-history-table th,
+#viewerPage .dashboard-history-panel .not-yet-paired-table th { color:#f8fafc !important; }
+#viewerPage .dashboard-history-panel .player-history-table td,
+#viewerPage .dashboard-history-panel .not-yet-paired-table td,
+#viewerPage .dashboard-history-panel .not-yet-paired-name,
+#viewerPage .dashboard-history-panel .not-yet-paired-with { color:#f4f7ff !important; }
+#viewerPage .dashboard-history-panel .not-yet-paired-count { color:#ffd166 !important; }
+#viewerPage .dashboard-history-panel .not-yet-paired-chip {
+  opacity:1 !important;
+  color:#ffb8b8 !important;
+  background:rgba(255,65,65,.18) !important;
+  border-color:rgba(255,107,107,.58) !important;
+}
+body.app-light #viewerPage .dashboard-tabs-body,
+body.app-light #viewerPage .dashboard-history-tabs { background:#f8fafc !important; }
+body.app-light #viewerPage .dashboard-history-tab { color:#475569 !important; }
+body.app-light #viewerPage .dashboard-history-tab.active { color:#5746df !important; }
+body.app-light #viewerPage .dashboard-history-panel .player-history-table th,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-table th,
+body.app-light #viewerPage .dashboard-history-panel .player-history-table td,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-table td,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-name,
+body.app-light #viewerPage .dashboard-history-panel .not-yet-paired-with { color:#172033 !important; }
+
+/* Build 996 — uniform Dashboard headers; zebra shading belongs to body rows only. */
+#viewerPage .dashboard-history-panel .player-history-table thead th,
+#viewerPage .dashboard-history-panel .not-yet-paired-table thead th,
+#viewerPage .dashboard-history-panel .player-history-table thead th:first-child,
+#viewerPage .dashboard-history-panel .not-yet-paired-table thead th:first-child {
+  position:static !important;
+  text-align:center !important;
+  color:#f8fafc !important;
+  box-shadow:none !important;
+}
+#viewerPage .dashboard-history-panel-rounds .player-history-table thead th { background:#173b66 !important; }
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th { background:#5c3e0b !important; }
+#viewerPage .dashboard-history-panel-opponents .not-yet-paired-table thead th { background:#07443e !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table thead th { background:#d8e9fb !important; color:#172033 !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th { background:#f4dfad !important; color:#172033 !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table thead th { background:#ccebe5 !important; color:#172033 !important; }
+
+/* Build 997 — defeat the legacy sticky first-column header colour. */
+body #viewerPage .dashboard-history-panel .player-history-table thead th:first-child,
+body #viewerPage .dashboard-history-panel .not-yet-paired-table thead th:first-child {
+  position:static !important;
+  z-index:auto !important;
+  box-shadow:none !important;
+}
+body #viewerPage .dashboard-history-panel-rounds .player-history-table thead th:first-child { background:#173b66 !important; }
+body #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child { background:#5c3e0b !important; }
+body #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table thead th:first-child { background:#07443e !important; }
+body.app-light #viewerPage .dashboard-history-panel-rounds .player-history-table thead th:first-child { background:#d8e9fb !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child { background:#f4dfad !important; }
+body.app-light #viewerPage .dashboard-history-panel-opponents .not-yet-paired-table thead th:first-child { background:#ccebe5 !important; }
+
+/* Build 998 — clean indigo Pairing palette. */
+#viewerPage .dashboard-history-panel-pairing { background:#171b3a !important; }
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th,
+body #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child {
+  background:#34306f !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td,
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background:#222653 !important;
+}
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td,
+#viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background:#1b2048 !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-pairing { background:#eef0ff !important; }
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th,
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table thead th:first-child {
+  background:#d7dcff !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td,
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child {
+  background:#f2f3ff !important;
+}
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td,
+body.app-light #viewerPage .dashboard-history-panel-pairing .not-yet-paired-table tbody tr:nth-child(even) > td:first-child {
+  background:#e7eaff !important;
+}
+
+/* Build 999 — shared encounter-count colours for Pairing and Opponents. */
+#viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-zero {
+  color:#d7dee9 !important;
+  background:#334155 !important;
+  border-color:#64748b !important;
+}
+#viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-one {
+  color:#dcfce7 !important;
+  background:#16804a !important;
+  border-color:#4ade80 !important;
+}
+#viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-two {
+  color:#fff8d6 !important;
+  background:#9a6700 !important;
+  border-color:#facc15 !important;
+}
+#viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-three {
+  color:#fff1e6 !important;
+  background:#b84a0e !important;
+  border-color:#fb923c !important;
+}
+#viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-many {
+  color:#fff1f2 !important;
+  background:#a7193f !important;
+  border-color:#fb7185 !important;
+}
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-zero { color:#334155 !important; background:#e2e8f0 !important; }
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-one { color:#126239 !important; background:#dcfce7 !important; }
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-two { color:#765000 !important; background:#fef3c7 !important; }
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-three { color:#9a3412 !important; background:#ffedd5 !important; }
+body.app-light #viewerPage .dashboard-history-panel .relationship-count-pill.relationship-count-many { color:#9f1239 !important; background:#ffe4e6 !important; }
+
+/* Build 1000 — Pairing and Opponents share one neutral table system. */
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) { background:#111827 !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th,
+body #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th:first-child {
+  background:#1f2a3d !important; color:#f8fafc !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td,
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background:#172235 !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td,
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background:#121c2c !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  background:#273752 !important; border-color:#526783 !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .pairing-header-toggle .not-yet-paired-view-btn.active {
+  background:#6558e8 !important; border-color:#8b80ff !important; color:#fff !important;
+}
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) { background:#f8fafc !important; }
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th,
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table thead th:first-child {
+  background:#e2e8f0 !important; color:#172033 !important;
+}
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td,
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(odd) > td:first-child { background:#f8fafc !important; }
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td,
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr:nth-child(even) > td:first-child { background:#eef2f7 !important; }
+body.app-light #viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  background:#fff !important; border-color:#cbd5e1 !important;
+}
+
+/* Build 1001 — natural names, aligned columns and relaxed relationship rows. */
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-name,
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  text-transform:none !important;
+  letter-spacing:normal !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(1) { text-align:left !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(2) { text-align:center !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table th:nth-child(3) { text-align:left !important; }
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table tbody tr {
+  height:42px !important;
+  min-height:42px !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-table td {
+  height:42px !important;
+  padding:6px 8px !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .not-yet-paired-with {
+  gap:7px !important;
+  min-height:26px !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-player-card {
+  min-height:26px !important;
+  height:26px !important;
+  padding:3px 6px 3px 8px !important;
+  gap:5px !important;
+  margin-right:1px !important;
+  border-radius:13px !important;
+}
+#viewerPage :is(.dashboard-history-panel-pairing,.dashboard-history-panel-opponents) .relationship-count-pill {
+  min-width:19px !important;
+  height:19px !important;
+  margin-left:2px !important;
+}
+
+/* Build 1002 — visual Resting and Dashboard cards. */
+#viewerPage .resting-section,
+#viewerPage .player-history-group.dashboard-tabs-group {
+  margin:18px 12px 10px !important;
+  padding:0 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+}
+#viewerPage .resting-section {
+  background:linear-gradient(135deg,#761527,#3b1019) !important;
+  border:1.5px solid #be2d46 !important;
+  box-shadow:0 8px 22px rgba(190,45,70,.18),inset 0 1px rgba(255,255,255,.06) !important;
+}
+#viewerPage .player-history-group.dashboard-tabs-group {
+  background:linear-gradient(135deg,#1a2230,#111722) !important;
+  border:1.5px solid #657083 !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.05) !important;
+}
+#viewerPage .resting-section > .resting-toggle-btn,
+#viewerPage .player-history-group.dashboard-tabs-group > .player-history-group-title {
+  display:grid !important;
+  grid-template-columns:46px minmax(0,1fr) 40px !important;
+  align-items:center !important;
+  gap:12px !important;
+  width:100% !important;
+  min-height:84px !important;
+  height:auto !important;
+  padding:11px 16px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  color:#fff !important;
+  background:transparent !important;
+  text-transform:none !important;
+  box-sizing:border-box !important;
+}
+#viewerPage .round-card-icon {
+  display:grid !important;
+  place-items:center !important;
+  width:46px !important;
+  height:46px !important;
+  border-radius:50% !important;
+  color:#fff !important;
+}
+#viewerPage .resting-card-icon { background:rgba(73,5,18,.46) !important; }
+#viewerPage .dashboard-card-icon { background:rgba(71,82,102,.42) !important; }
+#viewerPage .round-card-icon svg {
+  width:26px !important;
+  height:26px !important;
+  fill:currentColor !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+}
+#viewerPage .round-card-copy {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  min-width:0 !important;
+  gap:6px !important;
+  text-align:left !important;
+}
+#viewerPage .round-card-title,
+#viewerPage .round-card-copy > .resting-toggle-label {
+  color:#fff !important;
+  font-size:1.12rem !important;
+  font-weight:850 !important;
+  line-height:1.1 !important;
+  letter-spacing:.8px !important;
+  text-transform:uppercase !important;
+  white-space:nowrap !important;
+}
+#viewerPage .round-card-subtitle {
+  color:rgba(255,255,255,.82) !important;
+  font-family:var(--font-body,inherit) !important;
+  font-size:.83rem !important;
+  font-weight:500 !important;
+  line-height:1.3 !important;
+  letter-spacing:0 !important;
+  text-transform:none !important;
+  white-space:normal !important;
+}
+#viewerPage .resting-toggle-count { font-weight:850 !important; }
+#viewerPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+#viewerPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+  display:grid !important;
+  place-items:center !important;
+  width:40px !important;
+  height:40px !important;
+  margin:0 !important;
+  border-radius:50% !important;
+  color:#fff !important;
+  background:rgba(255,255,255,.09) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  font-size:1.08rem !important;
+  line-height:1 !important;
+}
+#viewerPage .resting-section > .rest-box:not(.rest-collapsed),
+#viewerPage .player-history-group.dashboard-tabs-group > .dashboard-tabs-body:not(.rest-collapsed) {
+  border-top:1px solid rgba(255,255,255,.10) !important;
+}
+body.app-light #viewerPage .resting-section {
+  background:linear-gradient(135deg,#fff0f3,#ffe2e8) !important;
+  border-color:#e45b72 !important;
+}
+body.app-light #viewerPage .player-history-group.dashboard-tabs-group {
+  background:linear-gradient(135deg,#f8fafc,#e8edf5) !important;
+  border-color:#9aa6b8 !important;
+}
+body.app-light #viewerPage .round-card-title,
+body.app-light #viewerPage .round-card-copy > .resting-toggle-label { color:#172033 !important; }
+body.app-light #viewerPage .round-card-subtitle { color:#556174 !important; }
+body.app-light #viewerPage .round-card-icon { color:#fff !important; }
+body.app-light #viewerPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+  color:#273449 !important;
+  background:rgba(93,108,130,.13) !important;
+}
+@media (max-width:390px) {
+  #viewerPage .resting-section > .resting-toggle-btn,
+  #viewerPage .player-history-group.dashboard-tabs-group > .player-history-group-title {
+    grid-template-columns:42px minmax(0,1fr) 38px !important;
+    gap:10px !important;
+    min-height:78px !important;
+    padding:9px 13px !important;
+  }
+  #viewerPage .round-card-icon { width:42px !important; height:42px !important; }
+  #viewerPage .resting-section > .resting-toggle-btn > .resting-toggle-arrow,
+  #viewerPage .player-history-group.dashboard-tabs-group > .player-history-group-title > .player-history-group-arrow {
+    width:38px !important; height:38px !important;
+  }
+  #viewerPage .round-card-title,
+  #viewerPage .round-card-copy > .resting-toggle-label { font-size:1rem !important; }
+  #viewerPage .round-card-subtitle { font-size:.76rem !important; }
+}
+
+/* Build 30 — Resting/Dashboard align exactly with Start action width and title scale. */
+#viewerPage .resting-section,
+#viewerPage .player-history-group.dashboard-tabs-group {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+#viewerPage .round-card-title,
+#viewerPage .round-card-copy > .resting-toggle-label {
+  font-size: clamp(.9rem, 4vw, 1.05rem) !important;
+}
+@media (max-width:390px) {
+  #viewerPage .round-card-title,
+  #viewerPage .round-card-copy > .resting-toggle-label {
+    font-size: clamp(.9rem, 4vw, 1.05rem) !important;
+  }
+}
+
+
+#viewerPage .viewer-dashboard-group {
+  width: auto !important;
+  margin: 18px 0 16px !important;
+  box-sizing: border-box !important;
+}
+#viewerPage .viewer-dashboard-group .dashboard-history-panel { display:none !important; }
+#viewerPage .viewer-dashboard-group .dashboard-history-panel.active { display:block !important; }
+#viewerPage .viewer-dashboard-group .dashboard-inner-history-title { display:none !important; }
+#viewerPage .viewer-dashboard-group .rested-info-box,
+#viewerPage .viewer-dashboard-group .not-yet-paired-box { display:block !important; }
+#viewerPage .viewer-dashboard-group .player-history-scroll,
+#viewerPage .viewer-dashboard-group .not-yet-paired-scroll { overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
