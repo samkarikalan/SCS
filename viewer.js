@@ -499,6 +499,10 @@ function _vRenderSummary(container) {
     container.appendChild(card);
   });
 
+  // Live Watch Summary: show the same read-only round dashboard used by
+  // Round Manager (Rounds / Pairing / Opponents) before the round cards.
+  container.appendChild(_vBuildRoundDashboard(_vRoundsData));
+
   const roundsTitle = document.createElement('div');
   roundsTitle.className = 'round-header';
   roundsTitle.style.margin = '16px 4px 6px';
