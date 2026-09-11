@@ -35677,3 +35677,73 @@ body.app-light #vsManageOverlay .vs-manage-close{
   border-color:#dce3ec !important;
   color:#657286 !important;
 }
+
+/* Build 1139 — My Slots: keep Compact/Calendar as normal segmented control.
+   Only Upcoming/All Slots adopts the Slot Manager underline-tab treatment. */
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) {
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:0 !important;
+  width:100% !important;
+  min-width:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(128,145,180,.24) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn {
+  position:relative !important;
+  min-height:44px !important;
+  padding:0 10px 10px !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  color:var(--muted) !important;
+  -webkit-text-fill-color:currentColor !important;
+  opacity:1 !important;
+  font:inherit !important;
+  font-size:.92rem !important;
+  font-weight:600 !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active {
+  color:#159b8e !important;
+  -webkit-text-fill-color:#159b8e !important;
+  font-weight:700 !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn::after {
+  content:'' !important;
+  position:absolute !important;
+  left:12% !important;
+  right:12% !important;
+  bottom:-1px !important;
+  height:3px !important;
+  border-radius:3px 3px 0 0 !important;
+  background:transparent !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active::after {
+  background:#159b8e !important;
+}
+html:not(.app-light) #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn {
+  color:#8f96ad !important;
+  -webkit-text-fill-color:#8f96ad !important;
+}
+html:not(.app-light) #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active {
+  color:#4fd1c5 !important;
+  -webkit-text-fill-color:#4fd1c5 !important;
+}
+html:not(.app-light) #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active::after { background:#4fd1c5 !important; }
+html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn {
+  color:#667085 !important;
+  -webkit-text-fill-color:#667085 !important;
+}
+html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active {
+  color:#087f73 !important;
+  -webkit-text-fill-color:#087f73 !important;
+}
+html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active::after { background:#087f73 !important; }

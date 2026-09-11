@@ -7,7 +7,7 @@ const CACHE_NAME = 'clubs-v1.10.2-organiser-more-only';
 
 const ASSETS = [
   './index.html?v=171',
-  './ui.css?v=186',
+  './ui.css?v=1137',
   './rounds.css?v=164',
   './snapshot.js?v=164',
   './supabase.js?v=165',
