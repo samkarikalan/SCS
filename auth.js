@@ -496,6 +496,9 @@ async function authLogin(email, password) {
 
     _authUser = authUser;
     localStorage.setItem('auth_user', JSON.stringify(authUser));
+    // A successful normal sign-in must never inherit a stale demo-mode flag.
+    // authStartDemo() explicitly sets this flag again after its own login succeeds.
+    localStorage.removeItem('scs_demo_mode');
     if (typeof restoreUserClubRoles === 'function') await restoreUserClubRoles(authUser);
     return { user: authUser };
   } catch(e) {
@@ -600,6 +603,9 @@ async function authClaimAccount(clubId, nickname, defaultPassword, email, newPas
     _setLocalToken(token);
     _authUser = authUser;
     localStorage.setItem('auth_user', JSON.stringify(authUser));
+    // Clear stale demo state on a successful account login. Demo startup sets it
+    // explicitly again after authForceLogin() when the shared demo account is used.
+    localStorage.removeItem('scs_demo_mode');
     return { user: authUser };
 
   } catch(e) {
