@@ -115,6 +115,7 @@ function _vRender(roundsData) {
   livePanel.appendChild(_vBuildInfoBar());
   const lastIdx = roundsData.length - 1;
   livePanel.appendChild(_vBuildRound(roundsData[lastIdx]));
+  livePanel.appendChild(_vBuildRoundDashboard(roundsData));
   container.appendChild(livePanel);
   const summaryPanel = document.createElement('div');
   summaryPanel.id = 'vPanelSummary';
@@ -274,6 +275,164 @@ function _vBuildRound(data) {
   }
 
   return wrapper;
+}
+
+
+/* ── Read-only Dashboard inside Live Watch ──
+   Uses only the session rounds_data. It never reads or mutates organiser state. */
+function _vBaseName(name) {
+  return String(name || '').split('#')[0].trim();
+}
+
+function _vCollectDashboardData(roundsData) {
+  const names = new Set();
+  const played = new Map();
+  const rested = new Map();
+  const roundMarks = new Map();
+  const pairCounts = new Map();
+  const oppCounts = new Map();
+
+  const bump = (map, a, b) => {
+    if (!a || !b || a === b) return;
+    if (!map.has(a)) map.set(a, new Map());
+    map.get(a).set(b, (map.get(a).get(b) || 0) + 1);
+  };
+  const mark = (name, idx, value) => {
+    if (!roundMarks.has(name)) roundMarks.set(name, []);
+    roundMarks.get(name)[idx] = value;
+  };
+
+  (roundsData || []).forEach((round, ri) => {
+    (round.resting || []).forEach(raw => {
+      const name = _vBaseName(raw);
+      if (!name) return;
+      names.add(name);
+      rested.set(name, (rested.get(name) || 0) + 1);
+      mark(name, ri, 'rest');
+    });
+    (round.games || []).forEach(game => {
+      const p1 = (game.pair1 || []).map(_vBaseName).filter(Boolean);
+      const p2 = (game.pair2 || []).map(_vBaseName).filter(Boolean);
+      [...p1, ...p2].forEach(name => {
+        names.add(name);
+        played.set(name, (played.get(name) || 0) + 1);
+        mark(name, ri, 'played');
+      });
+      for (let i = 0; i < p1.length; i++) for (let j = i + 1; j < p1.length; j++) { bump(pairCounts,p1[i],p1[j]); bump(pairCounts,p1[j],p1[i]); }
+      for (let i = 0; i < p2.length; i++) for (let j = i + 1; j < p2.length; j++) { bump(pairCounts,p2[i],p2[j]); bump(pairCounts,p2[j],p2[i]); }
+      p1.forEach(a => p2.forEach(b => { bump(oppCounts,a,b); bump(oppCounts,b,a); }));
+    });
+  });
+
+  return {
+    names: [...names], played, rested, roundMarks, pairCounts, oppCounts,
+    rounds: roundsData || []
+  };
+}
+
+function _vBuildRoundDashboard(roundsData) {
+  const data = _vCollectDashboardData(roundsData);
+  const group = document.createElement('div');
+  group.className = 'player-history-group dashboard-tabs-group viewer-dashboard-group';
+  group.style.marginTop = '18px';
+
+  const header = document.createElement('div');
+  header.className = 'player-history-group-title';
+  header.style.cursor = 'default';
+  header.innerHTML =
+    '<span class="round-card-icon dashboard-card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="18" width="6" height="10" rx="1"></rect><rect x="13" y="10" width="6" height="18" rx="1"></rect><rect x="22" y="4" width="6" height="24" rx="1"></rect></svg></span>' +
+    '<span class="round-card-copy"><span class="round-card-title">' + (t('dashboard') || 'Dashboard') + '</span><span class="round-card-subtitle">' + (t('dashboardHistoryHint') || 'View history, players, reports & more') + '</span></span>';
+
+  const body = document.createElement('div');
+  body.className = 'player-history-group-body dashboard-tabs-body';
+  const tabs = document.createElement('div');
+  tabs.className = 'dashboard-history-tabs';
+  tabs.setAttribute('role','tablist');
+  const panels = document.createElement('div');
+  panels.className = 'dashboard-history-panels';
+
+  const entries = [
+    ['rounds', t('rounds') || 'Rounds', _vBuildDashboardRounds(data)],
+    ['pairing', t('pairing') || 'Pairing', _vBuildRelationshipTable(data, false)],
+    ['opponents', t('opponents') || 'Opponents', _vBuildRelationshipTable(data, true)]
+  ];
+
+  const activate = key => {
+    tabs.querySelectorAll('.dashboard-history-tab').forEach(btn => {
+      const on = btn.dataset.tab === key;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.querySelectorAll('.dashboard-history-panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panel === key));
+  };
+
+  entries.forEach(([key,label,content], idx) => {
+    const tab = document.createElement('button');
+    tab.type='button'; tab.className='dashboard-history-tab'; tab.dataset.tab=key; tab.textContent=label;
+    tab.setAttribute('role','tab'); tab.onclick = () => activate(key);
+    const panel = document.createElement('div');
+    panel.className='dashboard-history-panel dashboard-history-panel-' + key; panel.dataset.panel=key; panel.setAttribute('role','tabpanel');
+    panel.appendChild(content);
+    tabs.appendChild(tab); panels.appendChild(panel);
+    if (idx === 0) { tab.classList.add('active'); tab.setAttribute('aria-selected','true'); panel.classList.add('active'); }
+  });
+
+  body.append(tabs, panels); group.append(header, body);
+  return group;
+}
+
+function _vBuildDashboardRounds(data) {
+  const wrap = document.createElement('div');
+  wrap.className = 'viewer-dashboard-table-wrap';
+  wrap.style.overflowX = 'auto';
+  const table = document.createElement('table');
+  table.className = 'rested-table';
+  const thead = document.createElement('thead');
+  const hr = document.createElement('tr');
+  ['PLAYERS','PLAYED','RESTED'].forEach(txt => { const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
+  for (let i=data.rounds.length-1;i>=0;i--) { const th=document.createElement('th'); th.textContent='R' + (data.rounds[i].round || (i+1)); hr.appendChild(th); }
+  thead.appendChild(hr); table.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  data.names.forEach(name => {
+    const tr=document.createElement('tr');
+    const n=document.createElement('td'); n.textContent=name; n.style.fontWeight='700'; tr.appendChild(n);
+    const p=document.createElement('td'); p.textContent=String(data.played.get(name)||0); tr.appendChild(p);
+    const r=document.createElement('td'); r.textContent=String(data.rested.get(name)||0); tr.appendChild(r);
+    const marks=data.roundMarks.get(name)||[];
+    for(let i=data.rounds.length-1;i>=0;i--){ const td=document.createElement('td'); td.textContent=marks[i]==='played'?'●':(marks[i]==='rest'?'×':''); tr.appendChild(td); }
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); wrap.appendChild(table); return wrap;
+}
+
+function _vBuildRelationshipTable(data, isOpponent) {
+  const map = isOpponent ? data.oppCounts : data.pairCounts;
+  const wrap = document.createElement('div');
+  wrap.className='viewer-dashboard-table-wrap';
+  const table=document.createElement('table'); table.className='not-yet-paired-table';
+  const thead=document.createElement('thead');
+  const hr=document.createElement('tr');
+  const h1=document.createElement('th'); h1.textContent='PLAYERS'; hr.appendChild(h1);
+  const h2=document.createElement('th'); h2.textContent=isOpponent ? 'OPPONENTS' : 'PAIRING'; hr.appendChild(h2);
+  thead.appendChild(hr); table.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  data.names.forEach(name => {
+    const tr=document.createElement('tr');
+    const tdName=document.createElement('td'); tdName.textContent=name; tdName.style.fontWeight='700'; tr.appendChild(tdName);
+    const tdRel=document.createElement('td'); tdRel.className='not-yet-paired-list';
+    data.names.filter(other=>other!==name).forEach(other => {
+      const count=(map.get(name)&&map.get(name).get(other))||0;
+      const chip=document.createElement('span');
+      chip.className='not-yet-paired-chip relationship-player-card ' + (count>0?'paired-chip':'unpaired-chip');
+      chip.style.pointerEvents='none';
+      const label=document.createElement('span'); label.textContent=other; chip.appendChild(label);
+      const pill=document.createElement('span');
+      pill.className='relationship-count-pill relationship-count-' + (count<=0?'zero':count===1?'one':count===2?'two':count===3?'three':'many');
+      pill.textContent=String(count); chip.appendChild(pill); tdRel.appendChild(chip);
+    });
+    tr.appendChild(tdRel); tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); wrap.appendChild(table); return wrap;
 }
 
 /* ── Summary tab ── */
