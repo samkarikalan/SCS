@@ -35840,3 +35840,9 @@ body.organiser-mode.app-light #orgSchedulingScreen .org-mode-panel-offline {
   box-shadow:0 3px 10px rgba(26,39,57,.055) !important;
   color:#1b2738 !important;
 }
+
+/* Build 1147 — Round Manager: add breathing room below the iOS/top safe area.
+   Scope only to the Round Manager scheduling card; Slot Manager and other pages unchanged. */
+body.organiser-mode #homeOrgGrid .org-scheduling-screen {
+  margin-top: 14px !important;
+}
