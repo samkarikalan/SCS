@@ -35747,3 +35747,23 @@ html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots
   -webkit-text-fill-color:#087f73 !important;
 }
 html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active::after { background:#087f73 !important; }
+
+/* Build 1140 — My Slots Upcoming/All: exact Slot Manager underline-tab visual.
+   Compact/Calendar remains the existing segmented control. */
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter),
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn,
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn.is-active {
+  background-color:transparent !important;
+  background-image:none !important;
+  filter:none !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn {
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  outline:none !important;
+}
+#mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots-layout-filter) .mc-slots-filter-btn:before {
+  content:none !important;
+  display:none !important;
+  background:none !important;
+}
