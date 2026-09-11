@@ -455,13 +455,18 @@ function _vBuildDashboardRounds(data) {
 }
 
 function _vBuildRelationshipTable(data, isOpponent) {
-  // Match Round Manager's Pairing/Opponents panel class structure. The data is
-  // derived from live rounds only, so this remains display-only.
+  // Match Round Manager's Pairing/Opponents panel structure and interactive
+  // relationship-count filters. The viewer remains read-only.
   const map = isOpponent ? data.oppCounts : data.pairCounts;
   const section = document.createElement('div');
   section.className = 'round-header not-yet-paired-section';
   const box = document.createElement('div');
   box.className = 'not-yet-paired-box';
+
+  const controls = document.createElement('div');
+  controls.className = 'relationship-history-controls';
+  box.appendChild(controls);
+
   const scroll = document.createElement('div');
   scroll.className = 'not-yet-paired-scroll';
   const table = document.createElement('table');
@@ -470,29 +475,116 @@ function _vBuildRelationshipTable(data, isOpponent) {
   const thead = document.createElement('thead');
   const hr = document.createElement('tr');
   const h1 = document.createElement('th'); h1.textContent = t('players') || 'Players';
-  const h2 = document.createElement('th'); h2.textContent = '';
-  const h3 = document.createElement('th'); h3.className = 'not-yet-paired-partner-heading'; h3.textContent = isOpponent ? (t('opponents') || 'Opponents') : (t('pairing') || 'Pairing');
+  const h2 = document.createElement('th'); h2.className = 'not-yet-paired-count-heading';
+  const h3 = document.createElement('th'); h3.className = 'not-yet-paired-partner-heading';
   hr.append(h1, h2, h3); thead.appendChild(hr); table.appendChild(thead);
+  const tbody = document.createElement('tbody'); table.appendChild(tbody);
+  scroll.appendChild(table); box.appendChild(scroll); section.appendChild(box);
 
-  const tbody = document.createElement('tbody');
-  data.names.forEach(name => {
-    const tr = document.createElement('tr');
-    const tdName = document.createElement('td'); tdName.textContent = name; tdName.className = 'player-history-name'; tr.appendChild(tdName);
-    const tdCount = document.createElement('td'); tdCount.className = 'not-yet-paired-count'; tdCount.textContent = ''; tr.appendChild(tdCount);
-    const tdRel = document.createElement('td'); tdRel.className = 'not-yet-paired-list';
-    data.names.filter(other => other !== name).forEach(other => {
-      const count = (map.get(name) && map.get(name).get(other)) || 0;
-      const chip = document.createElement('span');
-      chip.className = 'not-yet-paired-chip relationship-player-card ' + (count > 0 ? 'paired-chip' : 'unpaired-chip');
-      chip.style.pointerEvents = 'none';
-      const label = document.createElement('span'); label.textContent = other; chip.appendChild(label);
-      const pill = document.createElement('span');
-      pill.className = 'relationship-count-pill relationship-count-' + (count <= 0 ? 'zero' : count === 1 ? 'one' : count === 2 ? 'two' : count === 3 ? 'three' : 'many');
-      pill.textContent = String(count); chip.appendChild(pill); tdRel.appendChild(chip);
+  const storageKey = isOpponent ? 'viewerOpponentHistoryView' : 'viewerPairingHistoryView';
+  let viewMode = localStorage.getItem(storageKey) || 'all';
+
+  function countFor(name, other) {
+    return (map.get(name) && map.get(name).get(other)) || 0;
+  }
+
+  function bucketKey(count) {
+    if (count === 0) return '0';
+    if (count === 1) return '1';
+    if (count === 2) return '2';
+    return '3plus';
+  }
+
+  function renderControls() {
+    const bucketAvailable = { all: true, '0': false, '1': false, '2': false, '3plus': false };
+    data.names.forEach(name => {
+      data.names.forEach(other => {
+        if (other === name) return;
+        bucketAvailable[bucketKey(countFor(name, other))] = true;
+      });
     });
-    tr.appendChild(tdRel); tbody.appendChild(tr);
-  });
-  table.appendChild(tbody); scroll.appendChild(table); box.appendChild(scroll); section.appendChild(box);
+    if (viewMode !== 'all' && !bucketAvailable[viewMode]) viewMode = 'all';
+
+    const labels = isOpponent
+      ? { all: t('all') || 'All', '0': t('against0') || 'Against 0', '1': t('against1') || 'Against 1', '2': t('against2') || 'Against 2', '3plus': t('against3Plus') || 'Against 3+' }
+      : { all: t('all') || 'All', '0': t('paired0') || '0 Paired', '1': t('paired1') || '1 Paired', '2': t('paired2') || '2 Paired', '3plus': t('paired3Plus') || '3+ Paired' };
+
+    controls.innerHTML = '';
+    const filter = document.createElement('span');
+    filter.className = 'pairing-header-toggle relationship-count-filter';
+    filter.setAttribute('role', 'group');
+    filter.setAttribute('aria-label', isOpponent ? (t('opponentHistory') || 'Opponent History') : (t('pairingHistory') || 'Pairing History'));
+    ['all','0','1','2','3plus'].forEach(key => {
+      const btn = document.createElement('span');
+      btn.className = 'not-yet-paired-view-btn' + (bucketAvailable[key] ? '' : ' disabled') + (viewMode === key ? ' active' : '');
+      btn.dataset.view = key;
+      btn.setAttribute('role', 'button');
+      btn.setAttribute('tabindex', bucketAvailable[key] ? '0' : '-1');
+      btn.setAttribute('aria-disabled', bucketAvailable[key] ? 'false' : 'true');
+      btn.textContent = labels[key];
+      const activate = event => {
+        event.stopPropagation();
+        if (!bucketAvailable[key]) return;
+        viewMode = key;
+        localStorage.setItem(storageKey, viewMode);
+        renderAll();
+      };
+      btn.addEventListener('click', activate);
+      btn.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(event); }
+      });
+      filter.appendChild(btn);
+    });
+    controls.appendChild(filter);
+  }
+
+  function renderRows() {
+    tbody.innerHTML = '';
+    h2.textContent = t(isOpponent ? 'unplayed' : 'unpaired') || (isOpponent ? 'Unplayed' : 'Unpaired');
+    h3.textContent = viewMode === 'all'
+      ? (t('allPlayers') || 'All Players')
+      : (t(isOpponent ? 'opponents' : 'pairedPlayers') || (isOpponent ? 'Opponents' : 'Paired Players'));
+
+    data.names.forEach(name => {
+      const others = data.names.filter(other => other !== name);
+      const missing = others.filter(other => countFor(name, other) === 0);
+      const shown = others.filter(other => {
+        const count = countFor(name, other);
+        if (viewMode === 'all') return true;
+        if (viewMode === '0') return count === 0;
+        if (viewMode === '1') return count === 1;
+        if (viewMode === '2') return count === 2;
+        return count >= 3;
+      });
+      if (viewMode !== 'all' && !shown.length) return;
+
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td'); tdName.textContent = name; tdName.className = 'not-yet-paired-name'; tr.appendChild(tdName);
+      const tdCount = document.createElement('td'); tdCount.className = 'not-yet-paired-count'; tdCount.textContent = String(missing.length); tr.appendChild(tdCount);
+      const tdRel = document.createElement('td'); tdRel.className = 'not-yet-paired-with';
+
+      shown.forEach(other => {
+        const count = countFor(name, other);
+        const chip = document.createElement('span');
+        chip.className = 'not-yet-paired-chip relationship-player-card ' + (count > 0 ? 'paired-chip' : 'unpaired-chip');
+        chip.style.pointerEvents = 'none';
+        const label = document.createElement('span'); label.textContent = other; chip.appendChild(label);
+        if (viewMode !== '0') {
+          const pill = document.createElement('span');
+          pill.className = 'relationship-count-pill relationship-count-' + (count <= 0 ? 'zero' : count === 1 ? 'one' : count === 2 ? 'two' : count === 3 ? 'three' : 'many');
+          pill.dataset.count = String(count);
+          pill.textContent = String(count);
+          chip.appendChild(pill);
+        }
+        tdRel.appendChild(chip);
+      });
+
+      tr.appendChild(tdRel); tbody.appendChild(tr);
+    });
+  }
+
+  function renderAll() { renderControls(); renderRows(); }
+  renderAll();
   return section;
 }
 
