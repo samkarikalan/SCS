@@ -35846,3 +35846,16 @@ body.organiser-mode.app-light #orgSchedulingScreen .org-mode-panel-offline {
 body.organiser-mode #homeOrgGrid .org-scheduling-screen {
   margin-top: 14px !important;
 }
+
+
+/* Build 1151 — Home quick action: an active Round session cannot start another one. */
+.scs-home-quick-panel .scs-home-quick-round-row.is-session-active,
+.scs-home-quick-panel .scs-home-quick-round-row:disabled {
+  opacity:.48;
+  cursor:not-allowed;
+  filter:saturate(.55);
+}
+.scs-home-quick-panel .scs-home-quick-round-row.is-session-active #scsQuickRoundClub,
+.scs-home-quick-panel .scs-home-quick-round-row:disabled #scsQuickRoundClub {
+  pointer-events:none;
+}

@@ -5799,6 +5799,28 @@ async function scsRefreshHomeQuickApprovalAction() {
   }
 }
 
+function scsHomeRoundSessionInProgress() {
+  try {
+    if (typeof sessionFinished !== 'undefined' && sessionFinished) return false;
+    if (typeof allRounds !== 'undefined' && Array.isArray(allRounds) &&
+        allRounds.some(function(round) { return !round || !round.isMbm; })) return true;
+    if (typeof getMySessionId === 'function' && getMySessionId()) return true;
+  } catch (_) {}
+  return false;
+}
+
+function scsRefreshHomeQuickRoundAvailability() {
+  var row = document.querySelector('.scs-home-quick-round-row');
+  if (!row) return;
+  var active = scsHomeRoundSessionInProgress();
+  row.disabled = active;
+  row.classList.toggle('is-session-active', active);
+  row.setAttribute('aria-disabled', active ? 'true' : 'false');
+  row.title = active ? 'A round session is already in progress. End it before starting another round.' : '';
+  var title = row.querySelector('.scs-home-quick-copy > strong');
+  if (title) title.textContent = active ? 'Round in Progress' : 'Start a Round';
+}
+
 function scsRefreshHomeQuickClubControls() {
   var roundEl = document.getElementById('scsQuickRoundClub');
   var slotEl = document.getElementById('scsQuickSlotClub');
@@ -5814,6 +5836,7 @@ function scsRefreshHomeQuickClubControls() {
     if (registerNameLine) registerNameLine.textContent = roundName || 'Select a club';
     roundEl.title = roundName ? 'Change Round Manager club' : 'Select Round Manager club';
   }
+  scsRefreshHomeQuickRoundAvailability();
   if (slotEl) {
     var slotId = localStorage.getItem('kbrr_vault_club_id') || '';
     var slotName = localStorage.getItem('kbrr_vault_club_name') || '';
@@ -6108,6 +6131,10 @@ async function scsOpenPostSlotManager() {
 }
 
 function scsHomeQuickAction(action) {
+  if (action === 'round' && scsHomeRoundSessionInProgress()) {
+    scsRefreshHomeQuickRoundAvailability();
+    return;
+  }
   scsCloseHomeQuickMenu();
   if (action === 'round') {
     welcomeSelectedWorkspace = 'organiser';
