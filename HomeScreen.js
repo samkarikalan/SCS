@@ -411,6 +411,27 @@ var club   = (typeof getMyClub   === 'function') ? getMyClub()   : null;
 var player = (typeof getMyPlayer === 'function') ? getMyPlayer() : null;
 var isAdmin = (typeof isClubAdmin === 'function') ? isClubAdmin() : false;
 
+var homeClubNameEl = document.getElementById('myHubHomeClubName');
+if (homeClubNameEl) {
+  var homeClubName = '';
+  try { homeClubName = localStorage.getItem('kbrr_vault_club_name') || localStorage.getItem('kbrr_my_club_name') || localStorage.getItem('kbrr_org_club_name') || ''; } catch (e) {}
+  if (!homeClubName && club && club.name) homeClubName = club.name;
+  homeClubNameEl.textContent = homeClubName || 'Club';
+}
+
+// Build 1141: Home club card uses the currently logged-in/selected club name.
+var homeClubNameEl = document.getElementById('myHubHomeClubName');
+if (homeClubNameEl) {
+  var homeClubName = '';
+  try {
+    homeClubName = localStorage.getItem('kbrr_vault_club_name') ||
+                   localStorage.getItem('kbrr_my_club_name') ||
+                   localStorage.getItem('kbrr_org_club_name') || '';
+  } catch (e) {}
+  if (!homeClubName && club && club.name) homeClubName = club.name;
+  homeClubNameEl.textContent = homeClubName || 'Club';
+}
+
 if (club && club.name) {
 var modePrefix = isVault ? '🔑 ' : (isAdmin ? '★ ' : '');
 if (statusName) statusName.textContent = modePrefix + club.name;
