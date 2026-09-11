@@ -399,14 +399,15 @@
     if (prepBal) prepBal.classList.toggle('is-active', algorithm === 'balanced');
     const useTemplates = document.getElementById('sampleOfflineUseTemplates');
     if (useTemplates) {
-      const templatesAllowed = canManageTemplatesForSelectedClub();
+      // Template usage is available to every club. Only template management
+      // (create/edit/delete) remains restricted to the configured SCS club.
       useTemplates.checked = getUseTemplates();
-      useTemplates.disabled = !templatesAllowed;
-      useTemplates.setAttribute('aria-disabled', templatesAllowed ? 'false' : 'true');
+      useTemplates.disabled = false;
+      useTemplates.setAttribute('aria-disabled', 'false');
       const templatesRow = useTemplates.closest('.org-sample-winner-row');
       if (templatesRow) {
-        templatesRow.hidden = !templatesAllowed;
-        templatesRow.style.display = templatesAllowed ? '' : 'none';
+        templatesRow.hidden = false;
+        templatesRow.style.display = '';
       }
     }
     const random = document.getElementById('sampleOfflinePlayerOrderToggle');
