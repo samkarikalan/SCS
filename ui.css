@@ -35814,3 +35814,29 @@ html:not(.app-light) .scs-primary-bottom-nav button .scs-primary-nav-icon {
   box-shadow: none !important;
   filter: none !important;
 }
+
+
+/* Build 1146 — Round Manager shell/card parity with Slot Manager.
+   Only the Round Manager workspace is affected: keep the iOS/top shell neutral
+   and remove the strong blue fill from the outer Round iMode card. */
+html:not(.app-light) body.organiser-mode #homePageOverlay {
+  background:#0f0f13 !important;
+  background-color:#0f0f13 !important;
+  background-image:none !important;
+}
+html.app-light body.organiser-mode #homePageOverlay {
+  background:#f4f6fb !important;
+  background-color:#f4f6fb !important;
+  background-image:none !important;
+}
+body.organiser-mode:not(.app-light) #orgSchedulingScreen .org-mode-panel-offline {
+  background:#171821 !important;
+  border-color:rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+}
+body.organiser-mode.app-light #orgSchedulingScreen .org-mode-panel-offline {
+  background:#ffffff !important;
+  border-color:rgba(33,47,74,.14) !important;
+  box-shadow:0 3px 10px rgba(26,39,57,.055) !important;
+  color:#1b2738 !important;
+}

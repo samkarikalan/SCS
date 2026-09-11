@@ -1318,6 +1318,10 @@ function applyMode(mode) {
 
   // Body class for organiser scrollable tabs (kept for any CSS that uses it)
   document.body.classList.toggle('organiser-tabs', mode === 'organiser');
+  // Keep the Round Manager workspace identity explicit. Several shell/safe-area
+  // rules are intentionally scoped to organiser-mode; without this class the
+  // iOS top area can inherit the Round iMode blue surface.
+  document.body.classList.toggle('organiser-mode', mode === 'organiser');
   document.body.classList.toggle('vault-mode',     mode === 'vault');
   document.querySelectorAll('.workspace-role-logout').forEach(function(button) {
     button.style.display = mode === 'viewer' ? 'none' : '';
