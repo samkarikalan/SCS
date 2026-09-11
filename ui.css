@@ -35767,3 +35767,35 @@ html.app-light #mcUpcomingSlots .mc-slots-tools > .mc-slots-filter:not(.mc-slots
   display:none !important;
   background:none !important;
 }
+
+/* Build 1144 — requested two-fix guard only.
+   1) Non-Home workspaces use the neutral app shell through the iOS safe area.
+   2) Primary bottom-nav icon wrappers never carry their own colour tile. */
+html:not(.app-light) body.scs-nonhome-active,
+html:not(.app-light) body.organiser-mode,
+html:not(.app-light) body.vault-mode {
+  background:#0f0f13 !important;
+  background-color:#0f0f13 !important;
+  background-image:none !important;
+}
+html.app-light body.scs-nonhome-active,
+html.app-light body.organiser-mode,
+html.app-light body.vault-mode {
+  background:#f4f6fb !important;
+  background-color:#f4f6fb !important;
+  background-image:none !important;
+}
+.scs-primary-bottom-nav .scs-primary-nav-icon,
+.scs-primary-bottom-nav button .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(1) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(2) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(3) .scs-primary-nav-icon,
+.scs-primary-bottom-nav button:nth-child(4) .scs-primary-nav-icon,
+html.app-light .scs-primary-bottom-nav button .scs-primary-nav-icon,
+html:not(.app-light) .scs-primary-bottom-nav button .scs-primary-nav-icon {
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
