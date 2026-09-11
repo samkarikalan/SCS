@@ -1700,6 +1700,44 @@ async function RefreshRound() {
     const savedRoundIndex = schedulerState.roundIndex;
     const savedCurrentIndex = currentRoundIndex;
 
+    // IMPORTANT: the round dice reshuffles ONLY the players who are currently
+    // on court. Manual Rest <-> Play changes are authoritative for this round.
+    // Rest selection belongs to Next Round generation, not to a current-round
+    // reroll. Build the playing pool directly from the visible court data so a
+    // stale data.playing array can never reintroduce a resting player.
+    const currentRound = allRounds[currentRoundIndex];
+    if (!currentRound || !Array.isArray(currentRound.games)) return;
+
+    const currentPlaying = [];
+    const seenPlaying = new Set();
+    for (const game of currentRound.games) {
+      for (const name of [...(game.pair1 || []), ...(game.pair2 || [])]) {
+        if (!name || name === t('emptyGame')) continue;
+        const base = String(name).replace(/#\d+$/, '');
+        if (!seenPlaying.has(base)) {
+          seenPlaying.add(base);
+          currentPlaying.push(base);
+        }
+      }
+    }
+
+    const preservedResting = Array.isArray(currentRound.resting)
+      ? [...currentRound.resting]
+      : [];
+
+    // Use a temporary scheduler state restricted to the current playing pool.
+    // This keeps all existing Standard/Balanced/typed-court generation logic,
+    // but makes the number of resting players zero for this reroll. The real
+    // schedulerState/restQueue remains untouched for the NEXT round.
+    const rerollState = Object.assign({}, schedulerState, {
+      activeplayers: [...currentPlaying],
+      restQueue: [...currentPlaying],
+      fixedPairs: Array.isArray(schedulerState.fixedPairs)
+        ? schedulerState.fixedPairs.filter(pair => Array.isArray(pair) && pair.length >= 2 && seenPlaying.has(pair[0]) && seenPlaying.has(pair[1]))
+        : [],
+      roundIndex: savedRoundIndex,
+    });
+
     // Generate a new arrangement for the CURRENT round only
     // Route by mode: competitive re-runs the rating-aware scheduler,
     // random uses the pure random shuffle
@@ -1723,7 +1761,7 @@ async function RefreshRound() {
           }
         }
       }
-      newRound = await safeGenerateRound(schedulerState);
+      newRound = await safeGenerateRound(rerollState);
       // Restore: remove the temporarily added keys
       for (const key of tempKeys) {
         schedulerState.pairPlayedSet.delete(key);
@@ -1748,24 +1786,28 @@ async function RefreshRound() {
             }
           }
         }
-        newRound = await safeGenerateRound(schedulerState);
+        newRound = await safeGenerateRound(rerollState);
         // Restore pairPlayedSet
         for (const key of tempKeys) {
           schedulerState.pairPlayedSet.delete(key);
         }
       } else {
-        newRound = RandomRound(schedulerState);
+        newRound = RandomRound(rerollState);
       }
     }
 
-    // Keep the round number exactly the same as before
+    // Keep the round number exactly the same as before, and preserve the
+    // organiser's manual Play/Rest choice. The generator is used only to form
+    // new teams/courts from currentPlaying.
     newRound.round = savedRoundIndex;
+    newRound.playing = [...currentPlaying];
+    newRound.resting = preservedResting;
 
     // If worker returned fewer courts than expected, fill missing with RandomRound
     const expectedCourts = schedulerState.numCourts || 1;
     if (newRound.games && newRound.games.length < expectedCourts) {
       console.warn('Partial round — falling back to RandomRound for missing courts');
-      const fallback = RandomRound(schedulerState);
+      const fallback = RandomRound(rerollState);
       if (fallback && fallback.games) {
         while (newRound.games.length < expectedCourts && fallback.games.length > 0) {
           newRound.games.push(fallback.games.shift());

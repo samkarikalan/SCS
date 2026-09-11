@@ -2867,6 +2867,27 @@ function _attachTeamTapHandlers(teamDiv, teamSide, gameIndex, data, roundIndex, 
   teamDiv.addEventListener('touchcancel', () => { _sx = 0; _sy = 0; }, { passive: true });
 }
 
+// Keep the current round's explicit playing list aligned with the visible
+// court assignments after a manual swap. The round dice also derives its pool
+// from games directly, but this keeps snapshot/recovery state internally
+// consistent for every other consumer of data.playing.
+function _syncRoundPlayingFromGames(data) {
+  if (!data || !Array.isArray(data.games)) return;
+  const playing = [];
+  const seen = new Set();
+  for (const game of data.games) {
+    for (const name of [...(game.pair1 || []), ...(game.pair2 || [])]) {
+      if (!name || name === t('emptyGame')) continue;
+      const base = String(name).replace(/#\d+$/, '');
+      if (!seen.has(base)) {
+        seen.add(base);
+        playing.push(base);
+      }
+    }
+  }
+  data.playing = playing;
+}
+
 // ── Update restQueue after a manual player swap ──────────────────────────────
 // Called whenever a player moves between rest and court mid-round.
 // Only restQueue is updated — opponentMap/pairPlayedSet wait until round ends.
@@ -2956,6 +2977,7 @@ function handleDropRestToTeam(
 
   // Update restQueue: newPlayer just went to court, oldPlayer just went to rest
   _updateRestQueueForSwap(oldPlayer, newPlayer);
+  _syncRoundPlayingFromGames(data);
 
   showRound(roundIndex);
   _saveManualRoundChange();
@@ -2981,6 +3003,7 @@ function handleDropBetweenTeams(e, teamSide, gameIndex, playerIndex, data, index
   if (!targetPlayer || targetPlayer === t('emptyGame')) {
     _updateRestQueueForSwap(null, movedPlayer);
   }
+  _syncRoundPlayingFromGames(data);
 
   showRound(index);
   _saveManualRoundChange();
