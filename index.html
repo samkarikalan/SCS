@@ -127,7 +127,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="help.js?v=856" defer></script>
 
-  <script src="profile.js?v=1097" defer></script>
+  <script src="profile.js?v=1159" defer></script>
 
   <script src="dashboard.js?v=856" defer></script>
   <script src="slots.js?v=1136" defer></script>
@@ -137,7 +137,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1147">
+  <link rel="stylesheet" href="ui.css?v=1159">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -948,7 +948,10 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 <div class="home-topbar home-app-header" aria-label="User home">
   <div class="home-app-brand">
     <img id="homeUserHeaderAvatar" class="home-app-logo" src="male.png?v=856" alt="User">
-    <div class="home-app-brand-copy"><strong id="homeUserHeaderName">Player</strong><span id="homeUserHeaderTier">Member</span></div>
+    <div class="home-app-brand-copy">
+      <div class="home-user-name-row"><strong id="homeUserHeaderName">Player</strong><button id="homeHeaderEditNicknameBtn" class="home-header-nickname-edit" type="button" onclick="authOpenNicknameEditor()" aria-label="Change nickname" title="Change nickname">✎</button></div>
+      <span id="homeUserHeaderTier">Member</span>
+    </div>
   </div>
   <div class="home-app-tools">
     <button class="scs-home-add-btn home-app-add" id="scsHomeAddBtn" type="button" aria-label="Quick actions" title="Quick actions" onclick="scsToggleHomeQuickMenu(event)">+</button>

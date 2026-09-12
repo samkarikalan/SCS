@@ -33779,6 +33779,10 @@ nn/* Build 1058 — approved Home quick-menu layout. Keep club names and Logout 
 .home-app-brand { min-width:0; display:flex; align-items:center; gap:11px; flex:1 1 auto; }
 .home-app-logo { width:56px; height:56px; flex:0 0 56px; border-radius:50%; object-fit:cover; border:2px solid rgba(42,116,255,.88); box-shadow:0 0 0 3px rgba(42,116,255,.10); }
 .home-app-brand-copy { min-width:0; display:flex; flex-direction:column; line-height:1.04; }
+.home-user-name-row{display:flex;align-items:center;gap:7px;min-width:0;}
+.home-user-name-row #homeUserHeaderName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.home-header-nickname-edit{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:0;background:transparent;color:var(--accent,#7766ff);font:inherit;font-size:.9rem;line-height:1;padding:3px;cursor:pointer;}
+.home-header-nickname-edit:focus-visible{outline:2px solid var(--accent,#7766ff);outline-offset:2px;border-radius:6px;}
 .home-app-brand-copy strong { color:#fff; font-size:1.35rem; font-weight:850; letter-spacing:.035em; }
 .home-app-brand-copy span { margin-top:5px; color:#9fb3d7; font-size:.78rem; font-weight:600; white-space:nowrap; }
 .home-app-tools { display:flex; align-items:center; gap:7px; flex:0 0 auto; }

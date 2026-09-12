@@ -60,6 +60,8 @@ try {
   }
 } catch (_) {}
 if (headerName) headerName.textContent = headerTitle;
+const headerEditNicknameBtn = document.getElementById('homeHeaderEditNicknameBtn');
+if (headerEditNicknameBtn) headerEditNicknameBtn.style.display = headerAccount ? 'inline-flex' : 'none';
 if (headerSubtitle) headerSubtitle.textContent = headerTier;
 if (headerAvatar) {
   headerAvatar.src = src || ((headerAccount && headerAccount.gender === 'Female') ? 'female.png' : 'male.png');
