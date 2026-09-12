@@ -544,7 +544,7 @@ const nameEl = document.getElementById('mcName');
 const accountUser = (typeof authGetUser === 'function') ? authGetUser() : null;
 if (nameEl) nameEl.textContent = (accountUser && accountUser.nickname) || player.displayName || player.name || '';
 const editNicknameBtn = document.getElementById('mcEditNicknameBtn');
-if (editNicknameBtn) editNicknameBtn.style.display = accountUser ? '' : 'none';
+if (editNicknameBtn) editNicknameBtn.style.display = accountUser ? 'inline-flex' : 'none';
 
 // Logout button -- only show if logged in via auth
 const logoutBtn = document.getElementById('mcLogoutBtn');
