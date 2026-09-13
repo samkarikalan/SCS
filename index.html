@@ -115,7 +115,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="rounds.js?v=1180" defer></script>
   <script src="offline-rounds.js?v=979" defer></script>
-  <script src="full-schedule.js?v=1184" defer></script>
+  <script src="full-schedule.js?v=1185" defer></script>
   <script src="mbm.js?v=856" defer></script>
 
   <script src="players.js?v=1180" defer></script>
@@ -2863,7 +2863,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 <div id="fullScheduleDashboard" class="full-schedule-dashboard" hidden>
   <div class="full-schedule-nav">
     <button id="fullSchedulePrev" type="button" onclick="SCSFullSchedule.previous()">‹ Previous Round</button>
-    <strong id="fullSchedulePosition">Round 1 of 1</strong>
+    <strong id="fullSchedulePosition" hidden></strong>
     <button id="fullScheduleNext" type="button" onclick="SCSFullSchedule.next()">Next Round ›</button>
   </div>
   <button id="fullScheduleComplete" class="full-schedule-complete" type="button" onclick="SCSFullSchedule.completeCurrent()">✓ Mark Completed</button>

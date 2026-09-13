@@ -36075,5 +36075,10 @@ body.round-settings-open #roundSettingsBody {
   touch-action: pan-y;
 }
 
-/* Build 1184 — Full Round Schedule. Reuses the existing iMode and Round UI. */
-.full-schedule-dashboard{margin:12px 14px 18px;display:grid;gap:12px}.full-schedule-dashboard[hidden]{display:none!important}.full-schedule-nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.full-schedule-nav button,.full-schedule-complete{min-height:48px;border:1px solid var(--border,#3a3d4a);border-radius:14px;font:inherit;font-weight:700}.full-schedule-nav button:last-child{text-align:center}.full-schedule-nav strong{text-align:center;white-space:nowrap}.full-schedule-complete{width:100%;min-height:56px}.full-schedule-readonly #game-results .player-btn,.full-schedule-readonly #game-results .Lplayer-btn,.full-schedule-readonly #game-results .Rplayer-btn,.full-schedule-readonly #game-results .team,.full-schedule-readonly #resting-panel button{pointer-events:none!important}.full-schedule-readonly #game-results .win-cup{display:none!important}
+/* Build 1185 — Full Round Schedule cleanup. */
+.full-schedule-dashboard{margin:12px 14px 18px;display:grid;gap:12px}.full-schedule-dashboard[hidden]{display:none!important}.full-schedule-nav{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px}.full-schedule-nav button,.full-schedule-complete{min-height:48px;border:1px solid var(--border,#3a3d4a);border-radius:14px;font:inherit;font-weight:700}.full-schedule-nav button:last-child{text-align:center}.full-schedule-nav strong{text-align:center;white-space:nowrap}.full-schedule-complete{width:100%;min-height:56px}.full-schedule-readonly #game-results .player-btn,.full-schedule-readonly #game-results .Lplayer-btn,.full-schedule-readonly #game-results .Rplayer-btn,.full-schedule-readonly #game-results .team,.full-schedule-readonly #resting-panel button{pointer-events:none!important}.full-schedule-readonly #game-results .win-cup{display:none!important}
+
+/* Full Schedule: no court counter / Play Round action; completed rounds are read-only grey. */
+body.full-schedule-readonly #roundsPage .round-court-counter,body.full-schedule-readonly #roundsPage .action-card{display:none!important}
+body.full-schedule-round-completed #game-results{filter:grayscale(1);opacity:.62}
+body.full-schedule-round-completed .full-schedule-complete{opacity:.62;filter:grayscale(1)}

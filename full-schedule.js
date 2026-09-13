@@ -66,11 +66,13 @@
     const on = enabled() && Array.isArray(allRounds) && allRounds.length > 0;
     const dash = document.getElementById('fullScheduleDashboard');
     if (dash) dash.hidden = !on;
-    const action = document.querySelector('#roundsPage > .action-card');
+    const action = document.getElementById('nextBtn')?.closest('.action-card') || document.querySelector('#roundsPage .action-card');
     if (action) action.style.display = on ? 'none' : '';
     ['roundShufle','courtMinus','courtPlus'].forEach(id => {
       const el = document.getElementById(id); if (el) el.style.display = on ? 'none' : '';
     });
+    const courtCounter = document.querySelector('#roundsPage .round-court-counter');
+    if (courtCounter) courtCounter.style.display = on ? 'none' : '';
     const settings = document.querySelector('#roundsPage .rtb-settings[aria-label="Settings"]');
     if (settings) settings.style.display = on ? 'none' : '';
     document.body.classList.toggle('full-schedule-readonly', !!on);
@@ -80,16 +82,18 @@
   function updatePosition() {
     if (!enabled() || !Array.isArray(allRounds) || !allRounds.length) return;
     const pos = document.getElementById('fullSchedulePosition');
-    if (pos) pos.textContent = `Round ${currentRoundIndex + 1} of ${allRounds.length}`;
+    if (pos) pos.hidden = true;
     const prev = document.getElementById('fullSchedulePrev');
     const next = document.getElementById('fullScheduleNext');
     if (prev) prev.disabled = currentRoundIndex <= 0;
     if (next) next.disabled = currentRoundIndex >= allRounds.length - 1;
     const complete = document.getElementById('fullScheduleComplete');
     const round = allRounds[currentRoundIndex];
+    const isCompleted = !!(round && round._fullScheduleCompleted);
+    document.body.classList.toggle('full-schedule-round-completed', isCompleted);
     if (complete) {
-      complete.textContent = round && round._fullScheduleCompleted ? '✓ Completed' : '✓ Mark Completed';
-      complete.disabled = !!(round && round._fullScheduleCompleted);
+      complete.textContent = isCompleted ? '✓ Completed' : '✓ Mark Completed';
+      complete.disabled = isCompleted;
     }
   }
 
