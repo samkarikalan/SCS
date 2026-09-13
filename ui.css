@@ -36082,3 +36082,7 @@ body.round-settings-open #roundSettingsBody {
 body.full-schedule-readonly #roundsPage .round-court-counter,body.full-schedule-readonly #roundsPage .action-card{display:none!important}
 body.full-schedule-round-completed #game-results{filter:grayscale(1);opacity:.62}
 body.full-schedule-round-completed .full-schedule-complete{opacity:.62;filter:grayscale(1)}
+
+/* Build 1186 — Full Schedule advances only through Mark Completed. */
+.full-schedule-nav{grid-template-columns:1fr}
+.full-schedule-nav #fullSchedulePrev{width:100%}
