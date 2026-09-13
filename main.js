@@ -1535,9 +1535,9 @@ async function scsOpenPlayersManagerWhenRoundManagerEmpty(clubId) {
     } catch (_) {}
     if (playerCount > 0) return false;
 
+    if (typeof scsPushChildReturnState === 'function') scsPushChildReturnState('playersPage');
     if (typeof homeHideScreen === 'function') homeHideScreen();
     if (typeof _navSource !== 'undefined') _navSource = 'rounds';
-    window.__scsPlayersReturnSource = 'rounds';
     if (typeof showPage === 'function') showPage('playersPage', null);
     if (typeof _updateDynamicBackBtns === 'function') _updateDynamicBackBtns('playersPage');
     return true;
@@ -2269,8 +2269,8 @@ function updateRoundsPageAccess() {
   roundsTab.setAttribute('aria-disabled', block);
 
   if (block && isPageVisible('roundsPage')) {
+    if (typeof scsPushChildReturnState === 'function') scsPushChildReturnState('playersPage');
     if (typeof _navSource !== 'undefined') _navSource = 'rounds';
-    window.__scsPlayersReturnSource = 'rounds';
     showPage('playersPage', null);
   }
 }
@@ -2288,6 +2288,7 @@ function updateSummaryPageAccess() {
   summaryTab.setAttribute('aria-disabled', block);
 
   if (block && isPageVisible('summaryPage')) {
+    if (typeof scsPushChildReturnState === 'function') scsPushChildReturnState('playersPage');
     showPage('playersPage', null);
   }
 }
@@ -2341,6 +2342,13 @@ function showPage(pageID, el) {
     }
     selectedPage.scrollTop = 0;
     if (selectedPage.scrollTo) { try { selectedPage.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch (_) { selectedPage.scrollTop = 0; } }
+    // Players is rendered in the document scroll context on iOS. Reset that too,
+    // otherwise a scroll position carried over from Rounds can leave the first
+    // action row underneath the sticky Players title bar on first entry.
+    try {
+      if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+      window.scrollTo(0, 0);
+    } catch (_) {}
   }
 
   // Hide both top bars while inside a page
@@ -2735,6 +2743,20 @@ async function getVaultEligibleClubs() {
 }
 
 async function openVaultWorkspaceForAdmin(selectedClubId, forceChoose) {
+  // Slot Manager authentication is separate from the signed-in player account.
+  // A server-side manager role/eligible club must not silently bypass the
+  // Slot Manager login/create-club sheet. Only a locally verified Slot Manager
+  // session may reuse its saved club without asking for the club password again.
+  var vaultVerified = false;
+  try {
+    vaultVerified = sessionStorage.getItem('scs_vault_verified') === '1' ||
+      localStorage.getItem('scs_vault_verified') === '1';
+  } catch (_) {}
+  if (forceChoose !== true && !vaultVerified) {
+    _showClubSetupSheet('vault');
+    return false;
+  }
+
   var clubs = await getVaultEligibleClubs();
   var selectedClub = selectedClubId
     ? clubs.find(function(club) { return String(club.id) === String(selectedClubId); })
@@ -5757,7 +5779,21 @@ function scsToggleHomeQuickMenu(event) {
   if (!menu.hidden) {
     scsRefreshHomeQuickClubControls();
     scsRefreshHomeQuickApprovalAction();
+    scsRefreshHomeQuickTemplateAction();
   }
+}
+
+function scsRefreshHomeQuickTemplateAction() {
+  var row = document.getElementById('scsQuickRoundsTemplate');
+  if (!row) return;
+  var scsClubId = String(window.SCS_ROUNDS_TEMPLATE_CLUB_ID || '');
+  var selectedClubId = '';
+  try {
+    selectedClubId = localStorage.getItem('kbrr_vault_club_id') || localStorage.getItem('kbrr_org_club_id') || '';
+  } catch (_) {}
+  var visible = !!scsClubId && String(selectedClubId) === scsClubId;
+  row.hidden = !visible;
+  row.style.display = visible ? '' : 'none';
 }
 
 async function scsRefreshHomeQuickApprovalAction() {
@@ -5834,6 +5870,8 @@ function scsRefreshHomeQuickClubControls() {
     if (roundNameLine) roundNameLine.textContent = roundName || 'Select a club';
     var registerNameLine = document.getElementById('scsQuickRegisterClubName');
     if (registerNameLine) registerNameLine.textContent = roundName || 'Select a club';
+    var modifyNameLine = document.getElementById('scsQuickModifyClubName');
+    if (modifyNameLine) modifyNameLine.textContent = roundName || 'Select a club';
     roundEl.title = roundName ? 'Change Round Manager club' : 'Select Round Manager club';
   }
   scsRefreshHomeQuickRoundAvailability();
@@ -6136,7 +6174,12 @@ function scsHomeQuickAction(action) {
     return;
   }
   scsCloseHomeQuickMenu();
+  if (action === 'fullSchedule') {
+    if (window.SCSFullSchedule) window.SCSFullSchedule.openSetup();
+    return;
+  }
   if (action === 'round') {
+    if (window.SCSFullSchedule) window.SCSFullSchedule.disable();
     welcomeSelectedWorkspace = 'organiser';
     if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
     switchMode('organiser');
@@ -6147,6 +6190,14 @@ function scsHomeQuickAction(action) {
       console.error('Could not open Slot Manager for Post a Slot:', error);
       if (typeof showToast === 'function') showToast(error && error.message ? error.message : 'Could not open Slot Manager');
     });
+    return;
+  }
+  if (action === 'template') {
+    // SCS-only shortcut to the existing Rounds Template management module.
+    // Creation/edit logic and its existing access guard remain unchanged.
+    if (window.SCSOfflineRounds && typeof window.SCSOfflineRounds.openTemplateEditorPicker === 'function') {
+      window.SCSOfflineRounds.openTemplateEditorPicker();
+    }
     return;
   }
   if (action === 'approve') {
@@ -6185,6 +6236,25 @@ function scsHomeQuickAction(action) {
       homeGo('vaultRegisterPage', null);
     } else if (typeof showPage === 'function') {
       showPage('vaultRegisterPage', null);
+    }
+    return;
+  }
+  if (action === 'modify') {
+    // Reuse the existing Modify Players page and bind it to the currently
+    // selected Round Manager club. No duplicate player editor.
+    var modifyClubId = '';
+    var modifyClubName = '';
+    try {
+      modifyClubId = localStorage.getItem('kbrr_org_club_id') || '';
+      modifyClubName = localStorage.getItem('kbrr_org_club_name') || '';
+    } catch (e) {}
+    if (modifyClubId && typeof setMyClub === 'function') {
+      setMyClub(modifyClubId, modifyClubName);
+    }
+    if (typeof homeGo === 'function') {
+      homeGo('vaultModifyPage', null);
+    } else if (typeof showPage === 'function') {
+      showPage('vaultModifyPage', null);
     }
     return;
   }

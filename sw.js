@@ -1,23 +1,23 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-cache-1159';
-const APP_SHELL = './index.html?v=1159';
+const CACHE_NAME = 'scs-cache-1183';
+const APP_SHELL = './index.html?v=1183';
 
 const ASSETS = [
   APP_SHELL,
-  './ui.css?v=1159', './rounds.css?v=1157',
+  './ui.css?v=1176', './rounds.css?v=1175',
   './offline-db.js?v=1120', './offline-rounds.js?v=979', './snapshot.js?v=891', './supabase.js?v=1120', './auth.js?v=856',
-  './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1103',
-  './engjap.js?v=864', './main.js?v=1150', './games.js?v=1020',
-  './rounds.js?v=941', './mbm.js?v=856', './players.js?v=906',
-  './importPlayers.js?v=985', './settings.js?v=1120', './summary.js?v=856',
+  './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1179',
+  './engjap.js?v=864', './main.js?v=1182', './games.js?v=1176',
+  './rounds.js?v=1180', './mbm.js?v=856', './players.js?v=1180',
+  './importPlayers.js?v=985', './settings.js?v=1175', './summary.js?v=856',
   './help.js?v=856', './profile.js?v=1159', './dashboard.js?v=856',
   './slots.js?v=1136', './notifications.js?v=856', './viewer.js?v=1157',
-  './report.js?v=856', './manifest.json?v=953',
+  './report.js?v=856', './manifest.json?v=1183',
   './male.png?v=856', './female.png?v=856', './win-cup.png?v=856',
   './welcome-default-myhub.png?v=1015', './welcome-default-round-manager.png?v=1015', './welcome-default-slot-manager.png?v=1015',
-  './lock.png?v=856', './unlock.png?v=856', './icon-192.png?v=856',
-  './icon-512.png?v=856', './clubs-brand.png?v=856', './google-g.svg?v=856', './help_en.json?v=857', './help_jp.json?v=857',
+  './lock.png?v=856', './unlock.png?v=856', './icon-192.png?v=1183',
+  './icon-512.png?v=1183', './clubs-brand.png?v=856', './google-g.svg?v=856', './help_en.json?v=857', './help_jp.json?v=857',
   './help_kr.json?v=857', './help_zh.json?v=857', './help_vi.json?v=857'
 ];
 

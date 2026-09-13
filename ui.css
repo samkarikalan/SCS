@@ -9280,6 +9280,28 @@ body.app-light .players-action-btn:active { background: #f1f4f9; }
   .players-action-label { font-size: .76rem; }
 }
 
+/* BUILD 1166 — Players actions must never sit under the sticky Players header.
+   The page can inherit document scroll from Rounds on iOS, so keep the two
+   primary actions pinned directly below the title bar as a second row. */
+#playersPage > .players-action-row {
+  position: sticky;
+  top: calc(var(--scs-primary-safe-top) + 70px);
+  z-index: 19;
+  margin-top: 0;
+  padding: 8px 16px 10px;
+  background: var(--bg);
+  box-sizing: border-box;
+}
+body.app-light #playersPage > .players-action-row { background: var(--bg); }
+@media (max-width: 360px) {
+  #playersPage > .players-action-row {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 /* ── Register: Add to Session button ── */
 .register-add-session-btn {
   width: 100%;
@@ -35863,3 +35885,195 @@ body.organiser-mode #homeOrgGrid .org-scheduling-screen {
 .scs-home-quick-panel .scs-home-quick-round-row:disabled #scsQuickRoundClub {
   pointer-events:none;
 }
+\n\n/* v1165 — compact Modify Players edit sheet + icon gender toggle */
+#vmEditModal .vm-modal-sheet {
+  padding: 6px 16px max(14px, env(safe-area-inset-bottom));
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+#vmEditModal .vm-modal-handle { margin-bottom: 8px; }
+#vmEditModal .vm-modal-title { margin-bottom: 10px; font-size: 1rem; }
+#vmEditModal .vm-field-group { gap: 4px; margin-bottom: 7px; }
+#vmEditModal .vm-field-row { gap: 8px; }
+#vmEditModal .vm-field-label { font-size: 0.62rem; }
+#vmEditModal .vm-field-input {
+  min-height: 42px;
+  padding: 8px 11px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+}
+#vmEditModal .vm-modal-actions { margin-top: 8px; gap: 8px; }
+#vmEditModal .vm-action-btn { min-height: 42px; padding: 9px 12px; }
+#vmEditModal #vmEditFeedback { min-height: 14px !important; margin-bottom: 4px !important; }
+#vmEditModal .vm-gender-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  min-height: 42px;
+}
+#vmEditModal .vm-gender-btn {
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text-dim);
+  border-radius: 12px;
+  min-height: 42px;
+  padding: 5px 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+#vmEditModal .vm-gender-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+#vmEditModal .vm-gender-btn.active {
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface2));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+@media (max-height: 740px) {
+  #vmEditModal .vm-modal-sheet { padding-top: 4px; }
+  #vmEditModal .vm-modal-handle { margin-bottom: 5px; }
+  #vmEditModal .vm-modal-title { margin-bottom: 7px; }
+  #vmEditModal .vm-field-group { margin-bottom: 5px; }
+  #vmEditModal .vm-field-input,
+  #vmEditModal .vm-gender-btn { min-height: 38px; }
+  #vmEditModal .vm-action-btn { min-height: 38px; padding: 7px 10px; }
+}
+
+/* v1167 — Edit Player gender icon hard-size guard */
+#vmEditModal .vm-gender-toggle .vm-gender-btn > img { width:24px !important; height:24px !important; max-width:24px !important; max-height:24px !important; object-fit:contain !important; flex:0 0 24px !important; }
+
+
+/* v1168 — Edit Player: icon-only gender toggle + independent sheet scrolling */
+body.vm-edit-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+#vmEditModal {
+  z-index: 20050 !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+#vmEditModal .vm-modal-sheet {
+  max-height: calc(100dvh - max(18px, env(safe-area-inset-top)) - 12px) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
+}
+#vmEditModal .vm-gender-toggle {
+  grid-template-columns: repeat(2, 46px) !important;
+  justify-content: start;
+}
+#vmEditModal .vm-gender-btn {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 5px !important;
+  gap: 0 !important;
+}
+#vmEditModal .vm-gender-btn > img {
+  width: 26px !important;
+  height: 26px !important;
+  max-width: 26px !important;
+  max-height: 26px !important;
+  flex: 0 0 26px !important;
+}
+
+/* v1171 — Modify Players gender card tint only */
+#vaultModifyPage .vm-player-row.male {
+  background: linear-gradient(135deg, rgba(37, 99, 235, .22), rgba(30, 58, 138, .14)) !important;
+  border-color: rgba(96, 165, 250, .42) !important;
+}
+#vaultModifyPage .vm-player-row.female {
+  background: linear-gradient(135deg, rgba(236, 72, 153, .22), rgba(157, 23, 77, .14)) !important;
+  border-color: rgba(244, 114, 182, .42) !important;
+}
+body.app-light #vaultModifyPage .vm-player-row.male {
+  background: linear-gradient(135deg, #dbeafe, #eff6ff) !important;
+  border-color: #93c5fd !important;
+}
+body.app-light #vaultModifyPage .vm-player-row.female {
+  background: linear-gradient(135deg, #fce7f3, #fdf2f8) !important;
+  border-color: #f9a8d4 !important;
+}
+
+/* v1172 — Modify Players: clearly visible gender card backgrounds */
+body.app-dark #vaultModifyPage .vm-player-row.male,
+body:not(.app-light) #vaultModifyPage .vm-player-row.male {
+  background: #142d4f !important;
+  border-color: #3b82f6 !important;
+}
+body.app-dark #vaultModifyPage .vm-player-row.female,
+body:not(.app-light) #vaultModifyPage .vm-player-row.female {
+  background: #48243a !important;
+  border-color: #ec4899 !important;
+}
+body.app-light #vaultModifyPage .vm-player-row.male {
+  background: #dbeafe !important;
+  border-color: #60a5fa !important;
+}
+body.app-light #vaultModifyPage .vm-player-row.female {
+  background: #fce7f3 !important;
+  border-color: #f472b6 !important;
+}
+
+/* v1175 — Modify Players: clear pink female card; male card unchanged */
+body.app-dark #vaultModifyPage .vm-player-row.female,
+body:not(.app-light) #vaultModifyPage .vm-player-row.female {
+  background: #9b3f78 !important;
+  border-color: #ff7abb !important;
+}
+
+/* Build 1176 — Round Settings sheet: keep the sheet above primary nav and scroll its own body. */
+#roundSettingsOverlay {
+  z-index: 10020;
+  overscroll-behavior: contain;
+}
+#roundSettingsPanel {
+  max-height: calc(100dvh - max(16px, env(safe-area-inset-top)));
+  padding-bottom: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#roundSettingsPanel .bottom-sheet-handle,
+#roundSettingsPanel .bottom-sheet-title-bar {
+  flex: 0 0 auto;
+}
+#roundSettingsPanel .bottom-sheet-title-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
+}
+#roundSettingsBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+body.round-settings-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+body.round-settings-open #roundSettingsOverlay,
+body.round-settings-open #roundSettingsPanel,
+body.round-settings-open #roundSettingsBody {
+  touch-action: pan-y;
+}
+
+/* Build 1184 — Full Round Schedule. Reuses the existing iMode and Round UI. */
+.full-schedule-dashboard{margin:12px 14px 18px;display:grid;gap:12px}.full-schedule-dashboard[hidden]{display:none!important}.full-schedule-nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.full-schedule-nav button,.full-schedule-complete{min-height:48px;border:1px solid var(--border,#3a3d4a);border-radius:14px;font:inherit;font-weight:700}.full-schedule-nav button:last-child{text-align:center}.full-schedule-nav strong{text-align:center;white-space:nowrap}.full-schedule-complete{width:100%;min-height:56px}.full-schedule-readonly #game-results .player-btn,.full-schedule-readonly #game-results .Lplayer-btn,.full-schedule-readonly #game-results .Rplayer-btn,.full-schedule-readonly #game-results .team,.full-schedule-readonly #resting-panel button{pointer-events:none!important}.full-schedule-readonly #game-results .win-cup{display:none!important}

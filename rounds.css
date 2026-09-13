@@ -6441,3 +6441,15 @@ body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-
     letter-spacing: 0 !important;
   }
 }
+
+
+/* v1164 — make the currently selected swap player unmistakable */
+.Lplayer-btn.selected,
+.Rplayer-btn.selected,
+.rest-btn.selected {
+  outline: 3px solid var(--amber) !important;
+  outline-offset: 1px !important;
+  background: rgba(245,158,11,0.28) !important;
+  color: var(--amber) !important;
+  box-shadow: 0 0 0 2px rgba(245,158,11,0.18), 0 0 14px rgba(245,158,11,0.55) !important;
+}

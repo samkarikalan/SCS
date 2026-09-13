@@ -268,6 +268,9 @@ async function updateCourtDisplay() {
   // Keep scheduler court count in sync, then use the existing whole-round 🎲.
   schedulerState.numCourts = courts;
   schedulerState.courts = courts;
+  // A court-count change invalidates the current playing allocation. Force the
+  // next current-round generation to use the complete active roster.
+  if (allRounds.length) window._roundStructureDirty = true;
   if (allRounds.length && typeof RefreshRound === 'function') {
     await RefreshRound();
   } else if (!allRounds.length && typeof goToRounds === 'function') {
@@ -1725,15 +1728,41 @@ async function RefreshRound() {
       ? [...currentRound.resting]
       : [];
 
-    // Use a temporary scheduler state restricted to the current playing pool.
-    // This keeps all existing Standard/Balanced/typed-court generation logic,
-    // but makes the number of resting players zero for this reroll. The real
-    // schedulerState/restQueue remains untouched for the NEXT round.
+    // Detect an Active/Inactive roster edit made while the session is running.
+    // v1157 made the visible current-round Play/Rest choice authoritative for
+    // dice rerolls. That is still correct for manual Rest <-> Play swaps, but an
+    // Active/Inactive edit changes the roster itself and must take precedence.
+    const currentRoster = new Set([
+      ...currentPlaying,
+      ...preservedResting.map(name => String(name).replace(/#\d+$/, ''))
+    ]);
+    const activeRoster = [...(schedulerState.activeplayers || [])]
+      .map(name => String(name).replace(/#\d+$/, ''));
+    const activeRosterSet = new Set(activeRoster);
+    const rosterChanged = currentRoster.size !== activeRosterSet.size ||
+      [...currentRoster].some(name => !activeRosterSet.has(name));
+
+    // Court-count and fixed-pair edits change the structure of the current round.
+    // In those cases the dice must rebuild from the FULL active roster, exactly
+    // like a fresh current-round proposal. A plain dice press with no setup edits
+    // still preserves the organiser's current Play/Rest choice.
+    const setupChanged = !!window._roundStructureDirty;
+    const fullRegeneration = rosterChanged || setupChanged;
+
+    const rerollPlayers = fullRegeneration ? activeRoster : currentPlaying;
+    const rerollPlayerSet = new Set(rerollPlayers);
+
+    // Normal dice: restrict generation to the organiser's current playing pool,
+    // preserving the manual resting choice. After Active/Inactive changes: use
+    // the full active roster and normal restQueue once, so activated/deactivated
+    // players are immediately respected without undoing the v1157 manual-swap fix.
     const rerollState = Object.assign({}, schedulerState, {
-      activeplayers: [...currentPlaying],
-      restQueue: [...currentPlaying],
+      activeplayers: [...rerollPlayers],
+      restQueue: fullRegeneration
+        ? [...(schedulerState.restQueue || [])]
+        : [...rerollPlayers],
       fixedPairs: Array.isArray(schedulerState.fixedPairs)
-        ? schedulerState.fixedPairs.filter(pair => Array.isArray(pair) && pair.length >= 2 && seenPlaying.has(pair[0]) && seenPlaying.has(pair[1]))
+        ? schedulerState.fixedPairs.filter(pair => Array.isArray(pair) && pair.length >= 2 && rerollPlayerSet.has(pair[0]) && rerollPlayerSet.has(pair[1]))
         : [],
       roundIndex: savedRoundIndex,
     });
@@ -1750,10 +1779,15 @@ async function RefreshRound() {
       // We restore pairPlayedSet immediately after so state is unchanged.
       const currentRound = allRounds[currentRoundIndex];
       const tempKeys = [];
+      const fixedPairKeys = new Set((rerollState.fixedPairs || []).map(pair => [...pair].sort().join('&')));
       if (currentRound && currentRound.games) {
         for (const game of currentRound.games) {
           for (const pair of [game.pair1, game.pair2]) {
             const key = [...pair].sort().join('&');
+            // A fixed pair is an organiser constraint, not a historical pair to
+            // avoid. Marking it as temporarily "used" makes the current-round
+            // dice fight the fixed-pair rule in Competitive/Balanced mode.
+            if (fixedPairKeys.has(key)) continue;
             if (!schedulerState.pairPlayedSet.has(key)) {
               schedulerState.pairPlayedSet.add(key);
               tempKeys.push(key);
@@ -1775,10 +1809,14 @@ async function RefreshRound() {
         // Temporarily mark current pairs as used to force fresh pairs
         const currentRound = allRounds[currentRoundIndex];
         const tempKeys = [];
+        const fixedPairKeys = new Set((rerollState.fixedPairs || []).map(pair => [...pair].sort().join('&')));
         if (currentRound && currentRound.games) {
           for (const game of currentRound.games) {
             for (const pair of [game.pair1, game.pair2]) {
               const key = [...pair].sort().join('&');
+              // Keep organiser-defined fixed pairs exempt from the temporary
+              // anti-repeat marks used only to force a visibly different reroll.
+              if (fixedPairKeys.has(key)) continue;
               if (!schedulerState.pairPlayedSet.has(key)) {
                 schedulerState.pairPlayedSet.add(key);
                 tempKeys.push(key);
@@ -1796,12 +1834,15 @@ async function RefreshRound() {
       }
     }
 
-    // Keep the round number exactly the same as before, and preserve the
-    // organiser's manual Play/Rest choice. The generator is used only to form
-    // new teams/courts from currentPlaying.
+    // Keep the round number exactly the same as before. If the active roster
+    // did not change, preserve the organiser's manual Play/Rest choice exactly.
+    // If Active/Inactive changed, keep the generator's newly reconciled
+    // playing/resting split so the current round reflects the new roster.
     newRound.round = savedRoundIndex;
-    newRound.playing = [...currentPlaying];
-    newRound.resting = preservedResting;
+    if (!fullRegeneration) {
+      newRound.playing = [...currentPlaying];
+      newRound.resting = preservedResting;
+    }
 
     // If worker returned fewer courts than expected, fill missing with RandomRound
     const expectedCourts = schedulerState.numCourts || 1;
@@ -1818,6 +1859,10 @@ async function RefreshRound() {
     // Restore everything - no advancement
     schedulerState.roundIndex = savedRoundIndex;
     currentRoundIndex = savedCurrentIndex;
+
+    // Regeneration succeeded: the current round now reflects any roster,
+    // fixed-pair or court-count changes, so clear the one-shot dirty marker.
+    if (fullRegeneration) window._roundStructureDirty = false;
 
     // Replace current round in-place
     allRounds[currentRoundIndex] = newRound;

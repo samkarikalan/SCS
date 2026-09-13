@@ -118,6 +118,7 @@ const TAP_THRESHOLD = 8; // px — uniform across all tap handlers
 const SwapState = (() => {
   let _player = null;
   let _team   = null;
+  let _playerTimer = null;
 
   function _haptic(style) {
     try {
@@ -131,7 +132,23 @@ const SwapState = (() => {
 
   function _clearHighlights() {
     document.querySelectorAll('.selected, .selected-team')
-      .forEach(el => el.classList.remove('selected', 'selected-team'));
+      .forEach(el => {
+        el.classList.remove('selected', 'selected-team');
+        el.removeAttribute('aria-pressed');
+      });
+  }
+
+  function _clearPlayerTimer() {
+    if (_playerTimer) { clearTimeout(_playerTimer); _playerTimer = null; }
+  }
+
+  function _armPlayerTimeout() {
+    _clearPlayerTimer();
+    _playerTimer = setTimeout(() => {
+      _player = null;
+      _clearPlayerTimer();
+      _clearHighlights();
+    }, 15000);
   }
 
   return {
@@ -140,6 +157,7 @@ const SwapState = (() => {
 
     selectPlayer(info, el) {
       if (_team) { _clearHighlights(); _team = null; }
+      _clearPlayerTimer();
       const isSame = _player &&
         _player.playerName === info.playerName &&
         _player.from === info.from &&
@@ -150,13 +168,14 @@ const SwapState = (() => {
       }
       _clearHighlights();
       _player = info;
-      el && el.classList.add('selected');
+      if (el) { el.classList.add('selected'); el.setAttribute('aria-pressed', 'true'); }
+      _armPlayerTimeout();
       _haptic('light');
       return 'select';
     },
 
     selectTeam(info, el) {
-      if (_player) { _clearHighlights(); _player = null; }
+      if (_player) { _clearPlayerTimer(); _clearHighlights(); _player = null; }
       const isSame = _team &&
         _team.teamSide === info.teamSide &&
         _team.gameIndex === info.gameIndex;
@@ -184,7 +203,7 @@ const SwapState = (() => {
     // True if we're inside the post-player-swap touch guard window
     get touchGuarded() { return Date.now() < (SwapState._touchGuardUntil || 0); },
 
-    clear() { _player = null; _team = null; _clearHighlights(); }
+    clear() { _player = null; _team = null; _clearPlayerTimer(); _clearHighlights(); }
   };
 })();
 
@@ -2683,6 +2702,9 @@ function makeRestButton(player, data, index, interactive = true) {
   const handleTap = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // A synthetic click can land on the newly-rendered target after a swap.
+    // Ignore all player/rest taps during the short post-swap guard window.
+    if (SwapState.touchGuarded) return;
     const src = SwapState.player;
     if (src) {
       // Something is already selected — complete the swap
@@ -2763,6 +2785,9 @@ function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
     }
     e.preventDefault();
     e.stopPropagation(); // never let tap bubble to teamDiv
+    // Prevent iOS/synthetic follow-up taps from selecting the swap target again
+    // after the DOM has been rebuilt by the completed swap.
+    if (SwapState.touchGuarded) return;
 
     const src = SwapState.player;
     if (src) {
@@ -3408,6 +3433,7 @@ function toggleRoundSettings() {
     closeRoundSettings();
   } else {
     overlay.style.display = 'flex';
+    document.body.classList.add('round-settings-open');
     updateGearPairsSub();
     // Sync courts variable from schedulerState before updating buttons
     if (typeof courts !== 'undefined' && schedulerState && schedulerState.numCourts) {
@@ -3424,6 +3450,7 @@ function closeRoundSettings(e) {
   if (e && e.target !== document.getElementById('roundSettingsOverlay')) return;
   const overlay = document.getElementById('roundSettingsOverlay');
   if (overlay) overlay.style.display = 'none';
+  document.body.classList.remove('round-settings-open');
 }
 
 function showRoundHistory() {

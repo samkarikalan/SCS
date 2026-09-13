@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1100';
+      var BUILD = '1183';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.68"; window.SCS_BUILD = "1103"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.71"; window.SCS_BUILD = "1183"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -79,8 +79,8 @@ html,body{overscroll-behavior:none;}
   min-height:100dvh;
 }
 </style>
-  <link rel="apple-touch-icon" href="icon-192.png?v=856">
-  <link rel="manifest" href="manifest.json?v=954">
+  <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png?v=1183">
+  <link rel="manifest" href="/manifest.json?v=1183">
   <meta name="theme-color" content="#0f0f13" id="metaThemeColor">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -104,24 +104,25 @@ html,body{overscroll-behavior:none;}
 
   <script src="subscription.js?v=856" defer></script>
 
-  <script src="HomeScreen.js?v=1100" defer></script>
+  <script src="HomeScreen.js?v=1179" defer></script>
 
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1151" defer></script>
+  <script src="main.js?v=1184" defer></script>
 
-  <script src="games.js?v=1020" defer></script>
+  <script src="games.js?v=1176" defer></script>
 
-  <script src="rounds.js?v=941" defer></script>
+  <script src="rounds.js?v=1180" defer></script>
   <script src="offline-rounds.js?v=979" defer></script>
+  <script src="full-schedule.js?v=1184" defer></script>
   <script src="mbm.js?v=856" defer></script>
 
-  <script src="players.js?v=906" defer></script>
+  <script src="players.js?v=1180" defer></script>
 
   <script src="importPlayers.js?v=985" defer></script>
 
-  <script src="settings.js?v=1120" defer></script>
+  <script src="settings.js?v=1175" defer></script>
 
   <script src="summary.js?v=856" defer></script>
 
@@ -137,7 +138,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1159">
+  <link rel="stylesheet" href="ui.css?v=1176">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -217,7 +218,7 @@ html,body{overscroll-behavior:none;}
       background: rgba(48,190,211,.12) !important;
     }
   </style>
-  <link rel="stylesheet" href="rounds.css?v=1157">
+  <link rel="stylesheet" href="rounds.css?v=1175">
   <style id="dashboardHistoryLayoutStyles">
     /* Preserve player names exactly as entered in Dashboard > Rounds. */
     #roundsPage .dashboard-history-panel .player-history-name {
@@ -963,8 +964,11 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 <div id="scsHomeQuickMenu" class="scs-home-quick-menu" hidden onclick="if(event.target===this)scsCloseHomeQuickMenu()">
   <div class="scs-home-quick-panel" role="dialog" aria-modal="true" aria-label="Quick actions">
     <button type="button" class="scs-home-quick-action-row scs-home-quick-round-row" onclick="scsHomeQuickAction('round')"><span class="scs-home-quick-icon" aria-hidden="true">🏸</span><span class="scs-home-quick-copy"><strong>Start a Round</strong><span id="scsQuickRoundClubName" class="scs-home-quick-subtitle"></span></span><span id="scsQuickRoundClub" class="scs-home-quick-club" role="button" tabindex="0" aria-label="Change Round Manager club" onclick="event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)}"></span></button>
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-full-schedule-row" onclick="scsHomeQuickAction('fullSchedule')"><span class="scs-home-quick-icon" aria-hidden="true">📋</span><span class="scs-home-quick-copy"><strong>Full Round Schedule</strong><span class="scs-home-quick-subtitle">Generate / Play Full Schedule</span></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-slot-row" onclick="scsHomeQuickAction('slot')"><span class="scs-home-quick-icon" aria-hidden="true">📅</span><span class="scs-home-quick-slot-copy"><strong>Post a Slot</strong><span id="scsQuickSlotClubName" class="scs-home-quick-slot-club-name">Login to a club</span></span><span id="scsQuickSlotClub" class="scs-home-quick-club scs-home-quick-slot-auth" role="button" tabindex="0" aria-label="Slot Manager login" onclick="event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)}"></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-register-row" onclick="scsHomeQuickAction('register')"><span class="scs-home-quick-icon" aria-hidden="true">📋</span><span class="scs-home-quick-copy"><strong>Register Players</strong><span id="scsQuickRegisterClubName" class="scs-home-quick-subtitle"></span></span></button>
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-modify-row" onclick="scsHomeQuickAction('modify')"><span class="scs-home-quick-icon" aria-hidden="true">✏️</span><span class="scs-home-quick-copy"><strong>Modify Players</strong><span id="scsQuickModifyClubName" class="scs-home-quick-subtitle"></span></span></button>
+    <button type="button" id="scsQuickRoundsTemplate" class="scs-home-quick-action-row scs-home-quick-template-row" hidden onclick="scsHomeQuickAction('template')"><span class="scs-home-quick-icon" aria-hidden="true">🧩</span><span class="scs-home-quick-copy"><strong>Rounds Template</strong><span class="scs-home-quick-subtitle">Create / Edit Templates</span></span></button>
     <button type="button" id="scsQuickApprovePlayers" class="scs-home-quick-action-row scs-home-quick-approve-row" hidden onclick="scsHomeQuickAction('approve')"><span class="scs-home-quick-icon" aria-hidden="true">✓</span><span class="scs-home-quick-copy"><strong id="scsQuickApprovePlayersLabel">Approve Players</strong><span id="scsQuickApproveClubName" class="scs-home-quick-subtitle"></span></span></button>
     <button type="button" onclick="scsHomeQuickAction('club')"><span aria-hidden="true">🏢</span><strong>Join a Club</strong></button>
     <button class="scs-home-quick-cancel" type="button" onclick="scsCloseHomeQuickMenu()">Cancel</button>
@@ -1164,6 +1168,14 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
                 <button id="sampleOfflineCourtsMinus" type="button" aria-label="Decrease courts" onclick="SCSOfflineRounds.adjustCourtCount(-1)">−</button>
                 <strong id="sampleOfflineCourtsValue">2</strong>
                 <button id="sampleOfflineCourtsPlus" type="button" aria-label="Increase courts" onclick="SCSOfflineRounds.adjustCourtCount(1)">+</button>
+              </div>
+            </div>
+            <div id="fullScheduleRoundsSection" class="org-color-section org-offline-courts-section org-always-visible-setting" hidden>
+              <div class="org-control-label">Number of Rounds</div>
+              <div class="org-mode-court-stepper org-imode-court-stepper" role="group" aria-label="Number of Rounds">
+                <button id="fullScheduleRoundsMinus" type="button" aria-label="Decrease rounds" onclick="SCSFullSchedule.adjustRounds(-1)">−</button>
+                <strong id="fullScheduleRoundsValue">10</strong>
+                <button id="fullScheduleRoundsPlus" type="button" aria-label="Increase rounds" onclick="SCSFullSchedule.adjustRounds(1)">+</button>
               </div>
             </div>
             <div class="org-color-section org-color-format-section org-always-visible-setting">
@@ -2496,16 +2508,21 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
         <input id="vmEditName" class="vm-field-input" type="text" placeholder="Player name">
       </div>
       <div class="vm-field-row">
-        <div class="vm-field-group" style="flex:1">
+        <div class="vm-field-group vm-gender-group" style="flex:1">
           <label class="vm-field-label" data-i18n="gender">Gender</label>
-          <select id="vmEditGender" class="vm-field-input">
-            <option value="Male" data-i18n="genderMale">Male</option>
-            <option value="Female" data-i18n="genderFemale">Female</option>
-          </select>
+          <input id="vmEditGender" type="hidden" value="Male">
+          <div class="vm-gender-toggle" role="group" aria-label="Gender">
+            <button id="vmGenderMale" class="vm-gender-btn" type="button" data-gender="Male" onclick="vmSetEditGender('Male')" aria-label="Male">
+              <img src="male.png" alt="Male">
+            </button>
+            <button id="vmGenderFemale" class="vm-gender-btn" type="button" data-gender="Female" onclick="vmSetEditGender('Female')" aria-label="Female">
+              <img src="female.png" alt="Female">
+            </button>
+          </div>
         </div>
         <div class="vm-field-group" style="flex:1">
           <label class="vm-field-label" data-i18n="rating">Rating</label>
-          <input id="vmEditRating" class="vm-field-input" type="number" step="0.1" min="1.0" max="5.0" placeholder="1.0">
+          <input id="vmEditRating" class="vm-field-input" type="number" step="0.1" min="1.0" max="5.0" inputmode="decimal" placeholder="1.0" onblur="vmLimitEditRating(this, true)">
         </div>
       </div>
       <div class="vm-field-row">
@@ -2842,6 +2859,15 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 </div>
 
 <div id="game-results"></div>
+
+<div id="fullScheduleDashboard" class="full-schedule-dashboard" hidden>
+  <div class="full-schedule-nav">
+    <button id="fullSchedulePrev" type="button" onclick="SCSFullSchedule.previous()">‹ Previous Round</button>
+    <strong id="fullSchedulePosition">Round 1 of 1</strong>
+    <button id="fullScheduleNext" type="button" onclick="SCSFullSchedule.next()">Next Round ›</button>
+  </div>
+  <button id="fullScheduleComplete" class="full-schedule-complete" type="button" onclick="SCSFullSchedule.completeCurrent()">✓ Mark Completed</button>
+</div>
 
 <div class="action-card">
   <button id="nextBtn" class="action right primary start-state" onclick="toggleRound()">
@@ -3305,7 +3331,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1091', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1183', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen

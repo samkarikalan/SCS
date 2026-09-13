@@ -288,6 +288,7 @@ function fcSelectPlayer(key, n, newName) {
   );
   if (pairIdx !== -1) {
     schedulerState.fixedPairs[pairIdx] = n === 1 ? [newName, otherName] : [otherName, newName];
+    window._roundStructureDirty = true;
   }
 
   // Update card UI
@@ -317,12 +318,14 @@ function modifyFixedPair(p1 = null, p2 = null) {
   );
   if (index !== -1) {
     schedulerState.fixedPairs.splice(index, 1);
+    window._roundStructureDirty = true;
     removeFixedCard(pairKey);
     fpResetPickers();
     if (typeof requestRoundOneSetupRegeneration === 'function') requestRoundOneSetupRegeneration();
     return;
   }
   schedulerState.fixedPairs.push([p1, p2]);
+  window._roundStructureDirty = true;
   addFixedCard(p1, p2, pairKey);
   fpResetPickers();
   fpToggleCreatePanel(false);
@@ -335,11 +338,13 @@ function removeFixedCard(key) {
 }
 
 function removeFixedPairsForPlayer(playerName) {
+  const beforeCount = schedulerState.fixedPairs.length;
   schedulerState.fixedPairs = schedulerState.fixedPairs.filter(pair => {
     const keep = !pair.includes(playerName);
     if (!keep) removeFixedCard(pair.slice().sort().join("&"));
     return keep;
   });
+  if (schedulerState.fixedPairs.length !== beforeCount) window._roundStructureDirty = true;
   updateFixedPairSelectors();
   if (typeof requestRoundOneSetupRegeneration === 'function') requestRoundOneSetupRegeneration();
 }
@@ -414,10 +419,15 @@ function toggleActive(index, checkbox) {
   checkbox.checked ? card.classList.remove("inactive") : card.classList.add("inactive");
   schedulerState.activeplayers.splice(0, schedulerState.activeplayers.length,
     ...schedulerState.allPlayers.filter(p => p.active).map(p => p.name).reverse());
-  // Sync restQueue — only during an active session
+  // Sync restQueue — only during an active session. The current round itself is
+  // intentionally not rewritten here; RefreshRound() detects a roster mismatch
+  // and regenerates from the active roster on the next round-dice press. This
+  // preserves manual Rest <-> Play choices when the active roster has NOT changed.
   if (typeof rebuildRestQueue === 'function' && Array.isArray(allRounds) && allRounds.length > 0) {
     schedulerState.restQueue = rebuildRestQueue(schedulerState.restQueue);
   }
+  // Active/inactive is a real player-state edit and must survive page close/reload.
+  saveAllPlayersState();
   updateFixedPairSelectors();
 }
 

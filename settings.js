@@ -945,13 +945,45 @@ return String(s || '')
 .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+let _vmEditScrollY = 0;
+function _vmLockEditScroll() {
+  _vmEditScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.classList.add('vm-edit-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${_vmEditScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+function _vmUnlockEditScroll() {
+  const y = _vmEditScrollY || 0;
+  document.body.classList.remove('vm-edit-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, y);
+}
+
+function vmSetEditGender(gender) {
+const value = gender === 'Female' ? 'Female' : 'Male';
+const input = document.getElementById('vmEditGender');
+if (input) input.value = value;
+document.querySelectorAll('#vmEditModal .vm-gender-btn').forEach(btn => {
+  const active = btn.dataset.gender === value;
+  btn.classList.toggle('active', active);
+  btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+});
+}
+
 function vmOpenEditModal(playerId) {
 const p = _vmAllPlayers.find(x => x.id === playerId);
 if (!p) return;
 document.getElementById('vmEditPlayerId').value    = p.id;
 document.getElementById('vmEditUserAccountId').value = p.userAccountId || '';
 document.getElementById('vmEditName').value        = p.displayName;
-document.getElementById('vmEditGender').value      = p.gender || 'Male';
+vmSetEditGender(p.gender || 'Male');
 document.getElementById('vmEditRating').value      = p.rating.toFixed(1);
 document.getElementById('vmEditWins').value        = p.wins;
 document.getElementById('vmEditLosses').value      = p.losses;
@@ -959,13 +991,29 @@ document.getElementById('vmEditUserId').value      = p.userId || '';
 document.getElementById('vmEditPassword').value    = '';
 const fb = document.getElementById('vmEditFeedback');
 if (fb) { fb.textContent = ''; fb.style.color = ''; }
-document.getElementById('vmEditModal').classList.add('open');
+_vmLockEditScroll();
+const editModal = document.getElementById('vmEditModal');
+editModal.classList.add('open');
+const editSheet = editModal.querySelector('.vm-modal-sheet');
+if (editSheet) editSheet.scrollTop = 0;
 }
 
 function vmCloseEditModal(e) {
 if (!e || e.target === document.getElementById('vmEditModal')) {
 document.getElementById('vmEditModal').classList.remove('open');
+_vmUnlockEditScroll();
 }
+}
+
+function vmLimitEditRating(input, finalise = false) {
+  if (!input || !finalise) return;
+  const raw = String(input.value ?? '').trim();
+  if (raw === '') return;
+  const value = Number(raw);
+  // Do not clamp while typing. Decimal values such as 2.5 must remain editable.
+  // Final range enforcement happens in vmSaveEdit(); only normalise valid values here.
+  if (!Number.isFinite(value) || value < 1 || value > 5) return;
+  input.value = (Math.round(value * 10) / 10).toFixed(1);
 }
 
 async function vmSaveEdit() {
@@ -974,7 +1022,8 @@ const userAcctId   = document.getElementById('vmEditUserAccountId').value;
 const nameInput    = document.getElementById('vmEditName');
 let name           = nameInput.value;
 const gender       = document.getElementById('vmEditGender').value;
-const rating       = parseFloat(document.getElementById('vmEditRating').value) || 1.0;
+const ratingInput  = document.getElementById('vmEditRating');
+const rating       = parseFloat(ratingInput.value);
 const wins         = parseInt(document.getElementById('vmEditWins').value)   || 0;
 const losses       = parseInt(document.getElementById('vmEditLosses').value) || 0;
 const newUserId    = document.getElementById('vmEditUserId').value.trim().toLowerCase();
@@ -985,6 +1034,13 @@ const setFb = (msg, ok) => { if (fb) { fb.textContent = msg; fb.style.color = ok
 try { name = scsRequireValidPlayerName(name); }
 catch (e) { setFb(e.message || t('invalidPlayerName'), false); return; }
 nameInput.value = name;
+
+if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+  setFb('Rating must be between 1.0 and 5.0.', false);
+  if (ratingInput) { ratingInput.focus(); ratingInput.select?.(); }
+  return;
+}
+if (ratingInput) ratingInput.value = (Math.round(rating * 10) / 10).toFixed(1);
 
 setFb(t('saving'), true);
 try {
@@ -1021,6 +1077,7 @@ if (typeof updatePlayerList === 'function') updatePlayerList();
 setFb(t('saved'), true);
 setTimeout(() => {
   document.getElementById('vmEditModal').classList.remove('open');
+  _vmUnlockEditScroll();
   vaultRenderModify();
 }, 600);
 
@@ -1230,7 +1287,7 @@ container.innerHTML = `
     </div>
     <div class="register-field">
       <label class="register-label">${vregText('defaultPassword','Default Password')} <span class="register-hint">${vregText('claimHint','player uses this to claim account')}</span></label>
-      <input type="text" id="vregDefaultPassword" class="register-input" placeholder="${vregText('passwordExample','e.g. club123')}">
+      <input type="text" id="vregDefaultPassword" class="register-input" value="1234" placeholder="${vregText('passwordExample','e.g. club123')}">
     </div>
     <div id="vregFeedback" class="register-feedback" style="min-height:18px;margin-bottom:10px"></div>
     <button class="register-save-btn" onclick="vaultDoRegisterPlayer()">${vregText('registerPlayer','Register Player')}</button>
@@ -1255,7 +1312,7 @@ container.innerHTML = `
     </div>
     <div class="register-field">
       <label class="register-label">${vregText('passwordAll','Default Password for all')} <span class="register-hint">${vregText('claimHint','players use this to claim account')}</span></label>
-      <input type="text" id="vregBulkDefaultPassword" class="register-input" placeholder="${vregText('passwordExample','e.g. club123')}">
+      <input type="text" id="vregBulkDefaultPassword" class="register-input" value="1234" placeholder="${vregText('passwordExample','e.g. club123')}">
     </div>
     <button class="register-add-btn" onclick="regAddToStaging()">${vregText('addList','Add to List')}</button>
     <div id="regStagingContainer" class="reg-staging-container"></div>
@@ -1430,7 +1487,7 @@ if (addBtn) {
 }
 // Clear fields for next entry
 document.getElementById('vregNickname').value = '';
-document.getElementById('vregDefaultPassword').value = '';
+document.getElementById('vregDefaultPassword').value = '1234';
 document.getElementById('vregRating').value = '1.0';
 // Invalidate player cache
 localStorage.removeItem('kbrr_cache_players');

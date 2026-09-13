@@ -1103,15 +1103,124 @@ function homeOpenViewerSlots() {
   if (typeof renderMyCardSlotsUI === 'function') renderMyCardSlotsUI(false);
 }
 
+/* ── Shared child-page return stack ──
+   A child page must always return to the exact UI state that opened it.
+   Players and Fixed Pairs use this instead of hard-coded return destinations. */
+window.__scsChildReturnStack = window.__scsChildReturnStack || [];
+
+function scsCaptureChildReturnState() {
+  var visiblePage = null;
+  document.querySelectorAll('.page').forEach(function(page) {
+    if (!visiblePage && page.id !== 'playersPage' && page.id !== 'fixedPairsPage' &&
+        getComputedStyle(page).display !== 'none') visiblePage = page.id;
+  });
+  var home = document.getElementById('homePageOverlay');
+  var homeVisible = !!(home && getComputedStyle(home).display !== 'none');
+  var roundSettings = document.getElementById('roundSettingsOverlay');
+  var primary = 'viewer';
+  if (document.getElementById('scsNavRound') && document.getElementById('scsNavRound').classList.contains('is-active')) primary = 'organiser';
+  else if (document.getElementById('scsNavSlot') && document.getElementById('scsNavSlot').classList.contains('is-active')) primary = 'vault';
+  else if (document.getElementById('scsNavSettings') && document.getElementById('scsNavSettings').classList.contains('is-active')) primary = 'settings';
+
+  return {
+    pageId: visiblePage,
+    homeVisible: homeVisible,
+    appMode: (typeof appMode !== 'undefined' && appMode) ? appMode : 'viewer',
+    selectedWorkspace: (typeof welcomeSelectedWorkspace !== 'undefined' && welcomeSelectedWorkspace) ? welcomeSelectedWorkspace : null,
+    roundSettingsOpen: !!(roundSettings && getComputedStyle(roundSettings).display !== 'none'),
+    organiserSlide: (typeof _orgSchedulingSlide !== 'undefined') ? _orgSchedulingSlide : 0,
+    homeScrollTop: home ? home.scrollTop : 0,
+    documentScrollTop: document.scrollingElement ? document.scrollingElement.scrollTop : 0,
+    primary: primary
+  };
+}
+
+function scsPushChildReturnState(childPageId) {
+  var stack = window.__scsChildReturnStack || (window.__scsChildReturnStack = []);
+  stack.push({ childPageId: childPageId, state: scsCaptureChildReturnState() });
+}
+
+function scsPopChildReturnState(childPageId) {
+  var stack = window.__scsChildReturnStack || [];
+  for (var i = stack.length - 1; i >= 0; i--) {
+    if (stack[i] && stack[i].childPageId === childPageId) return stack.splice(i, 1)[0].state;
+  }
+  return null;
+}
+
+function scsRestoreChildReturnState(state) {
+  if (!state) return false;
+
+  // Clear the child and any transient Round Settings sheet before restoring.
+  ['playersPage','fixedPairsPage'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.classList.remove('scs-assist-child-page'); }
+  });
+  var roundSettings = document.getElementById('roundSettingsOverlay');
+  if (roundSettings) roundSettings.style.display = 'none';
+  document.body.classList.remove('round-settings-open');
+
+  if (state.appMode && typeof appMode !== 'undefined') appMode = state.appMode;
+  if (state.selectedWorkspace && typeof welcomeSelectedWorkspace !== 'undefined') welcomeSelectedWorkspace = state.selectedWorkspace;
+  try {
+    if (state.appMode) {
+      sessionStorage.setItem('appMode', state.appMode);
+      localStorage.setItem('kbrr_app_mode', state.appMode);
+    }
+  } catch (_) {}
+
+  // Exact workspace/setup source (including Round / Round iMode carousel).
+  if (state.homeVisible) {
+    if (typeof showHomeScreen === 'function') showHomeScreen();
+    if (state.appMode === 'organiser' && typeof orgSetSchedulingSlide === 'function') {
+      orgSetSchedulingSlide(state.organiserSlide || 0);
+    }
+    if (typeof scsSyncPrimaryBottomNav === 'function' && state.primary !== 'settings') {
+      scsSyncPrimaryBottomNav(state.primary || state.appMode || 'viewer');
+    }
+    var home = document.getElementById('homePageOverlay');
+    if (home) {
+      requestAnimationFrame(function() {
+        home.scrollTop = state.homeScrollTop || 0;
+        if (home.scrollTo) { try { home.scrollTo(0, state.homeScrollTop || 0); } catch (_) {} }
+      });
+    }
+    return true;
+  }
+
+  // Exact inner page source. Reopen Round Settings only if it was the caller.
+  if (state.pageId && document.getElementById(state.pageId)) {
+    if (typeof homeHideScreen === 'function') homeHideScreen();
+    if (typeof showPage === 'function') showPage(state.pageId, null);
+    else document.getElementById(state.pageId).style.display = 'block';
+    if (typeof scsSyncPrimaryBottomNav === 'function' && state.primary !== 'settings') {
+      scsSyncPrimaryBottomNav(state.primary || state.appMode || 'viewer');
+    }
+    if (state.roundSettingsOpen) {
+      requestAnimationFrame(function() {
+        var overlay = document.getElementById('roundSettingsOverlay');
+        if (overlay) {
+          overlay.style.display = 'flex';
+          document.body.classList.add('round-settings-open');
+          if (typeof updateGearPairsSub === 'function') updateGearPairsSub();
+          if (typeof updateCourtButtons === 'function') updateCourtButtons();
+        }
+      });
+    }
+    return true;
+  }
+  return false;
+}
+
 /* ── Navigate to an inner page ── */
 function homeGo(pageId, tabId) {
 if (!pageId) return;
 if (pageId === 'settingsPage' && typeof scsCaptureSettingsReturnState === 'function') scsCaptureSettingsReturnState();
 if (pageId === 'joinClubPage') { homeOpenMyHubTab('clubs'); return; }
 if (pageId === 'vaultReport2Page') { homeOpenMyHubTab('report'); return; }
+if (pageId === 'playersPage' || pageId === 'fixedPairsPage') scsPushChildReturnState(pageId);
 homeHideScreen();
 _navSource = 'home';
-if (pageId === 'playersPage') window.__scsPlayersReturnSource = 'home';
 var tabEl = tabId ? document.getElementById(tabId) : null;
 showPage(pageId, tabEl);
 _updateDynamicBackBtns(pageId);
@@ -1119,16 +1228,15 @@ _updateDynamicBackBtns(pageId);
 
 /* ── Organiser navigation ── */
 function homeGuideOpenPlayersFromNav() {
-  // When Players is opened from Round Manager, preserve Round as its owner so
-  // the Players close button returns to Round Manager (not a previously opened Settings page).
-  var roundNav = document.getElementById('scsNavRound');
-  var fromRoundManager = !!(roundNav && roundNav.classList.contains('is-active')) ||
-    (typeof appMode !== 'undefined' && appMode === 'organiser');
-  if (fromRoundManager) {
-    roundsGoPlayers();
+  // Route by the screen that is actually visible, not just by organiser mode.
+  // This lets Round / Round iMode setup return to the exact setup card that opened Players.
+  var home = document.getElementById('homePageOverlay');
+  var homeVisible = !!(home && getComputedStyle(home).display !== 'none');
+  if (homeVisible) {
+    homeGo('playersPage', 'tabBtnPlayers');
     return;
   }
-  homeGo('playersPage', 'tabBtnPlayers');
+  roundsGoPlayers();
 }
 
 function homeGuideOpenPairsFromNav() {
@@ -1620,19 +1728,72 @@ _updateDynamicBackBtns('summaryPage');
 }
 
 /* ── Players navigation from Rounds ── */
+function _roundSettingsIsOpen() {
+  var overlay = document.getElementById('roundSettingsOverlay');
+  return !!(overlay && getComputedStyle(overlay).display !== 'none');
+}
+
+function _restoreRoundWorkspace(openSettings) {
+  _navSource = 'rounds';
+  document.body.classList.remove('scs-guide-child-open');
+  if (typeof appMode !== 'undefined') appMode = 'organiser';
+  try {
+    sessionStorage.setItem('appMode', 'organiser');
+    localStorage.setItem('kbrr_app_mode', 'organiser');
+  } catch (_) {}
+
+  // Return to the live Rounds page itself, not to the Round Manager launcher.
+  // The v1177 path used showHomeScreen(), which left Round Settings hidden on
+  // roundsPage and caused that stale sheet to appear the next time Start Round
+  // opened the live page.
+  if (typeof homeHideScreen === 'function') homeHideScreen();
+  if (typeof showPage === 'function') {
+    showPage('roundsPage', document.getElementById('tabBtnRounds'));
+  } else {
+    var roundsPage = document.getElementById('roundsPage');
+    if (roundsPage) roundsPage.style.display = 'block';
+  }
+  if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav('organiser');
+
+  // Always clear any stale hidden settings sheet first. Reopen it only when
+  // this child page was actually launched from Round Settings.
+  var overlay = document.getElementById('roundSettingsOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.classList.remove('round-settings-open');
+
+  if (openSettings) {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        var settingsOverlay = document.getElementById('roundSettingsOverlay');
+        if (settingsOverlay) {
+          settingsOverlay.style.display = 'flex';
+          document.body.classList.add('round-settings-open');
+          if (typeof updateGearPairsSub === 'function') updateGearPairsSub();
+          if (typeof updateCourtButtons === 'function') updateCourtButtons();
+        }
+      });
+    });
+  }
+}
+
 function roundsGoPlayers() {
-_navSource = 'rounds';
-window.__scsPlayersReturnSource = 'rounds';
-homeHideScreen();
-showPage('playersPage', null);
-_updateDynamicBackBtns('playersPage');
+  scsPushChildReturnState('playersPage');
+  _navSource = 'rounds';
+  var fromRoundSettings = _roundSettingsIsOpen();
+  if (fromRoundSettings && typeof closeRoundSettings === 'function') closeRoundSettings();
+  homeHideScreen();
+  showPage('playersPage', null);
+  _updateDynamicBackBtns('playersPage');
 }
 
 function roundsGoFixedPairs() {
-_navSource = 'rounds';
-homeHideScreen();
-showPage('fixedPairsPage', null);
-_updateDynamicBackBtns('fixedPairsPage');
+  scsPushChildReturnState('fixedPairsPage');
+  _navSource = 'rounds';
+  var fromRoundSettings = _roundSettingsIsOpen();
+  if (fromRoundSettings && typeof closeRoundSettings === 'function') closeRoundSettings();
+  homeHideScreen();
+  showPage('fixedPairsPage', null);
+  _updateDynamicBackBtns('fixedPairsPage');
 }
 
 /* ── Update dynamic back button labels ── keep ✕ always */
@@ -1642,28 +1803,56 @@ function _updateDynamicBackBtns(pageId) {
 
 /* ── Back navigation -- goes to correct origin ── */
 function navBack() {
+var fixedPairsPage = document.getElementById('fixedPairsPage');
 var playersPage = document.getElementById('playersPage');
+var fixedPairsVisibleNow = !!(fixedPairsPage && getComputedStyle(fixedPairsPage).display !== 'none');
+var playersVisibleNow = !!(playersPage && getComputedStyle(playersPage).display !== 'none');
+if (fixedPairsVisibleNow) {
+  var fixedState = scsPopChildReturnState('fixedPairsPage');
+  if (fixedState && scsRestoreChildReturnState(fixedState)) return;
+}
+if (playersVisibleNow) {
+  var playerState = scsPopChildReturnState('playersPage');
+  if (playerState && scsRestoreChildReturnState(playerState)) return;
+}
+var fixedPairsPage = document.getElementById('fixedPairsPage');
+var fixedPairsVisible = !!(fixedPairsPage && getComputedStyle(fixedPairsPage).display !== 'none');
+if (fixedPairsVisible && window.__scsFixedPairsReturnSource) {
+  var fixedPairReturn = window.__scsFixedPairsReturnSource;
+  window.__scsFixedPairsReturnSource = null;
+  if (fixedPairsPage) fixedPairsPage.style.display = 'none';
+  if (fixedPairReturn === 'round-settings') {
+    _restoreRoundWorkspace(true);
+    return;
+  }
+  if (fixedPairReturn === 'rounds') {
+    _restoreRoundWorkspace(false);
+    return;
+  }
+}
+
+playersPage = document.getElementById('playersPage');
 var playersVisible = !!(playersPage && getComputedStyle(playersPage).display !== 'none');
 if (playersVisible && window.__scsPlayersReturnSource) {
   var playerReturn = window.__scsPlayersReturnSource;
   window.__scsPlayersReturnSource = null;
-  if (playerReturn === 'rounds') {
-    // Round Manager is a primary workspace on homePageOverlay, not the legacy
-    // roundsPage game screen. Returning Players to roundsPage left the new
-    // workspace hidden and could make the Players sheet appear not to close.
-    _navSource = 'rounds';
+  if (playerReturn === 'round-settings') {
     if (playersPage) {
       playersPage.style.display = 'none';
       playersPage.classList.remove('scs-assist-child-page');
     }
-    document.body.classList.remove('scs-guide-child-open');
-    if (typeof appMode !== 'undefined') appMode = 'organiser';
-    try {
-      sessionStorage.setItem('appMode', 'organiser');
-      localStorage.setItem('kbrr_app_mode', 'organiser');
-    } catch (_) {}
-    if (typeof showHomeScreen === 'function') showHomeScreen();
-    if (typeof scsSyncPrimaryBottomNav === 'function') scsSyncPrimaryBottomNav('organiser');
+    _restoreRoundWorkspace(true);
+    return;
+  }
+  if (playerReturn === 'rounds') {
+    // Round Manager is a primary workspace on homePageOverlay, not the legacy
+    // roundsPage game screen. Returning Players to roundsPage left the new
+    // workspace hidden and could make the Players sheet appear not to close.
+    if (playersPage) {
+      playersPage.style.display = 'none';
+      playersPage.classList.remove('scs-assist-child-page');
+    }
+    _restoreRoundWorkspace(false);
     return;
   }
   if (playerReturn === 'settings') {

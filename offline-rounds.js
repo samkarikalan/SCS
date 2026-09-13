@@ -245,7 +245,8 @@
   function getGameType() { const v=localStorage.getItem(GAME_TYPE_KEY); return ['doubles','singles','mixed'].includes(v) ? v : 'doubles'; }
   function getOfflineUniquePairMode() { return localStorage.getItem(UNIQUE_KEY) !== '0'; }
   function getUseTemplates() {
-    if (!canManageTemplatesForSelectedClub()) return false;
+    // Template USE is available to every club. Template management
+    // (create/edit/delete) remains restricted to the configured SCS club.
     // Round iMode is live/online-first. When the device is offline, templates
     // become the automatic fallback regardless of the online preference.
     if (!navigator.onLine) return true;
@@ -259,11 +260,8 @@
     return localStorage.getItem(USE_TEMPLATES_KEY) === '1';
   }
   function setUseTemplates(enabled) {
-    if (!canManageTemplatesForSelectedClub()) {
-      localStorage.setItem(USE_TEMPLATES_KEY, '0');
-      refreshControls();
-      return;
-    }
+    // Template USE is available to every club. Do not apply the SCS-only
+    // management permission to this preference.
     // Build 975 — keep the iMode setup controls usable after a PWA recovery.
     // Changing this switch during an existing session only changes the saved
     // preference for the next iMode start; the recovered session itself keeps
