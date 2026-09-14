@@ -36126,3 +36126,10 @@ body.full-schedule-round-completed .full-schedule-nav .full-schedule-complete{op
 .full-schedule-transition-sub{margin-top:7px;font-size:.94rem;opacity:.72;font-weight:650}
 body.full-schedule-current-live #fullScheduleComplete{font-weight:800}
 body.full-schedule-current-live #roundElapsedTime{font-variant-numeric:tabular-nums}
+
+/* Build 1193 — Full Schedule-only round count must honor the HTML hidden state.
+   The shared .org-always-visible-setting layout uses display:flex !important,
+   which otherwise overrides the hidden attribute in normal Round/iMode. */
+#fullScheduleRoundsSection[hidden] {
+  display: none !important;
+}
