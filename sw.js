@@ -1,12 +1,12 @@
 // SCS_BUILD_50_MYHUB_EMBEDDED_CLUBS_REPORT
 /* Sports Club Scheduler service worker — complete installed-app updates. */
-const CACHE_NAME = 'scs-cache-1200';
-const APP_SHELL = './index.html?v=1200';
+const CACHE_NAME = 'scs-cache-1201';
+const APP_SHELL = './index.html?v=1201';
 
 const ASSETS = [
   APP_SHELL,
   './ui.css?v=1198', './rounds.css?v=1175',
-  './offline-db.js?v=1120', './offline-rounds.js?v=1200', './full-schedule.js?v=1200', './snapshot.js?v=891', './supabase.js?v=1120', './auth.js?v=856',
+  './offline-db.js?v=1120', './offline-rounds.js?v=1201', './full-schedule.js?v=1200', './snapshot.js?v=891', './supabase.js?v=1120', './auth.js?v=856',
   './authUI.js?v=1047', './subscription.js?v=856', './HomeScreen.js?v=1179',
   './engjap.js?v=864', './main.js?v=1200', './games.js?v=1196',
   './rounds.js?v=1180', './mbm.js?v=856', './players.js?v=1198',

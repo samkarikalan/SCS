@@ -2335,9 +2335,14 @@
       return;
     }
 
-    let dataset = getUseTemplates() ? await selectMatchingDatasetForCurrentConfig() : null;
+    // Round Live already knows how to consume prepared templates. The only
+    // addition here is to make sure a matching template exists before entering
+    // that existing path. Do not change the Round Live renderer/navigation.
+    let dataset = getUseTemplates() ? await ensureMatchingTemplateForCurrentConfig() : null;
 
-    // True hybrid iMode: when no prepared template matches, keep the selected
+    // Keep the proven live-generator fallback for formats that do not use
+    // stored templates (for example Singles), or if automatic creation cannot
+    // produce a matching dataset.
     // iMode settings and enter the existing proven live Round Mode generator.
     if (!dataset && !hasSessionInProgress()) {
       if (typeof schedulerState !== 'undefined' && schedulerState) {
@@ -2557,54 +2562,54 @@
     return match;
   }
 
-  async function fullScheduleTemplateRounds() {
-    // Full Round Schedule uses the exact same stored-template format, matching
-    // rules, player remapping and existing template generator as Round iMode.
-    // No second schedule algorithm is maintained here.
+  async function ensureMatchingTemplateForCurrentConfig() {
     let dataset = await selectMatchingDatasetForCurrentConfig();
+    if (dataset) return dataset;
 
-    if (!dataset) {
-      const requirements = detectedOfflineRequirements();
-      if (requirements.format !== 'doubles' && requirements.format !== 'mixed') {
-        throw new Error('Full Round Schedule templates support Doubles or Mixed Doubles.');
-      }
+    const requirements = detectedOfflineRequirements();
+    // Existing stored-template generator supports Doubles and Mixed Doubles.
+    // Other formats must continue through the existing live generator.
+    if (requirements.format !== 'doubles' && requirements.format !== 'mixed') return null;
 
-      const playersInput = document.getElementById('offlinePreparePlayers');
-      const courtsInput = document.getElementById('offlineCourtsCount');
-      const roundsInput = document.getElementById('offlineRoundsCount');
-      const fixedInput = document.getElementById('offlinePrepareFixedPairs');
-      const menInput = document.getElementById('offlinePrepareMen');
-      const womenInput = document.getElementById('offlinePrepareWomen');
-      const topInput = document.getElementById('offlinePrepareTopRated');
-      const bottomInput = document.getElementById('offlinePrepareBottomRated');
+    const playersInput = document.getElementById('offlinePreparePlayers');
+    const courtsInput = document.getElementById('offlineCourtsCount');
+    const roundsInput = document.getElementById('offlineRoundsCount');
+    const fixedInput = document.getElementById('offlinePrepareFixedPairs');
+    const menInput = document.getElementById('offlinePrepareMen');
+    const womenInput = document.getElementById('offlinePrepareWomen');
+    const topInput = document.getElementById('offlinePrepareTopRated');
+    const bottomInput = document.getElementById('offlinePrepareBottomRated');
 
-      if (playersInput) playersInput.value = String(requirements.players);
-      if (courtsInput) courtsInput.value = String(requirements.courts);
-      if (roundsInput) roundsInput.value = '25';
-      if (fixedInput) fixedInput.value = String(requirements.fixedPairCount || 0);
-      if (menInput) menInput.value = String(requirements.menCount || 0);
-      if (womenInput) womenInput.value = String(requirements.womenCount || 0);
-      if (topInput) topInput.value = String(requirements.topRatedCount || 0);
-      if (bottomInput) bottomInput.value = String(requirements.bottomRatedCount || 0);
+    if (playersInput) playersInput.value = String(requirements.players);
+    if (courtsInput) courtsInput.value = String(requirements.courts);
+    if (roundsInput) roundsInput.value = '25';
+    if (fixedInput) fixedInput.value = String(requirements.fixedPairCount || 0);
+    if (menInput) menInput.value = String(requirements.menCount || 0);
+    if (womenInput) womenInput.value = String(requirements.womenCount || 0);
+    if (topInput) topInput.value = String(requirements.topRatedCount || 0);
+    if (bottomInput) bottomInput.value = String(requirements.bottomRatedCount || 0);
 
-      localStorage.setItem(GAME_TYPE_KEY, requirements.format);
-      localStorage.setItem(ALG_KEY, requirements.algorithm);
-      localStorage.setItem(RANDOM_KEY, requirements.randomOrder ? '1' : '0');
-      localStorage.setItem(UNIQUE_KEY, requirements.uniquePairMode ? '1' : '0');
-      localStorage.setItem(FIXED_PAIR_COUNT_KEY, String(requirements.fixedPairCount || 0));
-      persistBalancedCounts();
+    localStorage.setItem(GAME_TYPE_KEY, requirements.format);
+    localStorage.setItem(ALG_KEY, requirements.algorithm);
+    localStorage.setItem(RANDOM_KEY, requirements.randomOrder ? '1' : '0');
+    localStorage.setItem(UNIQUE_KEY, requirements.uniquePairMode ? '1' : '0');
+    localStorage.setItem(FIXED_PAIR_COUNT_KEY, String(requirements.fixedPairCount || 0));
+    persistBalancedCounts();
 
-      // Reuse the existing template creator. In template mode prepare() uses
-      // the authoritative 25-round limit and storeOfflineLibrary() DB format.
-      setPrepareSheetMode('template', 'create');
-      try {
-        await prepare(25, requirements.courts);
-      } finally {
-        setPrepareSheetMode('offline');
-      }
-      dataset = await selectMatchingDatasetForCurrentConfig();
+    // Reuse the existing template creator and DB save path. This is deliberately
+    // silent: users stay in Round Live and never enter the template editor UI.
+    setPrepareSheetMode('template', 'create');
+    try {
+      await prepare(25, requirements.courts);
+    } finally {
+      setPrepareSheetMode('offline');
     }
+    return await selectMatchingDatasetForCurrentConfig();
+  }
 
+  async function fullScheduleTemplateRounds() {
+    // Full Schedule and Round Live share the same matching/creation path.
+    const dataset = await ensureMatchingTemplateForCurrentConfig();
     if (!dataset) throw new Error('Could not create or load the matching Rounds Template.');
     const validation = offlineStartValidation(dataset);
     if (!validation.ok) throw new Error(validation.reason || 'Template does not match the current players.');
