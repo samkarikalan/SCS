@@ -36133,3 +36133,22 @@ body.full-schedule-current-live #roundElapsedTime{font-variant-numeric:tabular-n
 #fullScheduleRoundsSection[hidden] {
   display: none !important;
 }
+
+
+/* Build 1194 — Home quick menu: Post a Slot first + distinct action-card colors. */
+.scs-home-quick-panel .scs-home-quick-slot-row{margin-top:0!important;background:rgba(34,197,94,.22)!important}
+.scs-home-quick-panel .scs-home-quick-round-row{margin-top:0!important;background:rgba(59,130,246,.22)!important}
+.scs-home-quick-panel .scs-home-quick-full-schedule-row{margin-top:0!important;background:rgba(139,92,246,.22)!important}
+.scs-home-quick-panel .scs-home-quick-register-row{background:rgba(245,158,11,.22)!important}
+.scs-home-quick-panel .scs-home-quick-modify-row{background:rgba(236,72,153,.20)!important}
+.scs-home-quick-panel .scs-home-quick-template-row{background:rgba(6,182,212,.20)!important}
+.scs-home-quick-panel .scs-home-quick-approve-row{background:rgba(16,185,129,.20)!important}
+.scs-home-quick-panel .scs-home-quick-join-row{background:rgba(99,102,241,.20)!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-slot-row{background:#dcfce7!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-round-row{background:#dbeafe!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-full-schedule-row{background:#ede9fe!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-register-row{background:#fef3c7!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-modify-row{background:#fce7f3!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-template-row{background:#cffafe!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-approve-row{background:#d1fae5!important}
+body.app-light .scs-home-quick-panel .scs-home-quick-join-row{background:#e0e7ff!important}

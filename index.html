@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.71"; window.SCS_BUILD = "1183"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.72"; window.SCS_BUILD = "1194"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -109,7 +109,7 @@ html,body{overscroll-behavior:none;}
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1193" defer></script>
+  <script src="main.js?v=1194" defer></script>
 
   <script src="games.js?v=1191" defer></script>
 
@@ -138,7 +138,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1193">
+  <link rel="stylesheet" href="ui.css?v=1194">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -963,14 +963,14 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 
 <div id="scsHomeQuickMenu" class="scs-home-quick-menu" hidden onclick="if(event.target===this)scsCloseHomeQuickMenu()">
   <div class="scs-home-quick-panel" role="dialog" aria-modal="true" aria-label="Quick actions">
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-slot-row" onclick="scsHomeQuickAction('slot')"><span class="scs-home-quick-icon" aria-hidden="true">📅</span><span class="scs-home-quick-slot-copy"><strong>Post a Slot</strong><span id="scsQuickSlotClubName" class="scs-home-quick-slot-club-name">Login to a club</span></span><span id="scsQuickSlotClub" class="scs-home-quick-club scs-home-quick-slot-auth" role="button" tabindex="0" aria-label="Slot Manager login" onclick="event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)}"></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-round-row" onclick="scsHomeQuickAction('round')"><span class="scs-home-quick-icon" aria-hidden="true">🏸</span><span class="scs-home-quick-copy"><strong>Start a Round</strong><span id="scsQuickRoundClubName" class="scs-home-quick-subtitle"></span></span><span id="scsQuickRoundClub" class="scs-home-quick-club" role="button" tabindex="0" aria-label="Change Round Manager club" onclick="event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickRoundClubMenu(event)}"></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-full-schedule-row" onclick="scsHomeQuickAction('fullSchedule')"><span class="scs-home-quick-icon" aria-hidden="true">📋</span><span class="scs-home-quick-copy"><strong>Full Round Schedule</strong><span class="scs-home-quick-subtitle">Generate / Play Full Schedule</span></span></button>
-    <button type="button" class="scs-home-quick-action-row scs-home-quick-slot-row" onclick="scsHomeQuickAction('slot')"><span class="scs-home-quick-icon" aria-hidden="true">📅</span><span class="scs-home-quick-slot-copy"><strong>Post a Slot</strong><span id="scsQuickSlotClubName" class="scs-home-quick-slot-club-name">Login to a club</span></span><span id="scsQuickSlotClub" class="scs-home-quick-club scs-home-quick-slot-auth" role="button" tabindex="0" aria-label="Slot Manager login" onclick="event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();scsQuickSlotClubAction(event)}"></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-register-row" onclick="scsHomeQuickAction('register')"><span class="scs-home-quick-icon" aria-hidden="true">📋</span><span class="scs-home-quick-copy"><strong>Register Players</strong><span id="scsQuickRegisterClubName" class="scs-home-quick-subtitle"></span></span></button>
     <button type="button" class="scs-home-quick-action-row scs-home-quick-modify-row" onclick="scsHomeQuickAction('modify')"><span class="scs-home-quick-icon" aria-hidden="true">✏️</span><span class="scs-home-quick-copy"><strong>Modify Players</strong><span id="scsQuickModifyClubName" class="scs-home-quick-subtitle"></span></span></button>
     <button type="button" id="scsQuickRoundsTemplate" class="scs-home-quick-action-row scs-home-quick-template-row" hidden onclick="scsHomeQuickAction('template')"><span class="scs-home-quick-icon" aria-hidden="true">🧩</span><span class="scs-home-quick-copy"><strong>Rounds Template</strong><span class="scs-home-quick-subtitle">Create / Edit Templates</span></span></button>
     <button type="button" id="scsQuickApprovePlayers" class="scs-home-quick-action-row scs-home-quick-approve-row" hidden onclick="scsHomeQuickAction('approve')"><span class="scs-home-quick-icon" aria-hidden="true">✓</span><span class="scs-home-quick-copy"><strong id="scsQuickApprovePlayersLabel">Approve Players</strong><span id="scsQuickApproveClubName" class="scs-home-quick-subtitle"></span></span></button>
-    <button type="button" onclick="scsHomeQuickAction('club')"><span aria-hidden="true">🏢</span><strong>Join a Club</strong></button>
+    <button type="button" class="scs-home-quick-action-row scs-home-quick-join-row" onclick="scsHomeQuickAction('club')"><span class="scs-home-quick-icon" aria-hidden="true">🏢</span><strong>Join a Club</strong></button>
     <button class="scs-home-quick-cancel" type="button" onclick="scsCloseHomeQuickMenu()">Cancel</button>
   </div>
 </div>
