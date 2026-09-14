@@ -277,6 +277,31 @@ function isGameRepeated(game) {
 
 
 
+function showNormalRoundCompletionTransition(completedNumber, nextNumber) {
+  return new Promise(resolve => {
+    let overlay = document.getElementById('normalRoundCompletionTransition');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'normalRoundCompletionTransition';
+      overlay.className = 'full-schedule-transition';
+      overlay.innerHTML = '<div class="full-schedule-transition-card"><div class="full-schedule-transition-check">✓</div><div id="normalRoundTransitionTitle" class="full-schedule-transition-title"></div><div id="normalRoundTransitionSub" class="full-schedule-transition-sub"></div></div>';
+      document.body.appendChild(overlay);
+    }
+    const title = document.getElementById('normalRoundTransitionTitle');
+    const sub = document.getElementById('normalRoundTransitionSub');
+    if (title) title.textContent = 'Round ' + completedNumber + ' Completed';
+    if (sub) sub.textContent = 'Starting Round ' + nextNumber + '…';
+    overlay.classList.remove('show');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      setTimeout(resolve, 180);
+    }, 1050);
+  });
+}
+
+
 async function toggleRound() {
   // Rounds Template editor uses the exact existing Round page and swap logic,
   // but never starts/commits a live round or runs the generator.
@@ -379,6 +404,12 @@ async function toggleRound() {
     updatePointsAfterRound(schedulerState);
 
     stopRoundTimer(false);
+
+    // Build 1196: normal live Round uses the same explicit completion cue as
+    // Full Round Schedule. The click on Mark Completed is the round boundary;
+    // only after that cue do we generate/render the next round.
+    await showNormalRoundCompletionTransition(currentRoundIndex + 1, currentRoundIndex + 2);
+
     currentState = "idle";
     let roundAdvanceError = null;
     try {
@@ -441,8 +472,8 @@ async function toggleRound() {
     btn.classList.remove("start-state", "end");
     btn.classList.add("round-active");
     textEl.removeAttribute("data-i18n");
-    textEl.textContent = t("nextRound") || "Next Round";
-    icon.textContent = " ▶▶";
+    textEl.textContent = "Mark Completed";
+    icon.textContent = " ✓";
   }
 }
 
