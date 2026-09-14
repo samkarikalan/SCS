@@ -6076,6 +6076,14 @@ function scsPrimaryNavigate(target) {
     }
   }
 
+  // Opening Round Manager from the primary Round tab with no live session is
+  // always the normal round/iMode setup. Full Schedule is an explicit entry
+  // from Home > Full Round Schedule, so its Number of Rounds control must not
+  // leak into normal Round Manager.
+  if (target === 'organiser' && window.SCSFullSchedule && typeof window.SCSFullSchedule.disable === 'function') {
+    window.SCSFullSchedule.disable();
+  }
+
   if (target === 'viewer') welcomeSelectedWorkspace = 'viewer';
   if (target === 'vault') {
     welcomeSelectedWorkspace = 'vault';
