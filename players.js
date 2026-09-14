@@ -761,9 +761,10 @@ function createPlayerCard(player, index) {
   const genderImg = player.gender === "Female" ? "female.png" : "male.png";
   const isGuest = !!(player.guest || player.unrated) || (typeof isGuestPlayerName === 'function' && isGuestPlayerName(player.name));
   const rating = isGuest ? null : (typeof getActiveRating === 'function' ? getActiveRating(player.name) : getRating(player.name));
+  const ratingTier = Number.isFinite(rating) && rating > 2.5 ? ' rating-high' : ' rating-low';
   const ratingHtml = isGuest
     ? '<span class="rating-badge">guest</span>'
-    : `<span class="rating-badge" data-player="${player.name}">${Number.isFinite(rating) ? rating.toFixed(1) : '1.0'}</span>`;
+    : `<span class="rating-badge${ratingTier}" data-player="${player.name}">${Number.isFinite(rating) ? rating.toFixed(1) : '1.0'}</span>`;
   card.innerHTML = `
     <div class="pec-col pec-active">
       <input type="checkbox" ${player.active ? "checked" : ""} onchange="toggleActive(${index}, this)">

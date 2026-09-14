@@ -48,7 +48,7 @@ BRRStyle1.css (Global / Layout / Players)
 }
 
 /* Build 960 — keep player rating and delete controls readable on coloured player cards. */
-body.tile-style-color #playersPage #playerList.player-list .player-edit-card :is(.rating-badge,.circle-btn.delete) {
+body.tile-style-color #playersPage #playerList.player-list .player-edit-card .circle-btn.delete {
   background:rgba(15,23,42,.42) !important;
   border-color:rgba(255,255,255,.38) !important;
   color:#fff !important;
@@ -36165,4 +36165,26 @@ body.app-light .scs-home-quick-panel .scs-home-quick-join-row{background:#e0e7ff
 }
 .scs-home-quick-panel .scs-home-quick-slot-row{
   margin-top:0!important;
+}
+
+/* Players page rating tier: color the rating pill only. */
+#playersPage .player-edit-card .rating-badge.rating-low {
+  background: rgba(20, 184, 166, 0.18) !important;
+  border-color: #2dd4bf !important;
+  color: #99f6e4 !important;
+}
+#playersPage .player-edit-card .rating-badge.rating-high {
+  background: rgba(245, 158, 11, 0.18) !important;
+  border-color: #fbbf24 !important;
+  color: #fde68a !important;
+}
+body.app-light #playersPage .player-edit-card .rating-badge.rating-low {
+  background: rgba(13, 148, 136, 0.14) !important;
+  border-color: #0f766e !important;
+  color: #115e59 !important;
+}
+body.app-light #playersPage .player-edit-card .rating-badge.rating-high {
+  background: rgba(217, 119, 6, 0.14) !important;
+  border-color: #b45309 !important;
+  color: #92400e !important;
 }

@@ -245,37 +245,18 @@
   function getGameType() { const v=localStorage.getItem(GAME_TYPE_KEY); return ['doubles','singles','mixed'].includes(v) ? v : 'doubles'; }
   function getOfflineUniquePairMode() { return localStorage.getItem(UNIQUE_KEY) !== '0'; }
   function getUseTemplates() {
-    // Template USE is available to every club. Template management
-    // (create/edit/delete) remains restricted to the configured SCS club.
-    // Round iMode is live/online-first. When the device is offline, templates
-    // become the automatic fallback regardless of the online preference.
-    if (!navigator.onLine) return true;
-    // V2 intentionally ignores the old default-ON value once, so existing
-    // installs also move to the new online-first default after this update.
-    if (localStorage.getItem(USE_TEMPLATES_PREF_VERSION_KEY) !== '2') {
-      localStorage.setItem(USE_TEMPLATES_KEY, '0');
-      localStorage.setItem(USE_TEMPLATES_PREF_VERSION_KEY, '2');
-      return false;
-    }
-    return localStorage.getItem(USE_TEMPLATES_KEY) === '1';
+    // Templates are now an internal implementation detail. Users no longer
+    // choose template ON/OFF: iMode and Full Round Schedule always use a
+    // matching template when one is available.
+    localStorage.setItem(USE_TEMPLATES_KEY, '1');
+    localStorage.setItem(USE_TEMPLATES_PREF_VERSION_KEY, '3');
+    return true;
   }
-  function setUseTemplates(enabled) {
-    // Template USE is available to every club. Do not apply the SCS-only
-    // management permission to this preference.
-    // Build 975 — keep the iMode setup controls usable after a PWA recovery.
-    // Changing this switch during an existing session only changes the saved
-    // preference for the next iMode start; the recovered session itself keeps
-    // its already-selected live/template source in SESSION_DATASET_KEY.
-    localStorage.setItem(USE_TEMPLATES_KEY, enabled ? '1' : '0');
-    localStorage.setItem(USE_TEMPLATES_PREF_VERSION_KEY, '2');
-    if (!enabled) {
-      localStorage.removeItem(DATASET_KEY);
-      const info = document.getElementById('offlineTemplateMatch');
-      if (info) {
-        info.textContent = t('templatesOff') + ' · ' + t('liveRoundMode');
-        info.classList.remove('is-ready');
-      }
-    }
+  function setUseTemplates() {
+    // Kept for backward compatibility with older cached markup. Template use
+    // is automatic and cannot be disabled from the UI anymore.
+    localStorage.setItem(USE_TEMPLATES_KEY, '1');
+    localStorage.setItem(USE_TEMPLATES_PREF_VERSION_KEY, '3');
     refreshControls();
     refreshOfflineStartAvailability();
     refreshStartLabel();
@@ -397,15 +378,15 @@
     if (prepBal) prepBal.classList.toggle('is-active', algorithm === 'balanced');
     const useTemplates = document.getElementById('sampleOfflineUseTemplates');
     if (useTemplates) {
-      // Template usage is available to every club. Only template management
-      // (create/edit/delete) remains restricted to the configured SCS club.
-      useTemplates.checked = getUseTemplates();
-      useTemplates.disabled = false;
-      useTemplates.setAttribute('aria-disabled', 'false');
+      // Template selection is automatic. Keep the legacy control present only
+      // for compatibility with older markup, but never expose it to users.
+      useTemplates.checked = true;
+      useTemplates.disabled = true;
+      useTemplates.setAttribute('aria-disabled', 'true');
       const templatesRow = useTemplates.closest('.org-sample-winner-row');
       if (templatesRow) {
-        templatesRow.hidden = false;
-        templatesRow.style.display = '';
+        templatesRow.hidden = true;
+        templatesRow.style.display = 'none';
       }
     }
     const random = document.getElementById('sampleOfflinePlayerOrderToggle');
@@ -2576,6 +2557,75 @@
     return match;
   }
 
+  async function fullScheduleTemplateRounds() {
+    // Full Round Schedule uses the exact same stored-template format, matching
+    // rules, player remapping and existing template generator as Round iMode.
+    // No second schedule algorithm is maintained here.
+    let dataset = await selectMatchingDatasetForCurrentConfig();
+
+    if (!dataset) {
+      const requirements = detectedOfflineRequirements();
+      if (requirements.format !== 'doubles' && requirements.format !== 'mixed') {
+        throw new Error('Full Round Schedule templates support Doubles or Mixed Doubles.');
+      }
+
+      const playersInput = document.getElementById('offlinePreparePlayers');
+      const courtsInput = document.getElementById('offlineCourtsCount');
+      const roundsInput = document.getElementById('offlineRoundsCount');
+      const fixedInput = document.getElementById('offlinePrepareFixedPairs');
+      const menInput = document.getElementById('offlinePrepareMen');
+      const womenInput = document.getElementById('offlinePrepareWomen');
+      const topInput = document.getElementById('offlinePrepareTopRated');
+      const bottomInput = document.getElementById('offlinePrepareBottomRated');
+
+      if (playersInput) playersInput.value = String(requirements.players);
+      if (courtsInput) courtsInput.value = String(requirements.courts);
+      if (roundsInput) roundsInput.value = '25';
+      if (fixedInput) fixedInput.value = String(requirements.fixedPairCount || 0);
+      if (menInput) menInput.value = String(requirements.menCount || 0);
+      if (womenInput) womenInput.value = String(requirements.womenCount || 0);
+      if (topInput) topInput.value = String(requirements.topRatedCount || 0);
+      if (bottomInput) bottomInput.value = String(requirements.bottomRatedCount || 0);
+
+      localStorage.setItem(GAME_TYPE_KEY, requirements.format);
+      localStorage.setItem(ALG_KEY, requirements.algorithm);
+      localStorage.setItem(RANDOM_KEY, requirements.randomOrder ? '1' : '0');
+      localStorage.setItem(UNIQUE_KEY, requirements.uniquePairMode ? '1' : '0');
+      localStorage.setItem(FIXED_PAIR_COUNT_KEY, String(requirements.fixedPairCount || 0));
+      persistBalancedCounts();
+
+      // Reuse the existing template creator. In template mode prepare() uses
+      // the authoritative 25-round limit and storeOfflineLibrary() DB format.
+      setPrepareSheetMode('template', 'create');
+      try {
+        await prepare(25, requirements.courts);
+      } finally {
+        setPrepareSheetMode('offline');
+      }
+      dataset = await selectMatchingDatasetForCurrentConfig();
+    }
+
+    if (!dataset) throw new Error('Could not create or load the matching Rounds Template.');
+    const validation = offlineStartValidation(dataset);
+    if (!validation.ok) throw new Error(validation.reason || 'Template does not match the current players.');
+
+    await createTempDatasetFromSelected();
+    try {
+      const rows = (await tempRows(true))
+        .filter(function(row) { return row && row.round; })
+        .sort(function(a, b) { return Number(a.sequence || 0) - Number(b.sequence || 0); })
+        .slice(0, 25);
+      if (!rows.length) throw new Error('Matching Rounds Template has no rounds.');
+      return rows.map(function(row, index) {
+        const round = cloneValue(row.round);
+        round.round = index + 1;
+        return round;
+      });
+    } finally {
+      await clearTempDataset();
+    }
+  }
+
   function offlineStartValidation(dataset) {
     if (!dataset) {
       return { ok:false, reason:'No template available' };
@@ -3351,7 +3401,7 @@
   }
 
   window.SCSOfflineRounds = {
-    prepare, pickRound, refreshStatus, refreshControls, setAlgorithm, setGameType, setRandomOrder, setOfflineUniquePairMode, setFixedPairCount, adjustPrepareCourts,
+    prepare, pickRound, fullScheduleTemplateRounds, refreshStatus, refreshControls, setAlgorithm, setGameType, setRandomOrder, setOfflineUniquePairMode, setFixedPairCount, adjustPrepareCourts,
     setWinner, setCourtCount, adjustCourtCount, getUseTemplates, setUseTemplates, canManageTemplatesForSelectedClub, selectDataset, deleteSelectedDataset, togglePreparedDetails, mapOfflinePlayers, refreshOfflineStartAvailability, refreshStartLabel, start, resetSession, endSession, isActive, isIModeActive, isTemplateSessionActive, activate, deactivate, hasSessionInProgress, noteGenerationSource, openPrepare, closePrepare,
     openTemplateEditorPicker, openTemplateCreatePicker, openTemplateEditPicker, closeTemplateActions, overwriteExistingTemplate, deleteExistingTemplate, isTemplateEditorActive, markTemplateDirty, templateEditorNextRound,
     templateEditorShuffleRound, templateEditorBalanceOpponents, templateEditorAddRound, templateEditorDeleteRound, saveTemplateChanges, saveTemplateAndClose, closeTemplateEditor

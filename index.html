@@ -5,7 +5,7 @@
   <script>
     // Build 839: one-time recovery for installed PWAs that still hold an older SCS app shell.
     (function () {
-      var BUILD = '1183';
+      var BUILD = '1198';
       var KEY = 'scsPwaCacheRecoveryBuild';
       try {
         if (localStorage.getItem(KEY) === BUILD) return;
@@ -21,7 +21,7 @@
     })();
   </script>
 
-  <script>window.SCS_APP_VERSION = "1.14.73"; window.SCS_BUILD = "1196"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
+  <script>window.SCS_APP_VERSION = "1.14.73"; window.SCS_BUILD = "1198"; window.SCS_ROUNDS_TEMPLATE_CLUB_ID = "3cd43bd7-089f-4893-9f7a-8c2ce6fa408d";</script>
   <script>
     // Build 416: mode selection and authentication screens remain scrollable in landscape.
     (function () {
@@ -109,16 +109,16 @@ html,body{overscroll-behavior:none;}
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1196" defer></script>
+  <script src="main.js?v=1199" defer></script>
 
   <script src="games.js?v=1196" defer></script>
 
   <script src="rounds.js?v=1180" defer></script>
-  <script src="offline-rounds.js?v=979" defer></script>
-  <script src="full-schedule.js?v=1193" defer></script>
+  <script src="offline-rounds.js?v=1199" defer></script>
+  <script src="full-schedule.js?v=1199" defer></script>
   <script src="mbm.js?v=856" defer></script>
 
-  <script src="players.js?v=1180" defer></script>
+  <script src="players.js?v=1198" defer></script>
 
   <script src="importPlayers.js?v=985" defer></script>
 
@@ -138,7 +138,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1196">
+  <link rel="stylesheet" href="ui.css?v=1198">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -1170,7 +1170,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
                 <button id="sampleOfflineCourtsPlus" type="button" aria-label="Increase courts" onclick="SCSOfflineRounds.adjustCourtCount(1)">+</button>
               </div>
             </div>
-            <div id="fullScheduleRoundsSection" class="org-color-section org-offline-courts-section org-always-visible-setting" hidden>
+            <div id="fullScheduleRoundsSection" class="org-color-section org-offline-courts-section org-always-visible-setting" hidden style="display:none">
               <div class="org-control-label">Number of Rounds</div>
               <div class="org-mode-court-stepper org-imode-court-stepper" role="group" aria-label="Number of Rounds">
                 <button id="fullScheduleRoundsMinus" type="button" aria-label="Decrease rounds" onclick="SCSFullSchedule.adjustRounds(-1)">−</button>
@@ -1200,10 +1200,10 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
                     <label class="switch"><input id="sampleOfflineUniquePairMode" type="checkbox" checked onchange="SCSOfflineRounds.setOfflineUniquePairMode(this.checked)"><span class="slider"></span></label>
                   </div>
                 </div>
-                <div class="org-sample-winner-row org-player-order-toggle-row">
+                <div class="org-sample-winner-row org-player-order-toggle-row" hidden style="display:none">
                   <span class="org-winner-icon" aria-hidden="true">▦</span>
                   <span><strong data-i18n="useTemplates">Use Templates</strong><small data-i18n="useTemplatesDesc">Use a matching prepared template when available.</small></span>
-                  <label class="switch"><input id="sampleOfflineUseTemplates" type="checkbox" onchange="SCSOfflineRounds.setUseTemplates(this.checked)"><span class="slider"></span></label>
+                  <label class="switch"><input id="sampleOfflineUseTemplates" type="checkbox" checked onchange="SCSOfflineRounds.setUseTemplates(this.checked)"><span class="slider"></span></label>
                 </div>
                 <div class="org-sample-winner-row org-player-order-toggle-row">
                   <span class="org-winner-icon" aria-hidden="true">↝</span>
@@ -3331,7 +3331,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1193', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1199', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen

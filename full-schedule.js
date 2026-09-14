@@ -1,22 +1,19 @@
 (function () {
   'use strict';
   const MODE_KEY = 'scs_full_schedule_mode';
-  const COUNT_KEY = 'scs_full_schedule_count';
   let generating = false;
   let transitioning = false;
   let fullScheduleTimerInterval = null;
   let liveTimedRoundIndex = -1;
 
   function enabled() { return sessionStorage.getItem(MODE_KEY) === '1'; }
-  function count() { return Math.max(1, Math.min(50, Number(sessionStorage.getItem(COUNT_KEY) || 10))); }
-  function setCount(value) {
-    const n = Math.max(1, Math.min(50, Number(value) || 1));
-    sessionStorage.setItem(COUNT_KEY, String(n));
+  function count() { return 25; }
+  function setCount() {
     const el = document.getElementById('fullScheduleRoundsValue');
-    if (el) el.textContent = String(n);
-    return n;
+    if (el) el.textContent = '25';
+    return 25;
   }
-  function adjustRounds(delta) { setCount(count() + Number(delta || 0)); }
+  function adjustRounds() { return 25; }
 
   function syncSetup() {
     const section = document.getElementById('fullScheduleRoundsSection');
@@ -29,7 +26,6 @@
 
   function openSetup() {
     sessionStorage.setItem(MODE_KEY, '1');
-    if (!sessionStorage.getItem(COUNT_KEY)) sessionStorage.setItem(COUNT_KEY, '10');
     if (typeof scsCloseHomeQuickMenu === 'function') scsCloseHomeQuickMenu();
     welcomeSelectedWorkspace = 'organiser';
     if (typeof scsSetPrimarySafeArea === 'function') scsSetPrimarySafeArea('nonhome');
@@ -166,36 +162,36 @@
   }
 
   async function generateRemaining() {
-    if (!enabled() || generating || !Array.isArray(window.allRounds || allRounds) || !allRounds.length) return;
+    if (!enabled() || generating) return;
     generating = true;
     try {
-      const target = count();
-      const planningState = cloneSchedulerStateForFullSchedule();
-
-      // Replay already prepared rounds into the private state. This is the same
-      // history update used by normal Rounds, but silent and isolated.
-      for (let i = 0; i < allRounds.length; i++) {
-        updSchedule(i, planningState, false, { data: allRounds[i], silent: true });
+      if (!window.SCSOfflineRounds || typeof window.SCSOfflineRounds.fullScheduleTemplateRounds !== 'function') {
+        throw new Error('Rounds Template service is unavailable.');
+      }
+      const templateRounds = await window.SCSOfflineRounds.fullScheduleTemplateRounds();
+      if (!Array.isArray(templateRounds) || !templateRounds.length) {
+        throw new Error('Matching Rounds Template returned no rounds.');
       }
 
-      while (allRounds.length < target) {
-        planningState.roundIndex = allRounds.length + 1;
-        const round = await generateRoundWithLiveRules(planningState);
-        if (!round) throw new Error('Round generation returned no round.');
-        round.round = allRounds.length + 1;
-        allRounds.push(round);
-        // Advance pairs, opponents, played/rest counts and restQueue before
-        // calculating the following scheduled round.
-        updSchedule(allRounds.length - 1, planningState, false, { data: round, silent: true });
-      }
-      currentRoundIndex = Math.min(currentRoundIndex || 0, allRounds.length - 1);
-      renderDashboardRound(currentRoundIndex);
+      // Full Schedule is a read-ahead view of the prepared template. None of
+      // these future rounds are committed to pair/rest/opponent history until
+      // Mark Completed is pressed.
+      allRounds.length = 0;
+      templateRounds.slice(0, 25).forEach(function(round, index) {
+        const copy = cloneScheduleValue(round);
+        copy.round = index + 1;
+        delete copy._fullScheduleCompleted;
+        delete copy._fullScheduleStateCommitted;
+        allRounds.push(copy);
+      });
+      currentRoundIndex = 0;
+      renderDashboardRound(0);
       applyDashboard();
       if (typeof saveSnapshot === 'function') saveSnapshot();
     } catch (error) {
-      console.error('Full Round Schedule generation failed:', error);
-      if (typeof showToast === 'function') showToast(error.message || 'Could not generate full schedule');
-      else alert(error.message || 'Could not generate full schedule');
+      console.error('Full Round Schedule template load failed:', error);
+      if (typeof showToast === 'function') showToast(error.message || 'Could not load full schedule');
+      else alert(error.message || 'Could not load full schedule');
     } finally { generating = false; }
   }
 
