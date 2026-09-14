@@ -36089,3 +36089,15 @@ body.full-schedule-round-completed .full-schedule-complete{opacity:.62;filter:gr
 
 /* Build 1187 — Full Schedule keeps Resting and Dashboard controls interactive. */
 body.full-schedule-readonly #resting-panel,body.full-schedule-readonly #resting-panel button,body.full-schedule-readonly .dashboard-history-tab,body.full-schedule-readonly .player-history-group-title{pointer-events:auto!important}
+
+
+/* Build 1188 — Full Schedule historical navigation + Home quick-action grouping. */
+.full-schedule-nav{grid-template-columns:1fr 1fr}
+.full-schedule-nav #fullSchedulePrev,.full-schedule-nav #fullScheduleNext{width:100%}
+.full-schedule-nav #fullScheduleNext[hidden]{display:none!important}
+.full-schedule-nav:has(#fullScheduleNext[hidden]){grid-template-columns:1fr}
+
+/* Keep the two Round actions visually together; Slot remains its own action. */
+.scs-home-quick-panel .scs-home-quick-round-row{margin-bottom:0!important;border-bottom-left-radius:8px!important;border-bottom-right-radius:8px!important}
+.scs-home-quick-panel .scs-home-quick-full-schedule-row{margin-top:4px!important}
+.scs-home-quick-panel .scs-home-quick-slot-row{margin-top:14px!important}

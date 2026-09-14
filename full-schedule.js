@@ -145,27 +145,47 @@
     updatePosition();
   }
 
+  function getCurrentPlayableRoundIndex() {
+    if (!Array.isArray(allRounds) || !allRounds.length) return 0;
+    const firstOpen = allRounds.findIndex(round => !round?._fullScheduleCompleted);
+    return firstOpen >= 0 ? firstOpen : allRounds.length - 1;
+  }
+
   function updatePosition() {
     if (!enabled() || !Array.isArray(allRounds) || !allRounds.length) return;
     const pos = document.getElementById('fullSchedulePosition');
     if (pos) pos.hidden = true;
+
+    const currentPlayableIndex = getCurrentPlayableRoundIndex();
     const prev = document.getElementById('fullSchedulePrev');
+    const next = document.getElementById('fullScheduleNext');
     if (prev) prev.disabled = currentRoundIndex <= 0;
+    if (next) {
+      const canGoForward = currentRoundIndex < currentPlayableIndex;
+      next.hidden = !canGoForward;
+      next.disabled = !canGoForward;
+    }
+
     const complete = document.getElementById('fullScheduleComplete');
     const round = allRounds[currentRoundIndex];
     const isCompleted = !!(round && round._fullScheduleCompleted);
+    const isCurrentPlayable = currentRoundIndex === currentPlayableIndex && !isCompleted;
     document.body.classList.toggle('full-schedule-round-completed', isCompleted);
     if (complete) {
       complete.textContent = isCompleted ? '✓ Completed' : '✓ Mark Completed';
-      complete.disabled = isCompleted;
+      complete.disabled = !isCurrentPlayable;
+      complete.hidden = !isCurrentPlayable && !isCompleted;
     }
   }
 
   function showAt(index) {
     if (!enabled() || !allRounds.length) return;
-    renderDashboardRound(index);
+    const currentPlayableIndex = getCurrentPlayableRoundIndex();
+    const safeIndex = Math.max(0, Math.min(Number(index) || 0, currentPlayableIndex));
+    renderDashboardRound(safeIndex);
   }
   function previous() { showAt(currentRoundIndex - 1); }
+  function next() { showAt(currentRoundIndex + 1); }
   function completeCurrent() {
     if (!enabled() || !allRounds[currentRoundIndex]) return;
     updateDashboardLikeRounds(currentRoundIndex);
@@ -202,5 +222,5 @@
     }
   });
 
-  window.SCSFullSchedule = { openSetup, disable, enabled, adjustRounds, generateRemaining, previous, completeCurrent, applyDashboard, updateDashboardLikeRounds };
+  window.SCSFullSchedule = { openSetup, disable, enabled, adjustRounds, generateRemaining, previous, next, completeCurrent, applyDashboard, updateDashboardLikeRounds };
 })();

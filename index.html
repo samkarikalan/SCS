@@ -115,7 +115,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="rounds.js?v=1180" defer></script>
   <script src="offline-rounds.js?v=979" defer></script>
-  <script src="full-schedule.js?v=1185" defer></script>
+  <script src="full-schedule.js?v=1188" defer></script>
   <script src="mbm.js?v=856" defer></script>
 
   <script src="players.js?v=1180" defer></script>
@@ -138,7 +138,7 @@ html,body{overscroll-behavior:none;}
 
   <script src="report.js?v=856" defer></script>
 
-  <link rel="stylesheet" href="ui.css?v=1187">
+  <link rel="stylesheet" href="ui.css?v=1188">
   <style id="simpleAppBottomBarStyles">
     /* Flat, theme-aware navigation shared by all three app hubs. */
     body #homeMoreSectionV#homeMoreSectionV .viewer-action-bar,
@@ -2863,6 +2863,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
 <div id="fullScheduleDashboard" class="full-schedule-dashboard" hidden>
   <div class="full-schedule-nav">
     <button id="fullSchedulePrev" type="button" onclick="SCSFullSchedule.previous()">‹ Previous Round</button>
+    <button id="fullScheduleNext" type="button" onclick="SCSFullSchedule.next()">Next Round ›</button>
     <strong id="fullSchedulePosition" hidden></strong>
   </div>
   <button id="fullScheduleComplete" class="full-schedule-complete" type="button" onclick="SCSFullSchedule.completeCurrent()">✓ Mark Completed</button>
