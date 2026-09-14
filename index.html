@@ -109,13 +109,13 @@ html,body{overscroll-behavior:none;}
   <script src="engjap.js?v=864" defer></script>
 
   <script src="qrcode-generator.js?v=856" defer></script>
-  <script src="main.js?v=1199" defer></script>
+  <script src="main.js?v=1200" defer></script>
 
   <script src="games.js?v=1196" defer></script>
 
   <script src="rounds.js?v=1180" defer></script>
-  <script src="offline-rounds.js?v=1199" defer></script>
-  <script src="full-schedule.js?v=1199" defer></script>
+  <script src="offline-rounds.js?v=1200" defer></script>
+  <script src="full-schedule.js?v=1200" defer></script>
   <script src="mbm.js?v=856" defer></script>
 
   <script src="players.js?v=1198" defer></script>
@@ -1217,7 +1217,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
                 <label class="switch"><input id="sampleOfflineWinner" type="checkbox" onchange="SCSOfflineRounds.setWinner(this.checked)"><span class="slider"></span></label>
               </div>
             </div>
-            <div class="org-offline-template-match" id="offlineTemplateMatch" aria-live="polite" data-i18n="checkingTemplate">Checking template…</div>
+            <div class="org-offline-template-match" id="offlineTemplateMatch" aria-live="polite" data-i18n="checkingTemplate" hidden style="display:none">Checking template…</div>
             <button class="org-start-mode-btn is-live-round-start" id="sampleStartOfflineRound" type="button" onclick="SCSOfflineRounds.start()">
               <span class="org-start-play" aria-hidden="true">▶</span>
               <span class="org-start-label" data-i18n="startRounds">Start Rounds</span>
@@ -3331,7 +3331,7 @@ body.light-mode .myhub-home-section-title{color:var(--text,#151821)}
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=1199', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('./sw.js?v=1200', { updateViaCache: 'none' })
           .then(function(reg) {
             console.log('SW registered - CLUBS v' + (window.SCS_APP_VERSION || '1.6.4'));
             // Check for updates occasionally without interrupting the current screen

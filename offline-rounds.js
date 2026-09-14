@@ -414,7 +414,7 @@
     const winner = document.getElementById('sampleOfflineWinner');
     if (winner) winner.checked = getWinner();
     const summary = document.getElementById('offlineModeSummary');
-    if (summary) summary.textContent = [gameType === 'mixed' ? t('mixed') : (gameType === 'singles' ? t('singles') : (gameType === 'both' ? t('both') : t('doubles'))), getCourtCount() + ' ' + t(getCourtCount() === 1 ? 'court' : 'courtsLabel'), t(algorithm === 'balanced' ? 'balancedMode' : 'standardMode'), t(getUseTemplates() ? 'templatesOn' : 'templatesOff'), t(getRandomOrder() ? 'randomOn' : 'randomOff'), t(getWinner() ? 'winnerOn' : 'winnerOff')].join(' · ');
+    if (summary) summary.textContent = [gameType === 'mixed' ? t('mixed') : (gameType === 'singles' ? t('singles') : (gameType === 'both' ? t('both') : t('doubles'))), getCourtCount() + ' ' + t(getCourtCount() === 1 ? 'court' : 'courtsLabel'), t(algorithm === 'balanced' ? 'balancedMode' : 'standardMode'), t(getRandomOrder() ? 'randomOn' : 'randomOff'), t(getWinner() ? 'winnerOn' : 'winnerOff')].join(' · ');
   }
 
   function setAlgorithm(mode) {
