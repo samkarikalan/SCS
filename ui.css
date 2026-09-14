@@ -36152,3 +36152,17 @@ body.app-light .scs-home-quick-panel .scs-home-quick-modify-row{background:#fce7
 body.app-light .scs-home-quick-panel .scs-home-quick-template-row{background:#cffafe!important}
 body.app-light .scs-home-quick-panel .scs-home-quick-approve-row{background:#d1fae5!important}
 body.app-light .scs-home-quick-panel .scs-home-quick-join-row{background:#e0e7ff!important}
+
+/* Build 1195 — Home quick menu: keep Start a Round and Full Round Schedule as separate cards. */
+.scs-home-quick-panel .scs-home-quick-round-row{
+  margin-bottom:9px!important;
+  border-radius:18px!important;
+}
+.scs-home-quick-panel .scs-home-quick-full-schedule-row{
+  margin-top:0!important;
+  margin-bottom:9px!important;
+  border-radius:18px!important;
+}
+.scs-home-quick-panel .scs-home-quick-slot-row{
+  margin-top:0!important;
+}
