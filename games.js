@@ -2913,38 +2913,9 @@ function _syncRoundPlayingFromGames(data) {
   data.playing = playing;
 }
 
-// ── Update restQueue after a manual player swap ──────────────────────────────
-// Called whenever a player moves between rest and court mid-round.
-// Only restQueue is updated — opponentMap/pairPlayedSet wait until round ends.
-function _updateRestQueueForSwap(goingToRest, goingToCourt) {
-  const rq = schedulerState.restQueue;
-  if (!Array.isArray(rq)) return;
-
-  // Strip any #N suffix to get base names
-  const restName  = goingToRest  ? goingToRest.split('#')[0]  : null;
-  const courtName = goingToCourt ? goingToCourt.split('#')[0] : null;
-
-  // Remove both from their current positions
-  const filtered = rq.filter(p => p !== restName && p !== courtName);
-
-  // A player manually pulled from rest did not complete that rest turn.
-  // Put them first so Random mode rests them in the next round.
-  // The player moved off court completes the current rest at the back.
-  const updated = [
-    ...(courtName ? [courtName] : []),
-    ...filtered,
-    ...(restName  ? [restName]  : []),
-  ];
-
-  schedulerState.restQueue = updated;
-
-  // The organiser's manual playing/resting choice is now the authoritative
-  // FIFO order for subsequent rounds. Persist it immediately so reopening or
-  // navigating away cannot restore the pre-swap rotation.
-  if (!(window.SCSOfflineRounds && typeof window.SCSOfflineRounds.isTemplateEditorActive === 'function' && window.SCSOfflineRounds.isTemplateEditorActive())) {
-    if (typeof saveSnapshot === 'function') saveSnapshot();
-  }
-}
+// Manual swaps are TEMPORARY until the round finishes.
+// Do not mutate scheduler history here (restQueue/restCount/pair/opponent/play history).
+// updSchedule() is the single commit point when the round is completed.
 
 // Manual swaps change the current round locally; persist that revised round
 // so Player Hub devices receive the same teams/resting list as Summary.
@@ -2977,8 +2948,10 @@ function handleDropRestToTeam(
   const newPlayer = drop.player.replace(/#\d+$/, '');
   const oldPlayer = data.games[gameIndex][teamKey][playerIndex];
 
-  // Remove the new player from data.resting
-  data.resting = data.resting.filter(p => !p.startsWith(newPlayer));
+  // Remove only this exact player from the temporary resting list.
+  // The #N suffix is display-only; avoid startsWith() so names such as
+  // "Sam" and "Samuel" cannot affect each other.
+  data.resting = data.resting.filter(p => String(p).replace(/#\d+$/, '') !== newPlayer);
 
   // Insert new player into team
   data.games[gameIndex][teamKey][playerIndex] = newPlayer;
@@ -3000,8 +2973,6 @@ function handleDropRestToTeam(
     data.resting.push(`${oldPlayer}#${nextNum}`);
   }
 
-  // Update restQueue: newPlayer just went to court, oldPlayer just went to rest
-  _updateRestQueueForSwap(oldPlayer, newPlayer);
   _syncRoundPlayingFromGames(data);
 
   showRound(roundIndex);
@@ -3023,11 +2994,7 @@ function handleDropBetweenTeams(e, teamSide, gameIndex, playerIndex, data, index
   toTeam[playerIndex] = movedPlayer;
   fromTeam[fromPlayerIndex] = targetPlayer && targetPlayer !== t('emptyGame') ? targetPlayer : t('emptyGame');
 
-  // restQueue: both players stay on court — no rest change needed for court↔court swap.
-  // Exception: if target slot was empty, movedPlayer effectively came off rest.
-  if (!targetPlayer || targetPlayer === t('emptyGame')) {
-    _updateRestQueueForSwap(null, movedPlayer);
-  }
+  // Temporary court↔court change only. Scheduler history is committed by updSchedule() when the round finishes.
   _syncRoundPlayingFromGames(data);
 
   showRound(index);
