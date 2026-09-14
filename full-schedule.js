@@ -3,6 +3,9 @@
   const MODE_KEY = 'scs_full_schedule_mode';
   const COUNT_KEY = 'scs_full_schedule_count';
   let generating = false;
+  let transitioning = false;
+  let fullScheduleTimerInterval = null;
+  let liveTimedRoundIndex = -1;
 
   function enabled() { return sessionStorage.getItem(MODE_KEY) === '1'; }
   function count() { return Math.max(1, Math.min(50, Number(sessionStorage.getItem(COUNT_KEY) || 10))); }
@@ -84,6 +87,73 @@
     if (typeof saveSnapshot === 'function') saveSnapshot();
   }
 
+  function setFullScheduleTimerDisplay() {
+    const display = document.getElementById('roundElapsedTime');
+    if (!display || !Array.isArray(allRounds) || !allRounds.length) return;
+    const viewed = allRounds[currentRoundIndex];
+    if (!viewed) { display.textContent = '00:00'; return; }
+    let ms = Number(viewed.durationMs) || 0;
+    if (currentRoundIndex === liveTimedRoundIndex && viewed.startedAt && !viewed._fullScheduleCompleted) {
+      ms = Math.max(0, Date.now() - Number(viewed.startedAt));
+    }
+    if (typeof formatRoundDuration === 'function') display.textContent = formatRoundDuration(ms);
+    else {
+      const sec = Math.max(0, Math.floor(ms / 1000));
+      display.textContent = String(Math.floor(sec / 60)).padStart(2,'0') + ':' + String(sec % 60).padStart(2,'0');
+    }
+  }
+
+  function startFullScheduleTimer(roundIndex) {
+    if (!Array.isArray(allRounds) || !allRounds[roundIndex]) return;
+    clearInterval(fullScheduleTimerInterval);
+    liveTimedRoundIndex = roundIndex;
+    const round = allRounds[roundIndex];
+    round.startedAt = Date.now();
+    round.durationMs = 0;
+    delete round.endedAt;
+    setFullScheduleTimerDisplay();
+    fullScheduleTimerInterval = setInterval(setFullScheduleTimerDisplay, 1000);
+  }
+
+  function stopFullScheduleTimer(roundIndex) {
+    if (!Array.isArray(allRounds) || !allRounds[roundIndex]) return;
+    const round = allRounds[roundIndex];
+    if (round.startedAt && !round.endedAt) {
+      round.durationMs = Math.max(0, Date.now() - Number(round.startedAt));
+      round.endedAt = Date.now();
+    }
+    if (liveTimedRoundIndex === roundIndex) {
+      clearInterval(fullScheduleTimerInterval);
+      fullScheduleTimerInterval = null;
+      liveTimedRoundIndex = -1;
+    }
+    setFullScheduleTimerDisplay();
+  }
+
+  function showRoundTransition(completedNumber, nextNumber) {
+    return new Promise(resolve => {
+      let overlay = document.getElementById('fullScheduleTransition');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'fullScheduleTransition';
+        overlay.className = 'full-schedule-transition';
+        overlay.innerHTML = '<div class="full-schedule-transition-card"><div class="full-schedule-transition-check">✓</div><div id="fullScheduleTransitionTitle" class="full-schedule-transition-title"></div><div id="fullScheduleTransitionSub" class="full-schedule-transition-sub"></div></div>';
+        document.body.appendChild(overlay);
+      }
+      const title = document.getElementById('fullScheduleTransitionTitle');
+      const sub = document.getElementById('fullScheduleTransitionSub');
+      if (title) title.textContent = 'Round ' + completedNumber + ' Completed';
+      if (sub) sub.textContent = nextNumber ? 'Starting Round ' + nextNumber + '…' : 'Schedule Completed';
+      overlay.classList.remove('show');
+      void overlay.offsetWidth;
+      overlay.classList.add('show');
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        setTimeout(resolve, 180);
+      }, 1050);
+    });
+  }
+
   function renderDashboardRound(index) {
     if (!enabled() || !allRounds.length) return;
     currentRoundIndex = Math.max(0, Math.min(index, allRounds.length - 1));
@@ -92,6 +162,7 @@
     if (typeof _lastRenderedRoundIndex !== 'undefined') _lastRenderedRoundIndex = -1;
     showRound(currentRoundIndex);
     applyDashboard();
+    setFullScheduleTimerDisplay();
   }
 
   async function generateRemaining() {
@@ -159,11 +230,11 @@
     const currentPlayableIndex = getCurrentPlayableRoundIndex();
     const prev = document.getElementById('fullSchedulePrev');
     const next = document.getElementById('fullScheduleNext');
-    if (prev) prev.disabled = currentRoundIndex <= 0;
+    if (prev) prev.disabled = transitioning || currentRoundIndex <= 0;
     if (next) {
       const canGoForward = currentRoundIndex < currentPlayableIndex;
       next.hidden = !canGoForward;
-      next.disabled = !canGoForward;
+      next.disabled = transitioning || !canGoForward;
     }
 
     const complete = document.getElementById('fullScheduleComplete');
@@ -173,9 +244,11 @@
     document.body.classList.toggle('full-schedule-round-completed', isCompleted);
     if (complete) {
       complete.textContent = isCompleted ? '✓ Completed' : '✓ Mark Completed';
-      complete.disabled = !isCurrentPlayable;
+      complete.disabled = transitioning || !isCurrentPlayable;
       complete.hidden = !isCurrentPlayable && !isCompleted;
     }
+    document.body.classList.toggle('full-schedule-current-live', currentRoundIndex === liveTimedRoundIndex && !isCompleted);
+    setFullScheduleTimerDisplay();
   }
 
   function showAt(index) {
@@ -186,13 +259,37 @@
   }
   function previous() { showAt(currentRoundIndex - 1); }
   function next() { showAt(currentRoundIndex + 1); }
-  function completeCurrent() {
-    if (!enabled() || !allRounds[currentRoundIndex]) return;
-    updateDashboardLikeRounds(currentRoundIndex);
-    allRounds[currentRoundIndex]._fullScheduleCompleted = true;
+  async function completeCurrent() {
+    if (transitioning || !enabled() || !allRounds[currentRoundIndex]) return;
+    const completingIndex = currentRoundIndex;
+    const currentPlayableIndex = getCurrentPlayableRoundIndex();
+    if (completingIndex !== currentPlayableIndex || allRounds[completingIndex]._fullScheduleCompleted) return;
+
+    transitioning = true;
+    updatePosition();
+
+    // If this round was timed (all rounds after the first completion), freeze
+    // its final duration before committing it.
+    stopFullScheduleTimer(completingIndex);
+    updateDashboardLikeRounds(completingIndex);
+    allRounds[completingIndex]._fullScheduleCompleted = true;
     if (typeof saveSnapshot === 'function') saveSnapshot();
-    if (currentRoundIndex < allRounds.length - 1) showAt(currentRoundIndex + 1);
-    else updatePosition();
+
+    const nextIndex = completingIndex < allRounds.length - 1 ? completingIndex + 1 : -1;
+    await showRoundTransition(completingIndex + 1, nextIndex >= 0 ? nextIndex + 1 : null);
+
+    if (nextIndex >= 0) {
+      renderDashboardRound(nextIndex);
+      // Mark Completed is the boundary: the next round timer begins only now,
+      // after the completion transition has finished.
+      startFullScheduleTimer(nextIndex);
+      if (typeof saveSnapshot === 'function') saveSnapshot();
+    } else {
+      updatePosition();
+    }
+
+    transitioning = false;
+    updatePosition();
   }
 
   // Reuse the existing Round page generation path. Once Round 1 exists, build

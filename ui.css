@@ -36114,3 +36114,15 @@ body.full-schedule-readonly #resting-panel,body.full-schedule-readonly #resting-
 .full-schedule-nav #fullScheduleNext[hidden]{display:block!important;visibility:hidden!important;pointer-events:none!important}
 .full-schedule-nav button:disabled{opacity:.42}
 body.full-schedule-round-completed .full-schedule-nav .full-schedule-complete{opacity:.62;filter:grayscale(1)}
+
+
+/* Full Round Schedule completion transition — v1190 */
+.full-schedule-transition{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,10,18,.40);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s ease}
+.full-schedule-transition.show{opacity:1;visibility:visible;pointer-events:auto}
+.full-schedule-transition-card{min-width:min(82vw,340px);padding:24px 22px;border-radius:22px;background:var(--card,#202126);border:1px solid var(--border,#3a3d4a);box-shadow:0 16px 44px rgba(0,0,0,.34);text-align:center;transform:scale(.94) translateY(8px);transition:transform .24s ease}
+.full-schedule-transition.show .full-schedule-transition-card{transform:scale(1) translateY(0)}
+.full-schedule-transition-check{font-size:42px;line-height:1;margin-bottom:10px}
+.full-schedule-transition-title{font-size:1.18rem;font-weight:800;letter-spacing:.01em}
+.full-schedule-transition-sub{margin-top:7px;font-size:.94rem;opacity:.72;font-weight:650}
+body.full-schedule-current-live #fullScheduleComplete{font-weight:800}
+body.full-schedule-current-live #roundElapsedTime{font-variant-numeric:tabular-nums}
