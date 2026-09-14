@@ -36101,3 +36101,16 @@ body.full-schedule-readonly #resting-panel,body.full-schedule-readonly #resting-
 .scs-home-quick-panel .scs-home-quick-round-row{margin-bottom:0!important;border-bottom-left-radius:8px!important;border-bottom-right-radius:8px!important}
 .scs-home-quick-panel .scs-home-quick-full-schedule-row{margin-top:4px!important}
 .scs-home-quick-panel .scs-home-quick-slot-row{margin-top:14px!important}
+
+
+/* Build 1189 — Full Schedule compact single-row controls: ‹  ›  Mark Completed. */
+.full-schedule-dashboard{display:block}
+.full-schedule-dashboard[hidden]{display:none!important}
+.full-schedule-nav{display:grid!important;grid-template-columns:58px 58px minmax(0,1fr)!important;gap:0!important;align-items:stretch;overflow:hidden;border:1px solid var(--border,#3a3d4a);border-radius:18px;background:var(--card,#202126)}
+.full-schedule-nav button{margin:0!important;border:0!important;border-radius:0!important;min-height:58px!important;background:transparent!important}
+.full-schedule-nav .full-schedule-arrow{width:58px!important;font-size:38px!important;font-weight:400!important;line-height:1!important;padding:0!important}
+.full-schedule-nav .full-schedule-complete{width:100%!important;min-width:0!important;font-weight:700!important;padding:0 14px!important}
+.full-schedule-nav button+button{border-left:1px solid var(--border,#3a3d4a)!important}
+.full-schedule-nav #fullScheduleNext[hidden]{display:block!important;visibility:hidden!important;pointer-events:none!important}
+.full-schedule-nav button:disabled{opacity:.42}
+body.full-schedule-round-completed .full-schedule-nav .full-schedule-complete{opacity:.62;filter:grayscale(1)}
