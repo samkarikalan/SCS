@@ -974,6 +974,74 @@
     });
   }
 
+
+  // Template creation QC for Balanced mode. The Worker itself is unchanged.
+  // If the first generated proposal reuses a historical pair/game, ask the
+  // existing live generator for alternatives and keep the most unique valid
+  // proposal. This mirrors the whole-round Dice principle without committing
+  // preview attempts into template history.
+  function templateRepeatScore(round, state) {
+    const usedPairs = state && state.pairPlayedSet instanceof Set ? state.pairPlayedSet : new Set();
+    const usedGames = state && state.gamesMap instanceof Set ? state.gamesMap : new Set();
+    const fixedPairKeys = new Set(((state && state.fixedPairs) || [])
+      .filter(pair => Array.isArray(pair) && pair.length >= 2)
+      .map(pair => templatePairKey(pair[0], pair[1])));
+    let pairRepeats = 0;
+    let gameRepeats = 0;
+    ((round && round.games) || []).forEach(function(game) {
+      const p1 = Array.isArray(game.pair1) ? game.pair1 : [];
+      const p2 = Array.isArray(game.pair2) ? game.pair2 : [];
+      if (p1.length === 2) {
+        const key = templatePairKey(p1[0], p1[1]);
+        if (!fixedPairKeys.has(key) && usedPairs.has(key)) pairRepeats++;
+      }
+      if (p2.length === 2) {
+        const key = templatePairKey(p2[0], p2[1]);
+        if (!fixedPairKeys.has(key) && usedPairs.has(key)) pairRepeats++;
+      }
+      if (p1.length && p2.length) {
+        const k1 = [...p1].sort().join('&');
+        const k2 = [...p2].sort().join('&');
+        if (usedGames.has([k1, k2].sort().join(':'))) gameRepeats++;
+      }
+    });
+    return { pairRepeats, gameRepeats, total: pairRepeats * 100 + gameRepeats };
+  }
+
+  async function generateTemplateRoundWithUniqueRetry(state, historyRounds) {
+    const attempts = state && state.balancedGamesMode ? 5 : 1;
+    let bestRound = null;
+    let bestState = null;
+    let bestScore = null;
+
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      // Preview on a clone so failed/repeated candidates cannot alter the real
+      // template rest queue or history before a round is actually accepted.
+      const candidateState = cloneSchedulerState(state);
+      candidateState.roundIndex = state.roundIndex;
+      const candidate = await generateRoundWithLiveRules(candidateState, {
+        historyRounds: historyRounds,
+        offlinePreparation: true
+      });
+      const score = templateRepeatScore(candidate, state);
+      if (!bestScore || score.total < bestScore.total) {
+        bestRound = candidate;
+        bestState = candidateState;
+        bestScore = score;
+      }
+      if (score.total === 0) break;
+    }
+
+    // Preserve only generator-side queue/mode output from the accepted preview.
+    // Pair/game/rest history itself is still committed exactly once below by
+    // the existing updSchedule() call.
+    if (bestState) {
+      state.restQueue = Array.isArray(bestState.restQueue) ? [...bestState.restQueue] : state.restQueue;
+      state._lastMode = bestState._lastMode || state._lastMode;
+    }
+    return bestRound;
+  }
+
   function templateCycleLengthFromPayload(payload) {
     const dataset = payload && payload.dataset;
     const records = payload && Array.isArray(payload.records) ? payload.records : [];
@@ -1842,10 +1910,7 @@
         if (typeof generateRoundWithLiveRules !== 'function') {
           throw new Error('Online round generator is unavailable.');
         }
-        const round = await generateRoundWithLiveRules(tempState, {
-          historyRounds: tempRounds,
-          offlinePreparation: true
-        });
+        const round = await generateTemplateRoundWithUniqueRetry(tempState, tempRounds);
 
         round.round = i + 1;
         tempRounds.push(cloneValue(round));
