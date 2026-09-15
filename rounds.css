@@ -6453,3 +6453,13 @@ body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-
   color: var(--amber) !important;
   box-shadow: 0 0 0 2px rgba(245,158,11,0.18), 0 0 14px rgba(245,158,11,0.55) !important;
 }
+
+
+/* v1209: previous-round location indicator (Round 2 onward).
+   Thin per-player left edge; court colour or grey for rested. */
+#roundsPage .Lplayer-btn.previous-round-indicator,
+#roundsPage .Rplayer-btn.previous-round-indicator,
+#roundsPage .rest-btn.previous-round-indicator {
+  border-left: 2px solid var(--previous-round-color) !important;
+  padding-left: 5px !important;
+}

@@ -2681,11 +2681,55 @@ function appendBalancedUiRating(button, data, playerName) {
   button.appendChild(badge);
 }
 
+// Previous-round indicator: from Round 2 onward, every player gets a thin
+// left-edge colour showing where they were in the immediately previous round.
+// Court colours are display-only; grey means the player rested last round.
+const PREVIOUS_ROUND_COURT_COLORS = [
+  '#ff3bbd', '#8b5cf6', '#22c55e', '#f59e0b', '#38bdf8',
+  '#ef4444', '#14b8a6', '#eab308', '#a855f7', '#fb7185'
+];
+const PREVIOUS_ROUND_REST_COLOR = '#94a3b8';
+
+function applyPreviousRoundIndicator(button, playerName, roundIndex) {
+  if (!button || !Number.isInteger(roundIndex) || roundIndex < 1) return;
+  const previous = allRounds?.[roundIndex - 1];
+  if (!previous) return;
+
+  const baseName = String(playerName || '').split('#')[0];
+  let color = null;
+  let label = '';
+
+  const rested = (previous.resting || []).some(name => String(name || '').split('#')[0] === baseName);
+  if (rested) {
+    color = PREVIOUS_ROUND_REST_COLOR;
+    label = 'Rested last round';
+  } else {
+    const games = previous.games || [];
+    for (let courtIndex = 0; courtIndex < games.length; courtIndex++) {
+      const game = games[courtIndex] || {};
+      const players = [...(game.pair1 || []), ...(game.pair2 || [])]
+        .map(name => String(name || '').split('#')[0]);
+      if (players.includes(baseName)) {
+        color = PREVIOUS_ROUND_COURT_COLORS[courtIndex % PREVIOUS_ROUND_COURT_COLORS.length];
+        label = `Played Court ${courtIndex + 1} last round`;
+        break;
+      }
+    }
+  }
+
+  if (!color) return;
+  button.classList.add('previous-round-indicator');
+  button.style.setProperty('--previous-round-color', color);
+  button.dataset.previousRound = label;
+  button.setAttribute('aria-label', `${baseName}. ${label}`);
+}
+
 function makeRestButton(player, data, index, interactive = true) {
   const btn = document.createElement('button');
   btn.className = 'rest-btn';
 
   const restName = player.displayName || player.name || '';
+  applyPreviousRoundIndicator(btn, restName, index);
   // The #restCount suffix is display-only. Rating and gender lookups must use
   // the player's original base name, otherwise the lookup falls back to 1.0.
   const baseRestName = String(player.name || restName).split('#')[0];
@@ -2787,6 +2831,7 @@ function makePlayerButton(name, teamSide, gameIndex, playerIndex, data, index) {
   const player = schedulerState.allPlayers.find(p => p.name === baseName);
 
   btn.className = teamSide === 'L' ? 'Lplayer-btn' : 'Rplayer-btn';
+  applyPreviousRoundIndicator(btn, baseName, index);
   btn.appendChild(createRatingRing(baseName, player?.gender || 'Male', getBalancedUiRating(data, baseName)));
 
   const nameSpan = document.createElement('span');
