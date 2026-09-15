@@ -2739,6 +2739,7 @@ function makeRestButton(player, data, index, interactive = true) {
 
   const label = player.displayName || player.name;
   const textNode = document.createElement('span');
+  textNode.className = 'player-name';
   textNode.innerText = label;
   btn.appendChild(textNode);
 

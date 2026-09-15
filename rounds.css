@@ -6455,16 +6455,19 @@ body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-
 }
 
 
-/* v1210: previous-round location indicator (Round 2 onward).
-   Small per-player dot; court colour or grey for rested. */
-#roundsPage .Lplayer-btn.previous-round-indicator,
-#roundsPage .Rplayer-btn.previous-round-indicator,
-#roundsPage .rest-btn.previous-round-indicator {
-  position: relative !important;
+/* v1211: previous-round location indicator (Round 2 onward).
+   Small per-player dot immediately after the player name; court colour or grey for rested. */
+#roundsPage .Lplayer-btn.previous-round-indicator .player-name,
+#roundsPage .Rplayer-btn.previous-round-indicator .player-name,
+#roundsPage .rest-btn.previous-round-indicator .player-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
 }
-#roundsPage .Lplayer-btn.previous-round-indicator::before,
-#roundsPage .Rplayer-btn.previous-round-indicator::before,
-#roundsPage .rest-btn.previous-round-indicator::before {
+#roundsPage .Lplayer-btn.previous-round-indicator .player-name::after,
+#roundsPage .Rplayer-btn.previous-round-indicator .player-name::after,
+#roundsPage .rest-btn.previous-round-indicator .player-name::after {
   content: "";
   width: 7px;
   height: 7px;
