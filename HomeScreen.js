@@ -1491,7 +1491,11 @@ function orgPaintInitialPlayerOrder(mode) {
   });
   ['sampleRoundPlayerOrderToggle', 'sampleRollingPlayerOrderToggle'].forEach(function(id) {
     var toggle = document.getElementById(id);
-    if (toggle) toggle.checked = mode !== 'keep';
+    if (toggle) {
+      toggle.disabled = false;
+      toggle.checked = mode !== 'keep';
+      toggle.setAttribute('aria-disabled', 'false');
+    }
   });
 }
 

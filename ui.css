@@ -30464,7 +30464,10 @@ body.app-light .org-scheduling-screen .org-mode-panel-offline .org-start-mode-bt
 .org-unique-pair-setting>span{display:flex;flex-direction:column;min-width:0;gap:.12rem}
 .org-unique-pair-setting strong{font-size:.86rem;font-weight:800}
 .org-unique-pair-setting small{font-size:.7rem;line-height:1.25;opacity:.72}
-.org-unique-pair-setting.is-disabled{opacity:.48}
+.org-unique-pair-setting.is-disabled{opacity:.38;filter:grayscale(1)}
+.org-unique-pair-setting.is-disabled .switch{opacity:.55}
+.org-unique-pair-setting.is-disabled small::after{content:' · Standard mode only';font-weight:700}
+.org-player-order-toggle-row .switch,.org-player-order-toggle-row .switch *{pointer-events:auto}
 .org-unique-pair-setting .switch{flex:0 0 auto}
 
 /* Light-theme coloured Round Manager cards must retain white foregrounds. */

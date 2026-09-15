@@ -608,30 +608,6 @@ function findBestCourtCombination(playing, numCourts, tierMap, state, gameSet) {
     }
     return count;
   }
-
-  // Balanced-mode tie-breaker: once pair uniqueness is equally good, prefer
-  // a complete round where players face fewer opponents from the immediately
-  // previous round. This restores the existing consecutive-opponent intent
-  // without making it a hard rule or changing pair/rest selection.
-  function countLastRoundOpponentRepeats(games) {
-    const lastRound = allRounds.length ? allRounds[allRounds.length - 1] : null;
-    if (!lastRound || !Array.isArray(lastRound.games)) return 0;
-    const lastOpponents = new Set();
-    for (const g of lastRound.games) {
-      if (!g || !Array.isArray(g.pair1) || !Array.isArray(g.pair2)) continue;
-      for (const a of g.pair1) for (const b of g.pair2) {
-        lastOpponents.add(`${a}\u0000${b}`);
-        lastOpponents.add(`${b}\u0000${a}`);
-      }
-    }
-    let count = 0;
-    for (const g of games) {
-      for (const a of g.pair1) for (const b of g.pair2) {
-        if (lastOpponents.has(`${a}\u0000${b}`)) count++;
-      }
-    }
-    return count;
-  }
   function applySwapFix(games) {
     const tolerances = [0.5, 1.0, 1.5, Infinity];
     for (const tolerance of tolerances) {
@@ -682,18 +658,16 @@ function findBestCourtCombination(playing, numCourts, tierMap, state, gameSet) {
     return games;
   }
   const BEAM_SIZE = Math.min(12, gameScores.length);
-  let bestResult = null, bestRepeats = Infinity, bestLastOpponentRepeats = Infinity;
+  let bestResult = null, bestRepeats = Infinity;
   for (let b = 0; b < BEAM_SIZE; b++) {
     const attempt = greedyFrom(gameScores[b]);
     if (!attempt) continue;
     const fixed   = applySwapFix(attempt.map(g => ({ pair1: [...g.pair1], pair2: [...g.pair2], courtRule: g.courtRule, repeated: false })));
     const repeats = countRepeats(fixed);
-    const lastOpponentRepeats = countLastRoundOpponentRepeats(fixed);
-    if (repeats < bestRepeats ||
-        (repeats === bestRepeats && lastOpponentRepeats < bestLastOpponentRepeats)) {
+    if (repeats < bestRepeats) {
       bestRepeats = repeats;
-      bestLastOpponentRepeats = lastOpponentRepeats;
-      bestResult = fixed;
+      bestResult  = fixed;
+      if (repeats === 0) break;
     }
   }
   if (!bestResult) return null;
