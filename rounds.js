@@ -290,8 +290,8 @@ async function updateCourtDisplay() {
 }
 
 async function roundAdjCourts(delta) {
-  // Round iMode uses the court count fixed by its selected template/config.
-  if (isRoundIModeTemplateSession()) return;
+  // v1212: Court count remains adjustable before a round starts, including
+  // when Round iMode/template data supplied the initial court count.
   if (typeof currentState !== 'undefined' && currentState === 'active') return;
   const totalPlayers = schedulerState.activeplayers.length;
   if (delta > 0) {
@@ -322,14 +322,8 @@ function updateCourtButtons() {
   const minusBtn = document.getElementById("courtMinus");
   if (!plusBtn || !minusBtn) return;
 
-  // Round iMode court count is fixed for the whole session.
-  if (isRoundIModeTemplateSession()) {
-    plusBtn.disabled = true;
-    minusBtn.disabled = true;
-    plusBtn.classList.add("disabled-btn");
-    minusBtn.classList.add("disabled-btn");
-    return;
-  }
+  // v1212: Do not lock +/- just because this is a template/iMode session.
+  // Normal player-count limits below still decide whether + or - is available.
 
   // PLUS disable logic
   if (requiredPlayers + 2 > totalPlayers) {
