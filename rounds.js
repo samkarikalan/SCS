@@ -1761,72 +1761,14 @@ async function RefreshRound() {
       roundIndex: savedRoundIndex,
     });
 
-    // Generate a new arrangement for the CURRENT round only
-    // Route by mode: competitive re-runs the rating-aware scheduler,
-    // random uses the pure random shuffle
-    let newRound;
-    if ((typeof getPlayMode === 'function' && getPlayMode() === 'competitive') ||
-        (typeof getGameGenerationMode === 'function' && getGameGenerationMode() === 'balanced')) {
-      // In competitive mode the scheduler is deterministic, so we temporarily
-      // mark the current round's pairs as 'used'. This forces the algorithm
-      // to find a genuinely different balanced arrangement.
-      // We restore pairPlayedSet immediately after so state is unchanged.
-      const currentRound = allRounds[currentRoundIndex];
-      const tempKeys = [];
-      const fixedPairKeys = new Set((rerollState.fixedPairs || []).map(pair => [...pair].sort().join('&')));
-      if (currentRound && currentRound.games) {
-        for (const game of currentRound.games) {
-          for (const pair of [game.pair1, game.pair2]) {
-            const key = [...pair].sort().join('&');
-            // A fixed pair is an organiser constraint, not a historical pair to
-            // avoid. Marking it as temporarily "used" makes the current-round
-            // dice fight the fixed-pair rule in Competitive/Balanced mode.
-            if (fixedPairKeys.has(key)) continue;
-            if (!schedulerState.pairPlayedSet.has(key)) {
-              schedulerState.pairPlayedSet.add(key);
-              tempKeys.push(key);
-            }
-          }
-        }
-      }
-      newRound = await safeGenerateRound(rerollState);
-      // Restore: remove the temporarily added keys
-      for (const key of tempKeys) {
-        schedulerState.pairPlayedSet.delete(key);
-      }
-    } else {
-      // If any courts have typed assignments, use worker (typedRound)
-      // Otherwise use fast client-side RandomRound
-      const hasTyped = (schedulerState.courtTypes || []).some(t => t && t !== 'free') ||
-                       (schedulerState.courtFormats || []).some(f => f === 'singles');
-      if (hasTyped) {
-        // Temporarily mark current pairs as used to force fresh pairs
-        const currentRound = allRounds[currentRoundIndex];
-        const tempKeys = [];
-        const fixedPairKeys = new Set((rerollState.fixedPairs || []).map(pair => [...pair].sort().join('&')));
-        if (currentRound && currentRound.games) {
-          for (const game of currentRound.games) {
-            for (const pair of [game.pair1, game.pair2]) {
-              const key = [...pair].sort().join('&');
-              // Keep organiser-defined fixed pairs exempt from the temporary
-              // anti-repeat marks used only to force a visibly different reroll.
-              if (fixedPairKeys.has(key)) continue;
-              if (!schedulerState.pairPlayedSet.has(key)) {
-                schedulerState.pairPlayedSet.add(key);
-                tempKeys.push(key);
-              }
-            }
-          }
-        }
-        newRound = await safeGenerateRound(rerollState);
-        // Restore pairPlayedSet
-        for (const key of tempKeys) {
-          schedulerState.pairPlayedSet.delete(key);
-        }
-      } else {
-        newRound = RandomRound(rerollState);
-      }
-    }
+    // Generate a new arrangement for the CURRENT round only.
+    // Dice must strictly use the organiser-selected generation mode:
+    // Standard -> Standard generator, Balanced -> Balanced generator.
+    // Do not temporarily mark current pairs/games as used just to force a
+    // visibly different result; repeats are valid when the selected mode
+    // produces them. safeGenerateRound() reads the current mode and routes
+    // through the existing generator without committing any round history.
+    const newRound = await safeGenerateRound(rerollState);
 
     // Keep the round number exactly the same as before. If the active roster
     // did not change, preserve the organiser's manual Play/Rest choice exactly.
@@ -1838,17 +1780,8 @@ async function RefreshRound() {
       newRound.resting = preservedResting;
     }
 
-    // If worker returned fewer courts than expected, fill missing with RandomRound
-    const expectedCourts = schedulerState.numCourts || 1;
-    if (newRound.games && newRound.games.length < expectedCourts) {
-      console.warn('Partial round — falling back to RandomRound for missing courts');
-      const fallback = RandomRound(rerollState);
-      if (fallback && fallback.games) {
-        while (newRound.games.length < expectedCourts && fallback.games.length > 0) {
-          newRound.games.push(fallback.games.shift());
-        }
-      }
-    }
+    // Do not patch a partial result with RandomRound here. That would mix
+    // algorithms and violate the selected Standard/Balanced mode.
 
     // Restore everything - no advancement
     schedulerState.roundIndex = savedRoundIndex;
