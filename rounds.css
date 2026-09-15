@@ -6455,11 +6455,26 @@ body.app-light #viewerPage .player-history-group.dashboard-tabs-group > .player-
 }
 
 
-/* v1209: previous-round location indicator (Round 2 onward).
-   Thin per-player left edge; court colour or grey for rested. */
+/* v1210: previous-round location indicator (Round 2 onward).
+   Small per-player dot; court colour or grey for rested. */
 #roundsPage .Lplayer-btn.previous-round-indicator,
 #roundsPage .Rplayer-btn.previous-round-indicator,
 #roundsPage .rest-btn.previous-round-indicator {
-  border-left: 2px solid var(--previous-round-color) !important;
-  padding-left: 5px !important;
+  position: relative !important;
+}
+#roundsPage .Lplayer-btn.previous-round-indicator::before,
+#roundsPage .Rplayer-btn.previous-round-indicator::before,
+#roundsPage .rest-btn.previous-round-indicator::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: var(--previous-round-color);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.16);
+}
+
+/* Resting players: compact rounded rectangles rather than full pills. */
+#roundsPage .resting-section .rest-btn {
+  border-radius: 8px !important;
 }

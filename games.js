@@ -2681,8 +2681,8 @@ function appendBalancedUiRating(button, data, playerName) {
   button.appendChild(badge);
 }
 
-// Previous-round indicator: from Round 2 onward, every player gets a thin
-// left-edge colour showing where they were in the immediately previous round.
+// Previous-round indicator: from Round 2 onward, every player gets a small
+// colour dot showing where they were in the immediately previous round.
 // Court colours are display-only; grey means the player rested last round.
 const PREVIOUS_ROUND_COURT_COLORS = [
   '#ff3bbd', '#8b5cf6', '#22c55e', '#f59e0b', '#38bdf8',
