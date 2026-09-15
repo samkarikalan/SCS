@@ -2253,8 +2253,8 @@ function syncRatings() {
     const rating = getActiveRating(name);
     badge.textContent = Number.isFinite(rating) ? rating.toFixed(1) : "guest";
     if (badge.closest('#playersPage')) {
-      badge.classList.toggle('rating-low', Number.isFinite(rating) && rating <= 2.5);
-      badge.classList.toggle('rating-high', Number.isFinite(rating) && rating > 2.5);
+      badge.classList.toggle('rating-low', Number.isFinite(rating) && rating < 3.5);
+      badge.classList.toggle('rating-high', Number.isFinite(rating) && rating >= 3.5);
     }
   });
 }

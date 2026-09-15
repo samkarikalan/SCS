@@ -743,6 +743,80 @@ function addPlayersFromText() {
 /* =========================
    PLAYER LIST RENDERING
 ========================= */
+/* =========================
+   INLINE PLAYER RATING EDITOR
+   Rating changes use the existing single rating write gateway and are also
+   persisted to the selected club membership when available.
+========================= */
+let _playerRatingEditIndex = null;
+
+function closePlayerRatingEditor() {
+  const overlay = document.getElementById('playerRatingEditOverlay');
+  if (overlay) overlay.remove();
+  _playerRatingEditIndex = null;
+}
+
+function openPlayerRatingEditor(index) {
+  const player = schedulerState.allPlayers[index];
+  if (!player || player.guest || player.unrated || (typeof isGuestPlayerName === 'function' && isGuestPlayerName(player.name))) return;
+
+  closePlayerRatingEditor();
+  _playerRatingEditIndex = index;
+  const current = typeof getActiveRating === 'function' ? getActiveRating(player.name) : getRating(player.name);
+  const overlay = document.createElement('div');
+  overlay.id = 'playerRatingEditOverlay';
+  overlay.className = 'player-rating-edit-overlay';
+  overlay.onclick = function(e) { if (e.target === overlay) closePlayerRatingEditor(); };
+
+  const choices = [1, 2, 3, 4, 5].map(function(value) {
+    const active = Number(current) === value ? ' is-active' : '';
+    return `<button type="button" class="player-rating-choice${active}" onclick="savePlayerRatingFromPlayersPage(${value})">${value.toFixed(1)}</button>`;
+  }).join('');
+
+  overlay.innerHTML = `
+    <div class="player-rating-edit-sheet" role="dialog" aria-modal="true" aria-label="Edit player rating">
+      <div class="player-rating-edit-title">${player.name}</div>
+      <div class="player-rating-edit-subtitle">Rating</div>
+      <div class="player-rating-edit-choices">${choices}</div>
+      <button type="button" class="player-rating-edit-cancel" onclick="closePlayerRatingEditor()">Cancel</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+async function savePlayerRatingFromPlayersPage(value) {
+  const index = _playerRatingEditIndex;
+  const player = schedulerState.allPlayers[index];
+  if (!player) { closePlayerRatingEditor(); return; }
+
+  const rating = Math.min(5, Math.max(1, Number(value)));
+  if (!Number.isFinite(rating)) return;
+
+  // Update the same in-memory/local rating source used everywhere else first,
+  // so the pill and Balanced mode see the change immediately.
+  if (typeof setRating === 'function') setRating(player.name, rating);
+  else if (typeof setActiveRating === 'function') setActiveRating(player.name, rating);
+  player.activeRating = rating;
+  saveAllPlayersState();
+  if (typeof syncRatings === 'function') syncRatings();
+  if (typeof requestRoundOneSetupRegeneration === 'function') requestRoundOneSetupRegeneration();
+  closePlayerRatingEditor();
+
+  // Persist the club-specific rating without changing any other player field.
+  try {
+    const club = (typeof getMyClub === 'function') ? getMyClub() : null;
+    if (club && club.id && typeof sbGet === 'function' && typeof sbPatch === 'function') {
+      const rows = await sbGet('memberships', `club_id=eq.${club.id}&nickname=ilike.${encodeURIComponent(player.name)}&select=id,player_id`).catch(function(){ return []; });
+      if (rows && rows.length) {
+        await sbPatch('memberships', `id=eq.${rows[0].id}`, { club_rating: rating });
+        try { localStorage.removeItem('kbrr_cache_players'); } catch (_) {}
+        try { localStorage.removeItem('kbrr_cache_ts'); } catch (_) {}
+      }
+    }
+  } catch (e) {
+    console.warn('Could not sync player rating yet:', e);
+  }
+}
+
 function createPlayerCard(player, index) {
   let cardClass = `player-edit-card player-row ${player.gender.toLowerCase()}`;
   if (!player.active) cardClass += " inactive";
@@ -761,10 +835,10 @@ function createPlayerCard(player, index) {
   const genderImg = player.gender === "Female" ? "female.png" : "male.png";
   const isGuest = !!(player.guest || player.unrated) || (typeof isGuestPlayerName === 'function' && isGuestPlayerName(player.name));
   const rating = isGuest ? null : (typeof getActiveRating === 'function' ? getActiveRating(player.name) : getRating(player.name));
-  const ratingTier = Number.isFinite(rating) && rating > 2.5 ? ' rating-high' : ' rating-low';
+  const ratingTier = Number.isFinite(rating) && rating >= 3.5 ? ' rating-high' : ' rating-low';
   const ratingHtml = isGuest
     ? '<span class="rating-badge">guest</span>'
-    : `<span class="rating-badge${ratingTier}" data-player="${player.name}">${Number.isFinite(rating) ? rating.toFixed(1) : '1.0'}</span>`;
+    : `<button type="button" class="rating-badge rating-edit-btn${ratingTier}" data-player="${player.name}" onclick="event.stopPropagation(); openPlayerRatingEditor(${index})" aria-label="Edit ${player.name} rating">${Number.isFinite(rating) ? rating.toFixed(1) : '1.0'}</button>`;
   card.innerHTML = `
     <div class="pec-col pec-active">
       <input type="checkbox" ${player.active ? "checked" : ""} onchange="toggleActive(${index}, this)">
